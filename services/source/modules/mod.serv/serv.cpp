@@ -104,7 +104,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 SERV_FUNC (Module::parseSTATUS)
 {
    origin.sendMessage(GETLANG(serv_STATUS_REPORT_START),getNickname());
-   origin.sendMessage(GETLANG(serv_STATUS_CURRENT_BUILD,String::convert(Services::buildNumber)),getNickname());
+   
+   //origin.sendMessage(GETLANG(serv_STATUS_CURRENT_BUILD,String::convert(Services::buildNumber)),getNickname());
    long tx = services->getCountTx();
    long rx = services->getCountRx();
    origin.sendMessage(GETLANG(serv_STATUS_TXRX,String::convert(tx),String::convert(rx)),getNickname());

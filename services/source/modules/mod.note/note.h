@@ -73,7 +73,7 @@ namespace Exordium {
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-			const AISutil::String& channel)
+			const Kine::Name& channel)
 	   { return; };
 	 
 	 // Grab the information structure of a module

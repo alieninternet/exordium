@@ -98,7 +98,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
    ((Services *)foo)->shutdown(reason);
    exit(1); /* Until kine's signal thingies are fixed :C */
 }
-/** Run() Called from the module to begin operation.  
+/** Run() Called from the module to begin operation.
  * This begins the main 'loop' for services, initiates our connection
  * etc.
  */
@@ -111,6 +111,7 @@ void
    disconnectTime = 0;
    connected = false;
    lastExpireRun = 0;
+   buildNumber = 1;
    srand(time(NULL));
    logLine ("Cleaning out (any) stale entries from the DB");
    database.dbDelete("onlineclients");
@@ -432,6 +433,22 @@ bool ServicesInternal::connect (void)
 			config.getConsoleDescription());
      }
    Kine::langs().registerMap(Language::tagMap);
+   int foofoo = 0;
+   for (;;)
+     {
+
+	std::cout << "TagMap " << foofoo << ": tag '" <<
+	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
+	  Language::tagMap[foofoo].tagID << std::endl;
+
+	if (Language::tagMap[++foofoo].tagName == 0)
+	  {
+
+	     break;
+	  }
+
+     }
+
    connected = true;
    queueAdd ("BURST 0");
    return true;
@@ -494,10 +511,10 @@ void ServicesInternal::SynchTime(void)
    //int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
    //for(int i=0; i<nbRes; i++)
    //  {
-//	channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
-//	database.dbGetRow();
-  //   }
-
+   //	channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
+   //	database.dbGetRow();
+   //   }
+   //
 }
 
    /* AddOnlineServer(ServerName,Hops,Description)
@@ -515,7 +532,7 @@ void
 void
   ServicesInternal::nickLinkAdd(String const &first, String const &second)
 {
-  
+
    database.dbInsert("nicklinks","'"+String::convert(getRegisteredNickID(first))+"','"+String::convert(getRegisteredNickID(second))+"'");
 }
 
@@ -878,7 +895,7 @@ void ServicesInternal::checkpoint(void)
 	if(((*it).second)!=0)
 	  (*it).second->decFloodCount();
      }
-   
+
    //Any nick mods to be done? :-)
 
    int nbRes = database.dbSelect("kills");

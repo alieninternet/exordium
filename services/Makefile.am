@@ -212,8 +212,8 @@ mod_note_la_LIBADD=\
 mod_note_la_LDFLAGS=\
 		    -avoid-version -module
 mod_note_la_SOURCES=\
-		    source/modules/mod.note/language.cpp
-		    source/modules/mod.note/language.h
+		    source/modules/mod.note/language.cpp \
+		    source/modules/mod.note/language.h \
 		    source/modules/mod.note/note.cpp \
 		    source/modules/mod.note/note.h \
 		    source/modules/mod.note/tables.cpp \

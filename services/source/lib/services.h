@@ -95,7 +95,7 @@ namespace Exordium {
 	
     public:
       time_t startTime;
-      
+      unsigned int buildNumber;
       
       // Constructor
       ServicesInternal(ConfigInternal& c, CDatabase& db);
