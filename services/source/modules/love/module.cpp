@@ -35,7 +35,7 @@ using namespace Exordium;
  * Note: Using C-style symbols for dlsym()
  */
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   return new Module("love", new Love(name));
+   return new Module("love", new Love(services, name));
 }
 
 
@@ -56,12 +56,13 @@ const Love::commandTable_type Love::commandTable[] = {
 /* Love - Our constructor, mainly gets us ready to spread our loving..
  * Original 26/07/2002 simonb
  */
-Love::Love(const String& mn)
-  : myName(mn)
+Love::Love(Exordium::Services& s, const String& mn)
+  : services(s), 
+    myName(mn)
 {
-   Services::registerService(myName, myName, "ircdome.org", "+dz",
+   services.registerService(myName, myName, "ircdome.org", "+dz",
 			     "Your local love slave(tm)");
-   Services::serviceJoin(myName, "#Chapel"); // hehehe, temporary maybe
+   services.serviceJoin(myName, "#Chapel"); // hehehe, temporary maybe
 }
 
 
@@ -79,7 +80,7 @@ void Love::parseLine(const String& line, const String& origin)
 #ifdef DEBUG
       std::ostringstream debugLine;
       debugLine << "Love::parseLine() -> '" << line << "' from " << origin;
-      Services::Debug(debugLine.str());
+      services.Debug(debugLine.str());
 #endif
       
       // Does this match?   
