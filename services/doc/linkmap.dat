@@ -73,6 +73,7 @@ digraph intranet_map {
      {  rank=same;
         "mod_bot.so";
         "mod_chan.so";
+        "mod_credits.so";
         "mod_game.so";
         "mod_love.so";
         "mod_nick.so";
@@ -85,7 +86,10 @@ digraph intranet_map {
 
      // Exordium module libraries
      node [shape=diamond,color=lightblue];
-     "libexordium_game";
+     {  rank=same;
+        "libexordium_game";
+        "libexordium_bank";
+     }
 
      // Exordium game module modules
      node [shape=ellipse,color=turquoise];
@@ -104,6 +108,7 @@ digraph intranet_map {
      "libexordium" -> "libpq" [style=dashed];
      "libexordium" -> "mod_bot.so" [color=blue,dir=both];
      "libexordium" -> "mod_chan.so" [color=blue,dir=both];
+     "libexordium" -> "mod_credits.so" [color=blue,dir=both];
      "libexordium" -> "mod_game.so" [color=blue,dir=both];
      "libexordium" -> "mod_love.so" [color=blue,dir=both];
      "libexordium" -> "mod_nick.so" [color=blue,dir=both];
@@ -112,13 +117,19 @@ digraph intranet_map {
      "libexordium" -> "mod_serv.so" [color=blue,dir=both];
      "libexordium" -> "mod_stats.so" [color=blue,dir=both];
      "libexordium" -> "mod_vote.so" [color=blue,dir=both];
+     "libexordium_bank" -> "libaisutil";
+     "libexordium_bank" -> "libexordium";
      "libexordium_game" -> "libaisutil";
      "libexordium_game" -> "libdl";
      "libexordium_game" -> "libexordium";
+     "libexordium_game" -> "libexordium_bank";
      "libexordium_game" -> "game_exordi8.so" [color=blue,dir=both];
      "libexordium_game" -> "game_hangman.so" [color=blue,dir=both];
+     "libexordium_game" -> "game_poker.so" [color=blue,dir=both];
      "mod_bot.so" -> "libaisutil";
      "mod_chan.so" -> "libaisutil";
+     "mod_credits.so" -> "libaisutil";
+     "mod_credits.so" -> "libexordium_bank";
      "mod_game.so" -> "libaisutil";
      "mod_game.so" -> "libexordium_game" [dir=both];
      "mod_love.so" -> "libaisutil";
