@@ -29,7 +29,7 @@
 # define __DIE_H__
 
 # ifdef HAVE_CONFIG_H
-#  include <exordium/config.h>
+#  include "autoconf.h"
 # endif
 
 # include <cstdlib>

@@ -27,7 +27,10 @@
 #ifndef __BOT_H_
 #define __BOT_H_
 
-#include <exordium/config.h>
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <exordium/user.h>

@@ -9,8 +9,8 @@ AC_PROG_LIBTOOL
 AC_PREREQ(2.54)
 AC_COPYRIGHT(Exordium Network Services are (c) 2002 IRCDome Development Team)
 AC_COPYRIGHT(Please read the LICENSE file for more information)
-AC_CONFIG_SRCDIR([include/exordium/config.h.in])
-AM_CONFIG_HEADER([include/exordium/config.h])
+AC_CONFIG_SRCDIR([include/autoconf.h.in])
+AM_CONFIG_HEADER([include/autoconf.h])
 AC_MSG_CHECKING([what to set CXXFLAGS to])
 if test "$CXXFLAGS" = ""; then
 	CXXFLAGS="-O0 -g"
@@ -64,7 +64,7 @@ AC_ARG_ENABLE(debug-mode,[
      		AC_MSG_RESULT(no)
    	else
      		AC_MSG_RESULT(yes)
-     		AC_DEFINE(DEBUG)
+     		AC_DEFINE(DEBUG, 1, [Define if you want debugging compiled in])
    fi
  ],[
    AC_MSG_RESULT([no (default)])
@@ -99,7 +99,7 @@ if test "$mysql_config" ; then
         CPPFLAGS="$CPPFLAGS `$mysql_config_prog --cflags`"
         LDFLAGS="$LDFLAGS `$mysql_config_prog --libs`"
         AC_CHECK_LIB([mysqlclient], [main], [
-        AC_DEFINE(HAVE_MYSQL)
+        AC_DEFINE(HAVE_MYSQL, 1, [Define if you want MySQL support compiled])
 	exordium_test_compile_db_mysql=yes
         AC_MSG_RESULT(Building with MySQL support)], [AC_MSG_RESULT([Building without MySQL support])])
 fi
@@ -113,13 +113,13 @@ CPPFLAGS="$CPPFLAGS -I`pg_config --includedir`"
 AC_CHECK_HEADERS([`pg_config --includedir`/libpq-fe.h],
   [
 #    CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_FE_H"
-	AC_DEFINE(HAVE_LIBPQ_FE_H)
+	AC_DEFINE(HAVE_LIBPQ_FE_H, 1, [Define if your PostgreSQL has libpq-fe.h])
   ],
   [
     AC_CHECK_HEADERS([`pg_config --includedir`/libpq-int.h], 
     [
       #CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_INT_H"
-      AC_DEFINE(HAVE_LIBPQ_INT_H)
+      AC_DEFINE(HAVE_LIBPQ_INT_H, 1, [Define if your PostgreSQL has libpq-int.h])
     ],
     [
       AC_MSG_ERROR([libpq headers not found!])
@@ -127,7 +127,7 @@ AC_CHECK_HEADERS([`pg_config --includedir`/libpq-fe.h],
   ])
 
 #CPPFLAGS="$CPPFLAGS -DHAVE_PGSQL"
-AC_DEFINE(HAVE_PGSQL)
+AC_DEFINE(HAVE_PGSQL, 1, [Define if you want PostgreSQL support compiled in])
 exordium_test_compile_db_pgsql=yes
 LDFLAGS="$LDFLAGS -L `pg_config --libdir`"
 LDFLAGS="$LDFLAGS  -lpq"

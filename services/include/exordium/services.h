@@ -27,7 +27,11 @@
 #ifndef __SERVICES_H
 #define __SERVICES_H
 
-#include <exordium/config.h>
+// This is naughty..
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include <kineircd/str.h>
 #include <queue>
 #include <map>

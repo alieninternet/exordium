@@ -36,7 +36,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-# include "exordium/config.h"
+# include "autoconf.h"
 #endif
 
 #include "exordium/parser.h"

@@ -29,7 +29,7 @@
  * of a way to change libservices_la_SOURCES that much, CPPFLAGS etc are easy but..
  */
 #ifdef HAVE_CONFIG_H
-# include "exordium/config.h"
+# include "autoconf.h"
 #endif
 
 #ifndef HAVE_MYSQL
