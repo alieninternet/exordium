@@ -35,98 +35,85 @@ using AISutil::String;
 using AISutil::StringTokens;
 
 // This is needed for translate since it doesn't like tolower gcc 3.x
-inline char tolower_wrapper (char ch) { return tolower(ch); }
+//inline char tolower_wrapper (char ch) { return tolower(ch); }
 
-const char* hangman[10][9] = {{"",
+const char* hangman[11][7] = {{"",
                                "",
                                "",
                                "",
                                "",
                                "",
-                               "",
-                               "",
-                               "--------------"},
+                               ""}, 
                               {"",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /          ",
-                               " |/           ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |         |  ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |        /|  ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |        /|\\",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |        /|\\",
-                               " |\\       /   ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        O*O ",
-                               " |         |  ",
-                               " |        /|\\",
-                               " |\\       / \\",
-                               " | \\         ",
-                               "--------------"}};
+                               "",
+                               "",
+                               "",
+                               "",
+                               "",
+                               "+------"}, 
+                              {"",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|    | ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /| ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /|\\",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /|\\",
+                               "|   /  ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /|\\",
+                               "|   / \\",
+                               "|      ",
+                               "+------"}};
  
 /* Hangman - Constructor for a new Hangman game being played on a channel
  * Original 17/09/2002 josullivan
@@ -313,6 +300,7 @@ void Hangman::nextPlayer(const String& why, bool withMatchNotify)
  */
 bool Hangman::getLevelData(unsigned int numChars)
 {
+   WordList wordList;
    String str;
 
    std::ifstream words("/usr/share/dict/words");
@@ -332,12 +320,15 @@ bool Hangman::getLevelData(unsigned int numChars)
       if(str.length() != numChars)
          continue;
 
-      // This will eventually be a random selection
-      word = str;
+      wordList.push_back(str);
       break;
    }
 
-   std::transform(word.begin(), word.end(), word.begin(), tolower_wrapper);
+   int id = 1+(int)(wordList.size() * rand() / (RAND_MAX+1.0));
+   word = wordList[id];
+
+   word.toLower();
+   //std::transform(word.begin(), word.end(), word.begin(), tolower_wrapper);
 
 //   for(int i = 0; i < tmpWord.length(); i++)
 //   {

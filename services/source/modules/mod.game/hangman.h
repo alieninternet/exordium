@@ -85,6 +85,9 @@ class Hangman : public ChannelGame {
    void showWord(const Exordium::User& player);
    void showHangman(const Exordium::User& player);
    
+   // Temporary list of words selected from
+   typedef std::vector <AISutil::String> WordList;
+
    // Function handlers
    EXORDI8_FUNC(parsePLAY);
    EXORDI8_FUNC(parseSTART);
