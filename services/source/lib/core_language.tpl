@@ -52,8 +52,8 @@ Kine::Languages::tagMap_type Exordium::Language::tagMap = {[+ FOR langtag +][+ I
       (sprintf "%s%s"
          (get "tagPrefix")
 	 (get "name")))
- +]" },[+ ENDIF +][+ ENDFOR +]
-   { 0 }
+ +]", 0 },[+ ENDIF +][+ ENDFOR +]
+   { 0, 0 }
 };
 [+ == h +]
 #ifndef _SOURCE_CORE_LANGUAGE_H_

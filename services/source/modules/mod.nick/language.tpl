@@ -52,8 +52,8 @@ Kine::Languages::tagMap_type Exordium::NickModule::Language::tagMap = {[+ FOR la
       (sprintf "%s%s"
          (get "tagPrefix")
 	 (get "name")))
- +]" },[+ ENDIF +][+ ENDFOR +]
-   { 0 }
+ +]", 0 },[+ ENDIF +][+ ENDFOR +]
+   { 0, 0 }
 };
 [+ == h +]
 #ifndef _SOURCE_MODULES_NICK_LANGUAGE_H_
