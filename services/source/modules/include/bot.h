@@ -7,18 +7,16 @@
 #ifndef __BOT_H_
 #define __BOT_H_
 
+#include "exordium/service.h"
+#include "exordium/services.h"
 #include "kineircd/str.h"
 
 # define BOT_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
 
 using Kine::String;
 
-#include "exordium/service.h"
 
-namespace Exordium {
-
-
-class Bot : public Service
+class Bot : public Exordium::Service
 {
 private:
   struct functionTableStruct
@@ -27,13 +25,17 @@ private:
     void BOT_FUNC ((*function));
   };
   static struct functionTableStruct const functionTable[];
-
-public:
-  Bot(void)
-	: Service()
+  const String myName;
+  void sendMessage(const String &to, const String &message)
 	{
-		std::cout << "Bot" << std::endl;
+		Exordium::Services::serviceNotice(message,myName,to);
+	}
+public:
+  Bot(const String &mn)
+	: myName(mn)
+	{
 	};
+
   ~Bot(void)
 	{
 		std::cout << "Dead Bot" << std::endl;
@@ -47,7 +49,5 @@ private:
 
 
 
-
-};
 
 #endif

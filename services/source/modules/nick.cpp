@@ -114,15 +114,19 @@ if(saccess>0 || oaccess>0)
 		String lemail = Nickname::getEmail(who);
 		String licq = Nickname::getICQ(who);
 		String lmsn = Nickname::getMSN(who);
+		String laim = Nickname::getAIM(who);
 		String lurl = Nickname::getURL(who);
+		String lyah = Nickname::getYAHOO(who);
 		String toa = "Nickname Information for \002"+who;
 		String tob = "Last host : \002"+lhost;
 		String toc = "Last identified : \002"+lid;
 		String tod = "Registered : \002"+lreg;
 		String toe = "Email : \002"+lemail;
 		String tof = "ICQ : \002"+licq;
-		String tog = "MSN/AIM : \002"+lmsn;
+		String tog = "MSN : \002"+lmsn;
+		String toi = "AIM : \002"+laim;
 		String toh = "URL : \002"+lurl;
+		String toj = "Yahoo! : \002"+lyah;
 		Services::serviceNotice(toa,"Nick",origin);
 		Services::serviceNotice(tob,"Nick",origin);
 		Services::serviceNotice(toc,"Nick",origin);
@@ -130,7 +134,9 @@ if(saccess>0 || oaccess>0)
 		Services::serviceNotice(toe,"Nick",origin);
 		Services::serviceNotice(tof,"Nick",origin);
 		Services::serviceNotice(tog,"Nick",origin);
+		Services::serviceNotice(toi,"Nick",origin);
 		Services::serviceNotice(toh,"Nick",origin);
+		Services::serviceNotice(toj,"Nick",origin);
 		return;
 	}
 }
@@ -140,14 +146,18 @@ String lid = Nickname::getLastID(who);
 String lreg = Nickname::getRegDate(who);
 String licq = Nickname::getICQ(who);
 String lmsn = Nickname::getMSN(who);
+String laim = Nickname::getAIM(who);
 String lurl = Nickname::getURL(who);
+String lyah = Nickname::getYAHOO(who);
 String toa = "Nickname Information Report (NON-STAFF) for \002"+who;
 String tob = "Last Host : \002<HIDDEN>";
 String toc = "Last Identified : \002"+lid;
 String tod = "Registered : \002"+lreg;
 String toe = "ICQ Number : \002"+licq;
-String tof = "MSN/AIM : \002"+lmsn;
+String tof = "MSN : \002"+lmsn;
+String toh = "AIM : \002"+laim;
 String tog = "URL : \002"+lurl;
+String toi = "Yahoo! : \002"+lyah;
 Services::serviceNotice(toa,"Nick",origin);
 Services::serviceNotice(tob,"Nick",origin);
 Services::serviceNotice(toc,"Nick",origin);
@@ -155,6 +165,8 @@ Services::serviceNotice(tod,"Nick",origin);
 Services::serviceNotice(toe,"Nick",origin);
 Services::serviceNotice(tof,"Nick",origin);
 Services::serviceNotice(tog,"Nick",origin);
+Services::serviceNotice(toh,"Nick",origin);
+Services::serviceNotice(toi,"Nick",origin);
 
 }
 /* Set */
@@ -229,7 +241,7 @@ NICK_FUNC (Nick::parseSET)
 		}
 		String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin+"'";
 		Sql::query(query);
-		String togo = "MSN/AIM has been changed to \002"+value;
+		String togo = "MSN has been changed to \002"+value;
 		Services::serviceNotice(togo,"Nick",origin);
 		Services::log(origin,"Nick","Changed MSN address to "+value);
 		return;
@@ -243,11 +255,27 @@ NICK_FUNC (Nick::parseSET)
 			Services::serviceNotice(togo,"Nick",origin);
 			return;
 		}
-		String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin+"'";
+		String query = "UPDATE nicks set aim='"+value+"' WHERE nickname='"+origin+"'";
 		Sql::query(query);
-		String togo = "MSN/AIM has been changed to \002"+value;
+		String togo = "AIM has been changed to \002"+value;
 		Services::serviceNotice(togo,"Nick",origin);
 		Services::log(origin,"Nick","Changed AIM address to "+value);
+		return;
+	}
+
+	if(command=="yahoo")
+	{
+		if(value=="")
+		{
+			String togo = "Usage is /msg Nick set yahoo! handle";
+			Services::serviceNotice(togo,"Nick",origin);
+			return;
+		}
+		String query = "UPDATE nicks set yahoo='"+value+"' WHERE nickname='"+origin+"'";
+		Sql::query(query);
+		String togo = "Yahoo! has been changed to \002"+value;
+		Services::serviceNotice(togo,"Nick",origin);
+		Services::log(origin,"Nick","Changed Yahoo! address to "+value);
 		return;
 	}
 
@@ -510,15 +538,13 @@ NICK_FUNC (Nick::parseIDENTIFY)
 			origin + "'";
 		Sql::query(String(query));
 		Nickname::modeIdentify(origin);
-		Services::serviceNotice(String("You have been successfully identified to services"),"Nick",origin);
-		Services::serviceNotice(String("Unlike some other networks, we do not require you to change"),"Nick",origin);
-		Services::serviceNotice(String("Your password every 2 days,because we actually store our clients passwords"),"Nick",origin);
-		Services::serviceNotice(String("in a secure method - Have a good day! :-)"),"Nick",origin);
 		Nickname::updateLastID(origin);
 		String temp1 = Nickname::getHost(origin);
 		String temp2 = Nickname::getIdent(origin);
 		String togo = String(temp2)+"@"+String(temp1);
 		Nickname::updateHost(origin,togo);
+		String tosend = "You have been successfully identified to services as the nickname \002"+origin+"\002(\002"+togo+"\002)";
+		Services::serviceNotice(tosend,"Nick",origin);
 		return;
 	}
 	Services::serviceNotice(String("\002Incorrect\002 Password"),"Nick",origin);

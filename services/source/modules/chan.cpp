@@ -119,7 +119,15 @@ CHAN_FUNC (Chan::parseINFO)
 	}
 	int cid = Channel::getChanID(channel);
 	String nowner = Channel::getChanOwner(cid);
-	
+	String ntotal = Channel::getChanCount();
+	String nuniq = String::convert(Channel::getChanID(channel));
+	String nnuniq = String::convert(Channel::getOnlineChanID(channel));
+	String toa = "Channel Information for \002"+channel;
+	String tob = "Owner : "+nowner;
+	String toc = "Unique IDS: "+nuniq+"/"+nnuniq;
+	Services::serviceNotice(toa,"Chan",origin);
+	Services::serviceNotice(tob,"Chan",origin);
+	Services::serviceNotice(toc,"Chan",origin);	
 }
 void
 CHAN_FUNC (Chan::parseADDUSER)

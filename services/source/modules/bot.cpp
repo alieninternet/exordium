@@ -6,6 +6,7 @@
 */
 
 #include "include/bot.h"
+
 #include "exordium/channel.h"
 #include "exordium/nickname.h"
 #include "exordium/service.h"
@@ -20,12 +21,8 @@ using Kine::StringTokens;
 using namespace Exordium;
 
 
-namespace Exordium {
-
 struct Bot::functionTableStruct const
   Bot::functionTable[] = {
-  {"quote", parseQUOTE},
-  {".quote", parseQUOTE},
   {"help", parseHELP},
   {0}
 };
@@ -84,10 +81,12 @@ BOT_FUNC (Bot::parseHELP)
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   return new Module("bot", new Bot());
+	Services::registerService(name,name,"ircdome.org", "+dz",
+					"Bot Interface to Services");
+	Services::serviceJoin(name,"#Debug");
+	return new Module("bot",new Bot(name));
 }
 
 
 
-};
 

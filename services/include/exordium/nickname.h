@@ -47,6 +47,8 @@ namespace Exordium {
   		static void setLanguage(String const &,String const &);
   		static String getICQ (String const &nick);
   		static String getMSN (String const &nick);
+  		static String getYAHOO (String const &nick);
+  		static String getAIM (String const &nick);
   		static String getURL (String const &nick);
   		static String getLanguage(String const &nick);
   		static String getEmail (const String & nick);

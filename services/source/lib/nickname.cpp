@@ -421,6 +421,22 @@ return String("");
 }
 
 String
+Nickname::getYAHOO(String const &nick)
+{
+String query = "SELECT yahoo from nicks where nickname='" + nick + "'";
+MysqlRes res = Sql::query(query);
+MysqlRow row;
+while ((row = res.fetch_row()))
+        {
+        String temp = ((std::string) row[0]).c_str();
+        return temp;
+        
+        }
+return String("");
+}
+
+
+String
 Nickname::getAIM(String const &nick)
 {
 String query = "SELECT aim from nicks where nickname='" + nick + "'";
