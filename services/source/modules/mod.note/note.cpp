@@ -35,9 +35,6 @@ using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium;
 
-namespace Exordium
-{
-
    struct Note::functionTableStruct const
      Note::functionTable[] =
      {
@@ -265,5 +262,5 @@ namespace Exordium
 				 getConfigData().getDescription());
 	services->serviceJoin(getName(),"#Debug");
      }
-}
+
 

@@ -36,9 +36,6 @@ using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium;
 
-namespace Exordium
-{
-
    struct Vote::functionTableStruct const
      Vote::functionTable[] =
      {
@@ -89,7 +86,6 @@ namespace Exordium
       "Voting Service",
 	0, 0
    };
-};
 
 
 // Start the service

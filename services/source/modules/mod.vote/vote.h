@@ -34,7 +34,6 @@
 #include <exordium/service.h>
 #include <exordium/services.h>
 
-namespace Exordium {
 
 class Vote : public Service
 {
@@ -72,7 +71,6 @@ public:
 private:
 void VOTE_FUNC (parseHELP);
 
-};
 };
 
 #endif

@@ -33,8 +33,8 @@
 
 using namespace Exordium;
 
-namespace
-{
+// This namespace is intentionally anonymous
+namespace {
    // Our special little classes, we need these so we can delete them later
    static Config *config = 0;
    static Log *logger = 0;
@@ -116,7 +116,7 @@ namespace
 	  &moduleStart,
 	  &moduleStop
      };
-}; // namespace
+}; // namespace {anonymous}
 
 // called when the module is initially loaded
 KINE_MODULE_INIT

@@ -36,8 +36,6 @@ using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium;
 
-namespace Exordium
-{
 
    struct Stats::functionTableStruct const
      Stats::functionTable[] =
@@ -89,7 +87,6 @@ namespace Exordium
       "Statistics Service",
 	0, 0
    };
-};
 
 
 // Start the service

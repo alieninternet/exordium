@@ -33,8 +33,6 @@
 #include <exordium/service.h>
 #include <exordium/services.h>
 
-namespace Exordium {
-
 class Note : public Exordium::Service
 {
 private:
@@ -83,20 +81,4 @@ public:
   void NOTE_FUNC (parseDEL);
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-};
 #endif
