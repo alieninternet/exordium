@@ -120,9 +120,6 @@ namespace Exordium {
       int getAccess(AISutil::String &, AISutil::String &);
       void shutdown(const AISutil::String &);
       
-      // This should be in the GAME MODULE
-      AISutil::String getQuote(int const &number);
-      
       void AddOnlineServer(AISutil::String const &, AISutil::String const &, 
 			   AISutil::String const &);
       void DelOnlineServer(AISutil::String const &);

@@ -94,9 +94,6 @@ namespace Exordium {
       virtual int getAccess(AISutil::String &, AISutil::String &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;
       
-      // This should be in the GAME MODULE
-      virtual AISutil::String getQuote(int const &number) = 0;
-      
       virtual void AddOnlineServer(AISutil::String const &,
 				   AISutil::String const &, 
 				   AISutil::String const &) = 0;

@@ -208,12 +208,19 @@ GAME_FUNC(Module::handleQUOTE)
    }
    
    
-   int j;   
+   int j;
   
    String numb = String::convert(services->getDatabase().dbCount("fortunes"));
    j = services->random(numb.toInt());
-   
-   String thequote = services->getQuote(j);
+
+   // Grab the quote
+   if (services->getDatabase().dbSelect("body", "fortunes", 
+					"id='" + String::convert(j) + 
+					"'") < 1) {
+      return; // eek
+   }
+
+   String thequote = services->getDatabase().dbGetValue();
    StringTokens st (thequote);
    bool more = false;
    more = st.hasMoreTokens();

@@ -416,21 +416,6 @@ bool ServicesInternal::handleInput (void)
 	return true;
      };
 
-/* getQuote(int)
- *
- * This proberly doesn't belong here...
- *
- * It fetches a quote from the database for the Game:: module
- *
- */
-
-   String ServicesInternal::getQuote(int const &number)
-     {
-        if( database.dbSelect("body", "fortunes", "id='"+String::convert(number)+"'") < 1 )
-           return "";
-        else
-           return database.dbGetValue();
-     }
 
 /* shutdown(String)
  *

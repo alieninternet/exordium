@@ -60,7 +60,6 @@ const Module::moduleInfo_type Module::moduleInfo = {
 // Our command table for directly sent commands (commands must be lower-case)
 const Module::commandTable_type Module::directCommandTable[] =
 {
-     { "quote",         &Module::handleQUOTE },
      { "help",          &Module::handleHELP },
      { "balance",       &Module::handleBALANCE },
      { 0, 0 }
@@ -70,7 +69,6 @@ const Module::commandTable_type Module::directCommandTable[] =
 // Our command table for channel commands (commands must be lower-case)
 const Module::commandTable_type Module::channelCommandTable[] =
 {
-     { "quote",         &Module::handleQUOTE },
      { 0, 0 }
 };
 
@@ -132,46 +130,6 @@ CREDITS_FUNC(Module::handleHELP)
 {
    services->doHelp(origin, getName(), line.nextToken(),
 		    line.nextToken());
-}
-
-
-/* handleQUOTE - Parse the QUOTE command
- * Original 13/07/2002 james
- * Note: Mess :(
- */
-CREDITS_FUNC(Module::handleQUOTE) 
-{
-   return; // eek
-   
-   String chan = "";
-   if(chan != "") {
-      chan = channel;
-   } else {
-      chan = line.nextToken();
-   }
-   
-   if(channel == "") {
-      origin.sendMessage("Usage: quote #channel", getName());
-      return;
-   }
-   
-   
-   int j;   
-  
-   String numb = String::convert(services->getDatabase().dbCount("fortunes"));
-   j = services->random(numb.toInt());
-   
-   String thequote = services->getQuote(j);
-   StringTokens st (thequote);
-   bool more = false;
-   more = st.hasMoreTokens();
-   
-   while (more == true) {
-      String tq = st.nextToken('\n');
-      services->servicePrivmsg(tq, getName(), chan);
-      more = st.hasMoreTokens();
-   }
-   
 }
 
 

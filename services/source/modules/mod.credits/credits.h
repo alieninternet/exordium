@@ -69,7 +69,6 @@ namespace Exordium {
 	 Exordium::Bank bank;
 	 
 	 handler_type handleHELP;
-	 handler_type handleQUOTE;
 	 handler_type handleBALANCE;
    
        public:
