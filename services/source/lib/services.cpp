@@ -220,6 +220,14 @@ Services::Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c)
    channel(*this),
    ircdome(*this)
 {
+   sock = -1;
+   maxSock = -1;
+   inputBufferPosition = 0;
+   stopTime = 0;
+   connected = false;
+   stopping = false;
+   burstOk = false;
+   SecurePrivmsg = false;
    logger.logLine("Setting up signal handlers");
    getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
    getDaemon().getSignals().addHandler(&Death,
