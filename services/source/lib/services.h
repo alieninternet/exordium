@@ -218,8 +218,7 @@ namespace Exordium {
 	   queueAdd ("NICK " + nick + " 1 " + 
 		     AISutil::String::convert(currentTime) + " +o " + user + 
 		     " " + host + " " + Kine::config().getOptionsServerName() +
-		     " " + Kine::config().getOptionsServerName() + 
-		     " 0 1 :" + realname);
+		     " 0 0 :" + realname);
         }; 
       
       void serviceJoin(AISutil::String const &service,

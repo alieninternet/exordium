@@ -1,5 +1,6 @@
 #!/usr/local/bin/php -q
 <?
+set_time_limit(0);
 $mnick = "cloneymaster";
 $uplink = "172.18.200.5";
 $uport = 6667;
@@ -45,8 +46,8 @@ if(!fp) {
     msg($mnick,$fp,$chan,"Giggle! What Shall i Do?");
     while (!feof($fp)) {
 	$goaway = fgets($fp,128);
-	usleep(10000);
-//	sleep(1);
+//	usleep(10000);
+	sleep(1);
 	$choice = rand(1,5);
 	//Firstly iterate over our clients and fgets their sockets
 	$i = 1;

@@ -412,7 +412,7 @@ CHAN_FUNC (Module::parseBAN)
 	return;
      }
    String who = tokens.nextToken();
-   String reason = tokens.rest();
+   String const reason = tokens.rest();
    if(who=="" | reason=="")
      {
 	origin.sendMessage("Usage: ban #channel nickname reason here",getName());
@@ -424,10 +424,11 @@ CHAN_FUNC (Module::parseBAN)
 	origin.sendMessage("Error: Cannot find that user",getName());
 	return;
      }
-   
-	
-
+   ptr->ban(*uptr,getName(),reason);
+   origin.sendMessage("Ban added",getName());
 }
+
+
 
 CHAN_FUNC (Module::parseREGISTER)
 {
@@ -503,8 +504,6 @@ CHAN_FUNC (Module::parseOP)
 	  {
 	     String foo = tokens.nextToken();
 	     User *fptr = services->findUser(foo);
-	     if(fptr==0)
-	       return;
 	     if(foo=="")
 	       {
 		  if(!ptr->isOp(origin.getNickname()))
@@ -516,6 +515,9 @@ CHAN_FUNC (Module::parseOP)
 		    }
 		  return;
 	       }
+             if(fptr==0)
+	       return;
+	     
 	     if(!ptr->isOp(foo))
 	       {
 		  ptr->mode("Chan","+o",foo);

@@ -696,16 +696,17 @@ void
 void
   PARSER_FUNC (Parser::parseKILL)
 { 
-  String reason = tokens.nextColonToken();
-  int oid = services.locateID(OLDorigin);
-  if(services.isOper(OLDorigin))
-     services.delOper(OLDorigin);
+  String who = tokens.nextToken();
+  String reason = tokens.rest();
+  int oid = services.locateID(who);
+  if(services.isOper(who))
+     services.delOper(who);
    
-  services.delUser(OLDorigin);
+  services.delUser(who);
    
   services.getDatabase().dbDelete("nicksidentified","nick='"+String::convert(oid)+"'");
-  if(services.isNickRegistered(OLDorigin))
-     services.getDatabase().dbUpdate("nicks","quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
+  if(services.isNickRegistered(who))
+     services.getDatabase().dbUpdate("nicks","quitmsg='"+reason+"'", "nickname='"+who+"'");
 
 
 }

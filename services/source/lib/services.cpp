@@ -403,9 +403,9 @@ bool ServicesInternal::connect (void)
 
 /* *Whistles* Config option */
 /* Whistle all you want, its done :c */
-   queueAdd ("PASS "+config.getUplinkPass()+" :TS7");
-   queueAdd ("CAPAB TS3 NOQUIT SSJOIN BURST UNCONNECT HIDENAME NICKIP SERVICE");
-   //queueAdd ("MYID 1");
+   queueAdd ("PASS "+config.getUplinkPass()+" :TS");
+   queueAdd ("SVINFO 3 3 0 :"+String::convert(currentTime));
+   queueAdd ("CAPAB TS3 SSJOIN NICKIP NOQUIT");
 
    /* Jesus, so many hard coded stuff :( */
 /* It's okay, all the server connection stuff has a very very very limited
@@ -413,14 +413,12 @@ bool ServicesInternal::connect (void)
  */
    queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
 	     Kine::config().getOptionsDescription());
-   queueAdd ("MYID 1");
    // Do we have an underling?
    if (!config.getUnderlingHostname().empty())
      {
 	queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
      }
 
-   queueAdd ("SVINFO 7 3 0 :"+String::convert(currentTime));
    queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
    queueAdd ("BURST");
    //	queueFlush();
@@ -434,10 +432,6 @@ bool ServicesInternal::connect (void)
 	registerService(config.getConsoleName(), config.getConsoleName(),
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
-	// I smell a configuration variable.. *sniff sniff* can you?
-	// serviceJoin(config.getConsoleName(), config.getConsoleChan());
-	mode(config.getConsoleName(),config.getConsoleChan(),"+O",config.getConsoleName());
-	//setMode(config.getConsoleName(),"+oz");
      }
    connected = true;
    queueAdd ("BURST 0");
@@ -899,7 +893,7 @@ void ServicesInternal::checkpoint(void)
 	     String msg = "Non-Identification: Your nickname is now being changed";
 	     serviceNotice(msg,"Nick",tomod);
 	     queueAdd(":" + Kine::config().getOptionsServerName() +
-		      " MODNICK " + tomod + " " + newnick + " :0");
+		      " SVSNICK " + tomod + " " + newnick + " :0");
 	     //		    setNick(*ptr,newnick);
 	     //		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 	  }

@@ -198,8 +198,14 @@ void const dChan::kick(String const &service,String const &nick,String const &re
    
 }
 
-void const dChan::ban(User &user, String const &reason)
+void const dChan::ban(User &user, String const &service, String const &reason)
 {
-//String host = user->getHost();
+String host = user.getHost();
+int expire = services.currentTime + 3600;
+services.queueAdd(":"+service+" MODE "+name+" +b *!*@"+host);
+//String query = "'','"+String::convert(getRegisteredID())+"','"+host+"',NOW(),'"+String::convert(expire)+"','"+reason"'";
+//services.getDatabase().dbInsert("chanbans",query);
+services.serviceKick(name,user.getNickname(),reason);
+
    
 }
