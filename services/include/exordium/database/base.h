@@ -29,28 +29,25 @@
 #ifndef _INCLUDE_EXORDIUM_DATABASE_BASE_H_
 # define _INCLUDE_EXORDIUM_DATABASE_BASE_H_ 1
 
-#include <aisutil/string/string.h>
+#include <kineircd/str.h>
 
 
 namespace Exordium {
 
-   class Config;
-   
   /*
    * Base class for all SQL servers
    *
    *
    */
-  class CBase
+  class SqlBase
   { 
     public:
-      CBase(Config& c)
-       : connected(false),
-         config(c)
+      SqlBase()
+       : connected(false)
        {};
 
       // Virtual destructor
-      virtual ~CBase(void) {}
+      virtual ~SqlBase(void) { isEOF=true; }
 
       virtual void dbConnect(void)=0;
       virtual void dbDisconnect(void)=0;
@@ -61,7 +58,21 @@ namespace Exordium {
 
       virtual void dbSelectDB(AISutil::String const &dbName)=0;
 
-      virtual int dbQuery(AISutil::String const &query)=0;
+      virtual void dbSelect(AISutil::String const &fields, AISutil::String const &table)=0;
+      virtual void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs)=0;
+      virtual void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs)=0;
+
+      virtual void dbCount(AISutil::String const &table)=0;
+      virtual void dbCount(AISutil::String const &table, AISutil::String const &whereargs)=0;
+
+      virtual void dbInsert(AISutil::String const &table,  AISutil::String const &values)=0;
+
+      virtual void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs)=0;
+
+      virtual void dbDelete(AISutil::String const &table, AISutil::String const &whereargs)=0;
+      virtual void dbDelete(AISutil::String const &table)=0;
+
+      virtual void dbQuery(AISutil::String const &query)=0;
 
       virtual AISutil::String dbGetValue(void)=0;
       virtual AISutil::String dbGetValue(int field)=0;
@@ -73,7 +84,13 @@ namespace Exordium {
       virtual void dbLock(AISutil::String const &table)=0;
       virtual void dbUnlock(void)=0;
 
+      virtual bool eof(void)=0;
+      virtual int dbResults(void)=0;
+      virtual int dbNbCols(void)=0;
 
+      virtual void getFieldNames(AISutil::String const &table)=0;
+
+      virtual int affectedRows(void);
 
       // Are we connected?
       bool isConnected(void) const
@@ -81,13 +98,12 @@ namespace Exordium {
 
     protected:
       bool connected;
-      Config &config;
+      bool isEOF;
 
-  }; // class CBase
+  }; // class SqlBase
 
 }; // namespace Exordium
 
-# include <exordium/config.h>
 
 
 #endif // _INCLUDE_EXORDIUM_DATABASE_BASE_H_
