@@ -23,34 +23,46 @@
 digraph intranet_map {
   graph [splines=true,overlap=false];
   node [style=filled];
+  decorate=true;
 
   // Binaries
   node [shape=box,color=indianred1];
-  "KineIRCd"
+  {  rank=min;
+     "KineIRCd";
+  };
   
-  // Libraries
-  node [shape=diamond,color=lightblue];
-  "libais";
-  "libdl";
-  "libkineircd";
-  "libmysqlclient";
-  "libpq"; // postgresql
-  "libservices";
-  "libsnmp";
-  "libssl";
-  "libxml2";
+  // External/System Libraries
+//  subgraph "syslibs" {
+//     label="External/System Libraries";
+//     color=black;
+  
+     node [shape=diamond,color=lightblue];
+     "libais";
+     "libdl";
+     "libmysqlclient";
+     "libpq"; // postgresql
+     "libsnmp";
+     "libssl";
+     "libxml2";
+//  };
 
+  // KineIRCd library
+  node [shape=diamond,color=lightblue];
+  "libkineircd";
+  
   // KineIRCd module libraries
   node [shape=diamond,color=lightblue];
   "libkineircd_irc2";
 
   // KineIRCd modules
   node [shape=ellipse,color=lightgoldenrod];
-  "mod_http";
-  "mod_iirc1";
-  "mod_irc2server";
-  "mod_irc2user";
-  "mod_snmp";
+  {  rank=same;
+     "mod_http";
+     "mod_iirc1";
+     "mod_irc2server";
+     "mod_irc2user";
+     "mod_snmp";
+  };
 
   // Linkage map
   "KineIRCd" -> "libais";
@@ -84,18 +96,24 @@ digraph intranet_map {
      node [shape=ellipse,color=lightgoldenrod];
      "mod_exordium";
   
+     // Exordium library
+     node [shape=diamond,color=lightblue];
+     "libexordium";
+  
      // Exordium modules
      node [shape=ellipse,color=palegreen];
-     "mod_bot.so";
-     "mod_chan.so";
-     "mod_game.so";
-     "mod_love.so";
-     "mod_nick.so";
-     "mod_note.so";
-     "mod_oper.so";
-     "mod_serv.so";
-     "mod_stats.so";
-     "mod_vote.so";
+     {  rank=same;
+        "mod_bot.so";
+        "mod_chan.so";
+        "mod_game.so";
+        "mod_love.so";
+        "mod_nick.so";
+        "mod_note.so";
+        "mod_oper.so";
+        "mod_serv.so";
+        "mod_stats.so";
+        "mod_vote.so";
+     };
 
      // Exordium module libraries
      node [shape=diamond,color=lightblue];
@@ -103,30 +121,32 @@ digraph intranet_map {
 
      // Exordium game module modules
      node [shape=ellipse,color=turquoise];
-     "game_exordi8.so";
-     "game_hangman.so";
+     {  rank=same;
+        "game_exordi8.so";
+        "game_hangman.so";
+     };
 
      // Linkage map..
      "mod_exordium" -> "libais";
      "mod_exordium" -> "libdl";
-     "mod_exordium" -> "libservices";
-     "libservices" -> "libais";
-     "libservices" -> "libkineircd";
-     "libservices" -> "libmysqlclient" [style=dashed];
-     "libservices" -> "libpq" [style=dashed];
-     "libservices" -> "mod_bot.so" [color=blue,dir=both];
-     "libservices" -> "mod_chan.so" [color=blue,dir=both];
-     "libservices" -> "mod_game.so" [color=blue,dir=both];
-     "libservices" -> "mod_love.so" [color=blue,dir=both];
-     "libservices" -> "mod_nick.so" [color=blue,dir=both];
-     "libservices" -> "mod_note.so" [color=blue,dir=both];
-     "libservices" -> "mod_oper.so" [color=blue,dir=both];
-     "libservices" -> "mod_serv.so" [color=blue,dir=both];
-     "libservices" -> "mod_stats.so" [color=blue,dir=both];
-     "libservices" -> "mod_vote.so" [color=blue,dir=both];
+     "mod_exordium" -> "libexordium";
+     "libexordium" -> "libais";
+     "libexordium" -> "libkineircd";
+     "libexordium" -> "libmysqlclient" [style=dashed];
+     "libexordium" -> "libpq" [style=dashed];
+     "libexordium" -> "mod_bot.so" [color=blue,dir=both];
+     "libexordium" -> "mod_chan.so" [color=blue,dir=both];
+     "libexordium" -> "mod_game.so" [color=blue,dir=both];
+     "libexordium" -> "mod_love.so" [color=blue,dir=both];
+     "libexordium" -> "mod_nick.so" [color=blue,dir=both];
+     "libexordium" -> "mod_note.so" [color=blue,dir=both];
+     "libexordium" -> "mod_oper.so" [color=blue,dir=both];
+     "libexordium" -> "mod_serv.so" [color=blue,dir=both];
+     "libexordium" -> "mod_stats.so" [color=blue,dir=both];
+     "libexordium" -> "mod_vote.so" [color=blue,dir=both];
      "libexordium_game" -> "libais";
      "libexordium_game" -> "libdl";
-     "libexordium_game" -> "libservices";
+     "libexordium_game" -> "libexordium";
      "libexordium_game" -> "game_exordi8.so" [color=blue,dir=both];
      "libexordium_game" -> "game_hangman.so" [color=blue,dir=both];
      "mod_bot.so" -> "libais";
