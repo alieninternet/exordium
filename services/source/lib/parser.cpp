@@ -326,7 +326,7 @@ void
 void PARSER_FUNC (Parser::parseN)
 {
    
-   if(tokens.countTokens() < 11)
+   if(tokens.countTokens() < 9)
      {
 /* Client Nickname Change */
 	String tempString = OLDorigin.trim().IRCtoLower();	
@@ -335,7 +335,7 @@ void PARSER_FUNC (Parser::parseN)
 	  {
 	     services.logLine("Parser::parseN Something fucked going on.. can't find a struct for the user " + tempString);
 	     services.logLine("Parser::parseN This is a bad error, should be able to find any user on a parm<11 count");
-	     exit(1); // Ouch!!!! but needed to catch the error.
+	     return;
 	  }
 	
         String newnick=tokens.nextToken().trim();
@@ -677,8 +677,17 @@ void
 
 void
   PARSER_FUNC (Parser::parseKILL)
-{
-
+{ 
+  String reason = tokens.nextColonToken();
+  int oid = services.locateID(OLDorigin);
+  if(services.isOper(OLDorigin))
+     services.delOper(OLDorigin);
+   
+  services.delUser(OLDorigin);
+   
+  services.getDatabase().dbDelete("nicksidentified","nick='"+String::convert(oid)+"'");
+  if(services.isNickRegistered(OLDorigin))
+     services.getDatabase().dbUpdate("nicks","quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
 
 
 }
@@ -689,9 +698,11 @@ void
 {
    User *origin = services.findUser(OLDorigin);
 
-   origin->sendMessage("AddANiceMessageHereWithVersionEtc",
+   
+   origin->sendMessage("Exordium Network Services - (c)2002,2003 Exordium Development Team",
 		       Kine::config().getOptionsServerName(),
 		       false);
+   origin->sendMessage("Please see http://sf.net/projects/exordium for details on the project",Kine::config().getOptionsServerName(),false);
 }
 
 

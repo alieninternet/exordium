@@ -48,12 +48,7 @@ namespace Exordium {
      void const addUser(Exordium::User &ptr, const int &status);
      /* delUser - delete's a user from a channels member list */
      void const delUser(Exordium::User &ptr);
-     /* getCount() - return the number of people in our channel */
-     const int getCount();
-
-     /* Inline functions here please! */
-     const bool isRegistered(void) const
-        { return registered; };
+     int const getChanCount(void);
      const AISutil::String& getName(void) const
 	{ return name; };
 
@@ -75,7 +70,13 @@ namespace Exordium {
        */
       const AISutil::String getOnlineIDString(void) const
 	{ return AISutil::String::convert(onlineID); };
-
+      const int getRegisteredID(void);
+      const bool isRegistered(void);
+      const int getAccess(AISutil::String const &);
+      const void setChanLog(bool const &);
+      const void sendBans(AISutil::String &,AISutil::String const &);
+      const AISutil::String getOwner(void);
+      const int getCount(void);
       dChan(AISutil::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..

@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
@@ -33,7 +33,7 @@
 #include <exordium/channel.h>
 #include <kineircd/str.h>
 #include <kineircd/config.h>
-
+#include <exordium/dchan.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -119,29 +119,18 @@ CHAN_FUNC (Module::parseCOMMANDS)
 {
 
   String::size_type lineLength = 200;
-
-   // Send the banner (this shouldn't be hard-coded)
-  // sendMessage(origin, "Command list for " + getName() + ":");
-origin.sendMessage("Command list for " + getName() + ":",getName());
-   // Start formulating the data..
-   std::ostringstream list(" -=>");
-   for (int i = 0; functionTable[i].command != 0; i++) {
-      // Add the command to the list
-      list << " " << functionTable[i].command;
-
-   // How are we for size?
-      if (list.str().length() >= lineLength) {
-         // Dump it and reset the string stream thingy
-         origin.sendMessage(list.str(),getName());
+  origin.sendMessage("Command list for " + getName() + ":",getName());
+  std::ostringstream list(" -=>");
+  for (int i = 0; functionTable[i].command != 0; i++) {
+     list << " " << functionTable[i].command;
+     if (list.str().length() >= lineLength) {
+          origin.sendMessage(list.str(),getName());
          list.str() = " -=>";
       }
    }
-
-   // Anything left to send still?
    if (list.str().length() > 4) {
       origin.sendMessage(list.str(),getName());
    }
-  // Send the footer (this shouldn't be hard-coded)
    origin.sendMessage("End of command list",getName());
 
 
@@ -150,22 +139,8 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 
   CHAN_FUNC (Module::parseSEEN)
 {
-   String channel = "";
-   if(!chan.empty())
-     {
-	channel = chan;
-     }
-   
-   else
-   {
-	channel = tokens.nextToken();
-     }
-   if(channel.empty())
-     {
-	origin.sendMessage("Usage: seen #channel nickname",getName());
-	return;
-     }
-
+   origin.sendMessage("This command is disabled",getName());
+   return;
 }
 
 
@@ -187,7 +162,14 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
      }
    String command = tokens.nextToken();
    String value = tokens.nextToken();
-   if(!services->getChannel().isChanRegistered(channel))
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Could not locate that channel",getName());
+	return;
+     }
+   
+   if(!ptr->isRegistered())
      {
         origin.sendMessage("Error: That channel is not registered",getName());
 	return;
@@ -197,36 +179,32 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    bool more = st.hasMoreTokens();
    while(more==true)
      {
-
 	String currnick  = st.nextToken();
-	if((services->getChannel().getChanAccess(channel,currnick)>400))
+	if((ptr->getAccess(currnick)>400))
 	  {
 	     if(command=="log")
 	       {
 		  if(value=="true")
 		    {
-		       services->getChannel().setChanLog(channel,true);
+		       ptr->setChanLog(true);
 		       origin.sendMessage("Channel logs have been enabled, the owner will receive a nightly email from this channel",getName());
 		       return;
 		    }
 		  if(value=="false")
 		    {
-		       services->getChannel().setChanLog(channel,false);
+		       ptr->setChanLog(false);
 		       origin.sendMessage("Channel logs have been disabled",getName());
 		       return;
 		    }
-		  origin.sendMessage("Value must be true or false",getName());
+		  origin.sendMessage("Usage: set #channel log true/false",getName());
 		  return;
-
-	       }
-	     origin.sendMessage("Unsupported command",getName());
+	       } // /LOG
+	     origin.sendMessage("Unsupported channel option",getName());
 	     return;
-
 	  }
-
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage("You do not have enough access for that command",getName());
+   origin.sendMessage("You do not have enough access for that command in this channel",getName());
    return;
 }
 
@@ -245,34 +223,23 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 
    if(channel.empty())
      {
-	origin.sendMessage("\002[\002Incorrect Command Usage\002]\002 Usage: listban #channel",getName());
+	origin.sendMessage("Usage: listban #channel",getName());
 	return;
      }
-   if(!services->getChannel().isChanRegistered(channel))
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
      {
-	origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",getName());
+	origin.sendMessage("Error: I cannot find that channel",getName());
 	return;
      }
-   int tid = services->getChannel().getChanID(channel);
-   origin.sendMessage("\002[\002Ban List\002]\002 for \002"+channel,getName());
-
-   int nbRes = services->getDatabase().dbSelect("*", "chanbans", "chan='"+String::convert(tid)+"'");
-
-   int j=0;
-   for (int i=0; i<nbRes; i++)
+   
+   if(!ptr->isRegistered())
      {
-	j++;
-	String mask = services->getDatabase().dbGetValue(2);
-	String setby = services->getDatabase().dbGetValue(3);
-	String seton = services->getDatabase().dbGetValue(4);
-	String expireon = services->getDatabase().dbGetValue(5);
-	String reason = services->getDatabase().dbGetValue(6);
-	String tosend = "\002[\002"+String::convert(j)+"\002]\002 Mask \002"+mask+"\002 SetBy \002"+setby+"\002 Date \002"+seton+"\002 Expires \002"+expireon+"\002 Reason \002"+reason+"\002";
-	origin.sendMessage(tosend,getName());
-        services->getDatabase().dbGetRow();
+	origin.sendMessage("Error: Channel not registered",getName());
+	return;
      }
-
-   origin.sendMessage("\002[\002Ban List\002]\002 Finished",getName());
+    String tempnick = origin.getNickname();
+    ptr->sendBans(tempnick,getName());
 }
 
   CHAN_FUNC (Module::parseINFO)
@@ -289,25 +256,24 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 
    if(channel.empty())
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: info #channel",getName());
+	origin.sendMessage("Usage: info #channel",getName());
 	return;
      }
-   if(!services->getChannel().isChanRegistered(channel))
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
      {
-        origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",getName());
+	origin.sendMessage("Error: That channel does not exist",getName());
 	return;
      }
-   int cid = services->getChannel().getChanID(channel);
-   String nowner = services->getChannel().getChanOwner(cid);
-   String ntotal = services->getChannel().getChanCount();
-   String nuniq = String::convert(services->getChannel().getChanID(channel));
-   String nnuniq = String::convert(services->getChannel().getOnlineChanID(channel));
-   String toa = "\002[\002Channel Information\002]\002 for \002"+channel;
-   String tob = "Owner : "+nowner;
-   String toc = "Unique IDS: "+nuniq+"/"+nnuniq;
-   origin.sendMessage(toa,getName());
-   origin.sendMessage(tob,getName());
-   origin.sendMessage(toc,getName());
+   
+   if(!ptr->isRegistered())
+     {
+        origin.sendMessage("Error: That channel is not registered",getName());
+	return;
+     }
+   origin.sendMessage("Channel Information for "+channel,getName());
+   origin.sendMessage("Owner : "+ptr->getOwner(),getName());
+   origin.sendMessage("Unique IDS : "+String::convert(ptr->getRegisteredID())+"/"+String::convert(ptr->getOnlineID()),getName());
 }
 
   CHAN_FUNC (Module::parseADDUSER)

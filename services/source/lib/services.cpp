@@ -95,7 +95,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
      String(sys_siglist[signal]) + "\002 - Initiating shutdown";
    ((Services *)foo)->logLine(reason, Log::Warning);
    ((Services *)foo)->shutdown(reason);
-//   exit(1); // eek
+   exit(1); /* Until kine's signal thingies are fixed :C */
 }
 
 /* Services run
@@ -754,8 +754,8 @@ return countRx;
     *
     * Figure out whether we should use the privmsg or
     * the notice interface to talk to a client.
-    *
     */
+   
 
    bool
      ServicesInternal::usePrivmsg (String const &nick)
@@ -773,6 +773,7 @@ return countRx;
           else
             return false;
        }
+
 
    void
      ServicesInternal::serviceKick(String const &chan, String const &nick, String const &reason)

@@ -49,8 +49,84 @@ services.getDatabase().dbDelete("chanstatus","chanid=" + getOnlineIDString() + "
 
 }
 
-int const dChan::getCount(void)
+int const dChan::getChanCount(void)
 {
 int nbRes = services.getDatabase().dbSelect("nickid","chanstatus","chanid='"+getOnlineIDString()+"'");
 return nbRes;
+}
+
+bool const dChan::isRegistered(void)
+{
+if (services.getDatabase().dbSelect("id","chans","name='"+name.toLower()+"'") < 1)
+     return false;
+if (services.getDatabase().dbGetValue().toInt() > 0)
+     return true;
+   else
+     return false;
+}
+
+int const dChan::getAccess(String const &who)
+{
+     if(services.getDatabase().dbSelect("access","chanaccess",
+				      "chanid='"+String::convert(onlineID)+"' AND nickid='"
+				      +String::convert(services.getRegisteredNickID(who))+"'") < 1)
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
+}
+
+void const dChan::setChanLog(bool const &value)
+{
+if(value)
+     {
+	services.getDatabase().dbDelete("chanopts", "'"+name.toLower()+"' AND clog=1");
+	services.getDatabase().dbInsert("chanopts", "'','" + name.toLower()+"',1");
+	return;
+     }
+   else
+     {
+	services.getDatabase().dbDelete("chanopts", "'"+name.toLower()+"' AND clog=1");
+	return;
+     }
+return;
+}
+
+int const dChan::getRegisteredID(void)
+{
+if (services.getDatabase().dbSelect("id","chans","name='"+name.toLower()+"'") < 1)
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
+}
+
+void const dChan::sendBans(String &dest, String const &from)
+{
+  User *ptr = services.findUser(dest);
+  if(ptr==0)
+     return;
+   ptr->sendMessage("Ban List for "+name,from);
+   int nbRes = services.getDatabase().dbSelect("*","chanbans","chan='"+String::convert(getRegisteredID())+"'");
+   for (int i=0; i<nbRes; i++)
+     {
+	ptr->sendMessage("["+String::convert(i)+"] Mask "+services.getDatabase().dbGetValue(2)+
+			 "SetBy "+services.getDatabase().dbGetValue(3)+
+			 "Date "+services.getDatabase().dbGetValue(4)+
+			 "Expires "+services.getDatabase().dbGetValue(5),from);
+	ptr->sendMessage("Reason "+services.getDatabase().dbGetValue(6),from);
+	services.getDatabase().dbGetRow();
+     }
+}
+
+String const dChan::getOwner(void)
+{
+   if(services.getDatabase().dbSelect("owner","chans","id='"+String::convert(getRegisteredID())+"'") < 1)
+     return "No Owner";
+   else
+     return services.getDatabase().dbGetValue();
+}
+
+int const dChan::getCount(void)
+{
+   return services.getDatabase().dbCount("chans");   
+   
 }
