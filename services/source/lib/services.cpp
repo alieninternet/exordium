@@ -780,6 +780,15 @@ void ServicesInternal::serviceJoin(AISutil::String const &service,
 	    " + :" + service);
 };
 
+bool
+  ServicesInternal::isServerConnected(String const &server)
+{
+   if(database.dbSelect("id","onlineservers","servername='"+server+"'") < 1 )
+     return false;
+   else
+     return true;
+}
+
    /* usePrivmsg(nick)
     *
     * Figure out whether we should use the privmsg or

@@ -250,7 +250,7 @@ namespace Exordium {
 		      AISutil::String const &);
       int getRequiredAccess(AISutil::String const &, AISutil::String const &);
       bool isNickRegistered(AISutil::String const &);
-      
+      bool isServerConnected(AISutil::String const &);
       // This should be in the NICK MODULE
       void modeIdentify(AISutil::String const &);
       void updateLastID(AISutil::String const &);
