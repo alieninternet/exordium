@@ -276,6 +276,22 @@ langtag = {
 };
 
 /*
+ * Tags for mod_credits
+ */
+ 
+langtag = {
+   name = "credits_BALANCE_current";
+   component = "mod_credits";
+   data_en = "Your current balance is %p0";
+};
+
+langtag = {
+   name = "credits_BALANCE_empty";
+   component = "mod_credits";
+   data_en = "Your account is empty";
+};
+
+/*
  * Tags for mod_chan
  */
 langtag = {

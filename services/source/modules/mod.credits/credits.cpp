@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
@@ -29,6 +29,7 @@
 #endif
 
 #include "credits.h"
+#include "language.h"
 
 #include <exordium/channel.h>
 #include <exordium/service.h>
@@ -139,10 +140,10 @@ CREDITS_FUNC(Module::handleBALANCE)
   int balance = bank.getBalance(origin);
   if(balance > 0)
   {
-    origin.sendMessage("Your current balance is " + balance, getNickname());
+    origin.sendMessage(GETLANG(credits_BALANCE_current,balance), getNickname());
   }
   else
   {
-    origin.sendMessage("Your account is empty", getNickname());
+    origin.sendMessage(GETLANG(credits_BALANCE_empty), getNickname());
   }
 }
