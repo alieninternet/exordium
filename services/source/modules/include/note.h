@@ -41,6 +41,9 @@ private:
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
    
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -50,12 +53,14 @@ private:
    
 public:
    Note(Exordium::Services& s, const LibAIS::String& mn)
-   : Exordium::Service(s, mn)
+   : Exordium::Service(s),
+       configData(moduleInfo.fullName, "somewhere.org", mn)
    {
    };
   ~Note(void) 
    {
 	std::cout << "YOU BASTARD, YOU KILLED NOTE" << std::endl;
+      // Hey, that was a little rude :(  -pickle
    };   
    // Start the module
    void start(void);
@@ -69,6 +74,12 @@ public:
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
+
+   // Return an appropriate instance of a configuration data class
+   const Exordium::Service::ConfigData& getConfigData(void) const
+     { return configData; };
+   Exordium::Service::ConfigData& getConfigData(void)
+     { return configData; };
    
   void NOTE_FUNC (parseSEND);
   void NOTE_FUNC (parseLIST);

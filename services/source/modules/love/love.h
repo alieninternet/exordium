@@ -45,6 +45,9 @@ class Love : public Exordium::Service {
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
    
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
+   
    /* Each command gets a little descriptor with the following parameters.
     * Note that in the future the padding field will be used, but for now
     * it is there to make the structure even (4x4 bytes) as processors like
@@ -67,12 +70,13 @@ class Love : public Exordium::Service {
 
    // How to send private-messages (stepping-stone)
    void sendMessage(Exordium::User& recipient, const LibAIS::String& message)
-     { recipient.sendMessage(message, myName); };
+     { recipient.sendMessage(message, getName()); };
    
  public:
    // Our constructor
    Love(Exordium::Services& s, const LibAIS::String& mn)
-     : Exordium::Service(s, mn)
+     : Exordium::Service(s),
+       configData(moduleInfo.fullName, "somewhere.org", mn)
      {};
 
    // Our destructor
@@ -97,6 +101,12 @@ class Love : public Exordium::Service {
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
+
+   // Return an appropriate instance of a configuration data class
+   const Exordium::Service::ConfigData& getConfigData(void) const
+     { return configData; };
+   Exordium::Service::ConfigData& getConfigData(void)
+     { return configData; };
 };
 
 #endif // __LOVE_H_

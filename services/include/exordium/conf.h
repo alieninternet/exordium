@@ -49,6 +49,8 @@ namespace Exordium {
 
       // 'MODULE' class/variable stuff
       Modules defModules;			// Loaded modules
+      static LIBAIS_CONFIG_CLASS_HANDLER(classHandleModule);
+      static LIBAIS_CONFIG_VARIABLE_HANDLER(varHandleModule);
       
       // 'SQL' class and variables
       static const LibAIS::ConfigParser::defTable_type defClassSql;

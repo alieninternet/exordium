@@ -44,6 +44,9 @@ class Bot : public Exordium::Service
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
    
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -53,11 +56,12 @@ class Bot : public Exordium::Service
 
   void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
-		services.serviceNotice(message,myName,to);
+		services.serviceNotice(message,getName(),to);
 	};
 public:
-  Bot(Exordium::Services& s, const LibAIS::String &mn)
-     : Exordium::Service(s, mn)
+   Bot(Exordium::Services& s, const LibAIS::String &mn)
+     : Exordium::Service(s),
+       configData(moduleInfo.fullName, "somewhere.org", mn)
        {};
 
   ~Bot(void)
@@ -79,6 +83,12 @@ public:
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
+
+   // Return an appropriate instance of a configuration data class
+   const Exordium::Service::ConfigData& getConfigData(void) const
+     { return configData; };
+   Exordium::Service::ConfigData& getConfigData(void)
+     { return configData; };
    
 private:
   void BOT_FUNC (parseHELP);

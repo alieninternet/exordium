@@ -107,7 +107,7 @@ void
 	     return;
 	  }
      }
-   origin.sendMessage("Unrecognized Command",myName);
+   origin.sendMessage("Unrecognized Command",getName());
 }
 void
   CHAN_FUNC (Chan::parseSEEN)
@@ -124,7 +124,7 @@ void
      }
    if(channel.empty())
      {
-	origin.sendMessage("Usage: seen #channel nickname",myName);
+	origin.sendMessage("Usage: seen #channel nickname",getName());
 	return;
      }
 
@@ -144,14 +144,14 @@ void
      }
    if(channel.empty())
      {
-	origin.sendMessage("Usage: set #channel option value",myName);
+	origin.sendMessage("Usage: set #channel option value",getName());
 	return;
      }
    String command = tokens.nextToken();
    String value = tokens.nextToken();
    if(!services.getChannel().isChanRegistered(channel))
      {
-        origin.sendMessage("Error: That channel is not registered",myName);
+        origin.sendMessage("Error: That channel is not registered",getName());
 	return;
      }
    String la = origin.getIDList();
@@ -168,27 +168,27 @@ void
 		  if(value=="true")
 		    {
 		       services.getChannel().setChanLog(channel,true);
-		       origin.sendMessage("Channel logs have been enabled, the owner will receive a nightly email from this channel",myName);
+		       origin.sendMessage("Channel logs have been enabled, the owner will receive a nightly email from this channel",getName());
 		       return;
 		    }
 		  if(value=="false")
 		    {
 		       services.getChannel().setChanLog(channel,false);
-		       origin.sendMessage("Channel logs have been disabled",myName);
+		       origin.sendMessage("Channel logs have been disabled",getName());
 		       return;
 		    }
-		  origin.sendMessage("Value must be true or false",myName);
+		  origin.sendMessage("Value must be true or false",getName());
 		  return;
 
 	       }
-	     origin.sendMessage("Unsupported command",myName);
+	     origin.sendMessage("Unsupported command",getName());
 	     return;
 
 	  }
 
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage("You do not have enough access for that command",myName);
+   origin.sendMessage("You do not have enough access for that command",getName());
    return;
 }
 
@@ -207,16 +207,16 @@ void
 
    if(channel.empty())
      {
-	origin.sendMessage("\002[\002Incorrect Command Usage\002]\002 Usage: listban #channel",myName);
+	origin.sendMessage("\002[\002Incorrect Command Usage\002]\002 Usage: listban #channel",getName());
 	return;
      }
    if(!services.getChannel().isChanRegistered(channel))
      {
-	origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",myName);
+	origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",getName());
 	return;
      }
    int tid = services.getChannel().getChanID(channel);
-   origin.sendMessage("\002[\002Ban List\002]\002 for \002"+channel,myName);
+   origin.sendMessage("\002[\002Ban List\002]\002 for \002"+channel,getName());
    String tquery = "SELECT * from chanbans where chan='" + String::convert(tid) + "'";
    MysqlRes res = services.getDatabase().query(tquery);
    MysqlRow row;
@@ -230,9 +230,9 @@ void
 	String expireon = ((std::string) row[5]);
 	String reason = ((std::string) row[6]);
 	String tosend = "\002[\002"+String::convert(j)+"\002]\002 Mask \002"+mask+"\002 SetBy \002"+setby+"\002 Date \002"+seton+"\002 Expires \002"+expireon+"\002 Reason \002"+reason+"\002";
-	origin.sendMessage(tosend,myName);
+	origin.sendMessage(tosend,getName());
      }
-   origin.sendMessage("\002[\002Ban List\002]\002 Finished",myName);
+   origin.sendMessage("\002[\002Ban List\002]\002 Finished",getName());
 }
 void
   CHAN_FUNC (Chan::parseINFO)
@@ -249,12 +249,12 @@ void
 
    if(channel.empty())
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: info #channel",myName);
+	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: info #channel",getName());
 	return;
      }
    if(!services.getChannel().isChanRegistered(channel))
      {
-        origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",myName);
+        origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",getName());
 	return;
      }
    int cid = services.getChannel().getChanID(channel);
@@ -265,9 +265,9 @@ void
    String toa = "\002[\002Channel Information\002]\002 for \002"+channel;
    String tob = "Owner : "+nowner;
    String toc = "Unique IDS: "+nuniq+"/"+nnuniq;
-   origin.sendMessage(toa,myName);
-   origin.sendMessage(tob,myName);
-   origin.sendMessage(toc,myName);
+   origin.sendMessage(toa,getName());
+   origin.sendMessage(tob,getName());
+   origin.sendMessage(toc,getName());
 }
 void
   CHAN_FUNC (Chan::parseADDUSER)
@@ -286,12 +286,12 @@ void
    String level = tokens.nextToken();
    if(channel=="" | nickname=="" | level=="")
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: adduser #channel nickname level",myName);
+	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: adduser #channel nickname level",getName());
 	return;
      }
    if(!services.isNickRegistered(nickname))
      {
-	origin.sendMessage("\002[\002Fatal Error\002]\002 Nickname not registered",myName);
+	origin.sendMessage("\002[\002Fatal Error\002]\002 Nickname not registered",getName());
 	return;
      }
    String la = origin.getIDList();
@@ -306,17 +306,17 @@ void
 	int taccess = services.getChannel().getChanAccess(channel,nickname);
 	if(waccess==access || waccess>access || waccess<1 || waccess>499)
 	  {
-	     origin.sendMessage("Error: You cannot add someone with higher, or equal access to your own",myName);
+	     origin.sendMessage("Error: You cannot add someone with higher, or equal access to your own",getName());
 	     return;
 	  }
 	if(taccess>0)
 	  {
-	     origin.sendMessage("Error: That person already has access",myName);
+	     origin.sendMessage("Error: That person already has access",getName());
 	     return;
 	  }
 	services.getChannel().chanAddAccess(channel,nickname,level);
 	services.log(origin,"Chan","Added "+nickname+" with level "+level,channel);
-	origin.sendMessage("Command completed successfully",myName);
+	origin.sendMessage("Command completed successfully",getName());
 	return;
      }
 }
@@ -352,7 +352,7 @@ void
 	more = st.hasMoreTokens();
 
      }
-   origin.sendMessage("Sorry, you do not have the required access in that channel",myName);
+   origin.sendMessage("Sorry, you do not have the required access in that channel",getName());
    return;
 }
 
@@ -361,7 +361,7 @@ void
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services.doHelp(origin,myName,word,parm);
+   services.doHelp(origin,getName(),word,parm);
 }
 
 void
@@ -381,7 +381,7 @@ void
    String reason = tokens.rest();
    if(channel=="" | who=="")
      {
-	origin.sendMessage("Usage:  ban #channel nickname your optional reason goes here",myName);
+	origin.sendMessage("Usage:  ban #channel nickname your optional reason goes here",getName());
 	return;
      }
    if(reason=="")
@@ -417,7 +417,7 @@ void
 	     return;
 	  }
      }
-   origin.sendMessage("\002[\002No Access\002]\002",myName);
+   origin.sendMessage("\002[\002No Access\002]\002",getName());
 
 }
 
@@ -427,37 +427,37 @@ void
    String channel = tokens.nextToken();
    if (channel=="")
      {
-        origin.sendMessage("Usage: register #channel",myName);
+        origin.sendMessage("Usage: register #channel",getName());
 	return;
      }
    if ( channel[0] != '#' )
      {
-	origin.sendMessage("Error: Channel names must begin with the '#' symbol",myName);
+	origin.sendMessage("Error: Channel names must begin with the '#' symbol",getName());
 	return;
      }
    if(!services.isNickRegistered(origin.getNickname()))
      {
-	origin.sendMessage("Error: Your nickname is not registered",myName);
+	origin.sendMessage("Error: Your nickname is not registered",getName());
 	return;
      }
    if(!origin.isIdentified(origin.getNickname()))
      {
-	origin.sendMessage("Error: You must be identified, and using the nickname you wish to own the channel",myName);
+	origin.sendMessage("Error: You must be identified, and using the nickname you wish to own the channel",getName());
 	return;
      }
    int owned = services.getChannel().ownedChannels(origin.getNickname());
    if(owned>0)
      {
-	origin.sendMessage("Error: You are only permitted own one channel per nickname on IRCDome",myName);
+	origin.sendMessage("Error: You are only permitted own one channel per nickname on IRCDome",getName());
 	return;
      }
    if(services.getChannel().isChanRegistered(channel))
      {
-	origin.sendMessage("Error: That channel is already registered",myName);
+	origin.sendMessage("Error: That channel is already registered",getName());
 	return;
      }
    services.getChannel().registerChannel(channel,origin.getNickname());
-   origin.sendMessage("Registration Successful",myName);
+   origin.sendMessage("Registration Successful",getName());
    services.log(origin,"Chan","Registered the channel",channel);
    return;
 }
@@ -477,7 +477,7 @@ void
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: op #channel optional list of nicknames to op",myName);
+	origin.sendMessage("Usage: op #channel optional list of nicknames to op",getName());
 	return;
      }
    String la = origin.getIDList();
@@ -526,7 +526,7 @@ void
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",myName);
+   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
    return;
 }
 
@@ -545,7 +545,7 @@ void
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: deop #channel optional list of nicknames to op",myName);
+	origin.sendMessage("Usage: deop #channel optional list of nicknames to op",getName());
 	return;
      }
    String la = origin.getIDList();
@@ -594,7 +594,7 @@ void
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",myName);
+   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
    return;
 }
 
@@ -613,7 +613,7 @@ void
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: voice #channel optional list of nicknames to op",myName);
+	origin.sendMessage("Usage: voice #channel optional list of nicknames to op",getName());
 	return;
      }
    String la = origin.getIDList();
@@ -662,7 +662,7 @@ void
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",myName);
+   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
    return;
 }
 
@@ -681,7 +681,7 @@ void
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: devoice #channel optional list of nicknames to op",myName);
+	origin.sendMessage("Usage: devoice #channel optional list of nicknames to op",getName());
 	return;
      }
    String la = origin.getIDList();
@@ -730,7 +730,7 @@ void
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",myName);
+   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
    return;
 }
 
@@ -751,7 +751,7 @@ void
    String reason = tokens.rest();
    if(channel=="" | who=="" | reason=="")
      {
-	origin.sendMessage("Usage: kick #channel nickname Your reason here",myName);
+	origin.sendMessage("Usage: kick #channel nickname Your reason here",getName());
 	return;
      }
    String thelist = origin.getIDList();
@@ -777,7 +777,7 @@ void
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage("You do not have the required access to perform that command",myName);
+   origin.sendMessage("You do not have the required access to perform that command",getName());
    return;
 }
 void
@@ -795,7 +795,7 @@ void
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: /msg Chan access #channel",myName);
+	origin.sendMessage("Usage: /msg Chan access #channel",getName());
 	return;
      }
    bool foo = false;
@@ -805,10 +805,10 @@ void
      }
    if(foo==false)
      {
-	origin.sendMessage("That channel is not registered",myName);
+	origin.sendMessage("That channel is not registered",getName());
 	return;
      }
-   origin.sendMessage("Channel access list for "+channel,myName);
+   origin.sendMessage("Channel access list for "+channel,getName());
    int chanid = services.getChannel().getChanID(channel);
    String query = "SELECT nickid,access from chanaccess where chanid=" + String::convert(chanid);
    MysqlRes res = services.getDatabase().query(query);
@@ -818,7 +818,7 @@ void
 	String tnickid = ((std::string) row[0]).c_str();
 	String taccess = ((std::string) row[1]).c_str();
 	String tosend = "Nickname \002"+services.getNick(tnickid.toInt())+"\002 Access \002"+taccess+"\002";
-	origin.sendMessage(tosend,myName);
+	origin.sendMessage(tosend,getName());
      }
    services.log(origin,"Chan","Did a channel access",channel);
    res.free_result();
@@ -840,8 +840,9 @@ const Chan::moduleInfo_type Chan::moduleInfo = {
 // Start the service
 void Chan::start(void)
 {
-   services.registerService(myName,myName,"ircdome.org","+dz",
-			    "Channel Registration Services");
-   services.serviceJoin(myName,"#Debug");
+   services.registerService(getName(), getName(), 
+			    getConfigData().getHostname(), "+dz",
+			    getConfigData().getDescription());
+   services.serviceJoin(getName(),"#Debug");
    services.getChannel().synchChannels();
 }

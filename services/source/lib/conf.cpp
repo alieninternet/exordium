@@ -27,7 +27,10 @@
 #include "exordium/config.h"
 #include "exordium/conf.h"
 
+#include <cassert>
+
 using namespace Exordium;
+
 
 // Information used by the configuration parser
 const LibAIS::ConfigParser::defTable_type Config::definitionTable =
@@ -46,6 +49,11 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 	"LOGFILE",
 	  (void *)&Config::defLogfile, &varHandleString,
 	  0, 0
+     },
+     {
+	"MODULE",
+	  (void *)&Config::defModules, &varHandleModule,
+	  0, &classHandleModule
      },
      { // This should be temporary, being a server is Kine's job
         "SERVICESDESCRIPTION",
@@ -107,7 +115,9 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 };
 
 
-// Constructor to set up defaults, mainly. These defaults are dopey :(
+/* Config - Constructor to set up defaults, mainly. These defaults are dopey :(
+ * Original 25/07/2002 simonb
+ */
 Config::Config(void)
   : defLogfile("services.log"),
     defServicesConsoleDescription("Exordium Console"),
@@ -125,4 +135,45 @@ Config::Config(void)
     defSqlUsername("root")
 {
    // nothing here!
-};
+}
+
+
+/* classHandleModule - Handle a module{}; configuration class
+ * Original 21/07/2002 simonb
+ * 18/09/2002 simonb - Modified to suit Exordium
+ */
+LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
+{
+   // Preserve sanity..
+   assert(dataVariable != 0);
+
+   // Check if the first value is empty (the filename field)
+   if (values.front().empty()) {
+      // Get cranky
+      errString = "No module filename supplied!";
+      return false;
+   }
+   return true; // temporary
+}
+
+
+/* varHandleModule - Handle a module; configuration variable
+ * Original 21/07/2002 simonb
+ * 18/09/2002 simonb - Modified to suit Exordium
+ * Note: This is the same as the class handler, except the module is 
+ *       responsible for the configuration of its defaults. Remember that 
+ *       the LibAIS::ConfigParser routines are designed to be totally passive..
+ */
+LIBAIS_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
+{
+   // Preserve sanity..
+   assert(dataVariable != 0);
+
+   // Check if the first value is empty (the filename field)
+   if (values.front().empty()) {
+      // Get cranky
+      errString = "No module filename supplied!";
+      return false;
+   }
+   return true; // temporary
+}

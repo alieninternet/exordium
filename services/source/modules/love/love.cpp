@@ -77,8 +77,9 @@ const Love::commandTable_type Love::commandTable[] =
  */
 void Love::start(void)
 {
-   services.registerService(myName, myName, "ircdome.org", "+dz",
-			    "Your local love slave");
+   services.registerService(getName(), getName(), 
+			    getConfigData().getHostname(), "+dz",
+			    getConfigData().getDescription());
 }
 
 
@@ -128,7 +129,7 @@ void Love::parseLine(StringTokens& line, User& origin)
 
 /* handleCOMMANDS - Throw a quick 'n' dirty list of available commands out
  * Original 20/08/2002 simonb
- * Notes: Probably better to move this to the base class, along with myName
+ * Notes: Probably better to move this to the base class, along with getName()
  *        and services..
  */
 LOVE_FUNC(Love::handleCOMMANDS)
@@ -138,7 +139,7 @@ LOVE_FUNC(Love::handleCOMMANDS)
      services.getDaemon().getConfig().getOptionsLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
-   sendMessage(origin, "Command list for " + myName + ":");
+   sendMessage(origin, "Command list for " + getName() + ":");
 
    // Start formulating the data..
    std::ostringstream list(" -=>");

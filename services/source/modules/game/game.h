@@ -51,6 +51,9 @@ class Game : public Exordium::Service {
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
    
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
+   
    // Our command table structure
    struct commandTable_type {
       const char* const command;		// The command name
@@ -76,7 +79,8 @@ class Game : public Exordium::Service {
 public:
    // Our constructor
    Game(Exordium::Services& s, const LibAIS::String& mn)
-     : Exordium::Service(s, mn)
+     : Exordium::Service(s),
+       configData(moduleInfo.fullName, "somewhere.org", mn)
      {};
 
    // Our destructor
@@ -101,6 +105,12 @@ public:
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
+
+   // Return an appropriate instance of a configuration data class
+   const Exordium::Service::ConfigData& getConfigData(void) const
+     { return configData; };
+   Exordium::Service::ConfigData& getConfigData(void)
+     { return configData; };
 };
 
 // Complete the forwarded declaration

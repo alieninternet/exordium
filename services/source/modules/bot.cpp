@@ -82,7 +82,7 @@ void
 	     return;
 	  }
      }
-   origin.sendMessage("Unrecognized Command", myName);
+   origin.sendMessage("Unrecognized Command", getName());
 }
 
 void
@@ -107,7 +107,8 @@ const Bot::moduleInfo_type Bot::moduleInfo = {
 // Start the service
 void Bot::start(void)
 {
-   services.registerService(myName,myName,"ircdome.org", "+dz",
-			    "Bot Interface to Services");
-   services.serviceJoin(myName,"#Debug");
+   services.registerService(getName(), getName(), 
+			    getConfigData().getHostname(), "+dz",
+			    getConfigData().getDescription());
+   services.serviceJoin(getName(),"#Debug");
 }

@@ -78,8 +78,9 @@ const Game::commandTable_type Game::channelCommandTable[] =
  */
 void Game::start(void)
 {
-   services.registerService(myName, myName, "ircdome.org", "+dz", 
-			    "Network Games!");
+   services.registerService(getName(), getName(), 
+			    getConfigData().getHostname(), "+dz",
+			    getConfigData().getDescription());
 }
 
 
@@ -91,7 +92,7 @@ void Game::stop(void)
    // Leave all the channels we're on..
    while (!channelGames.empty()) {
       // Part the channel...
-      services.servicePart(myName, 
+      services.servicePart(getName(), 
 			   (*(channelGames.begin())).second->getChannel());
    
       // Delete this game..
@@ -131,7 +132,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
       // If the parser returns false, it means we can leave the channel
       if (!(*game).second->parseLine(origin, command, line)) {
 	 // Leave the channel and delete this game..
-	 services.servicePart(myName, channel);
+	 services.servicePart(getName(), channel);
 	 delete (*game).second;
 	 channelGames.erase(game);
       }
@@ -157,7 +158,7 @@ void Game::parseLine(StringTokens& line, User& origin)
       }
    }
    
-   origin.sendMessage("Unrecognized Command", myName);
+   origin.sendMessage("Unrecognized Command", getName());
 }
 
 
@@ -166,7 +167,7 @@ void Game::parseLine(StringTokens& line, User& origin)
  */
 GAME_FUNC(Game::handleHELP)
 {
-   services.doHelp(origin, myName, line.nextToken(),
+   services.doHelp(origin, getName(), line.nextToken(),
 		   line.nextToken());
 }
 
@@ -187,7 +188,7 @@ GAME_FUNC(Game::handleQUOTE)
    }
    
    if(channel == "") {
-      origin.sendMessage("Usage: quote #channel", myName);
+      origin.sendMessage("Usage: quote #channel", getName());
       return;
    }
    
@@ -209,7 +210,7 @@ GAME_FUNC(Game::handleQUOTE)
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services.servicePrivmsg(Sql::makeSafe(tq), myName, chan);
+      services.servicePrivmsg(Sql::makeSafe(tq), getName(), chan);
       more = st.hasMoreTokens();
    }
    
@@ -233,8 +234,8 @@ GAME_FUNC(Game::handleSTART)
 	   ChannelGame::channelGameTable[i].creator(*this, chan, origin);
 	 
 	 // Join the channel and say hello
-	 services.serviceJoin(myName, chan);
-	 services.serverMode(chan, "+o", myName);
+	 services.serviceJoin(getName(), chan);
+	 services.serverMode(chan, "+o", getName());
 	 services.serviceNotice("Hello " + chan + " (" + origin.getNickname() +
 				" wanted to play " + game + ')',
 				"Game", chan);
@@ -253,12 +254,12 @@ GAME_FUNC(Game::handleSTART)
 GAME_FUNC(Game::handleLIST)
 {
    // Check for the game
-   origin.sendMessage("List of available games:", myName);
+   origin.sendMessage("List of available games:", getName());
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
       String str = "--- ";
       str += ChannelGame::channelGameTable[i].game;
 
-      origin.sendMessage(str, myName);
+      origin.sendMessage(str, getName());
    }
 }
 

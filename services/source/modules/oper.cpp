@@ -128,7 +128,7 @@ const Oper::moduleInfo_type Oper::moduleInfo = {
 // Start the service
 void Oper::start(void)
 {
-   services.registerService(name,name,"ircdome.org", "+dz",
+   services.registerService(getName(),getName(),"ircdome.org", "+dz",
 			    "IRC Operator Services");
-   services.serviceJoin(name,"#Debug");
+   services.serviceJoin(getName(),"#Debug");
 }

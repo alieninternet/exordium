@@ -42,6 +42,9 @@ private:
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
    
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -51,11 +54,12 @@ private:
    
   void sendMessage(const LibAIS::String &message, const LibAIS::String &to)
 	{
-		services.serviceNotice(message,myName,to);
+		services.serviceNotice(message,getName(),to);
 	}
 public:
    Chan(Exordium::Services& s, const LibAIS::String &mn)
-     : Exordium::Service(s, mn)
+     : Exordium::Service(s),
+       configData(moduleInfo.fullName, "somewhere.org", mn)
 	{
 	};
   ~Chan(void)
@@ -73,6 +77,12 @@ public:
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
+
+   // Return an appropriate instance of a configuration data class
+   const Exordium::Service::ConfigData& getConfigData(void) const
+     { return configData; };
+   Exordium::Service::ConfigData& getConfigData(void)
+     { return configData; };
    
 private:
    void CHAN_FUNC (parseHELP);

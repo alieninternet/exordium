@@ -28,6 +28,7 @@
 # define SERVICE_H
 
 # include <kineircd/str.h>
+# include <libais/config/parser.h>
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -43,23 +44,57 @@ namespace Exordium {
    class Service {
     public:
       struct moduleInfo_type {
-	 const char* const fullName;			// Full module name
-	 const unsigned short versionMajor;		// Version major number
-	 const unsigned short versionMinor;		// Version minor number
+	 // Version information about the module
+	 const char* const fullName;
+	 const unsigned short versionMajor;
+	 const unsigned short versionMinor;
+      };
+      
+      class ConfigData : public LibAIS::ConfigData {
+       public:
+	 // Configuration information (this is a default list for this base)
+	 static const LibAIS::ConfigParser::defTable_type defaultDefinitions;
+	 
+       private:
+	 LibAIS::String defDescription;			// Our description
+	 LibAIS::String defHostname;			// Our hostname
+	 LibAIS::String defName;			// Our name
+	 
+       public:
+	 // Constructor
+	 ConfigData(const LibAIS::String& d, const LibAIS::String& h,
+		    const LibAIS::String& n)
+	   : defDescription(d),
+	     defHostname(h),
+	     defName(n)
+	   {};
+
+	 // Destructor
+	 virtual ~ConfigData(void)
+	   {};
+
+	 // Grab the configuration definition table
+	 virtual const LibAIS::ConfigParser::defTable_type& 
+	   getDefinitions(void) const
+	   { return defaultDefinitions; };
+	 
+	 // Return variables..
+	 const LibAIS::String& getDescription(void) const
+	   { return defDescription; };
+	 const LibAIS::String& getHostname(void) const
+	   { return defHostname; };
+	 const LibAIS::String& getName(void) const
+	   { return defName; };
       };
       
     protected:
       // Where is services?
       Exordium::Services& services;
       
-      // Who are we?
-      const LibAIS::String myName;
-      
     public:
       // Constructor
-      Service(Exordium::Services& s, const LibAIS::String& mn)
-	: services(s),
-          myName(mn)
+      Service(Exordium::Services& s)
+	: services(s)
 	{};
       
       // Destructor
@@ -78,12 +113,16 @@ namespace Exordium {
       virtual void parseLine(LibAIS::StringTokens& line, User& origin,
 			     const LibAIS::String& channel) = 0;
       
-      // Return the nickname of the module
-      const LibAIS::String& getName(void) const
-	{ return myName; };
-
       // Grab the information structure of a module
       virtual const moduleInfo_type& getModuleInfo(void) const = 0;
+      
+      // Return an appropriate instance of a configuration data class
+      virtual const ConfigData& getConfigData(void) const = 0;
+      virtual ConfigData& getConfigData(void) = 0;
+
+      // Return the nickname of the module (for lazy people)
+      const LibAIS::String& getName(void) const
+	{ return getConfigData().getName(); };
    };
 };
 
