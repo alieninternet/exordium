@@ -25,59 +25,19 @@
  */
 
 #include <iostream>
+#include <cassert>
 #include <exordium/log.h>
 #include <exordium/conf.h>
 #include <exordium/services.h>
-#include <kineircd/module.h>
 #include <exordium/database/database.h>
+#include <kineircd/module.h>
+#include "version.h"
 
 using namespace Exordium;
 
+
 // This namespace is intentionally anonymous
 namespace {
-   // Our special little classes, we need these so we can delete them later
-   static Config *config = 0;
-   static Log *logger = 0;
-   static Services *services = 0;
-   static CDatabase *db = 0;
-
-   // called just before the module is actually going to be used
-   static KINE_MODULE_START(moduleStart)
-     {
-	// Check the configuration was completely setup, otherwise get cranky
-/* Uncomment this when the database engine config thing is complete       
-	if (!config.checkConfig()) {
-	   // Tell KineIRCd that we refuse to start
-	   return false;
-	}
- */
-	
-	// New Logger (the config file will have been created by now)
-	logger = new Log(*config);
-
-	// Create new database Instance
-        db = new CDatabase(*config, *logger); 
-
-	// Create the new services instance - Passing sql + logger YAY :|
-	services = new Services(daemon, *logger, *config, *db);
-
-	logger->logLine("Services started, beginning initalisation");
-	services->run();
-	logger->logLine("Services terminated - Normal exit");
-	exit(0); // we are naughty using this here..... very naughty.. :(
-
-	// Tell Kine that we started happily
-	return true;
-     }
-
-   // called just before unloading the module
-   static KINE_MODULE_STOP(moduleStop)
-     {
-	delete services;
-	delete config;
-        delete db;
-     }
-
    /* This is a zero-terminated array of lines to be appended to the list for
     * /INFO. Lines must be 60 visible characters long or shorter. Do not use
     * control characters other than those used in formatting IRC text. The
@@ -87,33 +47,20 @@ namespace {
     * Note to developers: This should probably be placed in another file and
     * passed through AutoGen.. It'll probably want a logo made up too..
     */
-   static const Kine::Module::versionInfo_type versionInfo = 
-     {/* Ruler:
-       *          1         2         3         4         5         6
-       * 123456789012345678901234567890123456789012345678901234567890 */
-	"Exordium Network Services, Copyright (C) 2002 IRCDome ",
-	"Development Team",
-	"",
-	"Exordium comes with ABSOLUTELY NO WARRANTY; for details see",
-	"The enclosed LICENSE file.  This is free software",
-	"And you are welcome to redistribute it under certain",
-	"conditions; please see the enclosed LICENSE file",
-	0
-     };
+   static const char* const versionInfo[] = EXORDIUM_VER_INFO;
    
    // information about ourselves
-   static const Kine::Module::basicInfo_type moduleInfo =
-     {
-	// List our version/copyright information (fill this in James)
-	"exordium", // short name of the module, usually one word
-	  "Exordium IRC Network Services", // long name of the module
-	  "Copyright (c) 2002 IRCDome Development Team", // Copyright information
-	  0, // Major version number
-	  0, // Minor version number
-	  0, // Patch-level (may be set to 0 if none)
-	  ".pre-alpha", // extra information (may be set to null or 0 if none)
-	  (Kine::Module::versionInfo_type*)&versionInfo,
-
+   static const Kine::Module::Info moduleInfo = {
+      // List our version/copyright information (see version.h)
+      EXORDIUM_NAME_SHORT,
+      EXORDIUM_NAME_LONG,
+      EXORDIUM_COPYRIGHT,
+      EXORDIUM_VER_MAJOR,
+      EXORDIUM_VER_MINOR,
+      EXORDIUM_VER_PATCH,
+      EXORDIUM_VER_EXTRA,
+      (const char** const)&versionInfo,
+	
       /* Note that I set up the version numbers above on purpose to
        * illustrate how the version fields come together. The above comes
        * out as follows:
@@ -128,24 +75,79 @@ namespace {
        * something similar *shrugs*
        */
 
-	  // Flags -- We do not want to be loaded more than once :)
-	  Kine::Module::basicInfo_type::Flags::UNIQUE_INSTANCE,
+      // Flags -- We do not want to be loaded more than once :)
+      Kine::Module::Flags::UNIQUE_INSTANCE,
 
-	  // Configuration information
-	  &Config::definitionTable,
+      // Configuration information
+      &Config::definitionTable
+   };
 
-	  // Our start and stop functions
-	  &moduleStart,
-	  &moduleStop
-     };
+   
+   class mod_exordium : public Kine::Module {
+    private:
+      Config config;
+      Log* logger;
+      Services* services;
+
+      // this shouldn't be here.. the Config:: one should replace it
+      CDatabase* db;
+
+    public:
+      // Constructor
+      mod_exordium(void)
+	: logger(0),
+          services(0),
+          db(0)
+	{};
+      
+      // Destructor
+      ~mod_exordium(void) {
+	 delete db;
+	 delete services;
+	 delete logger;
+      };
+
+      // Return the information about ourselves
+      const Kine::Module::Info& getInfo(void) const
+	{ return moduleInfo; };
+
+      // Return our configuration data class
+      AISutil::ConfigData* const getConfigData(void)
+	{ return &config; };
+      
+      // this is called just before the module is actually going to be used
+      bool start(Kine::Daemon& daemon) {
+/* Uncomment this when the database engine config thing is complete       
+	 // Check the configuration was completely setup, otherwise get cranky
+	 if (!config.checkConfig()) {
+	    // Tell KineIRCd that we refuse to start
+	    return false;
+	 }
+ */
+	   
+	 // New Logger (the config file will have been created by now)
+	 logger = new Log(config);
+	 assert(logger != 0);
+	 
+	 // Create new database Instance
+	 db = new CDatabase(config, *logger); 
+	 assert(db != 0);
+	 
+	 // Create the new services instance - Passing sql + logger YAY :|
+	 services = new Services(daemon, *logger, config, *db);
+	 assert(services != 0);
+
+	 logger->logLine("Services started, beginning initalisation");
+	 services->run();
+	 logger->logLine("Services terminated - Normal exit");
+	 exit(0); // we are naughty using this here..... very naughty.. :(
+	 
+	 // Tell Kine that we started happily
+	 return true;
+      };
+   }; // class mod_exordium
 }; // namespace {anonymous}
 
-// called when the module is initially loaded
-KINE_MODULE_INIT
-{
-   // Make a new config class, where our configuration data will be stored
-   config = new Config();
 
-   // Make a new module for Kine
-   return new Kine::Module(moduleInfo, config);
-}
+// this is called when the module is initially loaded
+KINE_MODULE_INIT { return new mod_exordium(); };
