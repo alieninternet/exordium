@@ -15,15 +15,15 @@
 #include <set>
 #include <netdb.h>
 #include <iostream>
-#include <stdio.h>
-#include <time.h>
+#include <sstream>
+#include <cstdio>
+#include <ctime>
 #include <iomanip>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fstream>
 #include <unistd.h>
-#include <time.h>
 #include <netinet/in.h>
 #include <dlfcn.h>
 #include "exordium/sql.h"
@@ -55,9 +55,12 @@ using namespace Exordium;
 static KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
 	Services::helpme("Services received rehash signal","Serv");
+   std::ostringstream debugOut;
+   debugOut << "Services got rehash signal, services is located at " << foo;
+   Log::logLine(debugOut.str());
 }
 
-Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH};
+Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH, 0};
 
 static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
@@ -65,7 +68,7 @@ static KINE_SIGNAL_HANDLER_FUNC(Death)
 	exit(0);
 }
 
-Signals::handlerInfo_type deathSignalHandler = {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH };
+Signals::handlerInfo_type deathSignalHandler = {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
 
 namespace Exordium {
 
@@ -106,7 +109,9 @@ void
 Services::run(void)
 {
   Signals signals;
+  rehashSignalHandler.foo = (void *)this;
   signals.addHandler(rehashSignalHandler);
+  deathSignalHandler.foo = (void *)this;
   signals.addHandler(deathSignalHandler);
   fd_set inputSet, outputSet;
   struct timeval timer;
