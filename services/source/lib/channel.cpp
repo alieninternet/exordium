@@ -300,17 +300,16 @@ void
 
 /* Deregister a channel, and remove all pertaining channel access entries */
 void
-  Channel::deregisterChannel(String const &name, String const &reason)
+  Channel::deregisterChannel(String const &name)
 {
    int foo = getChanID(name);
 
    services.getDatabase().dbDelete("chans", "name='"+name.IRCtoLower()+"'");
    services.getDatabase().dbDelete("chanaccess", "chanid='"+String::convert(foo)+"'");
    services.getDatabase().dbDelete("chanopts","name='"+name.IRCtoLower()+"'");
+   services.getDatabase().dbDelete("chanbans", "chan='"+String::convert(foo)+"'");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
         name + " -r");
-   String togo = "This channel has been deregistered \002"+reason;
-   services.serviceNotice(String(togo),"Chan",name);
 }
 
 /* Synch the network to what we think it should be like */

@@ -68,7 +68,7 @@ namespace Exordium {
       AISutil::String getChanOwner(int const &);
       void chanAddAccess(AISutil::String const &,AISutil::String const &,AISutil::String const &);
       void chanDelAccess(AISutil::String const &, AISutil::String const &);
-      void deregisterChannel(AISutil::String const &, AISutil::String const &reason);
+      void deregisterChannel(AISutil::String const &);
       void synchChannels(void);
       void synchChannel(AISutil::String const &, AISutil::String const &, AISutil::String const &);
       void registerChannel(AISutil::String const &, AISutil::String const &);

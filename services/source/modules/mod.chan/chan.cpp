@@ -65,6 +65,7 @@ struct Module::functionTableStruct const
      {"set", &Module::parseSET},
      {"seen", &Module::parseSEEN},
      {"commands", &Module::parseCOMMANDS},
+     {"drop", &Module::parseDROP},
      {0, 0}
 };
 
@@ -1124,6 +1125,65 @@ CHAN_FUNC (Module::parseACCESS)
    //Finished with result set! Clean up
    delete myRes;
 }
+
+
+CHAN_FUNC (Module::parseDROP)
+{
+   String channel = "";
+   if(chan!="")
+     {
+        channel = chan;
+     }
+   else
+     {
+        channel = tokens.nextToken();
+     }
+
+   String reason = tokens.rest();
+
+   if(channel=="" || reason=="")
+     {
+        origin.sendMessage(GETLANG(chan_DROP_USAGE),getName());
+        return;
+     }
+
+   dChan *dptr = services->findChan(channel);
+
+   if(dptr==NULL)
+   {
+        origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+        return;
+   }
+
+   if(dptr->isRegistered())
+   {
+      if(dptr->getAccess(origin.getNickname()) == 500)
+      {
+           if(origin.isIdentified())
+           {
+               services->getChannel().deregisterChannel(channel);
+               String togo = "This channel has been deregistered \002"+reason;
+               services->serviceNotice(String(togo),getName(),channel);
+               origin.sendMessage(GETLANG(chan_DROP_SUCCESS),getName());
+           }
+           else
+           {
+               origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getName());
+           }
+      }
+      else
+      {
+           origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+      }
+   }
+   else
+   {
+      origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
+   }
+
+}
+
+
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 { return new Module(); }

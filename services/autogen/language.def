@@ -721,6 +721,21 @@ langtag = {
   data_fr = "%p0 kanalının access listesinin sonu";
 };
 
+
+langtag = {
+  name = "chan_DROP_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: drop #channel reason";
+};
+
+
+langtag = {
+  name = "chan_DROP_SUCCESS";
+  component = "mod_chan";
+  data_en = "Channel dropped successfully";
+};
+
+
 /*
  * Tags for mod_nick
  */

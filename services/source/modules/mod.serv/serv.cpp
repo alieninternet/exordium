@@ -522,7 +522,12 @@ SERV_FUNC (Module::parseCHAN)
 
 	String togo = origin.getNickname() + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
 	services->logLine(String(togo));
-	services->getChannel().deregisterChannel(channel,reason);
+	services->getChannel().deregisterChannel(channel);
+
+        togo = "This channel has been deregistered \002"+reason;
+        services->serviceNotice((String)togo,getName(),channel);
+        origin.sendMessage("Channel " + channel + " dropped successfully",getName());
+
 	services->log(origin,getName(),String("Deregistered ")+channel+" for "+reason);
 	services->sendGOper(getName(),origin.getNickname()+" \002Deregistered\002 channel "+channel+" for "+reason);
 	return;
