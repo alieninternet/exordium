@@ -107,12 +107,16 @@ namespace Exordium {
 	std::queue < LibAIS::String > ModeoutputQueue;
 	LibAIS::SocketIPv4TCP socky;
 	typedef std::map <LibAIS::String, User *> user_map;
+	typedef std::map <LibAIS::String, dChan *> chan_map;
 	user_map users;
+	chan_map chans;
+	
       public:
 //	UserBase clients;
 	static const Kine::Utils::base_type PasswordStrBase = 85;
 	static const LibAIS::String::size_type PasswordStrBaseLongPad = 5;
 	User* const addUser(const LibAIS::String& name, const int oid);
+	dChan* const addChan(const LibAIS::String& name, const int oid);
 	bool delUser(LibAIS::String &);
 	User* findUser(LibAIS::String &);
 	void setNick(User &,LibAIS::String &);

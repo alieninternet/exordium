@@ -963,6 +963,16 @@ bool
 	return false;
      }
 };
+/* addChan(String,Int)
+ * 
+ * Add a channel to our channel map
+ * 
+ */
+dChan* const Services::addChan(const String& name, const int oid)
+{
+   return chans[name] = new dChan(name,oid,*this);
+}
+
 /* addUser(String,Int)
  *
  * Add the user to our users map
