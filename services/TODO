@@ -33,3 +33,6 @@ Tidy up ban code........
 
 
 Return Nulls for nick info.. and don't show if not set..
+
+
+Pass StringToken& instead of Strings to secondary/tertiary parsers
