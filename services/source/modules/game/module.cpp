@@ -73,16 +73,21 @@ namespace Exordium
 	    }
 
 	  // feh, check if this channel is one playing a game
-	  if (channelGames.find(chan.IRCtoLower()) != channelGames.end()) {
+	  channelGames_type::iterator game = 
+	    channelGames.find(chan.IRCtoLower());
+	  
+	  if (game != channelGames.end()) {
 	     // Too lazy to work around the mess above
 	     StringTokens tokens(line.substr(1));
-	     
+//	     std::cout << "Game Debug: line.substr is " << line.substr(1) << std::endl;
+//	     std::cout << "Game Debug: origin is:"<<origin<<std::endl;
+//	     std::cout << "Game Debug: Nexttoken is:"<<tokens.nextToken()<<std::endl;
 	     // If the parser returns false, it means we can leave the channel
-	     if (!channelGames[chan]->parseLine(origin, tokens)) {
+	     if (!(*game).second->parseLine(origin, tokens)) {
 		// Leave the channel and delete this game..
 		services.servicePart(myName, chan);
-		delete channelGames[chan];
-		channelGames.erase(chan);
+		delete (*game).second;
+		channelGames.erase(game);
 	     }
 	  }
 	  

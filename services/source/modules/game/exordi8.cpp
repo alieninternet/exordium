@@ -653,6 +653,8 @@ EXORDI8_FUNC(Exordi8::parsePLAY)
    sendMessage(origin,
 	       "You are now registered to play, " + players.front().first + 
 	       " must deal before the game begins.");
+   sendMessage(players.front().first,
+	       origin + " has registered to play.");
    
    // If we are at the maximum number of players, tell the dealer
    if (players.size() == maxPlayers) {

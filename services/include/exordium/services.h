@@ -63,6 +63,7 @@ extern "C" {
 #include "exordium/nickname.h"
 #include "exordium/channel.h"
 #include "exordium/ircdome.h"
+#include "exordium/user.h"
 
 // Maybe this is in the wrong place
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -151,7 +152,8 @@ namespace Exordium {
   	void run (void);
 	bool handleInput (void);
 	bool SecurePrivmsg;
-	Core serviceM;  
+	Core serviceM;
+	User clients;
 	
 	// Function Declrations below here.
 	void shutdown(const String &);
@@ -178,7 +180,10 @@ namespace Exordium {
 	void log (String const &, String const &, String const &);
 	void sendEmail(String const &, String const &, String const &);
 	void servicePart (String const &, String const &);
-	
+	void test(void)
+	  {
+	     std::cout << "This is a simple test, proving we can access services" << std::endl;
+	  };
 	//Inline Functions Below here.
 	void killnick (String const &target, String const &from,
 		       String const &reason)

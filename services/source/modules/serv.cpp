@@ -105,8 +105,7 @@ namespace Exordium
 	    }
 
 	  String togo = "\002"+origin+"\002 - "+reason;
-	  exit(0);
-	  services.shutdown(togo);
+ 	  services.shutdown(togo);
        }
    void
      SERV_FUNC (Serv::parseSYNCH)

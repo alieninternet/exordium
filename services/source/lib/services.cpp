@@ -28,6 +28,7 @@
 #include "exordium/services.h"
 #include "exordium/channel.h"
 #include "exordium/nickname.h"
+#include "exordium/user.h"
 #include <queue>
 #include <map>
 #include <set>
@@ -476,7 +477,17 @@ namespace Exordium
 	unsigned long tx = getCountTx();
 	String togo = String("NC [\002")+nc+"\002] CC [\002"+cc+"\002] OC [\002"+oc+"\002] LC [\002"+lc+"\002] GC [\002"+gc+"\002] NOC [\002"+noc+"\002] RX [\002"+String::convert(rx)+"\002] TX [\002"+String::convert(tx)+"\002]";
 	servicePrivmsg(String(togo),"Oper","#Debug");
-
+	if(clients.test())
+	  {
+	     std::cout << "HI IM ALIVE YOU KNOW!!!" << std::endl;
+	  }
+	else
+	  {
+	     std::cout << "OK IM A REALLY FUCKING DUMB CLASS" << std::endl;
+	  }
+	
+	clients.test();
+	clients.test();
      }
 
    void
@@ -821,11 +832,11 @@ namespace Exordium
 			   }
 
 		      }
-		    String msg = "\002[\002Non-Identification\002]\002 Your nickname is now being changed";
+		    String msg = "Non-Identification: Your nickname is now being changed";
 		    serviceNotice(msg,"Nick",tomod);
 		    String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
 		    queueAdd(String(togo));
-
+		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 		 }
 	       if((killt.toInt()-nowt)<60)
 		 {
