@@ -36,7 +36,7 @@ class ChannelGame;
 # include "game.h"
 
 # define CHANNEL_GAME_CREATOR_FUNC(x) \
-     ChannelGame* x(Game::Module& module, const LibAIS::String& channel, \
+     ChannelGame* x(Game::Module& module, const AISutil::String& channel, \
 		    Exordium::User& caller)
 
 class ChannelGame {
@@ -45,7 +45,7 @@ class ChannelGame {
    Game::Module& module;
    
    // The channel we are playing on
-   const LibAIS::String channel;
+   const AISutil::String channel;
    
  public:
    // Our convenient type-definition of a creator function
@@ -58,7 +58,7 @@ class ChannelGame {
    } static const channelGameTable[];
 
    // Constructor
-   ChannelGame(Game::Module& m, const LibAIS::String& c)
+   ChannelGame(Game::Module& m, const AISutil::String& c)
      : module(m),
        channel(c)
        {};
@@ -68,15 +68,15 @@ class ChannelGame {
      {};
    
    // Our line parser - where channel commands for us are sent
-   virtual bool parseLine(Exordium::User& origin, LibAIS::String& command,
-			  LibAIS::StringTokens& tokens) = 0;
+   virtual bool parseLine(Exordium::User& origin, AISutil::String& command,
+			  AISutil::StringTokens& tokens) = 0;
 
    // Grab the channel this channel game is on
-   const LibAIS::String& getChannel(void) const
+   const AISutil::String& getChannel(void) const
      { return channel; };
    
    // Send a message to the channel
-   void sendMessage(const LibAIS::String& message) const
+   void sendMessage(const AISutil::String& message) const
      {
 	module.getServices().servicePrivmsg(message, module.getName(), 
 					    channel);
@@ -84,7 +84,7 @@ class ChannelGame {
 
    // Send a message to someone (specified)
    void sendMessage(Exordium::User& nick,
-		    const LibAIS::String& message) const
+		    const AISutil::String& message) const
      { nick.sendMessage(message, module.getName()); };
 };
    

@@ -32,8 +32,8 @@
 #include "exordium/sql.h"
 #include <sys/time.h>
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 namespace Exordium

@@ -31,8 +31,8 @@
 #include "exordi8.h"
 #include "cards/pack.h"
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 
 
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel

@@ -33,7 +33,7 @@
 
 #include <kineircd/str.h>
 
-#define CHAN_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens, LibAIS::String &chan)
+#define CHAN_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens, AISutil::String &chan)
 
 
 class Chan : public Exordium::Service
@@ -64,10 +64,10 @@ public:
    void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
-   void stop(const LibAIS::String& reason);
+   void stop(const AISutil::String& reason);
       
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin,LibAIS::String const &);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin,AISutil::String const &);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

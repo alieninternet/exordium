@@ -54,12 +54,12 @@ extern "C"
 #include <dlfcn.h>
 };
 
-#include <libais/socket/sockets.h>
+#include <aisutil/socket/sockets.h>
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using Kine::Password;
-using LibAIS::StringMask;
+using AISutil::StringMask;
 using Kine::Signals;
 using namespace Exordium;
 
@@ -772,11 +772,11 @@ Services::~Services()
 	  queueAdd (String (":") + service + " PART " + target);
        }
 
-   void Services::serviceJoin(LibAIS::String const &service,
-			      LibAIS::String const &target)
+   void Services::serviceJoin(AISutil::String const &service,
+			      AISutil::String const &target)
      {
 	queueAdd(":" + config.getServicesHostname() + " SJOIN " +
-		 LibAIS::String::convert(currentTime) + " " + target +
+		 AISutil::String::convert(currentTime) + " " + target +
 		 " + :" + service);
      };
 
@@ -1583,7 +1583,7 @@ void
  */
 
 void
-  Services::Debug(LibAIS::String const &line)
+  Services::Debug(AISutil::String const &line)
 {
    String debugline = line;
    queueAdd(":IRCDome PRIVMSG #Exordium :"+debugline);

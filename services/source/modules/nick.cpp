@@ -31,8 +31,8 @@
 #include <map>
 #include <sstream>
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 struct Nick::functionTableStruct const

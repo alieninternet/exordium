@@ -35,7 +35,7 @@ namespace Exordium {
 #include <kineircd/str.h>
 
 # define PARSER_FUNC(x) \
-     x(LibAIS::String& OLDorigin, LibAIS::StringTokens& tokens)
+     x(AISutil::String& OLDorigin, AISutil::StringTokens& tokens)
 
 namespace Exordium {
    class Parser {
@@ -52,7 +52,7 @@ namespace Exordium {
 	: services(s)
 	{};
 
-      void parseLine(const LibAIS::String &);
+      void parseLine(const AISutil::String &);
       
     private:
       void PARSER_FUNC(parsePASS);

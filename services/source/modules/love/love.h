@@ -33,7 +33,7 @@
 
 
 # define LOVE_FUNC(x) \
-     void x(Exordium::User& origin, LibAIS::StringTokens& line)
+     void x(Exordium::User& origin, AISutil::StringTokens& line)
 
 
 // The class of lurrve
@@ -69,7 +69,7 @@ class Love : public Exordium::Service {
    handler_type handleCOMMANDS;
 
    // How to send private-messages (stepping-stone)
-   void sendMessage(Exordium::User& recipient, const LibAIS::String& message)
+   void sendMessage(Exordium::User& recipient, const AISutil::String& message)
      { recipient.sendMessage(message, getName()); };
    
  public:
@@ -86,12 +86,12 @@ class Love : public Exordium::Service {
    void start(Exordium::Services& s);
       
    // Parser for incoming stuff sent on a channel
-   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
-		  const LibAIS::String& channel)
+   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+		  const AISutil::String& channel)
      { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaehHAEhaE!!! */ };
    
    // Parser for incoming stuff sent directly to us
-   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
 
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

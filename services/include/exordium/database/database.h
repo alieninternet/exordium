@@ -29,7 +29,7 @@
 #define _DATABASE_H
 
 
-#include <libais/string/string.h>
+#include <aisutil/string/string.h>
 #include <exordium/database/base.h>
 #include <exordium/conf.h>
 #include <exordium/log.h>
@@ -81,47 +81,47 @@ namespace Exordium {
 
 
       // Select * from <table>
-      int dbSelect(LibAIS::String const &table);
+      int dbSelect(AISutil::String const &table);
 
       // Select <fields> from <table>
-      int dbSelect(LibAIS::String const &fields, LibAIS::String const &table);
+      int dbSelect(AISutil::String const &fields, AISutil::String const &table);
 
       // Select <fields> from <table> where <whereargs>
-      int dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs);
+      int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
 
       // Select <fields> from <table> where <whereargs> order by <orderargs>
-      int dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs, LibAIS::String const &orderargs);
+      int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs);
 
 
       // Select count(*) from <table>
-      int dbCount(LibAIS::String const &table);
+      int dbCount(AISutil::String const &table);
 
       // Select count(*) from <table> where <whereargs>
-      int dbCount(LibAIS::String const &table, LibAIS::String const &whereargs);
+      int dbCount(AISutil::String const &table, AISutil::String const &whereargs);
 
 
 
       // Insert into <table> values <values>
-      void dbInsert(LibAIS::String const &table,  LibAIS::String const &values);
+      void dbInsert(AISutil::String const &table,  AISutil::String const &values);
 
-      void dbUpdate(LibAIS::String const &table, LibAIS::String const &values, LibAIS::String const &whereargs);
+      void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
 
 
 
       // Delete * from <table> where <whereargs>
-      void dbDelete(LibAIS::String const &table, LibAIS::String const &whereargs);
+      void dbDelete(AISutil::String const &table, AISutil::String const &whereargs);
 
       // Delete * from <table>
-      void dbDelete(LibAIS::String const &table);
+      void dbDelete(AISutil::String const &table);
 
 
 
 
 
-      int dbQuery(LibAIS::String const &query) { return(database->dbQuery(query)); }
+      int dbQuery(AISutil::String const &query) { return(database->dbQuery(query)); }
 
-      LibAIS::String dbGetValue(void) { return(database->dbGetValue()); }
-      LibAIS::String dbGetValue(int field) { return(database->dbGetValue(field)); }
+      AISutil::String dbGetValue(void) { return(database->dbGetValue()); }
+      AISutil::String dbGetValue(int field) { return(database->dbGetValue(field)); }
 
       void dbGetRow(void) { database->dbGetRow(); }
 
@@ -150,7 +150,7 @@ namespace Exordium {
       void dbCommit(void) { database->dbCommit(); }
       void dbRollback(void) { database->dbRollback(); }
 
-      void dbSelectDB(LibAIS::String const &dbName) { database->dbSelectDB(dbName); }
+      void dbSelectDB(AISutil::String const &dbName) { database->dbSelectDB(dbName); }
 
 
   }; // class CDatabase

@@ -28,8 +28,8 @@
 #include "exordium/user.h"
 #include <kineircd/str.h>
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 /* sendMessage(String,String,<bool>)

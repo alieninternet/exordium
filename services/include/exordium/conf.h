@@ -27,69 +27,69 @@
 #ifndef _CONF_H_
 # define _CONF_H_
 
-# include <libais/config/data.h>
-# include <libais/string/string.h>
+# include <aisutil/config/data.h>
+# include <aisutil/string/string.h>
 # include <exordium/modules.h>
 
 namespace Exordium {
-   class Config : public LibAIS::ConfigData {
+   class Config : public AISutil::ConfigData {
     public:
       // The definition table used by Kine's configuration parser
-      static const LibAIS::ConfigParser::defTable_type definitionTable;
+      static const AISutil::ConfigParser::defTable_type definitionTable;
 
     private:
       // Variables (top class from the definition table above)
-      LibAIS::String defLogfile;		// Log filename
-      LibAIS::String defServicesDescription;    // Services description (aka realname)
-      LibAIS::String defServicesHostname;       // Services hostname
-      LibAIS::String defUplinkHost;           	// Uplink Host (temporary)
+      AISutil::String defLogfile;		// Log filename
+      AISutil::String defServicesDescription;   // Services description (aka realname)
+      AISutil::String defServicesHostname;      // Services hostname
+      AISutil::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
 
       // 'CONSOLE' class and variables
-      static const LibAIS::ConfigParser::defTable_type defClassConsole;
-      LibAIS::String defConsoleDescription;	// Console's real name field
+      static const AISutil::ConfigParser::defTable_type defClassConsole;
+      AISutil::String defConsoleDescription;	// Console's real name field
       bool defConsoleEnabled;			// Is the console active?
-      LibAIS::String defConsoleHostname;	// The console's host name
-      LibAIS::String defConsoleName;		// The console's nickname
+      AISutil::String defConsoleHostname;	// The console's host name
+      AISutil::String defConsoleName;		// The console's nickname
       
       // 'MODULE' class/variable stuff
       Modules defModules;			// Loaded modules
-      static LIBAIS_CONFIG_CLASS_HANDLER(classHandleModule);
-      static LIBAIS_CONFIG_VARIABLE_HANDLER(varHandleModule);
+      static LIBAISUTIL_CONFIG_CLASS_HANDLER(classHandleModule);
+      static LIBAISUTIL_CONFIG_VARIABLE_HANDLER(varHandleModule);
       
       // 'SQL' class and variables
-      static const LibAIS::ConfigParser::defTable_type defClassSql;
-      LibAIS::String defSqlDatabase;		// MySql server database name
-      LibAIS::String defSqlHostname;		// MySql server hostname
-      LibAIS::String defSqlPassword;		// MySql server password
+      static const AISutil::ConfigParser::defTable_type defClassSql;
+      AISutil::String defSqlDatabase;		// MySql server database name
+      AISutil::String defSqlHostname;		// MySql server hostname
+      AISutil::String defSqlPassword;		// MySql server password
       unsigned short defSqlPort;		// MySql server port
-      LibAIS::String defSqlUsername;		// MySql server username
-      LibAIS::String defSqlEngine;              // Database engine
+      AISutil::String defSqlUsername;		// MySql server username
+      AISutil::String defSqlEngine;             // Database engine
       
     public:
       // Constructor (sets up defaults mainly)
       Config(void);
       
       // Top variables
-      const LibAIS::String& getLogfile(void) const
+      const AISutil::String& getLogfile(void) const
 	{ return defLogfile; };
-      const LibAIS::String& getUplinkHost(void) const
+      const AISutil::String& getUplinkHost(void) const
 	{ return defUplinkHost; };      
       const unsigned short getUplinkPort(void) const
         { return defUplinkPort; };
-      const LibAIS::String& getServicesHostname(void) const
+      const AISutil::String& getServicesHostname(void) const
         { return defServicesHostname; };
-      const LibAIS::String& getServicesDescription(void) const
+      const AISutil::String& getServicesDescription(void) const
         { return defServicesDescription; };
 
       // 'CONSOLE' class
-      const LibAIS::String& getConsoleDescription(void) const
+      const AISutil::String& getConsoleDescription(void) const
 	{ return defConsoleDescription; };
       const bool getConsoleEnabled(void) const
 	{ return defConsoleEnabled; };
-      const LibAIS::String& getConsoleHostname(void) const
+      const AISutil::String& getConsoleHostname(void) const
 	{ return defConsoleHostname; };
-      const LibAIS::String& getConsoleName(void) const
+      const AISutil::String& getConsoleName(void) const
 	{ return defConsoleName; };
       
       // 'MODULE' class
@@ -97,17 +97,17 @@ namespace Exordium {
 	{ return defModules; };
       
       // 'SQL' class
-      const LibAIS::String& getSqlDatabase(void) const
+      const AISutil::String& getSqlDatabase(void) const
 	{ return defSqlDatabase; };
-      const LibAIS::String& getSqlHostname(void) const
+      const AISutil::String& getSqlHostname(void) const
 	{ return defSqlHostname; };
-      const LibAIS::String& getSqlPassword(void) const
+      const AISutil::String& getSqlPassword(void) const
 	{ return defSqlPassword; };
       const unsigned short getSqlPort(void) const
 	{ return defSqlPort; };
-      const LibAIS::String& getSqlUsername(void) const
+      const AISutil::String& getSqlUsername(void) const
 	{ return defSqlUsername; };
-      const LibAIS::String& getSqlEngine(void) const
+      const AISutil::String& getSqlEngine(void) const
         { return defSqlEngine; };
    };
 }; // namespace Exordium

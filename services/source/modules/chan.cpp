@@ -31,8 +31,8 @@
 #include <kineircd/str.h>
 #include <map>
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 struct Chan::functionTableStruct const
@@ -853,7 +853,7 @@ void Chan::start(Exordium::Services& s)
 
 
 // Stop the service - bye bye!
-void Chan::stop(const LibAIS::String& reason)
+void Chan::stop(const String& reason)
 {
    // Yes, we would like to QUIT here properly.. :( This is dodgey  -pickle
    services->queueAdd(":" + getName() + " QUIT :" + reason);

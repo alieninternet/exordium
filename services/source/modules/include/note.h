@@ -28,7 +28,7 @@
 #define __NOTE_H_
 
 #include <kineircd/str.h>
-#define NOTE_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens)
+#define NOTE_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
 
 #include "exordium/service.h"
 #include "exordium/services.h"
@@ -64,8 +64,8 @@ public:
    // Start the module
    void start(Exordium::Services& s);
    
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin, LibAIS::String const &);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin, AISutil::String const &);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

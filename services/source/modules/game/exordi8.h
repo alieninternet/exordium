@@ -38,7 +38,7 @@
 # include "cards/card.h"
 
 # define EXORDI8_FUNC(x) \
-     bool x(Exordium::User& origin, LibAIS::StringTokens& line)
+     bool x(Exordium::User& origin, AISutil::StringTokens& line)
 
 
 class Exordi8 : public ChannelGame {
@@ -98,7 +98,7 @@ class Exordi8 : public ChannelGame {
    void showHand(const player_type& player) const;
 
    // Jump to the next player, telling the channel why
-   void nextPlayer(const LibAIS::String& why, bool withMatchNotify = true);
+   void nextPlayer(const AISutil::String& why, bool withMatchNotify = true);
    
    // Function handlers
    EXORDI8_FUNC(parseDEAL);
@@ -112,7 +112,7 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Game::Module& module, const LibAIS::String& channel,
+   Exordi8(Game::Module& module, const AISutil::String& channel,
 	   Exordium::User& caller);
    
    // Handy creation function
@@ -120,8 +120,8 @@ class Exordi8 : public ChannelGame {
      { return new Exordi8(module, channel, caller); }
    
    // Parse a line..
-   bool parseLine(Exordium::User& origin, LibAIS::String& command,
-		  LibAIS::StringTokens& tokens);
+   bool parseLine(Exordium::User& origin, AISutil::String& command,
+		  AISutil::StringTokens& tokens);
 };
    
 #endif // __EXORDI8_H__

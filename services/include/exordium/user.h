@@ -36,7 +36,7 @@ namespace Exordium {
 
    class User {
     private:
-      LibAIS::String nickname;
+      AISutil::String nickname;
       int onlineID;
       Services& services;
       
@@ -48,7 +48,7 @@ namespace Exordium {
        * 
        */
       
-      const LibAIS::String& getNickname(void) const
+      const AISutil::String& getNickname(void) const
 	{ return nickname; };
       
       /* getOnlineID()
@@ -66,8 +66,8 @@ namespace Exordium {
        * 
        * This is redundant imho. - simon
        */
-      const LibAIS::String getOnlineIDString(void) const
-	{ return LibAIS::String::convert(onlineID); };
+      const AISutil::String getOnlineIDString(void) const
+	{ return AISutil::String::convert(onlineID); };
 
       
       /* setNick(String)
@@ -75,7 +75,7 @@ namespace Exordium {
        * Update our records to show a new nickname.....
        * 
        */
-      void setNick(const LibAIS::String& nick)
+      void setNick(const AISutil::String& nick)
 	{ nickname = nick; };
       
 
@@ -84,10 +84,10 @@ namespace Exordium {
        * you to override services default behaviour of using the 
        * nicknames settings of notice/privmsg
        */
-      void sendMessage(LibAIS::String const &message,
-                       LibAIS::String const &service);
-      void sendMessage(LibAIS::String const &message,
-                       LibAIS::String const &service,
+      void sendMessage(AISutil::String const &message,
+                       AISutil::String const &service);
+      void sendMessage(AISutil::String const &message,
+                       AISutil::String const &service,
                        bool const &privmsg);
       
       /* setModNick(bool)
@@ -123,14 +123,14 @@ namespace Exordium {
        * Update the clients hostname.
        * 
        */
-      void updateHost(LibAIS::String const &);
+      void updateHost(AISutil::String const &);
       
       /* getQuitMessage()
        * 
        * Return the last known quit message for this user
        * 
        */
-      LibAIS::String getQuitMessage(void);
+      AISutil::String getQuitMessage(void);
       
       /* getAccess(String)
        * 
@@ -138,7 +138,7 @@ namespace Exordium {
        * service.
        * 
        */
-      int getAccess(LibAIS::String const &);
+      int getAccess(AISutil::String const &);
       
       /* addCheckIdentify()
        * 
@@ -160,14 +160,14 @@ namespace Exordium {
        * Return the users hostname.
        * 
        */
-      LibAIS::String getHost(void);
+      AISutil::String getHost(void);
       
       /* getIdent()
        * 
        * Return the users ident (username)
        * 
        */
-      LibAIS::String getIdent(void);
+      AISutil::String getIdent(void);
       
       /* isIdentified()
        * 
@@ -181,21 +181,21 @@ namespace Exordium {
        * Return true if we are identified as the given nickname.
        * 
        */
-      bool isIdentified(LibAIS::String const &);
+      bool isIdentified(AISutil::String const &);
       
       /* getModes()
        *
        * Query the DB for current user's modes
        *
        */
-      LibAIS::String getModes(void);
+      AISutil::String getModes(void);
              
       /* getIDList(String)
        * 
        * Return a list of nicknames we are identified as...
        * 
        */
-      LibAIS::String getIDList(void);
+      AISutil::String getIDList(void);
       
       /* isPending()
        * 
@@ -212,16 +212,16 @@ namespace Exordium {
        * its not a serious quirk (relating to the possibiltiy of someone
        * changing the language for a nick not in use... )
        */
-      void setLanguage(LibAIS::String const &);
+      void setLanguage(AISutil::String const &);
 
       /* getLanguage()
        *
        * Retrieve users language
        */
-      LibAIS::String getLanguage(void);
+      AISutil::String getLanguage(void);
       
       /* Our constructor definition */
-      User(LibAIS::String const &nick, int const &oid, Services &s)
+      User(AISutil::String const &nick, int const &oid, Services &s)
 	: nickname(nick), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..
           services(s)// Gives us access to the full suite of services..

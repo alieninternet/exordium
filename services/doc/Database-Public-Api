@@ -7,65 +7,65 @@ void dbDisconnect(void)
 	Objective: Disconnect from database. This is used when services stop.
 
 
-int dbSelect(LibAIS::String const &table)
+int dbSelect(AISutil::String const &table)
 
 	Objective: Send query to server under form SELECT * from <table>
         Returns:   Number of rows returned by the query
 
-int dbSelect(LibAIS::String const &fields, LibAIS::String const &table)
+int dbSelect(AISutil::String const &fields, AISutil::String const &table)
 
 	Objective: Send query to server under form SELECT <fields> from <table>
         Returns:   Number of rows returned by the query
 
 
-int dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs)
+int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs)
 
 	Objective: Send query to server under form SELECT <fields> FROM <table> WHERE <whereargs>
         Returns:   Number of rows returned by the query
 
 
-int dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs,LibAIS::String const &orderargs)
+int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
 
         Objective: Send query to server under form SELECT <fields> FROM <table> WHERE <whereargs> ORDER BY <orderargs>
         Returns:   Number of rows returned by the query
 
 
-int dbCount(LibAIS::String const &table)
+int dbCount(AISutil::String const &table)
 
         Objective: Send query to server under form SELECT count(*) FROM <table>
         Returns:   Result of the query
 
 
-int dbCount(LibAIS::String const &table, LibAIS::String const &whereargs)
+int dbCount(AISutil::String const &table, AISutil::String const &whereargs)
 
         Objective: Send query to server under form SELECT count(*) FROM <table> WHERE <whereargs>
 	Returns:   Result of the query
 
 
-void dbInsert(LibAIS::String const &table,  LibAIS::String const &values)
+void dbInsert(AISutil::String const &table,  AISutil::String const &values)
 
         Objective: Send query to server under form INSERT into <table> VALUES( <values> )
 
 
-void dbUpdate(LibAIS::String const &table, LibAIS::String const &values, LibAIS::String const &whereargs)
+void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs)
 
 	Objective: Send query to server under form UPDATE <table> SET <values> WHERE <whereargs>
 
 
-void dbDelete(LibAIS::String const &table, LibAIS::String const &whereargs)
+void dbDelete(AISutil::String const &table, AISutil::String const &whereargs)
 
 	Objective: Send query to server under form DELETE FROM <table> WHERE <whereargs>
 
-void dbDelete(LibAIS::String const &table)
+void dbDelete(AISutil::String const &table)
 
 	Objective: Send query to server under form DELETE FROM <table>
 
-LibAIS::String dbGetValue(void)
+AISutil::String dbGetValue(void)
 
 	Objective: Get the 1st value of the current row ( shortcut to dbGetValue(0) )
         Returns:   Value at the position 0 of the current row
 
-LibAIS::String dbGetValue(int field)
+AISutil::String dbGetValue(int field)
 
 	Objective: Get the n value of the current row.
 	Returns:   Value at the position n of the current row.

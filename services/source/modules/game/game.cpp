@@ -33,8 +33,8 @@
 #include "game.h"
 
 using namespace Game;
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using Exordium::Channel;
 using Exordium::User;
 
@@ -92,7 +92,7 @@ void Module::start(Exordium::Services& s)
 /* stop - Stop the service
  * Original 17/09/2002 pickle
  */
-void Module::stop(const LibAIS::String& reason)
+void Module::stop(const String& reason)
 {
    // Leave all the channels we're on..
    while (!channelGames.empty()) {

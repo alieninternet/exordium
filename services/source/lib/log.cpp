@@ -31,7 +31,7 @@
 #include <kineircd/str.h>
 #include <fstream>
 
-using LibAIS::String;
+using AISutil::String;
 using namespace Exordium;
 
 Log::Log(const Config& c)

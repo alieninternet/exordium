@@ -33,7 +33,7 @@ using namespace Exordium;
 
 
 // Information used by the configuration parser
-const LibAIS::ConfigParser::defTable_type Config::definitionTable =
+const AISutil::ConfigParser::defTable_type Config::definitionTable =
 {
      {
 	"CONSOLE", 7,
@@ -80,7 +80,7 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 
 
 // 'CONSOLE' class definition table
-const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
+const AISutil::ConfigParser::defTable_type Config::defClassConsole =
 {
      {
         "DESCRIPTION", 4,
@@ -107,7 +107,7 @@ const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
 
 
 // 'SQL' class definition table
-const LibAIS::ConfigParser::defTable_type Config::defClassSql =
+const AISutil::ConfigParser::defTable_type Config::defClassSql =
 {
      {
         "DATABASE", 8,
@@ -174,7 +174,7 @@ Config::Config(void)
  * Original 21/07/2002 pickle
  * 18/09/2002 pickle - Modified to suit Exordium
  */
-LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
+LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleModule)
 {
    // Preserve sanity..
    assert(dataVariable != 0);
@@ -198,10 +198,10 @@ LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
    
    // Parse the module's configuration data
    return
-     LibAIS::ConfigParser::parse(configData, position,
-				 ((void *)
-				  &(service->getConfigData().getDefinitions())),
-				 service->getConfigData());
+     AISutil::ConfigParser::parse(configData, position,
+				  ((void *)
+				   &(service->getConfigData().getDefinitions())),
+				  service->getConfigData());
 }
 
 
@@ -210,9 +210,10 @@ LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
  * 18/09/2002 pickle - Modified to suit Exordium
  * Note: This is the same as the class handler, except the module is 
  *       responsible for the configuration of its defaults. Remember that 
- *       the LibAIS::ConfigParser routines are designed to be totally passive..
+ *       the AISutil::ConfigParser routines are designed to be totally 
+ *       passive..
  */
-LIBAIS_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
+LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
 {
    // Preserve sanity..
    assert(dataVariable != 0);

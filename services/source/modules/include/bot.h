@@ -34,7 +34,7 @@
 #include <kineircd/str.h>
 
 
-#define BOT_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens, LibAIS::String &chan)
+#define BOT_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens, AISutil::String &chan)
 
 
 class Bot : public Exordium::Service
@@ -54,7 +54,7 @@ class Bot : public Exordium::Service
   };
   static struct functionTableStruct const functionTable[];
 
-  void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
+  void sendMessage(const AISutil::String &to, const AISutil::String &message)
 	{
 		services->serviceNotice(message,getName(),to);
 	};
@@ -71,10 +71,10 @@ public:
    // Start the module
    void start(Exordium::Services& s);
    
-   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
    
-   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
-		  const LibAIS::String& channel);
+   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+		  const AISutil::String& channel);
 
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

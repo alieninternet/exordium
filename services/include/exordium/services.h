@@ -48,7 +48,7 @@ extern "C" {
 #include <sys/types.h>
 };
 
-#include <libais/socket/sockets.h>
+#include <aisutil/socket/sockets.h>
 
 #ifdef DMALLOC
 # include "dmalloc.h"
@@ -69,7 +69,7 @@ namespace Exordium {
    class Services
      {
       private:
-	const LibAIS::String buffer;
+	const AISutil::String buffer;
 	Kine::Daemon& daemon;
 	Log& logger;
 
@@ -103,24 +103,24 @@ namespace Exordium {
         unsigned long countTx;
 	unsigned long countRx;
 	unsigned long remoteAddress;
-	std::queue < LibAIS::String > outputQueue;
-	std::queue < LibAIS::String > ModeoutputQueue;
-	LibAIS::SocketIPv4TCP socky;
-	typedef std::map <LibAIS::String, User *> user_map;
-	typedef std::map <LibAIS::String, dChan *> chan_map;
+	std::queue < AISutil::String > outputQueue;
+	std::queue < AISutil::String > ModeoutputQueue;
+	AISutil::SocketIPv4TCP socky;
+	typedef std::map <AISutil::String, User *> user_map;
+	typedef std::map <AISutil::String, dChan *> chan_map;
 	user_map users;
 	chan_map chans;
 	
       public:
 //	UserBase clients;
 	static const Kine::Utils::base_type PasswordStrBase = 85;
-	static const LibAIS::String::size_type PasswordStrBaseLongPad = 5;
-	User* const addUser(const LibAIS::String& name, const int oid);
-	dChan* const addChan(const LibAIS::String& name, const int oid);
-	bool delUser(LibAIS::String &);
-	User* findUser(LibAIS::String &);
-	void setNick(User &,LibAIS::String &);
-	LibAIS::String getRegNickCount(void);
+	static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
+	User* const addUser(const AISutil::String& name, const int oid);
+	dChan* const addChan(const AISutil::String& name, const int oid);
+	bool delUser(AISutil::String &);
+	User* findUser(AISutil::String &);
+	void setNick(User &,AISutil::String &);
+	AISutil::String getRegNickCount(void);
 	// dunno where you want these fellow james
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db);
@@ -158,36 +158,36 @@ namespace Exordium {
 	bool SecurePrivmsg;
 
 	// Function Declrations below here.
-	int getAccess(LibAIS::String &, LibAIS::String &);
-	void shutdown(const LibAIS::String &);
+	int getAccess(AISutil::String &, AISutil::String &);
+	void shutdown(const AISutil::String &);
 	void SynchTime(void);
 	void expireRun(void);
-	LibAIS::String getQuote(int const &number);
-	LibAIS::String getLogCount(void);
-	LibAIS::String getGlineCount(void);
-	LibAIS::String getNoteCount(void);
-	bool writeData (LibAIS::String &);
+	AISutil::String getQuote(int const &number);
+	AISutil::String getLogCount(void);
+	AISutil::String getGlineCount(void);
+	AISutil::String getNoteCount(void);
+	bool writeData (AISutil::String &);
 	void disconnect(void);
 	bool connect(void);
 	void doBurst(void);
-	void AddOnlineServer(LibAIS::String const &, LibAIS::String const &, 
-			     LibAIS::String const &);
-        void DelOnlineServer(LibAIS::String const &);
+	void AddOnlineServer(AISutil::String const &, AISutil::String const &, 
+			     AISutil::String const &);
+        void DelOnlineServer(AISutil::String const &);
 
-	void doPong(LibAIS::String const &);
+	void doPong(AISutil::String const &);
 	bool queueFlush(void);
-	void mode (LibAIS::String const &, LibAIS::String const &, 
-		   LibAIS::String const &, LibAIS::String const &);
-	LibAIS::String parseHelp(LibAIS::String const &);
-	void doHelp(User&, LibAIS::String const &,
-		    LibAIS::String const &, LibAIS::String const &);
-	void log (User&, LibAIS::String const &, 
-		  LibAIS::String const &, LibAIS::String const &);
-	void log (User&, LibAIS::String const &, 
-		  LibAIS::String const &);
-	void sendEmail(LibAIS::String const &, LibAIS::String const &, 
-		       LibAIS::String const &);
-	void servicePart (LibAIS::String const &, LibAIS::String const &);
+	void mode (AISutil::String const &, AISutil::String const &, 
+		   AISutil::String const &, AISutil::String const &);
+	AISutil::String parseHelp(AISutil::String const &);
+	void doHelp(User&, AISutil::String const &,
+		    AISutil::String const &, AISutil::String const &);
+	void log (User&, AISutil::String const &, 
+		  AISutil::String const &, AISutil::String const &);
+	void log (User&, AISutil::String const &, 
+		  AISutil::String const &);
+	void sendEmail(AISutil::String const &, AISutil::String const &, 
+		       AISutil::String const &);
+	void servicePart (AISutil::String const &, AISutil::String const &);
 	void test(void)
 	  {
 	     std::cout << 
@@ -195,21 +195,21 @@ namespace Exordium {
 	       std::endl;
 	  };
 	//Inline Functions Below here.
-	void killnick (LibAIS::String const &target,
-		       LibAIS::String const &from,
-		       LibAIS::String const &reason)
+	void killnick (AISutil::String const &target,
+		       AISutil::String const &from,
+		       AISutil::String const &reason)
 	  {
 	     queueAdd(":" + from + " KILL " + target + " :" + reason);
 	  };
 
-	void helpme (LibAIS::String const &line, LibAIS::String const &from)
+	void helpme (AISutil::String const &line, AISutil::String const &from)
 	  {
 	     queueAdd(":" + from + " HELPME :" + line);
 	  };
 	
-	void serviceNotice(LibAIS::String const &line,
-			   LibAIS::String const &service, 
-			   LibAIS::String const &target)
+	void serviceNotice(AISutil::String const &line,
+			   AISutil::String const &service, 
+			   AISutil::String const &target)
 	  {
 	     if (usePrivmsg(target.toLower())) {
 		queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
@@ -217,64 +217,64 @@ namespace Exordium {
 		queueAdd(":" + service + " NOTICE " + target + " :" + line);
 	     }
 	  }
-	void serviceNoticeForce(LibAIS::String const &line, 
-				LibAIS::String const &service,
-				LibAIS::String const &target)
+	void serviceNoticeForce(AISutil::String const &line, 
+				AISutil::String const &service,
+				AISutil::String const &target)
 	  {
 	     queueAdd(":" + service + " NOTICE " + target + " :" + line);
 	  }
 	
-	void servicePrivmsg(LibAIS::String const &line,
-			    LibAIS::String const &service, 
-			    LibAIS::String const &target)
+	void servicePrivmsg(AISutil::String const &line,
+			    AISutil::String const &service, 
+			    AISutil::String const &target)
 	  {
 	     queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	  }
 	
-	void Debug(LibAIS::String const &line);
+	void Debug(AISutil::String const &line);
 	
-	void serverMode(LibAIS::String const &chan, LibAIS::String const &mode,
-			LibAIS::String const &target)
+	void serverMode(AISutil::String const &chan, AISutil::String const &mode,
+			AISutil::String const &target)
 	  {
 	     ModequeueAdd(":Chan MODE " + chan + " " + mode + " " + target);
 	  }
 	
-	void globop(LibAIS::String const &line, LibAIS::String const &from)
+	void globop(AISutil::String const &line, AISutil::String const &from)
 	  {
 	     queueAdd(":" + from + " GOPER :" + line);
 	  };
 	
-	void sendCTCPpingReply(LibAIS::String const &from,
-			       LibAIS::String const &who,
-			       LibAIS::String & data)
+	void sendCTCPpingReply(AISutil::String const &from,
+			       AISutil::String const &who,
+			       AISutil::String & data)
 	  {
 	     queueAdd(":" + from + " NOTICE " + who + " :\001PING " + 
 		      data + "\001");
 	  };
 	
-	void sendCTCPversionReply(LibAIS::String const &from,
-				  LibAIS::String const &who)
+	void sendCTCPversionReply(AISutil::String const &from,
+				  AISutil::String const &who)
 	  {
 	     queueAdd(":" + from + " NOTICE " + who +
 		      " :\001VERSION IRCDome Network Services (c)2002 James I Wilkins <james@ircdome.org>\001");
 	  };
     
 
-	void registerService(LibAIS::String const &nick,
-			     LibAIS::String const &user,
-			     LibAIS::String const &host,
-			     LibAIS::String const &modes,
-			     LibAIS::String const &realname)
+	void registerService(AISutil::String const &nick,
+			     AISutil::String const &user,
+			     AISutil::String const &host,
+			     AISutil::String const &modes,
+			     AISutil::String const &realname)
 	  {                               
 	     queueAdd ("NICK " + nick + " 1 " + 
-		       LibAIS::String::convert(currentTime) + " " + modes + 
+		       AISutil::String::convert(currentTime) + " " + modes + 
 		       " " + user + " " + host +
 		       " services.ircdome.org services.ircdome.org 0 1 :" + 
 		       realname);
         }; 
 	
-	void serviceJoin(LibAIS::String const &service,
-			 LibAIS::String const &target);
+	void serviceJoin(AISutil::String const &service,
+			 AISutil::String const &target);
 	
 	bool queueReady(void) const
 	  { 
@@ -311,7 +311,7 @@ namespace Exordium {
 	     }
 	  };
 
-	void queueAdd (const LibAIS::String& line)
+	void queueAdd (const AISutil::String& line)
 	  {
 	     if(connected)
 	       {
@@ -325,7 +325,7 @@ namespace Exordium {
 	       }
 	  };
 
-	void ModequeueAdd(const LibAIS::String & line)
+	void ModequeueAdd(const AISutil::String & line)
 	  {
 	     logger.logLine("MQ: " + line);
 	     outputQueue.push(line+ "\r\n");
@@ -356,53 +356,53 @@ namespace Exordium {
 	  {
 	     return countTx;
 	  };
-	LibAIS::String getOnlineCount(void)
+	AISutil::String getOnlineCount(void)
 	  {
-	     return LibAIS::String::convert(users.size());
+	     return AISutil::String::convert(users.size());
 	  };
-	bool usePrivmsg(LibAIS::String const &);
-	void serviceKick(LibAIS::String const &, LibAIS::String const &,
-			 LibAIS::String const &);
-	bool isOp(LibAIS::String const &, LibAIS::String const &);
-	bool isVoice(LibAIS::String const &, LibAIS::String const &);
-	int countNotes(LibAIS::String const &);
-	void sendNote(LibAIS::String const &,LibAIS::String const &,LibAIS::String const &); 
+	bool usePrivmsg(AISutil::String const &);
+	void serviceKick(AISutil::String const &, AISutil::String const &,
+			 AISutil::String const &);
+	bool isOp(AISutil::String const &, AISutil::String const &);
+	bool isVoice(AISutil::String const &, AISutil::String const &);
+	int countNotes(AISutil::String const &);
+	void sendNote(AISutil::String const &,AISutil::String const &,AISutil::String const &); 
 	void checkpoint(void);
 	unsigned long random(unsigned long max);
-	int locateID(LibAIS::String const &nick);
-	LibAIS::String generatePassword(LibAIS::String const &,LibAIS::String const &);
-	bool isAuthorised(LibAIS::String const &);
-	User* addClient(LibAIS::String const &, LibAIS::String const &,
-			LibAIS::String const &, LibAIS::String const &,
-			LibAIS::String const &, LibAIS::String const &,
-			LibAIS::String const &, LibAIS::String const &,
-			LibAIS::String const &);
-	int getRequiredAccess(LibAIS::String const &, LibAIS::String const &);
-	bool isNickRegistered(LibAIS::String const &);
-	LibAIS::String getPass(LibAIS::String const &);
-	LibAIS::String stripModes(LibAIS::String const &);
-	int getRegisteredNickID(LibAIS::String const &);
-	void modeIdentify(LibAIS::String const &);
-	void updateLastID(LibAIS::String const &);
-	LibAIS::String getNick(int const &);
-	LibAIS::String getOnlineNick(int const &);
-	LibAIS::String getpendingCode(LibAIS::String const &);
-	void registerNick(LibAIS::String const &,LibAIS::String const &,LibAIS::String const &);
-	LibAIS::String genAuth(LibAIS::String const &);
-	LibAIS::String getURL(LibAIS::String const &);
-	LibAIS::String getMSN(LibAIS::String const &);
-	LibAIS::String getYAHOO(LibAIS::String const &);
-	LibAIS::String getAIM(LibAIS::String const &);
-	LibAIS::String getICQ(LibAIS::String const &);
-//	LibAIS::String getLanguage(LibAIS::String const &);
-	LibAIS::String getEmail(LibAIS::String const &);
-	LibAIS::String getRegDate(LibAIS::String const &);
-	LibAIS::String getLastID(LibAIS::String const &);
-	LibAIS::String getLastHost(LibAIS::String const &);
-        void addOper(LibAIS::String const &, int access);
-        void delOper(LibAIS::String const &);
-        bool isOper(LibAIS::String const &);
-        void validateOper(LibAIS::String &);
+	int locateID(AISutil::String const &nick);
+	AISutil::String generatePassword(AISutil::String const &,AISutil::String const &);
+	bool isAuthorised(AISutil::String const &);
+	User* addClient(AISutil::String const &, AISutil::String const &,
+			AISutil::String const &, AISutil::String const &,
+			AISutil::String const &, AISutil::String const &,
+			AISutil::String const &, AISutil::String const &,
+			AISutil::String const &);
+	int getRequiredAccess(AISutil::String const &, AISutil::String const &);
+	bool isNickRegistered(AISutil::String const &);
+	AISutil::String getPass(AISutil::String const &);
+	AISutil::String stripModes(AISutil::String const &);
+	int getRegisteredNickID(AISutil::String const &);
+	void modeIdentify(AISutil::String const &);
+	void updateLastID(AISutil::String const &);
+	AISutil::String getNick(int const &);
+	AISutil::String getOnlineNick(int const &);
+	AISutil::String getpendingCode(AISutil::String const &);
+	void registerNick(AISutil::String const &,AISutil::String const &,AISutil::String const &);
+	AISutil::String genAuth(AISutil::String const &);
+	AISutil::String getURL(AISutil::String const &);
+	AISutil::String getMSN(AISutil::String const &);
+	AISutil::String getYAHOO(AISutil::String const &);
+	AISutil::String getAIM(AISutil::String const &);
+	AISutil::String getICQ(AISutil::String const &);
+//	AISutil::String getLanguage(AISutil::String const &);
+	AISutil::String getEmail(AISutil::String const &);
+	AISutil::String getRegDate(AISutil::String const &);
+	AISutil::String getLastID(AISutil::String const &);
+	AISutil::String getLastHost(AISutil::String const &);
+        void addOper(AISutil::String const &, int access);
+        void delOper(AISutil::String const &);
+        bool isOper(AISutil::String const &);
+        void validateOper(AISutil::String &);
 	
      };
 }; // namespace Exordium

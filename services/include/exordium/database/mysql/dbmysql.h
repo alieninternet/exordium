@@ -32,7 +32,7 @@
 #include <exordium/conf.h>
 #include <exordium/log.h>
 
-#include <libais/string/string.h>
+#include <aisutil/string/string.h>
 
 #include <mysql.h>
 
@@ -54,18 +54,18 @@ namespace Exordium {
       virtual void dbConnect(void);
       virtual void dbDisconnect(void);
 
-      virtual void dbSelectDB(LibAIS::String const &dbName);
+      virtual void dbSelectDB(AISutil::String const &dbName);
 
-      virtual int dbQuery(LibAIS::String const &query);
+      virtual int dbQuery(AISutil::String const &query);
 
-      virtual LibAIS::String dbGetValue(void);
-      virtual LibAIS::String dbGetValue(int field);
+      virtual AISutil::String dbGetValue(void);
+      virtual AISutil::String dbGetValue(int field);
 
       virtual void dbGetRow(void);
 
       virtual void dbClearRes(void);
 
-      virtual void dbLock(LibAIS::String const &table);
+      virtual void dbLock(AISutil::String const &table);
       virtual void dbUnlock(void);
 
       // Commit and roolback (transaction mode) not implemented in MySQL

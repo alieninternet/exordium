@@ -38,7 +38,7 @@
 # include "cards/card.h"
 
 # define EXORDI8_FUNC(x) \
-     bool x(Exordium::User& origin, LibAIS::StringTokens& line)
+     bool x(Exordium::User& origin, AISutil::StringTokens& line)
 
 class Hangman : public ChannelGame {
  private:
@@ -76,7 +76,7 @@ class Hangman : public ChannelGame {
 					bool quiet = false);
    
    // Jump to the next player, telling the channel why
-   void nextPlayer(const LibAIS::String& why, bool withMatchNotify = true);
+   void nextPlayer(const AISutil::String& why, bool withMatchNotify = true);
 
    // Read in a random word depending on the number of chars set
    bool getLevelData(unsigned int numChars);
@@ -94,23 +94,23 @@ class Hangman : public ChannelGame {
 //   EXORDI8_FUNC(parseDIFFICULTY);
 
    // This is the word to be guessed
-   LibAIS::String word;
+   AISutil::String word;
 
    // Letters already tried
-   LibAIS::String wrongGuesses;
-   LibAIS::String correctGuesses;
+   AISutil::String wrongGuesses;
+   AISutil::String correctGuesses;
 
  public:
    // Constructor
-   Hangman(Game::Module& module, const LibAIS::String& channel, Exordium::User& caller);
+   Hangman(Game::Module& module, const AISutil::String& channel, Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)
      { return new Hangman(module, channel, caller); }
    
    // Parse a line..
-   bool parseLine(Exordium::User& origin, LibAIS::String& command,
-		  LibAIS::StringTokens& tokens);
+   bool parseLine(Exordium::User& origin, AISutil::String& command,
+		  AISutil::StringTokens& tokens);
 };
    
 #endif // __HANGMAN_H__

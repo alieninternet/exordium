@@ -43,7 +43,7 @@ namespace Exordium {
     public:
       Log(const Config& c);
 	
-      void logLine(const LibAIS::String& line);
+      void logLine(const AISutil::String& line);
    };
 
 };

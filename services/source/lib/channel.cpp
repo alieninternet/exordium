@@ -29,8 +29,8 @@
 #include "exordium/services.h"
 
 using namespace Exordium;
-using LibAIS::String;
-using LibAIS::StringMask;
+using AISutil::String;
+using AISutil::StringMask;
 namespace Exordium
 {
 

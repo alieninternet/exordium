@@ -31,8 +31,8 @@
 
 #include "hangman.h"
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 
 // This is needed for translate since it doesn't like tolower gcc 3.x
 inline char tolower_wrapper (char ch) { return tolower(ch); }

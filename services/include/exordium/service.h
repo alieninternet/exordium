@@ -28,7 +28,7 @@
 # define SERVICE_H
 
 # include <kineircd/str.h>
-# include <libais/config/parser.h>
+# include <aisutil/config/parser.h>
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -50,20 +50,20 @@ namespace Exordium {
 	 const unsigned short versionMinor;
       };
       
-      class ConfigData : public LibAIS::ConfigData {
+      class ConfigData : public AISutil::ConfigData {
        private:
 	 // Configuration information (this is a default list for this base)
-	 static const LibAIS::ConfigParser::defTable_type defaultDefinitions;
+	 static const AISutil::ConfigParser::defTable_type defaultDefinitions;
 	 
        protected:
-	 LibAIS::String defDescription;			// Our description
-	 LibAIS::String defHostname;			// Our hostname
-	 LibAIS::String defName;			// Our name
+	 AISutil::String defDescription;			// Our description
+	 AISutil::String defHostname;			// Our hostname
+	 AISutil::String defName;			// Our name
 	 
        public:
 	 // Constructor
-	 ConfigData(const LibAIS::String& d, const LibAIS::String& h,
-		    const LibAIS::String& n)
+	 ConfigData(const AISutil::String& d, const AISutil::String& h,
+		    const AISutil::String& n)
 	   : defDescription(d),
 	     defHostname(h),
 	     defName(n)
@@ -74,16 +74,16 @@ namespace Exordium {
 	   {};
 
 	 // Grab the configuration definition table
-	 virtual const LibAIS::ConfigParser::defTable_type& 
+	 virtual const AISutil::ConfigParser::defTable_type& 
 	   getDefinitions(void) const
 	   { return defaultDefinitions; };
 	 
 	 // Return variables..
-	 const LibAIS::String& getDescription(void) const
+	 const AISutil::String& getDescription(void) const
 	   { return defDescription; };
-	 const LibAIS::String& getHostname(void) const
+	 const AISutil::String& getHostname(void) const
 	   { return defHostname; };
-	 const LibAIS::String& getName(void) const
+	 const AISutil::String& getName(void) const
 	   { return defName; };
       };
       
@@ -106,13 +106,13 @@ namespace Exordium {
       virtual void start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
-      virtual void stop(const LibAIS::String& reason) {};
+      virtual void stop(const AISutil::String& reason) {};
 
       // Parsers
-      virtual void parseLine(LibAIS::StringTokens& line, User& origin) = 0;
+      virtual void parseLine(AISutil::StringTokens& line, User& origin) = 0;
       
-      virtual void parseLine(LibAIS::StringTokens& line, User& origin,
-			     const LibAIS::String& channel) = 0;
+      virtual void parseLine(AISutil::StringTokens& line, User& origin,
+			     const AISutil::String& channel) = 0;
       
       // Grab the information structure of a module
       virtual const moduleInfo_type& getModuleInfo(void) const = 0;
@@ -122,7 +122,7 @@ namespace Exordium {
       virtual ConfigData& getConfigData(void) = 0;
 
       // Return the nickname of the module (for lazy people)
-      const LibAIS::String& getName(void) const
+      const AISutil::String& getName(void) const
 	{ return getConfigData().getName(); };
    };
 };

@@ -29,7 +29,7 @@
 #ifndef _BASE_H
 #define _BASE_H
 
-#include <libais/string/string.h>
+#include <aisutil/string/string.h>
 
 using namespace std;
 
@@ -56,18 +56,18 @@ namespace Exordium {
       virtual void dbCommit(void)=0;
       virtual void dbRollback(void)=0;
 
-      virtual void dbSelectDB(LibAIS::String const &dbName)=0;
+      virtual void dbSelectDB(AISutil::String const &dbName)=0;
 
-      virtual int dbQuery(LibAIS::String const &query)=0;
+      virtual int dbQuery(AISutil::String const &query)=0;
 
-      virtual LibAIS::String dbGetValue(void)=0;
-      virtual LibAIS::String dbGetValue(int field)=0;
+      virtual AISutil::String dbGetValue(void)=0;
+      virtual AISutil::String dbGetValue(int field)=0;
 
       virtual void dbGetRow(void)=0;
 
       virtual void dbClearRes(void)=0;
 
-      virtual void dbLock(LibAIS::String const &table)=0;
+      virtual void dbLock(AISutil::String const &table)=0;
       virtual void dbUnlock(void)=0;
 
 

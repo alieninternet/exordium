@@ -36,12 +36,12 @@ namespace Exordium {
 /* temp name ... Chan conflicts with the module 'Chan' .. suggestions for name? :-) */
    class dChan {
     private:
-      LibAIS::String name;
+      AISutil::String name;
       int onlineID;
       Services& services;
       
     public:
-     const LibAIS::String& getName(void) const
+     const AISutil::String& getName(void) const
 	{ return name; };
       
       /* getOnlineID()
@@ -59,10 +59,10 @@ namespace Exordium {
        * 
        * This is redundant imho. - simon
        */
-      const LibAIS::String getOnlineIDString(void) const
-	{ return LibAIS::String::convert(onlineID); };
+      const AISutil::String getOnlineIDString(void) const
+	{ return AISutil::String::convert(onlineID); };
 
-      dChan(LibAIS::String const &n, int const &oid, Services &s)
+      dChan(AISutil::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..
           services(s)// Gives us access to the full suite of services..

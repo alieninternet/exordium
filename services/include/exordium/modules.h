@@ -54,7 +54,7 @@ namespace Exordium {
 	 ~Module(void);
       };
 
-      typedef std::map <LibAIS::String, Module *> modules_type;
+      typedef std::map <AISutil::String, Module *> modules_type;
       
     private:
       // The list of modules
@@ -69,32 +69,32 @@ namespace Exordium {
       ~Modules(void);
       
       // Add a module to the list
-      Service* const loadModule(const LibAIS::String& fileName, 
-				LibAIS::String& errString);
+      Service* const loadModule(const AISutil::String& fileName, 
+				AISutil::String& errString);
       
       // Remove a module from the list, and unload it
-      void unloadModule(const LibAIS::String& name, 
-			const LibAIS::String& reason);
+      void unloadModule(const AISutil::String& name, 
+			const AISutil::String& reason);
 
       // Start all modules in the list
       void startAll(Exordium::Services& services);
       
       // Stop and unload all the modules in the list
-      void unloadAll(const LibAIS::String& reason);
+      void unloadAll(const AISutil::String& reason);
       
       // Check if a module exists
-      bool exists(const LibAIS::String& name) const;
+      bool exists(const AISutil::String& name) const;
       
       // Throw a line at the appropriate service (sent directly)
-      void throwLine(const LibAIS::String& name, LibAIS::StringTokens& line, 
+      void throwLine(const AISutil::String& name, AISutil::StringTokens& line, 
 		     User &origin);
       
       // Throw a line at the appropriate service (sent to a channel)
-      void throwLine(const LibAIS::String& name, LibAIS::StringTokens& line,
-		     User& origin, const LibAIS::String& channel);
+      void throwLine(const AISutil::String& name, AISutil::StringTokens& line,
+		     User& origin, const AISutil::String& channel);
       
       // Dump a list of modules
-      LibAIS::String dumpModules(void) const;
+      AISutil::String dumpModules(void) const;
    };
 }; // namespace Exordium
 

@@ -35,8 +35,8 @@
 #include "love.h"
 
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 

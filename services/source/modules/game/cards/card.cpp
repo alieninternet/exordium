@@ -29,8 +29,8 @@
 
 #include "card.h"
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 
 
 /* This relates closely to the enumeration list in the card class. For

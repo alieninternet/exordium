@@ -35,23 +35,23 @@ namespace Game {
    class ConfigData : public Exordium::Service::ConfigData {
     private:
       // Configuration information
-      static const LibAIS::ConfigParser::defTable_type defTable;
+      static const AISutil::ConfigParser::defTable_type defTable;
 
       // An example string (proof of concept). This is temporary.
-      LibAIS::String defExample;
+      AISutil::String defExample;
       
     public:
       // Constructor
-      ConfigData(const LibAIS::String& d)
+      ConfigData(const AISutil::String& d)
 	: Exordium::Service::ConfigData(d, "somewhere.org", "Game")
 	{};
       
       // Grab the configuration definition table (over-write the original)
-      const LibAIS::ConfigParser::defTable_type& getDefinitions(void) const
+      const AISutil::ConfigParser::defTable_type& getDefinitions(void) const
 	{ return defTable; };
       
       // Return variables..
-      const LibAIS::String& getExample(void) const
+      const AISutil::String& getExample(void) const
 	{ return defExample; };
    };
 }; // namespace Game

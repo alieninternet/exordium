@@ -150,7 +150,7 @@ void CMySQL::dbSelectDB(String const &dbName)
 }
 
 
-void CMySQL::dbLock(LibAIS::String const &table)
+void CMySQL::dbLock(AISutil::String const &table)
 {
   dbQuery("LOCK TABLES " + table + " WRITE");
 }

@@ -28,7 +28,7 @@
 
 
 // Game module configuration table
-const LibAIS::ConfigParser::defTable_type Game::ConfigData::defTable = {
+const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
      {
 	"DESCRIPTION", 4,
 	  (void *)&ConfigData::defDescription, &varHandleString,

@@ -29,7 +29,7 @@
 
 #include <kineircd/str.h>
 
-# define VOTE_FUNC(x)           x(LibAIS::String &origin, LibAIS::StringTokens &tokens)
+# define VOTE_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)
 
 #include "exordium/service.h"
 #include "exordium/services.h"
@@ -50,7 +50,7 @@ private:
   static struct functionTableStruct const functionTable[];
    
 public:
-   Vote(Exordium::Services& s, const LibAIS::String& mn)
+   Vote(Exordium::Services& s, const AISutil::String& mn)
      : Service(s, mn)
 	{
 		std::cout << "Vote New()" << std::endl;
@@ -62,8 +62,8 @@ public:
    // Start the module
    void start(void);
    
-   void parseLine (LibAIS::String const &, LibAIS::String const &);
-   void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
+   void parseLine (AISutil::String const &, AISutil::String const &);
+   void parseLine (AISutil::String const &, AISutil::String const &, AISutil::String const &);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

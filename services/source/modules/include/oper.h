@@ -31,7 +31,7 @@
 #include "exordium/services.h"
 #include <kineircd/str.h>
 
-#define OPER_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens)
+#define OPER_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
 
 
 class Oper : public Exordium::Service
@@ -62,8 +62,8 @@ public:
    // Start the module
    void start(Exordium::Services& s);
    
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin, LibAIS::String const &);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin, AISutil::String const &);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

@@ -31,8 +31,8 @@
 #include <kineircd/str.h>
 #include "exordium/ircdome.h"
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 const struct Parser::functionTableStruct Parser::functionTable[] =

@@ -29,7 +29,7 @@
 
 #include "hand.h"
 
-using LibAIS::String;
+using AISutil::String;
 
 
 /* getHandStr - Grab the name of the cards in this hand

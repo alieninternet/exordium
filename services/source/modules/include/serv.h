@@ -29,7 +29,7 @@
 
 # include <kineircd/str.h>
 
-# define SERV_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens)
+# define SERV_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
 
 # include "exordium/service.h"
 # include "exordium/services.h"
@@ -61,8 +61,8 @@ class Serv : public Exordium::Service
    // Start the module
    void start(Exordium::Services& s);
 
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
-   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin, LibAIS::String const &);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
+   void parseLine (AISutil::StringTokens& line, Exordium::User& origin, AISutil::String const &);
 
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

@@ -28,7 +28,7 @@
 #include <exordium/database/database.h>
 
 using namespace Exordium;
-using LibAIS::String;
+using AISutil::String;
 
 CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
 {
@@ -122,7 +122,7 @@ int CDatabase::dbCount(String const &table, String const &whereargs)
   return database->dbGetValue().toInt();
 }
 
-int CDatabase::dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs,LibAIS::String const &orderargs)
+int CDatabase::dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
 {
   database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
   return database->dbGetValue().toInt();

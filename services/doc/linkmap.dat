@@ -37,7 +37,7 @@ digraph intranet_map {
 //     color=black;
   
      node [shape=diamond,color=lightblue];
-     "libais";
+     "libaisutil";
      "libdl";
      "libmysqlclient";
      "libnetsnmp";
@@ -68,7 +68,7 @@ digraph intranet_map {
   };
 
   // Linkage map
-  "KineIRCd" -> "libais";
+  "KineIRCd" -> "libaisutil";
   "KineIRCd" -> "libkineircd";
   "libkineircd" -> "mod_exordium" [color=blue,dir=both];
   "libkineircd" -> "mod_http" [color=blue,dir=both];
@@ -76,22 +76,22 @@ digraph intranet_map {
   "libkineircd" -> "mod_irc2server" [color=blue,dir=both];
   "libkineircd" -> "mod_irc2user" [color=blue,dir=both];
   "libkineircd" -> "mod_snmp" [color=blue,dir=both];
-  "libkineircd" -> "libais";
+  "libkineircd" -> "libaisutil";
   "libkineircd" -> "libdl";
   "libkineircd" -> "libssl" [style=dashed];
-  "mod_http" -> "libais";
+  "mod_http" -> "libaisutil";
   "mod_http" -> "libxml2";
-  "mod_iirc1" -> "libais";
-  "mod_irc2server" -> "libais";
+  "mod_iirc1" -> "libaisutil";
+  "mod_irc2server" -> "libaisutil";
   "mod_irc2server" -> "libkineircd_irc2";
-  "mod_irc2user" -> "libais";
+  "mod_irc2user" -> "libaisutil";
   "mod_irc2user" -> "libkineircd_irc2";
-  "mod_snmp" -> "libais";
+  "mod_snmp" -> "libaisutil";
   "mod_snmp" -> "libnetsnmp";
   "mod_snmp" -> "libnetsnmpagent";
   "mod_snmp" -> "libnetsnmphelpers";
   "mod_snmp" -> "libnetsnmpmibs";
-  "libkineircd_irc2" -> "libais";
+  "libkineircd_irc2" -> "libaisutil";
   "libkineircd_irc2" -> "libkineircd";
 
   subgraph "exordium" {
@@ -133,10 +133,10 @@ digraph intranet_map {
      };
 
      // Linkage map..
-     "mod_exordium" -> "libais";
+     "mod_exordium" -> "libaisutil";
      "mod_exordium" -> "libdl";
      "mod_exordium" -> "libexordium";
-     "libexordium" -> "libais";
+     "libexordium" -> "libaisutil";
      "libexordium" -> "libkineircd";
      "libexordium" -> "libmysqlclient" [style=dashed];
      "libexordium" -> "libpq" [style=dashed];
@@ -150,21 +150,21 @@ digraph intranet_map {
      "libexordium" -> "mod_serv.so" [color=blue,dir=both];
      "libexordium" -> "mod_stats.so" [color=blue,dir=both];
      "libexordium" -> "mod_vote.so" [color=blue,dir=both];
-     "libexordium_game" -> "libais";
+     "libexordium_game" -> "libaisutil";
      "libexordium_game" -> "libdl";
      "libexordium_game" -> "libexordium";
      "libexordium_game" -> "game_exordi8.so" [color=blue,dir=both];
      "libexordium_game" -> "game_hangman.so" [color=blue,dir=both];
-     "mod_bot.so" -> "libais";
-     "mod_chan.so" -> "libais";
-     "mod_game.so" -> "libais";
+     "mod_bot.so" -> "libaisutil";
+     "mod_chan.so" -> "libaisutil";
+     "mod_game.so" -> "libaisutil";
      "mod_game.so" -> "libexordium_game" [dir=both];
-     "mod_love.so" -> "libais";
-     "mod_nick.so" -> "libais";
-     "mod_note.so" -> "libais";
-     "mod_oper.so" -> "libais";
-     "mod_serv.so" -> "libais";
-     "mod_stats.so" -> "libais";
-     "mod_vote.so" -> "libais";
+     "mod_love.so" -> "libaisutil";
+     "mod_nick.so" -> "libaisutil";
+     "mod_note.so" -> "libaisutil";
+     "mod_oper.so" -> "libaisutil";
+     "mod_serv.so" -> "libaisutil";
+     "mod_stats.so" -> "libaisutil";
+     "mod_vote.so" -> "libaisutil";
   };
 };

@@ -30,8 +30,8 @@
 #include "exordium/modules.h"
 
 using namespace Exordium;
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 
 
 /* ~Modules - Shut down all existing modules in the list
@@ -170,7 +170,7 @@ void Modules::startAll(Services& services)
 /* unloadAll - Stop all the modules in the list
  * Original 21/09/2002 pickle
  */
-void Modules::unloadAll(const LibAIS::String& reason)
+void Modules::unloadAll(const String& reason)
 {
    while (!modules.empty()) {
       (*modules.begin()).second->service->stop(reason);
@@ -184,7 +184,7 @@ void Modules::unloadAll(const LibAIS::String& reason)
 /* exists - Check if a module exists
  * Original 07/06/2002 james
  */
-bool Modules::exists(const LibAIS::String& name) const
+bool Modules::exists(const String& name) const
 {
    // Locate the module..
    modules_type::const_iterator moduleLocation =
@@ -236,7 +236,7 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
  * 09/06/2002 james - Added the ability to return the line as a string
  * 17/09/2002 pickle - Went const mad, and stopped all that horrible copying
  */
-LibAIS::String Modules::dumpModules(void) const 
+String Modules::dumpModules(void) const
 {
    std::cout << "Modules loaded: ";
    std::ostringstream tmp;

@@ -31,8 +31,8 @@
 #include <kineircd/str.h>
 #include <map>
 
-using LibAIS::String;
-using LibAIS::StringTokens;
+using AISutil::String;
+using AISutil::StringTokens;
 using namespace Exordium;
 
 namespace Exordium

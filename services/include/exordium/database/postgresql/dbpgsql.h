@@ -34,7 +34,7 @@
 #include <exordium/log.h>
 
 
-#include <libais/string/string.h>
+#include <aisutil/string/string.h>
 
 #ifdef HAVE_LIBPQ_FE_H
   #include <libpq-fe.h>
@@ -42,7 +42,7 @@
   #include <libpq-int.h>
 #endif
 
-using LibAIS::String;
+using AISutil::String;
 
 namespace Exordium {
 
@@ -62,12 +62,12 @@ namespace Exordium {
       virtual void dbConnect(void);
       virtual void dbDisconnect(void);
 
-      virtual void dbSelectDB(LibAIS::String const &dbName);
+      virtual void dbSelectDB(AISutil::String const &dbName);
 
-      virtual int dbQuery(LibAIS::String const &query);
+      virtual int dbQuery(AISutil::String const &query);
 
-      virtual LibAIS::String dbGetValue(void);
-      virtual LibAIS::String dbGetValue(int field);
+      virtual AISutil::String dbGetValue(void);
+      virtual AISutil::String dbGetValue(int field);
 
       virtual void dbGetRow(void);
 
@@ -80,7 +80,7 @@ namespace Exordium {
 
 
       // Locking is done automatically by postgresql
-      virtual void dbLock(LibAIS::String const &table) {}
+      virtual void dbLock(AISutil::String const &table) {}
       virtual void dbUnlock(void) {}
 
     private:
