@@ -33,56 +33,59 @@
 
 #include <kineircd/str.h>
 
-# define STATS_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens& tokens)
+# define STATS_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
 #include <exordium/service.h>
 #include <exordium/services.h>
 
 
-class Stats : public Exordium::Service
-{
-private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
-
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
+namespace Exordium {
+   namespace StatsModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    STATS_FUNC((Module::* const function));
+	 } static const functionTable[];
+	 
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Stats")
+	   {};
+	 
+	 ~Module(void)
+	   {};
    
-  struct functionTableStruct
-  {
-    char const *command;
-     void STATS_FUNC ((Stats::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
+	 // Start the module
+	 void start(Exordium::Services& s);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   {};
    
- public:
-   Stats(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Stats")
-     {};
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
    
-   ~Stats(void)
-     {};
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+	 
+       private:
+	 STATS_FUNC(parseHELP);
+	 
+      }; // class Module
+   }; // namespace StatsModule
+}; // namespace Exordium
    
-   // Start the module
-   void start(Exordium::Services& s);
-   
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-		  const AISutil::String& channel);
-   
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-   
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-      { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-      { return configData; };
- 
-private:
-void STATS_FUNC (parseHELP);
-
-};
-
 #endif // _SOURCE_MODULES_STATS_STATS_H_

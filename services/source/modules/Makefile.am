@@ -119,7 +119,9 @@ mod_stats_la_LDFLAGS= \
 	-avoid-version -module
 mod_stats_la_SOURCES= \
 	mod.stats/stats.cpp \
-	mod.stats/stats.h
+	mod.stats/stats.h \
+	mod.stats/tables.cpp \
+	mod.stats/tables.h
 
 mod_vote_la_LIBADD= \
 	../libexordium.la

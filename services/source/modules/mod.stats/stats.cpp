@@ -29,74 +29,69 @@
 #endif
 
 #include "stats.h"
-#include <exordium/services.h>
+#include "tables.h"
 #include <exordium/channel.h>
 #include <kineircd/str.h>
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::StatsModule;
 
 
-   struct Stats::functionTableStruct const
-     Stats::functionTable[] =
-     {
-	  {"help", &Stats::parseHELP},
-	  {0, 0}
-     };
-   void
-     Stats::parseLine (StringTokens& line, User& origin, const String& channel)
-       {
-	  return;
-       }
+const Module::functionTableStruct Module::functionTable[] = {
+     { "help",		&Module::parseHELP },
+     { 0, 0 }
+};
 
-   void
-     Stats::parseLine (StringTokens& line, User& origin)
-       {
-	  String command = line.nextToken ().toLower ();
-	  for (int i = 0; functionTable[i].command != 0; i++)
-	    {
-	       // Does this match?
-	       if (command == functionTable[i].command)
-		 {
-		    (this->*(functionTable[i].function))(origin, line);
-		    return;
-		 }
-	    }
-	  origin.sendMessage("Unrecognized Command", getName());
-       }
+
+void Module::parseLine(StringTokens& line, User& origin)
+{
+   String command = line.nextToken ().toLower ();
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == functionTable[i].command) {
+	 (this->*(functionTable[i].function))(origin, line);
+	 return;
+      }
+   }
+   origin.sendMessage("Unrecognised Command", getName());
+}
    
-   void
-     STATS_FUNC (Stats::parseHELP)
-       {
-	  String word = tokens.nextToken();
-	  String parm = tokens.nextToken();
-	  services->doHelp(origin,getName(),word,parm);
-	  String tolog = "Did HELP on word " + word + " parm " + parm;
-	  services->log(origin,getName(),String(tolog));
-       }
 
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Stats();
-     }
+STATS_FUNC(Module::parseHELP)
+{
+   String word = tokens.nextToken();
+   String parm = tokens.nextToken();
+   services->doHelp(origin,getName(),word,parm);
+   String tolog = "Did HELP on word " + word + " parm " + parm;
+   services->log(origin,getName(),String(tolog));
+}
 
-   // Module information structure
-   const Stats::moduleInfo_type Stats::moduleInfo = {
-      "Statistics Service",
-	0, 0,
-	Exordium::Service::moduleInfo_type::Events::NONE
-   };
+
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
+
+
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo = {
+   "Statistics Service",
+   0, 0,
+   Exordium::Service::moduleInfo_type::Events::NONE
+};
 
 
 // Start the service
-void Stats::start(Exordium::Services& s)
+void Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
+   
+   // Attempt to affirm our database table..
+   if (!services->getDatabase().affirmTable(Tables::statsTable)) {
+      services->logLine("Unable to affirm mod_stats database table 'stats'",
+			Log::Fatality);
+      return; // How do we tell services we did not start happily?!
+   }
    
    // Register ourself to the network
    services->registerService(getName(), getName(),
