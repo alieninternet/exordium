@@ -103,14 +103,240 @@ langtag = {
 
 langtag = {
    name = "ERROR_NOT_BOOLEAN";
-   component = "mod_nick";
    data_en = "Error: Value must be true or false";
 };
-	 
+
+langtag = {
+   name = "ERROR_COMMAND_DISABLED";
+   data_en = "Error: This command is disabled";
+};
+
 /*
  * Tags for mod_chan
  */
-   
+langtag = {
+   name = "chan_USAGE_SET";
+   component = "mod_chan";
+   data_en = "Usage: set #channel option value";
+};
+
+langtag = {
+   name = "chan_CANNOT_LOCATE_CHAN";
+   component = "mod_chan";
+   data_en = "Error: Could not locate that channel";
+};
+
+langtag = {
+   name = "chan_CHAN_NOT_REGISTERED";
+   component = "mod_chan";
+   data_en = "Error: That channel is not registered";
+};
+
+langtag = {
+   name = "chan_SET_CHANLOG_TRUE";
+   component = "mod_chan";
+   data_en = "Channel logs have now been enabled, the owner will receive an email from services every night";
+};
+
+langtag = {
+   name = "chan_SET_CHANLOG_FALSE";
+   component = "mod_chan";
+   data_en = "Channel logs have now been disabled.  The owner will receive no more emails from this channel";
+};
+
+langtag = {
+   name = "chan_SET_CHANLOG_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel log true/false";
+};
+
+langtag = {
+   name = "chan_SET_SECURE_TRUE";
+   component = "mod_chan";
+   data_en = "Channel security has been enabled";
+};
+
+langtag = {
+   name = "chan_SET_SECURE_FALSE";
+   component = "mod_chan";
+   data_en = "Channel security has been disabled";
+};
+
+langtag = {
+   name = "chan_SET_SECURE_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel secure true/false";
+};
+
+
+langtag = {
+   name = "chan_SET_UNSUPPORTED_OPTION";
+   component = "mod_chan";
+   data_en = "Error: Unsupported channel option";
+};
+
+langtag = {
+   name = "chan_NOT_ENOUGH_ACCESS";
+   component = "mod_chan";
+   data_en = "Error: You do not have enough access for that command";
+};
+
+langtag = {
+   name = "chan_LISTBAN_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: listban #channel";
+};
+
+langtag = {
+   name = "chan_INFO_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: info #channel";
+};
+
+langtag = {
+   name = "chan_INFO_START";
+   component = "mod_chan";
+   data_en = "Channel Information for %p0";
+};
+
+langtag = {
+   name = "chan_INFO_OWNER";
+   component = "mod_chan";
+   data_en = "Owner : %p0";
+};
+
+langtag = {
+   name = "chan_INFO_UNIQUEIDS";
+   component = "mod_chan";
+   data_en = "Unique IDS : %p0/%p1";
+};
+
+langtag = {
+   name = "chan_ADDUSER_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: adduser #Channel nickname level";
+};
+
+langtag = {
+   name = "chan_ADDUSER_LEVEL_MISMATCH";
+   component = "mod_chan";
+   data_en = "Error: You cannot add someone with higher, or equal access to your own";
+};
+
+langtag = {
+   name = "chan_ADDUSER_ALREADY_ADDED";
+   component = "mod_chan";
+   data_en = "Error: That person already has access";
+};
+
+langtag = {
+   name = "chan_ADDUSER_SUCCESS";
+   component = "mod_chan";
+   data_en = "Nickname has been successfully added";
+};
+
+langtag = {
+   name = "chan_BAN_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: ban #channel nickname [reason]";
+};
+
+langtag = {
+  name = "chan_BAN_DEFAULT_REASON";
+  component = "mod_chan";
+  data_en = "No reason specified";
+};
+
+langtag = {
+  name = "chan_BAN_SUCCESS";
+  component = "mod_chan";
+  data_en = "Channel ban has been successfully added";
+};
+
+langtag = {
+  name = "chan_REGISTER_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: register #channel";
+};
+
+langtag = {
+  name = "chan_REGISTER_NO_HASH";
+  component = "mod_chan";
+  data_en = "Error: Channel names must begin with the '#' symbol";
+};
+
+langtag = {
+  name = "chan_REGISTER_GREEDY_USER";
+  component = "mod_chan";
+  data_en = "Error: You are only permitted to own one channel per nickname on %p0";
+};
+
+langtag = {
+  name = "chan_REGISTER_ALREADY";
+  component = "mod_chan";
+  data_en = "Error: That channel is already registered";
+};
+
+langtag = {
+  name = "chan_REGISTER_SUCCESS";
+  component = "mod_chan";
+  data_en = "Registration Successful!";
+};
+
+langtag = {
+  name = "chan_OP_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: op #channel nick [nick2,nick3,...]";
+};
+
+langtag = {
+  name = "chan_DEOP_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: deop #channel nick [nick2,nick3,...]";
+};
+
+langtag = {
+  name = "chan_VOICE_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: voice #channel nick [nick2,nick3,...]";
+};
+
+langtag = {
+  name = "chan_DEVOICE_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: devoice #channel nick [nick2,nick3,...]";
+};
+
+langtag = {
+  name = "chan_KICK_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: kick #channel nickname [reason]";
+};
+
+langtag = {
+  name = "chan_KICK_DEFAULT_REASON";
+  component = "mod_chan";
+  data_en = "No reason specified";
+};
+
+langtag = {
+  name = "chan_ACCESS_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: access #channel";
+};
+
+langtag = {
+  name = "chan_ACCESS_START";
+  component = "mod_chan";
+  data_en = "Channel access list for %p0";
+};
+
+langtag = {
+  name = "chan_ACCESS_FINISH";
+  component = "mod_chan";
+  data_en = "End of access list for %p0";
+};
+
 /*
  * Tags for mod_nick
  */

@@ -125,13 +125,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
      {
 	origin.sendMessage(list.str(),getName());
      }
-   origin.sendMessage("End of command list",getName());
+   origin.sendMessage(GETLANG(COMMAND_LIST_END),getName());
 
 }
 
 CHAN_FUNC (Module::parseSEEN)
 {
-   origin.sendMessage("This command is disabled",getName());
+   origin.sendMessage(GETLANG(ERROR_COMMAND_DISABLED),getName());
    return;
 }
 
@@ -148,7 +148,7 @@ CHAN_FUNC (Module::parseSET)
      }
    if(channel.empty())
      {
-	origin.sendMessage("Usage: set #channel option value",getName());
+	origin.sendMessage(GETLANG(chan_USAGE_SET),getName());
 	return;
      }
    String command = tokens.nextToken();
@@ -156,13 +156,13 @@ CHAN_FUNC (Module::parseSET)
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Could not locate that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-        origin.sendMessage("Error: That channel is not registered",getName());
+        origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
    String la = origin.getIDList();
@@ -180,16 +180,16 @@ CHAN_FUNC (Module::parseSET)
 		  if(value=="true")
 		    {
 		       ptr->setChanLog(true);
-		       origin.sendMessage("Channel logs have been enabled, the owner will receive a nightly email from this channel",getName());
+		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_TRUE),getName());
 		       return;
 		    }
 		  if(value=="false")
 		    {
 		       ptr->setChanLog(false);
-		       origin.sendMessage("Channel logs have been disabled",getName());
+		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
 		       return;
 		    }
-		  origin.sendMessage("Usage: set #channel log true/false",getName());
+		  origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
 		  return;
 	       } // Log
 	     if(command=="secure")
@@ -198,24 +198,24 @@ CHAN_FUNC (Module::parseSET)
 		  if(value=="true")
 		    {
 		       ptr->setChanSecure(true);
-		       origin.sendMessage("Channel Security has been enabled",getName());
+		       origin.sendMessage(GETLANG(chan_SET_SECURE_TRUE),getName());
 		       return;
 		    }
 		  if(value=="false")
 		    {
 		       ptr->setChanSecure(false);
-		       origin.sendMessage("Channel Security has been disabled",getName());
+		       origin.sendMessage(GETLANG(chan_SET_SECURE_FALSE),getName());
 		       return;
 		    }
-		  origin.sendMessage("Usage: set #channel secure true/false",getName());
+		  origin.sendMessage(GETLANG(chan_SET_SECURE_USAGE),getName());
 		  return;
 	       } // Secure
-	     origin.sendMessage("Unsupported channel option",getName());
+	     origin.sendMessage(GETLANG(chan_SET_UNSUPPORTED_OPTION),getName());
 	     return;
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage("You do not have enough access for that command in this channel",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -233,19 +233,19 @@ CHAN_FUNC (Module::parseLISTBAN)
 
    if(channel.empty())
      {
-	origin.sendMessage("Usage: listban #channel",getName());
+	origin.sendMessage(GETLANG(chan_LISTBAN_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: I cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-	origin.sendMessage("Error: Channel not registered",getName());
+	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
    String tempnick = origin.getNickname();
@@ -266,24 +266,26 @@ CHAN_FUNC (Module::parseINFO)
 
    if(channel.empty())
      {
-	origin.sendMessage("Usage: info #channel",getName());
+	origin.sendMessage(GETLANG(chan_INFO_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: That channel does not exist",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-        origin.sendMessage("Error: That channel is not registered",getName());
+        origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
-   origin.sendMessage("Channel Information for "+channel,getName());
-   origin.sendMessage("Owner : "+ptr->getOwner(),getName());
-   origin.sendMessage("Unique IDS : "+String::convert(ptr->getRegisteredID())+"/"+String::convert(ptr->getOnlineID()),getName());
+   origin.sendMessage(GETLANG(chan_INFO_START,channel),getName());
+   origin.sendMessage(GETLANG(chan_INFO_OWNER,ptr->getOwner()),getName());
+   origin.sendMessage(GETLANG(chan_INFO_UNIQUEIDS,
+		      String::convert(ptr->getRegisteredID()),
+		      String::convert(ptr->getOnlineID())),getName());
 }
 
 CHAN_FUNC (Module::parseADDUSER)
@@ -301,19 +303,19 @@ CHAN_FUNC (Module::parseADDUSER)
    String level = tokens.nextToken();
    if(channel=="" | nickname=="" | level=="")
      {
-	origin.sendMessage("Error: adduser #channel nickname level",getName());
+	origin.sendMessage(GETLANG(chan_ADDUSER_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    User *uptr = services->findUser(nickname);
     if(!ptr->isRegistered())
      {
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
    if(!uptr->isRegistered())
      {
-	origin.sendMessage("Error: Nickname is not registered",getName());
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
 	return;
      }
 
@@ -329,17 +331,17 @@ CHAN_FUNC (Module::parseADDUSER)
 	int taccess = ptr->getAccess(nickname);
 	if(waccess==access || waccess>access || waccess<1 || waccess>499)
 	  {
-	     origin.sendMessage("Error: You cannot add someone with higher, or equal access to your own",getName());
+	     origin.sendMessage(GETLANG(chan_ADDUSER_LEVEL_MISMATCH),getName());
 	     return;
 	  }
 	if(taccess>0)
 	  {
-	     origin.sendMessage("Error: That person already has access",getName());
+	     origin.sendMessage(GETLANG(chan_ADDUSER_ALREADY_ADDED),getName());
 	     return;
 	  }
 	ptr->addAccess(nickname,level);
 	ptr->log(origin,getName(),"Added "+nickname+" with level "+level,channel);
-	origin.sendMessage("Nickname has been added",getName());
+	origin.sendMessage(GETLANG(chan_ADDUSER_SUCCESS),getName());
 	return;
      }
 }
@@ -358,7 +360,7 @@ CHAN_FUNC (Module::parseTOPIC)
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
@@ -379,7 +381,7 @@ CHAN_FUNC (Module::parseTOPIC)
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage("Sorry, you do not have the required access in that channel",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -408,7 +410,7 @@ CHAN_FUNC (Module::parseBAN)
    if(channel=="")
      {
 
-	origin.sendMessage("Usage: ban #channel nickname <reason>",getName());
+	origin.sendMessage(GETLANG(chan_BAN_USAGE),getName());
 	return;
      }
 
@@ -416,29 +418,29 @@ CHAN_FUNC (Module::parseBAN)
    if(ptr==0)
      {
 
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
    String who = tokens.nextToken();
    String reason = tokens.rest();
    if(who=="")
      {
-	origin.sendMessage("Usage: ban #channel nickname <reason>",getName());
+	origin.sendMessage(GETLANG(chan_BAN_USAGE),getName());
 	return;
      }
    if(reason=="")
      {
-	reason = "No reason specified";
+	reason = GETLANG(chan_BAN_DEFAULT_REASON);
      }
 
    User *uptr = services->findUser(who);
    if(uptr==0)
      {
-	origin.sendMessage("Error: Cannot find that user",getName());
+	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getName());
 	return;
      }
    ptr->ban(*uptr,getName(),reason,origin.getNickname());
-   origin.sendMessage("Ban added",getName());
+   origin.sendMessage(GETLANG(chan_BAN_SUCCESS),getName());
 }
 
 CHAN_FUNC (Module::parseREGISTER)
@@ -446,45 +448,45 @@ CHAN_FUNC (Module::parseREGISTER)
    String channel = tokens.nextToken();
    if (channel=="")
      {
-        origin.sendMessage("Usage: register #channel",getName());
+        origin.sendMessage(GETLANG(chan_REGISTER_USAGE),getName());
 	return;
      }
    if ( channel[0] != '#' )
      {
-	origin.sendMessage("Error: Channel names must begin with the '#' symbol",getName());
+	origin.sendMessage(GETLANG(chan_REGISTER_NO_HASH),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
 
    if(ptr==0)
      {
-	origin.sendMessage("Error: Channel does not exist",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
    if(!origin.isRegistered())
      {
-	origin.sendMessage("Error: Your nickname is not registered",getName());
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
 	return;
      }
    if(!origin.isIdentified(origin.getNickname()))
      {
-	origin.sendMessage("Error: You must be identified, and using the nickname you wish to own the channel",getName());
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getName());
 	return;
      }
    int owned = services->getChannel().ownedChannels(origin.getNickname());
    if(owned>0)
      {
-	origin.sendMessage("Error: You are only permitted own one channel per nickname on "+Kine::config().getNetworkName(),getName());
+	origin.sendMessage(GETLANG(chan_REGISTER_GREEDY_USER,Kine::config().getNetworkName()),getName());
 	return;
      }
    if(ptr->isRegistered())
      {
-	origin.sendMessage("Error: That channel is already registered",getName());
+	origin.sendMessage(GETLANG(chan_REGISTER_ALREADY),getName());
 	return;
      }
    services->getChannel().registerChannel(channel,origin.getNickname());
-   origin.sendMessage("Registration Successful",getName());
+   origin.sendMessage(GETLANG(chan_REGISTER_SUCCESS),getName());
    ptr->log(origin,"Chan","Registered the channel",channel);
    return;
 }
@@ -494,13 +496,13 @@ CHAN_FUNC (Module::parseOP)
    String channel = tokens.nextToken();
    if(channel=="")
      {
-	origin.sendMessage("Usage: op #channel nick [nick2,nick3,..]",getName());
+	origin.sendMessage(GETLANG(chan_OP_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
    String la = origin.getIDList();
@@ -556,7 +558,7 @@ CHAN_FUNC (Module::parseOP)
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -574,13 +576,13 @@ CHAN_FUNC (Module::parseDEOP)
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: deop #channel optional list of nicknames to op",getName());
+	origin.sendMessage(GETLANG(chan_DEOP_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
@@ -635,7 +637,7 @@ CHAN_FUNC (Module::parseDEOP)
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -653,13 +655,13 @@ CHAN_FUNC (Module::parseVOICE)
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: voice #channel optional list of nicknames to op",getName());
+	origin.sendMessage(GETLANG(chan_VOICE_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Could not find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
@@ -714,7 +716,7 @@ CHAN_FUNC (Module::parseVOICE)
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -732,13 +734,13 @@ CHAN_FUNC (Module::parseDEVOICE)
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: devoice #channel optional list of nicknames to op",getName());
+	origin.sendMessage(GETLANG(chan_DEVOICE_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
@@ -793,7 +795,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 
 	return;
      }
-   origin.sendMessage("Sorry, you do not have enough access in that channel",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -813,13 +815,13 @@ CHAN_FUNC (Module::parseKICK)
    String reason = tokens.rest();
    if(channel=="" | who=="" | reason=="")
      {
-	origin.sendMessage("Usage: kick #channel nickname Your reason here",getName());
+	origin.sendMessage(GETLANG(chan_KICK_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
@@ -846,7 +848,7 @@ CHAN_FUNC (Module::parseKICK)
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage("You do not have the required access to perform that command",getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
    return;
 }
 
@@ -864,23 +866,23 @@ CHAN_FUNC (Module::parseACCESS)
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: access #channel",getName());
+	origin.sendMessage(GETLANG(chan_ACCESS_USAGE),getName());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage("Error: I cannot find that channel",getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-	origin.sendMessage("Error: That channel is not registered",getName());
+	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
 
-   origin.sendMessage("Channel access list for " + channel,
+   origin.sendMessage(GETLANG(chan_ACCESS_START,channel),
 		      getName());
 
    int nbRes =
@@ -898,7 +900,7 @@ CHAN_FUNC (Module::parseACCESS)
 	origin.sendMessage(services->getNick(myRes->getValue(i,0).toInt()) + " has level "
 			   +myRes->getValue(i,1)+" access",getName());
      }
-   origin.sendMessage("End of access list",getName());
+   origin.sendMessage(GETLANG(chan_ACCESS_FINISH,channel),getName());
    ptr->log(origin,"Chan","Did a channel access",channel);
    //Finished with result set! Clean up
    delete myRes;

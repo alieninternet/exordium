@@ -311,7 +311,7 @@ NICK_FUNC (Module::parseAUTH)
 				getName());
 	     return;
 	  }
-	origin.sendMessage(GETLANG(nick_ERROR_NOT_BOOLEAN),
+	origin.sendMessage(GETLANG(ERROR_NOT_BOOLEAN),
 			   getName());
 	return;
      }
@@ -338,7 +338,7 @@ NICK_FUNC (Module::parseAUTH)
 				getName());
 	     return;
 	  }
-	origin.sendMessage(GETLANG(nick_ERROR_NOT_BOOLEAN),
+	origin.sendMessage(GETLANG(ERROR_NOT_BOOLEAN),
 			   getName());
 	return;
      }
