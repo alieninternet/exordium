@@ -1149,3 +1149,31 @@ User*
    User *ptr = addUser(client,foo);
    return ptr;
 };
+
+
+/* locateID....
+ * 
+ * shouldn't be here.. really .. just a stop gap for now 
+ * 
+ */
+int
+  Services::locateID(String const &nick)
+{
+   
+          // Saftey Check - Remove any special chars.
+	             String newnick = nick.IRCtoLower();
+	   
+	             String query = "select id from onlineclients where nickname='" + newnick + "'";          
+                     MysqlRes res = database.query(query);
+	             MysqlRow row;
+	             while ((row = res.fetch_row()))
+	               {
+	                  String id = ((std::string) row[0]);
+	                  res.free_result();
+	                  return id.toInt();
+	               }
+	             res.free_result();
+	             Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID");
+                     return 0;
+	          }
+	      
