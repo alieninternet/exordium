@@ -416,7 +416,7 @@ CHAN_FUNC (Module::parseTOPIC)
 	  {
 	     ptr->updateTopic(topic);
 	     ptr->setTopic(getName(),topic);
-	     ptr->log(origin,"Chan","Set topic to "+topic,channel);
+	     ptr->log(origin, getName() ,"Set topic to "+topic,channel);
 	     return;
 	  }
 	more = st.hasMoreTokens();
@@ -535,7 +535,7 @@ CHAN_FUNC (Module::parseREGISTER)
      }
    services->getChannel().registerChannel(channel,origin.getNickname());
    origin.sendMessage(GETLANG(chan_REGISTER_SUCCESS),getName());
-   ptr->log(origin,"Chan","Registered the channel",channel);
+   ptr->log(origin, getName(),"Registered the channel",channel);
    return;
 }
 
@@ -567,13 +567,6 @@ CHAN_FUNC (Module::parseOP)
      {
 	String currnick = st.nextToken();
 	bool foundmatch = false;
-	std::cout << "parseOP() : Checking " << currnick << std::endl;
-	if(currnick=="")
-	  {
-	     std::cout << "Null nick!" << std::endl;
-	     continue;
-	  }
-	
 	if(ptr->getAccess(currnick)>100)
 	  {
 	     String foo = tokens.nextToken();
@@ -582,9 +575,9 @@ CHAN_FUNC (Module::parseOP)
 	       {
 		  if(!ptr->isOp(origin.getNickname()))
 		    {
-		       ptr->mode("Chan","+o",origin.getNickname());
+		       ptr->mode(getName(),"+o",origin.getNickname());
 		       ptr->addUser(origin,2);
-		       ptr->log(origin,"Chan","Opped themselves",channel);
+		       ptr->log(origin,getName(),"Opped themselves",channel);
 		       return;
 		    }
 		  return;
@@ -594,9 +587,9 @@ CHAN_FUNC (Module::parseOP)
 
 	     if(!ptr->isOp(foo))
 	       {
-		  ptr->mode("Chan","+o",foo);
+		  ptr->mode(getName(),"+o",foo);
 		  ptr->addUser(*fptr,2);
-		  ptr->log(origin,"Chan","Opped "+foo,channel);
+		  ptr->log(origin,getName(),"Opped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -605,12 +598,12 @@ CHAN_FUNC (Module::parseOP)
 		  String foo = tokens.nextToken();
 		  if(!ptr->isOp(foo))
 		    {
-		       ptr->mode("Chan","+o",foo);
+		       ptr->mode(getName(),"+o",foo);
 		       User *fptr = services->findUser(foo);
 		       if(fptr==0)
 			 return;
 		       ptr->addUser(*fptr,2);
-		       ptr->log(origin,"Chan","Opped " +foo,channel);
+		       ptr->log(origin,getName(),"Opped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -668,9 +661,9 @@ CHAN_FUNC (Module::parseDEOP)
 	       {
 		  if(ptr->isOp(origin.getNickname()))
 		    {
-		       ptr->mode("Chan","-o",origin.getNickname());
+		       ptr->mode(getName(),"-o",origin.getNickname());
 		       ptr->addUser(origin,0);
-		       ptr->log(origin,"Chan","Deopped themselves",channel);
+		       ptr->log(origin,getName(),"Deopped themselves",channel);
 		       return;
 		    }
 		  return;
@@ -680,9 +673,9 @@ CHAN_FUNC (Module::parseDEOP)
 	       return;
 	     if(ptr->isOp(foo))
 	       {
-		  ptr->mode("Chan","-o",foo);
+		  ptr->mode(getName(),"-o",foo);
 		  ptr->addUser(*fptr,0);
-		  ptr->log(origin,"Chan","Deopped "+foo,channel);
+		  ptr->log(origin,getName(),"Deopped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -694,9 +687,9 @@ CHAN_FUNC (Module::parseDEOP)
 		    return;
 		  if(ptr->isOp(foo))
 		    {
-		       ptr->mode("Chan","-o",foo);
+		       ptr->mode(getName(),"-o",foo);
 		       ptr->addUser(*fptr,0);
-		       ptr->log(origin,"Chan","Deopped " +foo,channel);
+		       ptr->log(origin,getName(),"Deopped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -754,9 +747,9 @@ CHAN_FUNC (Module::parseVOICE)
 	       {
 		  if(!ptr->isVoice(origin.getNickname()))
 		    {
-		       ptr->mode("Chan","+v",origin.getNickname());
+		       ptr->mode(getName(),"+v",origin.getNickname());
 		       ptr->addUser(origin,1);
-		       ptr->log(origin,"Chan","Voiced themselves",channel);
+		       ptr->log(origin,getName(),"Voiced themselves",channel);
 		       return;
 		    }
 		  return;
@@ -766,9 +759,9 @@ CHAN_FUNC (Module::parseVOICE)
 	       return;
 	     if(!ptr->isVoice(foo))
 	       {
-		  ptr->mode("Chan","+v",foo);
+		  ptr->mode(getName(),"+v",foo);
 		  ptr->addUser(*fptr,1);
-		  ptr->log(origin,"Chan","Voiced "+foo,channel);
+		  ptr->log(origin,getName(),"Voiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -780,9 +773,9 @@ CHAN_FUNC (Module::parseVOICE)
 		    return;
 		  if(!ptr->isVoice(foo))
 		    {
-		       ptr->mode("Chan","+v",foo);
+		       ptr->mode(getName(),"+v",foo);
 		       ptr->addUser(*fptr,1);
-		       ptr->log(origin,"Chan","Voiced " +foo,channel);
+		       ptr->log(origin,getName(),"Voiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -840,9 +833,9 @@ CHAN_FUNC (Module::parseDEVOICE)
 	       {
 		  if(ptr->isVoice(origin.getNickname()))
 		    {
-		       ptr->mode("Chan","-v",origin.getNickname());
+		       ptr->mode(getName(),"-v",origin.getNickname());
 		       ptr->addUser(origin,0);
-		       ptr->log(origin,"Chan","DeVoiced themselves",channel);
+		       ptr->log(origin,getName(),"DeVoiced themselves",channel);
 		       return;
 		    }
 		  return;
@@ -852,9 +845,9 @@ CHAN_FUNC (Module::parseDEVOICE)
 	       return;
 	     if(ptr->isVoice(foo))
 	       {
-		  ptr->mode("Chan","-v",foo);
+		  ptr->mode(getName(),"-v",foo);
 		  ptr->addUser(*fptr,0);
-		  ptr->log(origin,"Chan","DeVoiced "+foo,channel);
+		  ptr->log(origin,getName(),"DeVoiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -866,9 +859,9 @@ CHAN_FUNC (Module::parseDEVOICE)
 		    return;
 		  if(ptr->isVoice(foo))
 		    {
-		       ptr->mode("Chan","-v",foo);
+		       ptr->mode(getName(),"-v",foo);
 		       ptr->addUser(*fptr,0);
-		       ptr->log(origin,"Chan","DeVoiced " +foo,channel);
+		       ptr->log(origin,getName(),"DeVoiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -997,7 +990,7 @@ CHAN_FUNC (Module::parseACCESS)
 			   +myRes->getValue(i,1)+" access",getName());
      }
    origin.sendMessage(GETLANG(chan_ACCESS_FINISH,channel),getName());
-   ptr->log(origin,"Chan","Did a channel access",channel);
+   ptr->log(origin,getName(),"Did a channel access",channel);
    //Finished with result set! Clean up
    delete myRes;
 }
@@ -1033,12 +1026,48 @@ void
 
 }
 
+
+// Handle a TOPIC command
+// Context: When we enter this method we know that the channel is valid
+// and that the channel is registered.
+void
+  Module::handleTopic(const String& origin, Exordium::dChan& channel)
+{
+
+  // If the TOPIC was sent by myself(chan) we just return
+  if( origin.toLower() == getName().toLower() )
+    return;
+
+  User *source = services->findUser( (String&)origin );
+
+  // In this case the TOPIC was sent by a server, for example returning from a netsplit.
+  // Also, if the channel is freezed we revert back.
+  if( source == NULL || services->isFreezed( channel.getName() ) )
+  {
+     channel.setTopic( getName(), channel.getTopic() );
+  }
+
+  // Else it's from a user, we must check access
+  else
+  {
+
+     // If the user doesnt have required access we revert back
+     if( channel.getAccess( origin ) <= 100 )
+         channel.setTopic( getName(), channel.getTopic() );
+ 
+  }
+
+
+}
+
+
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo =
 {
    "Channel Service",
      0, 0,
-     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY /* AWAY's */
+     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY |     /* AWAY's */
+     Exordium::Service::moduleInfo_type::Events::CHANNEL_TOPIC /* Topic being changed */
 };
 
 // Start the service
@@ -1066,11 +1095,9 @@ bool Module::start(Exordium::Services& s)
 	// Next table..
 	i++;
      }
-
    Kine::langs().registerMap(Language::tagMap);
-
    // Register ourself to the network
-   services->registerService(getName(), getIdent(),
+   services->registerService(getName(), getName(),
 			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
 
@@ -1084,8 +1111,6 @@ bool Module::start(Exordium::Services& s)
 // Stop the service - bye bye!
 void Module::stop(const String& reason)
 {
-   Kine::langs().deregisterMap(Language::tagMap);
-
    // Quit :(
    services->serviceQuit(getName(), reason);
 }

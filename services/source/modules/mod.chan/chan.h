@@ -30,6 +30,7 @@
 # include <exordium/service.h>
 # include <exordium/services.h>
 # include <exordium/user.h>
+# include <exordium/dchan.h>
 # include <exordium/database/database.h>
 
 # include <kineircd/str.h>
@@ -75,6 +76,8 @@ namespace Exordium {
 	 
 	 void handleAway(Exordium::User& origin, 
 			 const AISutil::String& reason);
+
+         void handleTopic(const AISutil::String&, dChan& channel);
 	 
 	 // Grab the information structure of a module
 	 virtual const moduleInfo_type& getModuleInfo(void) const
