@@ -1474,6 +1474,12 @@ langtag = {
 };
 
 langtag = {
+  name = "chan_BAN_NOT_SECONDS";
+  component = "mod_chan";
+  data_en = "The value you gave in seconds (%p0) is not within 1-60";
+};
+
+langtag = {
   name = "chan_REGISTER_USAGE";
   component = "mod_chan";
   data_en = "Usage: register #channel";
@@ -1827,6 +1833,11 @@ langtag = {
    component = "mod_nick";
 };
 
+langtag = {
+   name = "nick_HELP_REGISTER";
+   component = "mod_nick";
+   
+};
 langtag = {
    name = "nick_HELP_IDENTIFY";
    component = "mod_nick";

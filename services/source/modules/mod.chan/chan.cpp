@@ -691,33 +691,32 @@ CHAN_FUNC (Module::parseBAN)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
-   Kine::Name who = tokens.nextToken();
-   String reason = tokens.rest();
-   if(who=="")
+   
+   String who = tokens.nextToken();
+   std::cout << "HELLO?!?!?! its " << who << std::endl;
+   /* Lets figure out if we have any options. */
+   int duration = 0;
+   std::cout << who[0] << std::endl;
+   if(who[0]=='-')
      {
-	origin.sendMessage(GETLANG(chan_BAN_USAGE),getNickname());
-	return;
-     }
-   if(reason=="")
-     {
-	reason = GETLANG(chan_BAN_DEFAULT_REASON);
-     }
+	/* Its an option, lets see what it is. */
+	who = who.substr(1);
+	std::cout << who << std::endl;
+	std::cout << who.toLower() << std::endl;
+	if(who.toLower()=="seconds")
+	  {
+	     int tdur = tokens.nextToken().toInt();
+	     if(tdur<1 || tdur>60)
+	       {
+		  origin.sendMessage(GETLANG(chan_BAN_NOT_SECONDS,String::convert(tdur)),getNickname());
+		  return;
+	       }
+	     duration = duration+tdur;
+	     std::cout << "Duration is upto : " << String::convert(duration) << std::endl;
+	  }
+	
+    }
 
-   User *uptr = services->findUser(who);
-   if(uptr==0)
-     {
-	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
-	return;
-     }
-   if(isFreezed(channel))
-     {
-
-	origin.sendMessage(GETLANG(ERROR_CHANNEL_FROZEN),getNickname());
-	return;
-     }
-
-   ptr->ban(*uptr,getNickname(),reason,origin.getNickname());
-   origin.sendMessage(GETLANG(chan_BAN_SUCCESS),getNickname());
 }
 
 CHAN_FUNC (Module::parseREGISTER)
