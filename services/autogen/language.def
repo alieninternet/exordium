@@ -2287,6 +2287,12 @@ langtag = {
 };
 
 langtag = {
+   name = "nick_KNOWN_LANGUAGE_LIST";
+   component = "mod_nick";
+   data_en = "Known language codes: %p0";
+};
+
+langtag = {
    name = "nick_USAGE_SET_MODNICK";
    component = "mod_nick";
    data_en = "Usage: set modnick true/false";

@@ -33,6 +33,7 @@
 #include "language.h"
 #include "commands.h"
 #include <kineircd/config.h>
+#include <kineircd/languages.h>
 #include <exordium/utils.h>
 #include <sstream>
 #include <aisutil/utils.h>
@@ -333,52 +334,133 @@ NICK_FUNC (Module::parseAUTH)
 	return;
      }
 
-   if(command=="language")
-     {
-	if(value=="")
-	  {
-	      origin.sendMessage(GETLANG(nick_USAGE_SET_LANGUAGE),
-				 getNickname());
-	     return;
-	  }
-	if((value=="english") || (value == "en"))
-	  {
-	     origin.setLanguage("en");
-	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "English"),
-				getNickname());
-	     origin.log(getNickname(),"Changed language interface to English");
-	     return;
-	  }
-	if((value=="german") || (value=="deutsch") || (value=="de"))
-	   {
-	      origin.setLanguage("de");
-	      origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Deutsch"),
-				 getNickname());
-	      origin.log(getNickname(),"Changed language interface to German");
-	      return;
-	   }
-	if((value=="norsk") || (value=="norwegian") || (value=="no"))
-	  {
-	     origin.setLanguage("no");
-	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Norske"),
-				getNickname());
-	     origin.log(getNickname(),"Changed language interface to Norweigan");
-	     return;
-	  }
-	if((value=="turkish") || (value=="tr") || (value=="turkiye"))
-	  {
-	     origin.setLanguage("tr");
-	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Turkiye"),
-				getNickname());
-	     origin.log(getNickname(),"Changed language interface to Turkish");
-	     return;
-	  }
-	
-	origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
-			   getNickname());
-	return;
+   if (command == "language") {
+      // Was a language actually specified?
+      if (value.empty()) {
+	 // Tell the user how to use this command
+	 origin.sendMessage(GETLANG(nick_USAGE_SET_LANGUAGE),
+			    getNickname());
+	 
+	 // Compile a list of known language codes the user can use
+	 std::ostringstream output;
 
+	 /* Well, first off, the default language code ("i-default") is 
+	  * normally known. See RFC 2277 for details.
+	  */
+	 if (Kine::langs().getDefaultLanguage() != 0) {
+	    output << '\037' << Kine::Languages::defaultLanguageCode << 
+	      "\037 (" <<
+	      Kine::langs().getDefaultLanguage()->getLanguageName() << ')';
+	 }
+	 
+	 // Okay, iterate over the known languages
+	 for (Kine::Languages::languageDataMap_type::const_iterator it =
+	      Kine::langs().getLanguageDataMap().begin();
+	      it != Kine::langs().getLanguageDataMap().end();
+	      ++it) {
+	    /* If we need to, prefix the output with a comma. This method of
+	     * list separation isn't very internationalised, but in the scope
+	     * of internationalisation of IRC services, does anyone outside of
+	     * western culture not know what a comma delimetered list looks
+	     * like *and* is on the internet?
+	     */
+	    if (!output.str().empty()) {
+	       output << ", ";
+	    }
+	    
+	    // Output the language code + its name
+	    output << '\037' << it->second->getLanguageCode() << "\037 (" <<
+	      it->second->getLanguageName() << ')';
+	 }
+	 
+	 /* Okay, finally, show the user the list. BTW, this will definately
+	  * break if/when the language list grows to such a size that the
+	  * length of this string is longer than the allowable PRIVMSG/NOTICE
+	  * payload size (~ 400 chars, depending on the protocol)
+	  */
+	 origin.sendMessage(GETLANG(nick_KNOWN_LANGUAGE_LIST,
+				    output.str()),
+			    getNickname());
+	 
+	 return;
+      }
+      
+      // If we're going to look up the language (most likely) we need this..
+      const Kine::Languages::LanguageData* lang = 0;
+
+      /* If the user wants to use the "default language", let them use it
+       * without going to very much effort at all..
+       * 
+       * The current default code is "i-default", as per RFC 2277, but we use
+       * this constant just in case that changes (so we don't have to change).
+       */
+      if (value == Kine::Languages::defaultLanguageCode) {
+	 origin.setLanguage(Kine::Languages::defaultLanguageCode);
+	 return;
+      } else {
+	 // Okay, let's try to look up the language, presuming it's a lang code
+	 if ((lang = Kine::langs().findByCode(value)) == 0) {
+	    // Okay, no other option but to whinge
+	    origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
+			       getNickname());
+	 }
+	 
+	 // Okay, so we found a language, set the language appropriately
+	 origin.setLanguage(lang->getLanguageCode());
+      }
+      
+      // Tell the user about their new language setting
+      origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED,
+				 lang->getLanguageName()),
+			 getNickname());
+      
+      // Also, log this information..
+      std::ostringstream loginfo;
+      loginfo << 
+	"Change interface language for " << origin.getNickname() <<
+	" to '" << lang->getLanguageName() << "' (" << 
+	lang->getLanguageCode() << ')';
+      origin.log(getNickname(), loginfo.str());
+
+// 	if((value=="english") || (value == "en"))
+// 	  {
+// 	     origin.setLanguage("en");
+// 	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "English"),
+//				getNickname());
+//	     origin.log(getNickname(),"Changed language interface to English");
+//	     return;
+//	  }
+//	if((value=="german") || (value=="deutsch") || (value=="de"))
+//	   {
+//	      origin.setLanguage("de");
+//	      origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Deutsch"),
+//				 getNickname());
+//	      origin.log(getNickname(),"Changed language interface to German");
+//	      return;
+//	   }
+//	if((value=="norsk") || (value=="norwegian") || (value=="no"))
+//	  {
+//	     origin.setLanguage("no");
+//	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Norske"),
+//				getNickname());
+//	     origin.log(getNickname(),"Changed language interface to Norweigan");
+//	     return;
+//	  }
+//	                                         
+//	if((value=="turkish") || (value=="tr") || 
+//	   (value=="turkiye")) // <=- that's the country name, not the language
+//	  {
+//	     origin.setLanguage("tr");
+//	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Turkiye"),
+//	                        // ^^^ again with the country name, james..
+//	                        // Britain != British, right?
+//				getNickname());
+//	     origin.log(getNickname(),"Changed language interface to Turkish");
+//	     return;
+//	  }
+	return;
      }
+   
    if(command=="email")
      {
 	if(value=="")
