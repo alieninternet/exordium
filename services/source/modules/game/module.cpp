@@ -228,12 +228,13 @@ GAME_FUNC(Game::handleSTART)
 GAME_FUNC(Game::handleLIST)
 {
    // Check for the game
+   origin.sendMessage("List of available games:", myName);
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
-     std::cout << origin.getNickname() << std::endl;
-     std::cout << ChannelGame::channelGameTable[i].game << std::endl;
-   }
+      String str = "--- ";
+      str += ChannelGame::channelGameTable[i].game;
 
-   // give them an error???!!
+      origin.sendMessage(str, myName);
+   }
 }
 
 
