@@ -39,7 +39,7 @@ namespace mod_exordium {
         Sql db;
 	
 	// Create the new services instance
-	services = new Services(daemon);
+	services = new Services(daemon, *config);
 	
 	Log::init();
 	Log::logLine("Services started, beginning initalisation");

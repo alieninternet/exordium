@@ -27,6 +27,7 @@
 #include <kineircd/password.h>
 #include <kineircd/daemon.h>
 #include "exordium/service.h"
+#include "exordium/conf.h"
 #include <signal.h>
 
 extern "C" {
@@ -53,6 +54,8 @@ class Services
 private:
   String buffer;
   Kine::Daemon &daemon;
+  Config &config;
+   
   static int sock;
   static int maxSock;
   static char *inputBuffer;
@@ -79,8 +82,9 @@ private:
 public:
    // dunno where you want these fellow james
    // Mr. Constructor
-   Services(Kine::Daemon &d)
-     : daemon(d)
+   Services(Kine::Daemon &d, Config &c)
+     : daemon(d),
+       config(c)
        {};
    
    // Grab the daemon reference
