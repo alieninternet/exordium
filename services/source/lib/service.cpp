@@ -28,34 +28,42 @@
 # include "autoconf.h"
 #endif
 
+#include <aisutil/string/string.h>
+#include <aisutil/string/tokens.h>
+
 #include "exordium/service.h"
 
 
 using namespace Exordium;
+using AISutil::String;
 using AISutil::StringTokens;
 
 
-/* Handle a message/query sent directly to us from a user
+/* parseLine - Handle a message/query sent directly to us from a user
  * Original 08/06/2003 pickle
  */
 void Service::parseLine(Kine::Client& origin,
 			const StringTokens& line,
 			const bool isSafe)
 {
+   // temporary until the User:: thing is resolved
+   (void)origin.sendMessage(*this, line);
 }
 
 
-/* Handle a message sent to a channel we're on
+/* parseLine - Handle a message sent to a channel we're on
  * Original 08/06/2003 pickle
  */
 void Service::parseLine(Kine::Client& origin,
 			Kine::Channel& destination,
 			const StringTokens& line)
 {
+   // temporary until the User:: thing is resolved
+   (void)origin.sendMessage(*this, line);
 }
 
 
-/* Handle the reception of a service query to this service
+/* parseLine - Handle the reception of a service query to this service
  * Original 08/06/2003 pickle
  */
 const Kine::Error::error_type
@@ -63,14 +71,25 @@ const Kine::Error::error_type
 		     const std::string& message,
 		     const Kine::Receiver::Directivity directivity)
 {
-   std::cout << getName() << " got: " << message << std::endl;
+   /* Check if this client is a naughty flooder here?
+    * 
+    * Since the original code from parser.cpp was back when User:: presumed
+    * that everyone was a registered user, I'm not sure how this should be
+    * done, so I'm guessing it'll need to be rewritten.. James??
+    */
+   
+   // Convert the message into a tokenised form
+   StringTokens tokens(message);
+   
+   // Pass the tokenised message onto the parser
+   parseLine(from, tokens, directivity.server);
    
    // No problem :)
    return Kine::Error::NO_ERROR;
 }
 
 
-/* Handle the reception of a private message send to this service
+/* parseLine - Handle the reception of a private message send to this service
  * Original 08/06/2003 pickle
  */
 const Kine::Error::error_type
@@ -83,10 +102,28 @@ const Kine::Error::error_type
 
    // Make sure this *is* a client
    if (client != 0) {
-      // Check if this is a CTCP..
+      // Check if this is a CTCP (this should be moved elsewhere, IMHO -simon)
+      if ((message[0] == '\001') &&
+	  (message[message.length() - 1] == '\001')) {
+	 // Break the message down
+	 StringTokens CTCPtokens(message.substr(1, message.length() - 2));
+	 String CTCPcommand = CTCPtokens.nextToken().toUpper();
+	 
+	 // Check what kind of CTCP this is
+	 if (CTCPcommand == "PING") {
+	    client->sendNotice(*this,
+			       "\001PING " + CTCPtokens.rest() + "\001");
+	 } else if (CTCPcommand == "VERSION") {
+	    client->sendNotice(*this,
+			       "\001VERSION Exordium Network Services "
+			       "http://exordium.sourceforge.net/\001");
+	 }
+	 
+	 return Kine::Error::NO_ERROR;
+      }
       
       // It's not a CTCP message, throw it over to the SQUERY handler
-      return sendQuery(*client, message);
+      return sendQuery(*client, message, directivity);
    }
    
    // It's not a client, we don't want to deal with it..
