@@ -35,6 +35,10 @@
 #include <kineircd/module.h>
 #include <exordium/database/database.h>
 
+extern "C" {
+#include <ltdl.h>
+};
+
 #include "lib/config.h"
 #include "lib/services.h"
 #include "version.h"
@@ -119,7 +123,12 @@ namespace {
 	    return false;
 	 }
  */
-	   
+
+	 // This will be unnecessary beyond the next kine snapshot.
+    	 if (lt_dlinit() != 0) {
+	    return false; // :(
+	 }
+	 
 	 // Create new database Instance
 	 db = new CDatabase(config);
 #ifdef DEBUG
