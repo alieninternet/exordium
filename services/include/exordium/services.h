@@ -110,7 +110,7 @@ namespace Exordium {
 	AISutil::SocketIPv4TCP socky;
 	typedef std::map <AISutil::String, User *> user_map;
 	typedef std::map <AISutil::String, dChan *> chan_map;
-	typedef std::vector < std::list<Service*> > eventListType;
+	typedef std::map <eventType, std::vector<Service*> > eventListType;
 	eventListType eventList;
 	user_map users;
 	chan_map chans;
