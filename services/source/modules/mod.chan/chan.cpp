@@ -840,14 +840,11 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	return;
      }
    origin.sendMessage("Channel access list for "+channel,getName());
-   int nbRes = db->dbSelect("nickid", "chanaccess", "chanid="+String::convert(ptr->getRegisteredID()));
+   int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", "chanid="+String::convert(ptr->getRegisteredID()));
    String tnickid,taccess;
    for(int i=0; i<nbRes; i++)
     {
-       origin.sendMessage("["+String::convert(i)+"] Nickname "+
-			  db->dbGetValue(0)
-			  ,getName());
-       db->dbGetRow();
+       CResult *myRes = services->getDatabase().dbGetResultSet(); 
     }
    ptr->log(origin,"Chan","Did a channel access",channel);
 }

@@ -83,7 +83,7 @@ namespace Exordium {
 
       virtual void dbLock(AISutil::String const &table)=0;
       virtual void dbUnlock(void)=0;
-      virtual CResult* dbGetResult(void)=0;
+      virtual CResult* dbGetResultSet(void)=0;
 
 
 

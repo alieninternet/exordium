@@ -103,7 +103,8 @@ namespace Exordium {
       // Delete * from <table>
       void dbDelete(AISutil::String const &table);
 
-
+      // Return a result set
+      CResult* dbGetResultSet(void);
 
 
 

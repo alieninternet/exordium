@@ -44,8 +44,7 @@ namespace Exordium {
 	MYSQL_RES *mysqlres;
 	MYSQL_ROW mysqlrow;
       public:
-	CMySQLRes(MYSQL_RES &result)
-	  : mysqlres(&result) {};
+	CMySQLRes(MYSQL_RES &result);
 	
 	~CMySQLRes();
 	
@@ -91,11 +90,8 @@ namespace Exordium {
       void dbBeginTrans(void) {}
       void dbCommit(void) {}
       void dbRollback(void) {}
-      CMySQLRes* dbGetResultSet(void)
-       {
-	  MYSQL_RES rres = *mysqlres;
-	  return new CMySQLRes(rres);
-      }
+      CResult* dbGetResultSet(void);
+  
      
 
     private:
