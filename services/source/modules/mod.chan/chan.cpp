@@ -287,19 +287,26 @@ CHAN_FUNC (Module::parseCOMMANDS)
      {
 	channel = tokens.nextToken();
      }
-
    String nickname = tokens.nextToken();
    String level = tokens.nextToken();
    if(channel=="" | nickname=="" | level=="")
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: adduser #channel nickname level",getName());
+	origin.sendMessage("Error: adduser #channel nickname level",getName());
 	return;
      }
-   if(!services->isNickRegistered(nickname))
+   dChan *ptr = services->findChan(channel);
+   User *uptr = services->findUser(nickname);
+   if(!ptr->isRegistered())
      {
-	origin.sendMessage("\002[\002Fatal Error\002]\002 Nickname not registered",getName());
+	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;
      }
+   if(!uptr->isRegistered())
+     {
+	origin.sendMessage("Error: Nickname is not registered",getName());
+	return;
+     }
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -307,9 +314,9 @@ CHAN_FUNC (Module::parseCOMMANDS)
    while(more==true)
      {
 	String currnick  = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
+	int access = ptr->getAccess(currnick);
 	int waccess = level.toInt();
-	int taccess = services->getChannel().getChanAccess(channel,nickname);
+	int taccess = ptr->getAccess(nickname);
 	if(waccess==access || waccess>access || waccess<1 || waccess>499)
 	  {
 	     origin.sendMessage("Error: You cannot add someone with higher, or equal access to your own",getName());
@@ -320,9 +327,9 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	     origin.sendMessage("Error: That person already has access",getName());
 	     return;
 	  }
-	services->getChannel().chanAddAccess(channel,nickname,level);
-	services->log(origin,"Chan","Added "+nickname+" with level "+level,channel);
-	origin.sendMessage("Command completed successfully",getName());
+	ptr->addAccess(nickname,level);
+	ptr->log(origin,getName(),"Added "+nickname+" with level "+level,channel);
+	origin.sendMessage("Nickname has been added",getName());
 	return;
      }
 }
@@ -338,7 +345,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
      {
 	channel = tokens.nextToken();
      }
-
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Cannot find that channel",getName());
+	return;
+     }
+   
    String topic = tokens.rest();
    String la = origin.getIDList();
    StringTokens st (la);
@@ -347,16 +360,14 @@ CHAN_FUNC (Module::parseCOMMANDS)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>150)
+	if(ptr->getAccess(currnick)>150)
 	  {
-	     services->getChannel().updateTopic(channel,topic);
-	     services->getChannel().setTopic(channel,topic);
-	     services->log(origin,"Chan","Set topic to "+topic,channel);
+	     ptr->updateTopic(topic);
+	     ptr->setTopic(getName(),topic);
+	     ptr->log(origin,"Chan","Set topic to "+topic,channel);
 	     return;
 	  }
 	more = st.hasMoreTokens();
-
      }
    origin.sendMessage("Sorry, you do not have the required access in that channel",getName());
    return;
@@ -375,58 +386,6 @@ CHAN_FUNC (Module::parseCOMMANDS)
 {
    origin.sendMessage("Disabled until next build",getName());
    return;
-   String channel = "";
-   if(chan!="")
-     {
-	channel = chan;
-     }
-   else
-     {
-	channel = tokens.nextToken();
-     }
-
-   String who = tokens.nextToken();
-   String reason = tokens.rest();
-   if(channel=="" | who=="")
-     {
-	origin.sendMessage("Usage:  ban #channel nickname your optional reason goes here",getName());
-	return;
-     }
-   if(reason=="")
-     {
-	reason = "You are banned";
-     }
-   String la = origin.getIDList();
-   StringTokens st (la);
-   bool more = false;
-   more = st.hasMoreTokens();
-   while(more==true)
-     {
-	String currnick = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>150)
-	  {
-	     StringTokens st (who);
-	     String temp1 = st.nextToken('@');
-	     String temp2 = st.rest();
-	     if(temp2.length()<2)
-	       {
-		  User *ptr = services->findUser(temp1);
-		  String tban = ptr->getHost();
-		  String toban = "*!*@"+tban;
-		  who = toban;
-	       }
-	     int cid = services->getChannel().getChanID(channel);
-	     services->serverMode(channel,"+b",who);
-	     long newt = services->currentTime + 120;
-	     services->getChannel().addChanBan(cid,who,origin.getNickname(),newt,reason);
-	     String rs = "("+origin.getNickname()+"/"+currnick+") "+reason;
-	     services->getChannel().banChan(channel,who,rs);
-	     return;
-	  }
-     }
-   origin.sendMessage("\002[\002No Access\002]\002",getName());
-
 }
 
 
@@ -443,7 +402,15 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Channel names must begin with the '#' symbol",getName());
 	return;
      }
-   if(!services->isNickRegistered(origin.getNickname()))
+   dChan *ptr = services->findChan(channel);
+   
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Channel does not exist",getName());
+	return;
+     }
+   
+   if(!origin.isRegistered())
      {
 	origin.sendMessage("Error: Your nickname is not registered",getName());
 	return;
@@ -459,14 +426,14 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: You are only permitted own one channel per nickname on "+Kine::config().getNetworkName(),getName());
 	return;
      }
-   if(services->getChannel().isChanRegistered(channel))
+   if(ptr->isRegistered())
      {
 	origin.sendMessage("Error: That channel is already registered",getName());
 	return;
      }
    services->getChannel().registerChannel(channel,origin.getNickname());
    origin.sendMessage("Registration Successful",getName());
-   services->log(origin,"Chan","Registered the channel",channel);
+   ptr->log(origin,"Chan","Registered the channel",channel);
    return;
 }
 
@@ -482,57 +449,61 @@ CHAN_FUNC (Module::parseCOMMANDS)
      {
 	channel = tokens.nextToken();
      }
-
    if(channel=="")
      {
-	origin.sendMessage("Usage: op #channel optional list of nicknames to op",getName());
+	origin.sendMessage("Usage: op #channel nick [nick2,nick3,..]",getName());
+	return;
+     }
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;
      }
    String la = origin.getIDList();
-#ifdef DEBUG
-   std::cout << "parseOP(); la is " << la << std::endl;
-#endif
    StringTokens st (la);
-#ifdef DEBUG
-   std::cout << "ParseOP(); st is " << st << std::endl;
-#endif
    bool more = false;
    more = st.hasMoreTokens();
    while(more==true)
      {
 	String currnick = st.nextToken();
 	bool foundmatch = false;
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>100)
+	if(ptr->getAccess(currnick)>100)
 	  {
 	     String foo = tokens.nextToken();
+	     User *fptr = services->findUser(foo);
+	     if(fptr==0)
+	       return;
 	     if(foo=="")
 	       {
-		  if(!services->isOp(origin.getNickname(),channel))
+		  if(!ptr->isOp(origin.getNickname()))
 		    {
-		       services->mode("Chan",channel,"+o",origin.getNickname());
-		       services->getChannel().internalOp(origin.getNickname(),channel);
-		       services->log(origin,"Chan","Opped themselves",channel);
+		       ptr->mode("Chan","+o",origin.getNickname());
+		       ptr->addUser(origin,2);
+		       ptr->log(origin,"Chan","Opped themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(!services->isOp(foo,channel))
+	     if(!ptr->isOp(foo))
 	       {
-		  services->mode("Chan",channel,"+o",foo);
-		  services->getChannel().internalOp(foo,channel);
-		  services->log(origin,"Chan","Opped "+foo,channel);
+		  ptr->mode("Chan","+o",foo);
+		  ptr->addUser(*fptr,2);
+		  ptr->log(origin,"Chan","Opped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(!services->isOp(foo,channel))
+		  if(!ptr->isOp(foo))
 		    {
-		       services->mode("Chan",channel,"+o",foo);
-		       services->getChannel().internalOp(foo,channel);
-		       services->log(origin,"Chan","Opped " +foo,channel);
+		       ptr->mode("Chan","+o",foo);
+		       User *fptr = services->findUser(foo);
+		       if(fptr==0)
+			 return;
+		       ptr->addUser(*fptr,2);
+		       ptr->log(origin,"Chan","Opped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -557,12 +528,19 @@ CHAN_FUNC (Module::parseCOMMANDS)
      {
 	channel = tokens.nextToken();
      }
-
+  
    if(channel=="")
      {
 	origin.sendMessage("Usage: deop #channel optional list of nicknames to op",getName());
 	return;
      }
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Cannot find that channel",getName());
+	return;
+     }
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -570,37 +548,42 @@ CHAN_FUNC (Module::parseCOMMANDS)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>100)
+	if(ptr->getAccess(currnick)>100)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(services->isOp(origin.getNickname(),channel))
+		  if(ptr->isOp(origin.getNickname()))
 		    {
-		       services->mode("Chan",channel,"-o",origin.getNickname());
-		       services->getChannel().internalDeOp(origin.getNickname(),channel);
-		       services->log(origin,"Chan","Deopped themselves",channel);
+		       ptr->mode("Chan","-o",origin.getNickname());
+		       ptr->addUser(origin,0);
+		       ptr->log(origin,"Chan","Deopped themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(services->isOp(foo,channel))
+	     User *fptr = services->findUser(foo);
+	     if(fptr==0)
+	       return;
+	     if(ptr->isOp(foo))
 	       {
-		  services->mode("Chan",channel,"-o",foo);
-		  services->getChannel().internalDeOp(foo,channel);
-		  services->log(origin,"Chan","Deopped "+foo,channel);
+		  ptr->mode("Chan","-o",foo);
+		  ptr->addUser(*fptr,0);
+		  ptr->log(origin,"Chan","Deopped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(services->isOp(foo,channel))
+		  User *fptr = services->findUser(foo);
+		  if(fptr==0)
+		    return;
+		  if(ptr->isOp(foo))
 		    {
-		       services->mode("Chan",channel,"-o",foo);
-		       services->getChannel().internalDeOp(foo,channel);
-		       services->log(origin,"Chan","Deopped " +foo,channel);
+		       ptr->mode("Chan","-o",foo);
+		       ptr->addUser(*fptr,0);
+		       ptr->log(origin,"Chan","Deopped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -631,6 +614,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Usage: voice #channel optional list of nicknames to op",getName());
 	return;
      }
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Could not find that channel",getName());
+	return;
+     }
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -638,37 +628,42 @@ CHAN_FUNC (Module::parseCOMMANDS)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>50)
+	if(ptr->getAccess(currnick)>50)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(!services->isVoice(origin.getNickname(),channel))
+		  if(!ptr->isVoice(origin.getNickname()))
 		    {
-		       services->mode("Chan",channel,"+v",origin.getNickname());
-		       services->getChannel().internalVoice(origin.getNickname(),channel);
-		       services->log(origin,"Chan","Voiced themselves",channel);
+		       ptr->mode("Chan","+v",origin.getNickname());
+		       ptr->addUser(origin,1);
+		       ptr->log(origin,"Chan","Voiced themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(!services->isVoice(foo,channel))
+	     User *fptr = services->findUser(foo);
+	     if(fptr==0)
+	       return;
+	     if(!ptr->isVoice(foo))
 	       {
-		  services->mode("Chan",channel,"+v",foo);
-		  services->getChannel().internalVoice(foo,channel);
-		  services->log(origin,"Chan","Voiced "+foo,channel);
+		  ptr->mode("Chan","+v",foo);
+		  ptr->addUser(*fptr,1);
+		  ptr->log(origin,"Chan","Voiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(!services->isVoice(foo,channel))
+		  User *fptr = services->findUser(foo);
+		  if(fptr==0)
+		    return;
+		  if(!ptr->isVoice(foo))
 		    {
-		       services->mode("Chan",channel,"+v",foo);
-		       services->getChannel().internalVoice(foo,channel);
-		       services->log(origin,"Chan","Voiced " +foo,channel);
+		       ptr->mode("Chan","+v",foo);
+		       ptr->addUser(*fptr,1);
+		       ptr->log(origin,"Chan","Voiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -699,6 +694,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Usage: devoice #channel optional list of nicknames to op",getName());
 	return;
      }
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Cannot find that channel",getName());
+	return;
+     }
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -706,37 +708,42 @@ CHAN_FUNC (Module::parseCOMMANDS)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>50)
+	if(ptr->getAccess(currnick)>50)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(services->isVoice(origin.getNickname(),channel))
+		  if(ptr->isVoice(origin.getNickname()))
 		    {
-		       services->mode("Chan",channel,"-v",origin.getNickname());
-		       services->getChannel().internalDeVoice(origin.getNickname(),channel);
-		       services->log(origin,"Chan","DeVoiced themselves",channel);
+		       ptr->mode("Chan","-v",origin.getNickname());
+		       ptr->addUser(origin,0);
+		       ptr->log(origin,"Chan","DeVoiced themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(services->isVoice(foo,channel))
+	     User *fptr = services->findUser(foo);
+	     if(fptr==0)
+	       return;
+	     if(ptr->isVoice(foo))
 	       {
-		  services->mode("Chan",channel,"-v",foo);
-		  services->getChannel().internalDeVoice(foo,channel);
-		  services->log(origin,"Chan","DeVoiced "+foo,channel);
+		  ptr->mode("Chan","-v",foo);
+		  ptr->addUser(*fptr,0);
+		  ptr->log(origin,"Chan","DeVoiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(services->isVoice(foo,channel))
+		  User *fptr = services->findUser(foo);
+		  if(fptr==0)
+		    return;
+		  if(ptr->isVoice(foo))
 		    {
-		       services->mode("Chan",channel,"-v",foo);
-		       services->getChannel().internalDeVoice(foo,channel);
-		       services->log(origin,"Chan","DeVoiced " +foo,channel);
+		       ptr->mode("Chan","-v",foo);
+		       ptr->addUser(*fptr,0);
+		       ptr->log(origin,"Chan","DeVoiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -769,6 +776,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Usage: kick #channel nickname Your reason here",getName());
 	return;
      }
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Cannot find that channel",getName());
+	return;
+     }
+   
    String thelist = origin.getIDList();
    StringTokens st (thelist);
    bool more = false;
@@ -776,18 +790,18 @@ CHAN_FUNC (Module::parseCOMMANDS)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services->getChannel().getChanAccess(channel,currnick);
-	if(access>100)
+	if(ptr->getAccess(currnick)>100)
 	  {
-	     if(who.toLower()=="chan")
+	     if(who.toLower()==getName())
 	       {
-		  String rs = "And why would you want to kick me? :-(";
-		  services->serviceKick(channel,origin.getNickname(),rs);
+		  ptr->kick(getName(),origin.getNickname(),"Trying to kick me isn't nice");
 		  return;
 	       }
-	     String rs = "("+origin.getNickname()+"/"+currnick+") "+reason;
-	     services->serviceKick(channel,who,rs);
-	     services->getChannel().internalDel(who,channel);
+	     ptr->kick(getName(),who,"("+origin.getNickname()+"/"+currnick+") "+reason);
+	     User *fptr = services->findUser(who);
+	     if(fptr==0)
+	       return;
+	     ptr->delUser(*fptr);
 	     return;
 	  }
 	more = st.hasMoreTokens();
@@ -810,22 +824,23 @@ CHAN_FUNC (Module::parseCOMMANDS)
 
    if(channel=="")
      {
-	origin.sendMessage("Usage: /msg Chan access #channel",getName());
+	origin.sendMessage("Usage: access #channel",getName());
 	return;
      }
-   bool foo = false;
-   foo = services->getChannel().isChanRegistered(channel);
-   if(foo==true)
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
      {
+	origin.sendMessage("Error: I cannot find that channel",getName());
+	return;
      }
-   if(foo==false)
+ 
+   if(!ptr->isRegistered())
      {
-	origin.sendMessage("That channel is not registered",getName());
+	origin.sendMessage("Error: That channel is not registered",getName());
 	return;
      }
    origin.sendMessage("Channel access list for "+channel,getName());
-   int chanid = services->getChannel().getChanID(channel);
-   int nbRes = services->getDatabase().dbSelect("nickid,access", "chanaccess", "chanid="+String::convert(chanid));
+   int nbRes = services->getDatabase().dbSelect("nickid,access", "chanaccess", "chanid="+String::convert(ptr->getRegisteredID()));
 
    for(int i=0; i<nbRes; i++)
     {
@@ -835,7 +850,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage(tosend,getName());
         services->getDatabase().dbGetRow();
     }
-   services->log(origin,"Chan","Did a channel access",channel);
+   ptr->log(origin,"Chan","Did a channel access",channel);
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION
@@ -847,7 +862,7 @@ void
 
    if(reason=="")
      {
-	/* User is coming back - do nothing */
+	/* User is coming back - do nothing  - should really op em i suppose*/
 	return;
      }
    if(origin.deopAway())

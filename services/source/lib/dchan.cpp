@@ -130,3 +130,68 @@ int const dChan::getCount(void)
    return services.getDatabase().dbCount("chans");   
    
 }
+
+void const dChan::addAccess(String const &nick, String const &level)
+{
+   services.getDatabase().dbInsert("chanaccess","'"+String::convert(getRegisteredID())+
+				   "','"+level+"'");
+}
+
+void const dChan::log(User& origin, String const &service,String const &text, String const &cname)
+{
+services.getDatabase().dbInsert("log","'','"+origin.getIDList()+"','"+origin.getIdent()+
+				"','"+origin.getHost()+"','"+service+"',NOW(),'"+text+
+				"','"+cname+"'");
+}
+
+void const dChan::updateTopic(String const &topic)
+{
+   services.getDatabase().dbUpdate("chans","topic='"+topic+"'", "id='"+String::convert(getRegisteredID())+"'");   
+}
+
+void const dChan::setTopic(String const &service, String const &topic)
+{
+   time_t currentTime;
+   currentTime = time(NULL);
+   services.queueAdd(":"+service+" TOPIC "+name+" Chan "+String::convert(currentTime)+" :"+topic);   
+}
+
+bool const dChan::isOp(String const &nick)
+{
+   if(services.getDatabase().dbSelect("status","chanstatus","chanid='"+String::convert(onlineID)+
+				      "' AND nickid='"+String::convert(services.locateID(nick))+
+				      "'") < 1)
+     return false;
+   if(services.getDatabase().dbGetValue().toInt() == 2)
+     return true;
+   else
+     return false;
+}
+
+bool const dChan::isVoice(String const &nick)
+{
+   if(services.getDatabase().dbSelect("status","chanstatus","chanid='"+String::convert(onlineID)+
+				      "' AND nickid='"+String::convert(services.locateID(nick))+
+				                                            "'") < 1)
+          return false;
+      if(services.getDatabase().dbGetValue().toInt() == 1)
+          return true;
+      else
+          return false;
+ }
+
+void const dChan::mode(String const &service,String const &mode,String const &target)
+{
+   services.queueAdd(":"+service+" MODE "+name+" "+mode+" "+target);
+}
+
+void const dChan::kick(String const &service,String const &nick,String const &reason)
+{
+   services.queueAdd(":"+service+" KICK "+name+" "+nick+" :"+reason);
+   String tempnick = String(nick);
+   User *ptr = services.findUser(tempnick);
+   if(ptr==0)
+     return;
+   delUser(*ptr);
+   
+}
