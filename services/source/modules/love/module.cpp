@@ -40,12 +40,8 @@
 // Use the stuff from the KineIRCd library using lovely short form
 using Kine::String;
 using Kine::StringTokens;
-
-/* We are in the exordium namespace, or supposed to be anyway.. I don't know,
- * I'm too busy rebelling from the Wilkins Facsist Regime :(
- * DOWN WITH THE W.F.R.!!!
- */
 using namespace Exordium;
+
 
 /* service_init - Register ourselves to the wonderous enigma that is the core
  * Original 13/07/2002 james
@@ -55,6 +51,7 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 {
    return new Module("love", new Love(services, name));
 }
+
 
 /* Our lovely list of commands in all their glorious ascii beauty. The names
  * should be in lower-case as it's the most common way people type stuff, and
@@ -74,6 +71,7 @@ const Love::commandTable_type Love::commandTable[] =
      { 0, 0, 0, 0, 0 }
 };
 
+
 /* Love - Our constructor, mainly gets us ready to spread our loving..
  * Original 26/07/2002 simonb
  */
@@ -85,6 +83,7 @@ myName(mn)
 			    "Your local love slave(tm)");
    services.serviceJoin(myName, "#Chapel"); // hehehe, temporary maybe
 }
+
 
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
@@ -140,6 +139,7 @@ void Love::parseLine(const String& line, const String& origin)
    sendMessage(origin, "Unrecognised Command");
 }
 
+
 /* handleCOMMANDS - Throw a quick 'n' dirty list of available commands out
  * Original 20/08/2002 simonb
  * Notes: Probably better to move this to the base class, along with myName
@@ -179,6 +179,7 @@ LOVE_FUNC(Love::handleCOMMANDS)
    // Send the footer (this shouldn't be hard-coded)
    sendMessage(origin, "End of command list");
 }
+
 
 /* handleTEST - Test thingy, temporary :)
  * Original 14/07/2002 simonb
