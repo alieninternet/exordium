@@ -4,7 +4,7 @@
 # $Id$                                                                        
 
 AC_INIT([Exordium], [0.1-alpha], [coding@ircdome.org])
-AM_INIT_AUTOMAKE([Exordium],[0,1-alpha])
+AM_INIT_AUTOMAKE([1.6.1 foreign no-installinfo no-installman])
 AC_PROG_LIBTOOL
 AC_PREREQ(2.52)
 AC_COPYRIGHT(Exordium Network Services are (c) 2002 IRCDome Development Team)
