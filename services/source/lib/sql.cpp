@@ -34,12 +34,8 @@ MysqlRes Sql::query(String const &query)
     struct timeval
 	finish;
     gettimeofday(&finish, NULL);
-    int
-	time =
-	finish.
-	tv_usec -
-	start.
-	tv_usec;
+    long long time = (((finish.tv_sec * 100000) + finish.tv_usec) -
+		      ((start.tv_sec * 100000) + start.tv_usec));
     String
 	tolog =
 	String("MySQL Query Took ") +
