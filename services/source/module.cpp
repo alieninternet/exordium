@@ -138,37 +138,28 @@ namespace {
  */
 
 	 // Create new database Instance
-	 db = new CDatabase(config);
-#ifdef DEBUG
-	 assert(db != 0);
-#endif
+	 if ((db = new CDatabase(config)) == 0) {
+	    return false;
+	 }
 
 	 // If the database logging mask is not nothing, fire up the db logger
 	 if (config.getLogMask() != Kine::Logger::Mask::Nothing) {
 	    // Make a new logger and register it
-	    logger = new Logger(config.getLogMask());
-#ifdef DEBUG
-	    assert(logger != 0);
-#endif
+	    if ((logger = new Logger(config.getLogMask())) == 0) {
+	       return false;
+	    }
+
 	    // Should check for a 'true' here, really..
-	    (void)Kine::daemon().registerLogger(*logger);
+	    if (!Kine::daemon().registerLogger(*logger)) {
+	       return false;
+	    }
 	 }
 	 
 	 // Create the new services instance - Passing sql YAY :|
-	 services = new ServicesInternal(config, *db);
-#ifdef DEBUG
-	 assert(services != 0);
-#endif
+	 if ((services = new ServicesInternal(config, *db)) == 0) {
+	    return false;
+	 }
 
-#ifdef DEBUG
-	 std::clog << "Services started, beginning initalisation" << std::endl;
-#endif
-	 services->run();
-#ifdef DEBUG
-	 std::clog << "Services terminated - Normal exit" << std::endl;
-#endif
-	 exit(0); // we are naughty using this here..... very naughty.. :(
-	 
 	 // Tell Kine that we started happily
 	 return true;
       };
