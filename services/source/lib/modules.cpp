@@ -37,6 +37,7 @@ using namespace Exordium;
 using AISutil::String;
 using AISutil::StringTokens;
 
+
 /* ~Modules - Shut down all existing modules in the list
  * Original 17/09/2002 pickle
  */
@@ -55,7 +56,7 @@ Modules::~Modules(void)
  */
 Modules::Module::~Module(void)
 {
-   dlclose(handle);
+   lt_dlclose(handle);
    //   delete service; // this needs fixing :( is this being deleted before here?
 };
 
@@ -68,40 +69,36 @@ Modules::Module::~Module(void)
 Service* const Modules::loadModule(const String& fileName,
 				   String& errString)
 {
+   lt_dlhandle handle;
+   
    // Try to load the module
-   void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
-
-   // Check if that loaded okay
-   if (handle == 0)
-     {
-	// Set the error string appropriately
-	errString = "Could not load " + fileName + ": " + dlerror();
-	return 0;
-     }
+   if ((handle = lt_dlopen(fileName.c_str())) == NULL) {
+      // Set the error string appropriately
+      errString = "Could not load " + fileName + ": " + lt_dlerror();
+      return 0;
+   }
 
    // Locate the initialisation function
    EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((* const initfunc)) =
      ((EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*)))
-      (dlsym(handle, "service_init")));
+      (lt_dlsym(handle, "service_init")));
 
    // Check if we could find the init function
-   if (initfunc == 0)
-     {
-	errString = "Could not load " + fileName +
-	  ": Module does not contain an initialisation function";
-	return 0;
-     }
+   if (initfunc == 0) {
+      errString = "Could not load " + fileName +
+	": Module does not contain an initialisation function";
+      return 0;
+   }
 
    // Pull out the service data, this class contains all the other info we need
    Service* const service = (*initfunc)();
 
    // Make sure the service was returned appropriately...
-   if (service == 0)
-     {
-	errString = "Could not load " + fileName +
-	  ": Module failed to initialise";
-	return 0;
-     }
+   if (service == 0) {
+      errString = "Could not load " + fileName +
+	": Module failed to initialise";
+      return 0;
+   }
 
 #ifdef DEBUG
    std::cout << "Loaded module '" <<
@@ -115,12 +112,11 @@ Service* const Modules::loadModule(const String& fileName,
    String moduleName = service->getName().IRCtoLower();
 
    // Make sure this does not exist..
-   if (!exists(moduleName))
-     {
-	// Add it, and return happy status
-	modules[moduleName] = new Module(service, handle);
-	return service;
-     }
+   if (!exists(moduleName)) {
+      // Add it, and return happy status
+      modules[moduleName] = new Module(service, handle);
+      return service;
+   }
 
    // Umm, we should delete and unload module here!
    //
@@ -137,13 +133,12 @@ void Modules::unloadModule(const String& name, const String& reason)
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
 
    // If the module exists then stop it, delete it, and erase it - bye bye!
-   if (moduleLocation != modules.end())
-     {
-	(*moduleLocation).second->service->stop(reason);
-	delete (*moduleLocation).second;
-	modules.erase(moduleLocation);
-	return;
-     }
+   if (moduleLocation != modules.end()) {
+      (*moduleLocation).second->service->stop(reason);
+      delete (*moduleLocation).second;
+      modules.erase(moduleLocation);
+      return;
+   }
 
    // output to stdout.. temporary??
 #ifdef DEBUG
@@ -152,11 +147,10 @@ void Modules::unloadModule(const String& name, const String& reason)
 }
 
 // Helper for the 'startAll' function below
-struct startModule
-{
+struct startModule {
    // Where services is
    Services& services;
-
+   
    // Constructor
    startModule(Services& s)
      : services(s)

@@ -31,7 +31,7 @@
 # include <kineircd/str.h>
 
 extern "C" {
-# include <dlfcn.h>
+# include <ltdl.h>
 };
 
 namespace Exordium {
@@ -45,9 +45,9 @@ namespace Exordium {
       class Module {
        public:
 	 Service* const service;			// Service class
-	 void* const handle;				// dlopen() handle
+	 lt_dlhandle handle;				// lt_dlopen() handle
 	 
-	 Module(Service* const s, void* const h)
+	 Module(Service* const s, lt_dlhandle& h)
 	   : service(s), handle(h)
 	     {};
 	 

@@ -12,5 +12,7 @@ autom4te.cache
 aclocal.m4
 depcomp
 install-sh
+libltdl
+ltmain.sh
 missing
 mkinstalldirs

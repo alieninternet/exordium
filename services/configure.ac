@@ -5,7 +5,11 @@
 
 AC_INIT([Exordium], [0.1-alpha], [coding@ircdome.org])
 AM_INIT_AUTOMAKE([1.6.1 foreign no-installinfo no-installman subdir-objects])
+AC_LIBTOOL_DLOPEN
+AC_LIBLTDL_INSTALLABLE
 AC_PROG_LIBTOOL
+AC_SUBST(LTDLINCL)
+AC_SUBST(LIBLTDL)
 AC_PREREQ(2.54)
 AC_COPYRIGHT(Exordium Network Services are (c) 2002 IRCDome Development Team)
 AC_COPYRIGHT(Please read the LICENSE file for more information)
@@ -35,13 +39,10 @@ AC_FUNC_VPRINTF
 dnl AC_FUNC_GETLOADAVG
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([gethostbyname gettimeofday memset select socket strchr])
-#AC_CHECK_LIB([dl], [dlopen], [], [AC_MSG_ERROR([I cannot find a working 
-#dlopen! :(])])
 
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([\
-	dlfcn.h \
 	netdb.h \
 	unistd.h \
 	arpa/inet.h \
@@ -191,3 +192,7 @@ AC_CONFIG_FILES([source/Makefile
 		 Makefile
 		 ])
 AC_OUTPUT
+
+dnl until libtool is useful on systems using autoconf versions > 2.13,
+dnl we unfortunately cannot do this. I hate GNU for this crap.
+dnl AC_CONFIG_SUBDIRS(libltdl)

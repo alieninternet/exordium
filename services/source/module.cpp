@@ -39,6 +39,10 @@
 #include "lib/services.h"
 #include "version.h"
 
+extern "C" {
+#include "ltdl.h"
+}
+
 using namespace Exordium;
 
 
@@ -119,7 +123,12 @@ namespace {
 	    return false;
 	 }
  */
-	   
+
+	 // Leave this here until > kine snapshot 200212040905
+	 if (lt_dlinit() != 0) {
+	    return false; // :(
+	 }
+	 
 	 // Create new database Instance
 	 db = new CDatabase(config);
 #ifdef DEBUG
