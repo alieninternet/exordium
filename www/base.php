@@ -50,6 +50,14 @@ switch ($_POST[action])
     include "./funcs/$_POST[action].php";
     break;
 // Channel Activities
+  case "managechan":
+    include "./funcs/$_POST[action].php";
+    break;
+    
+  case "modchan":
+    include "./funcs/$_POST[action].php";
+    break;
+
   case "regchan":
     include "./funcs/$_POST[action].php";
     break;
@@ -101,11 +109,8 @@ default_page()
   $CHAN = new Channel();
   if ($CHAN->has_chans())
   {
-    echo "<tr><td id=\"centerfield\">You currently own:<br>";
-    echo $CHAN->print_users_chans();
-    echo "</td></tr>";
-    echo "<tr><td id=\"centerfield\">";
-    
+    echo "<tr><td id=\"centerfield\">You currently own";
+    echo $CHAN->print_user_mod_chans();
     echo "</td></tr>";
   }
   else
