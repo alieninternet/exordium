@@ -79,7 +79,8 @@ namespace Exordium {
 		 CHANNEL_BAN        = 0x00200000,
 		 CHANNEL_EXEMPT     = 0x00400000,
 		 CHANNEL_MODE       = 0x00800000,
-		 SERVER_MODE        = 0x01000000,
+                 CHANNEL_PART       = 0x01000000,
+		 SERVER_MODE        = 0x02000000,
 	         ALL	            = 0xFFFFFFFF /* Psycho :-) */
 	    };
 	 };
@@ -163,7 +164,11 @@ namespace Exordium {
       
       virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
       virtual void handleClientSignon(User& origin) {};
-      virtual void handleTopic(const AISutil::String &, dChan&, const AISutil::String &) {};
+      virtual void handleTopic(const AISutil::String& origin, dChan& channel, const AISutil::String& newTopic) {};
+      virtual void handleChannelJoin(User& origin, dChan& channel, const int& status) {};
+      virtual void handleChannelPart(User& origin, dChan& channel) {};
+      virtual void handleChannelMode(dChan& channel, const AISutil::String& modes,
+                                     const AISutil::String& target, const AISutil::String& source) {};
       
       
       // Grab the information structure of a module

@@ -89,10 +89,24 @@ namespace Exordium {
       const bool isVoice(AISutil::String const &);
       const void kick(AISutil::String const &,AISutil::String const &,AISutil::String const &);
       const void ban(User& origin,AISutil::String const &,AISutil::String const &,AISutil::String const &);
-      const void setEnforceBans( bool Value );
-      const void setTrackTopics( bool Value );
-      const bool getEnforceBans( void );
+
       const bool getTrackTopics( void );
+      const void setTrackTopics( bool Value );
+
+      const bool getEnforceBans( void );
+      const void setEnforceBans( bool Value );
+
+      const bool getModeLock( void );
+      const void setModeLock( bool Value );
+
+      const AISutil::String getChannelModes( void );
+      const void setChannelModes( const AISutil::String& modes );
+
+      const AISutil::String getEntryMsg( void );
+      const void setEntryMsg( const AISutil::String& entrymsg );
+
+      const AISutil::String getPartMsg( void );
+      const void setPartMsg( const AISutil::String& partmsg );
 
       dChan(AISutil::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
