@@ -45,7 +45,6 @@ endif
 
 # Libraries we need to build
 lib_LTLIBRARIES=\
-	mod_exordium.la \
 	libexordium.la \
 	libexordium_bank.la \
         $(EXORDIUM_TARGET_BOT_MODULE) \
@@ -63,7 +62,8 @@ lib_LTLIBRARIES=\
 	lib_cards.la \
 	game_hangman.la \
 	game_exordi8.la \
-	game_poker.la
+	game_poker.la \
+	mod_exordium.la 
 
 
 
@@ -71,11 +71,11 @@ lib_LTLIBRARIES=\
 libexordium_la_INCLUDES = -Isource/
 # work out what else needs compiling..
 if EXORDIUM_COMPILE_DB_MYSQL
-  EXORDIUM_TARGET_DB_MYSQL=lib/database/mysql/dbmysql.cpp \
-                           lib/database/mysql/dbmysqlres.cpp
+  EXORDIUM_TARGET_DB_MYSQL=source/lib/database/mysql/dbmysql.cpp \
+                           source/lib/database/mysql/dbmysqlres.cpp
 endif
 if EXORDIUM_COMPILE_DB_PGSQL
-  EXORDIUM_TARGET_DB_PGSQL=lib/database/postgresql/dbpgsql.cpp
+  EXORDIUM_TARGET_DB_PGSQL=source/lib/database/postgresql/dbpgsql.cpp
 endif
 
 libexordium_la_SOURCES = \
@@ -109,8 +109,8 @@ libexordium_la_SOURCES = \
 			source/lib/user.cpp \
 			source/lib/utils.cpp \
 			source/lib/database/database.cpp \
-			source/$(EXORDIUM_TARGET_DB_MYSQL) \
-			source/$(EXORDIUM_TARGET_DB_PGSQL)
+			$(EXORDIUM_TARGET_DB_MYSQL) \
+			$(EXORDIUM_TARGET_DB_PGSQL)
 
 source/lib/core_language.cpp source/lib/core_language.h: source/lib/core_language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
