@@ -23,7 +23,7 @@ OBJECTS=$(SOURCES:.cpp=.so)
 all: $(OBJECTS)
 
 %.so: %.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -shared -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -shared $< -o $@
 
 clean:
 	$(RM) *.so modules

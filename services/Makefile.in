@@ -22,7 +22,7 @@ clean:
 	for d in $(SUB_DIRS); \
 		do $(MAKE) -C $$d clean; \
 	done
-	$(RM) *~ include/*~ Makefile
+	$(RM) *~ include/*~
 
 distclean:
 	for d in $(SUB_DIRS); \

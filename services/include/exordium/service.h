@@ -9,6 +9,7 @@
 #define SERVICE_H
 #include <kineircd/str.h>
 #include <map>
+#include <cassert>
 
 extern "C" {
 #include <dlfcn.h>
@@ -38,6 +39,11 @@ class Core {
       ServiceModule(Service *s, void *h)
         : service(s), handle(h)
           {};
+     ~ServiceModule(void)
+	{
+		cout << "Dead module??" << endl;
+		dlclose(handle);
+	}
    };
    typedef std::map <Kine::String, ServiceModule *> modules_type;
    modules_type serviceModules;
@@ -56,8 +62,6 @@ class Core {
    void delModule(Kine::String const &name) {
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
       if (sm != 0) {
-         dlclose(sm->handle);
-         dlclose(sm->handle);
          delete sm;
 	 serviceModules.erase(name.IRCtoLower());
 	 return;
