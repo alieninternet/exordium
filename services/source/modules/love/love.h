@@ -47,6 +47,9 @@ class Love : public Exordium::Service {
    void sendMessage(const String &recipient, const String &message)
      {
 	// This name should not be hard-coded - icky
+	// It isn't anymore! (ner :( ) - init_func can now take another
+	// parm, being a String containing your name. (as defined by
+	// loadModule)
 	Exordium::Services::serviceNotice(message, "Love", recipient);
      };
 
