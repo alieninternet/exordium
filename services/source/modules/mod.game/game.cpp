@@ -247,14 +247,18 @@ std::endl;
 #endif
    
    // Check for the game
-   channelGames[chan] = 
+   ChannelGame* chanGame = 
      Factory::Instance().createGame(game, *this, chan, origin);
 
-   // Join the channel and say hello
-   services->serviceJoin(getName(), chan);
-   services->serverMode(chan, "+o", getName());
-   services->serviceNotice("Hello " + chan + " (" + origin.getNickname() + 
-       " wanted to play " + game + ')', "Game", chan);
+   if(chanGame)
+   {
+     channelGames[chan] = chanGame;
+     // Join the channel and say hello
+     services->serviceJoin(getName(), chan);
+     services->serverMode(chan, "+o", getName());
+     services->serviceNotice("Hello " + chan + " (" + origin.getNickname() + 
+         " wanted to play " + game + ')', "Game", chan);
+   }
 
    // give them an error???!!
 }
