@@ -50,6 +50,7 @@ const Module::functionTableStruct Module::functionTable[] =
      { "global",	&Module::parseGLOBAL },
      { "kill",		&Module::parseKILL },
      { "jupe",		&Module::parseJUPE },
+     { "whois",		&Module::parseWHOIS },
      { 0, 0 }
 };
 
@@ -329,6 +330,42 @@ OPER_FUNC (Module::parseJUPE)
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
 	services->logLine("\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
      }
+}
+
+OPER_FUNC (Module::parseWHOIS)
+{
+   Kine::Name target = tokens.nextToken();
+   target = target.IRCtoLower();
+   
+   if (target == "")
+     {
+	origin.sendMessage(GETLANG(oper_WHOIS_USAGE),getNickname());
+	return;
+     }
+   User *ptr = services->findUser(target);
+   if (ptr == 0)
+     {
+	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
+     }
+   
+   else
+     {
+	origin.sendMessage(GETLANG(oper_WHOIS_START,ptr->getNickname(),String::convert(ptr->getOnlineID())),getNickname());
+	origin.sendMessage(GETLANG(oper_WHOIS_USERINFO,ptr->getNickname()+"!"+ptr->getIdent()+"@"+ptr->getHost(),ptr->getModes(),String::convert(ptr->countHost())),getNickname());
+	origin.sendMessage(GETLANG(oper_WHOIS_SERVERINFO,"server.peoplechat.org","1525"),getNickname());
+	origin.sendMessage(GETLANG(oper_WHOIS_SERVICEINFO,String::convert(ptr->getFloodCount()),ptr->getIDList()),getNickname());
+	origin.sendMessage(GETLANG(oper_WHOIS_CHANNELS,"#this #would @#be +#a-chan-list"),getNickname());
+     }
+   
+/* Intended example
+ * > WHOIS REPLY:
+ * > WHOIS for nick
+ * > Userhost: nick!user@host [maskhost] xxx.xxx.xxx.xxx Modes: modes
+ * > Server: server Online Time: timestamp
+ * > Flood Level: floodlevel Identified as: nick Registered Chan: #chan
+ * > Channels: #chan @#list
+ * > 
+ */
 }
 
 OPER_FUNC (Module::parseCOMMANDS)
