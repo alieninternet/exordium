@@ -13,6 +13,7 @@
 #include "exordium/sql.h"
 #include "exordium/module.h"
 #include <map>
+#include <sstream>
 
 using Kine::String;
 using Kine::StringTokens;
@@ -128,11 +129,14 @@ void
 	     String toh = "URL : \002"+lurl;
 	     String toj = "Yahoo! : \002"+lyah;
 	     String tok = "Last Quit Message : \002"+lqui;
-	     String tol = "Options : ";
-	     if(deopAway)
-	       String tol = tol + " Deop on Away";
-	     if(modNick)
-	       String tol = tol + ", Nickname Enforcement";
+	     std::ostringstream tol;
+	     tol << "Options : ";
+	     if(deopAway) {
+	       tol << " Deop on Away";
+	     }
+	     if(modNick) {
+	       tol << ", Nickname Enforcement";
+	     }
 						 
 	     services.serviceNotice(toa,"Nick",origin);
 	     services.serviceNotice(tob,"Nick",origin);
@@ -145,7 +149,7 @@ void
 	     services.serviceNotice(toh,"Nick",origin);
 	     services.serviceNotice(toj,"Nick",origin);
 	     services.serviceNotice(tok,"Nick",origin);
-	     services.serviceNotice(tol,"Nick",origin);
+	     services.serviceNotice(tol.str(),"Nick",origin);
 	     return;
 	  }
      }
