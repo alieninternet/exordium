@@ -33,7 +33,7 @@ AC_FUNC_GETLOADAVG
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([gethostbyname gettimeofday memset select socket strchr])
 AC_CHECK_LIB([dl], [dlopen], [], [AC_MSG_ERROR([I cannot find a working dlopen! :(])])
-AC_CHECK_LIB([mysqlclient], [maintest], [AC_MSG_RESULT(found mysqlclient library)], [AC_MSG_ERROR([Could not find your mysql library])])
+AC_CHECK_LIB([mysqlclient], [main], [AC_MSG_RESULT(found mysqlclient library)], [AC_MSG_ERROR([Could not find your mysql library])])
 
 # Checks for header files.
 AC_HEADER_STDC
