@@ -130,7 +130,9 @@ bool
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	if(row[0]=="1")
+	String foo = row[0];
+	std::cout << "modnick thing is " << foo << std::endl;
+	if(foo=="1")
 	  {
 	     return true;
 	  }
