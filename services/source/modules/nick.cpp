@@ -177,7 +177,7 @@ void
    String value = tokens.nextToken();
    if(!services.getNickname().isIdentified(origin,origin))
      return;
-   if(command=="pass")
+   if(command=="pass" || command=="password" || command=="passwd")
      {
 	if(value=="")
 	  {
