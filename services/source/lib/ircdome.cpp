@@ -81,13 +81,17 @@ void
 	String filename = tokens.nextToken();
 	services.serviceNotice("Attempting to load module","IRCDome",origin);
 	String errString;
-	if(!services.getConfig().getModules().loadModule(filename,
-							 errString, services))
-	  {
-	     services.serviceNotice("Error loading module: " + errString,
-				    "IRCDome",origin);
-	     return;
-	  }
+	Service* const service = 
+	  services.getConfig().getModules().loadModule(filename, errString);
+	if(service == 0) {
+	   services.serviceNotice("Error loading module: " + errString,
+				  "IRCDome", origin);
+	   return;
+	}
+	
+	// Start the module, now that it has been loaded..
+	service->start(services);
+	
 	services.serviceNotice("Module loaded successfully","IRCDome",origin);
 
      }

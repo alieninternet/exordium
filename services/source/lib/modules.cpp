@@ -25,6 +25,7 @@
  */
 
 #include <sstream>
+#include <algorithm>
 
 #include "exordium/modules.h"
 
@@ -62,8 +63,8 @@ Modules::Module::~Module(void)
  * 18/09/2002 pickle - Merged with Services::loadModule()
  * Note: Some of the variables passed here are temporary...
  */
-bool Modules::loadModule(const String& fileName, String& errString,
-			 Services& services)
+Service* const Modules::loadModule(const String& fileName, 
+				   String& errString)
 {
    // Try to load the module
    void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
@@ -72,7 +73,7 @@ bool Modules::loadModule(const String& fileName, String& errString,
    if (handle == 0) {
       // Set the error string appropriately
       errString = "Could not load " + fileName + ": " + dlerror();
-      return false;
+      return 0;
    }
    
    // Locate the initialisation function
@@ -84,7 +85,7 @@ bool Modules::loadModule(const String& fileName, String& errString,
    if (initfunc == 0) {
       errString = "Could not load " + fileName + 
 	": Module does not contain an initialisation function";
-      return false;
+      return 0;
    }
 
    // Pull out the service data, this class contains all the other info we need
@@ -94,16 +95,13 @@ bool Modules::loadModule(const String& fileName, String& errString,
    if (service == 0) {
       errString = "Could not load " + fileName +
 	": Module failed to initialise";
-      return false;
+      return 0;
    }
 	  
    std::cout << "Loaded module '" << 
      service->getModuleInfo().fullName << "' version " <<
      service->getModuleInfo().versionMajor << '.' <<
      service->getModuleInfo().versionMinor << std::endl;
-
-   // Temporary
-   service->start(services);
 
    // Fix up the name, since we use it twice (may as well convert it once)
    String moduleName = service->getName().IRCtoLower();
@@ -112,13 +110,13 @@ bool Modules::loadModule(const String& fileName, String& errString,
    if (!exists(moduleName)) {
       // Add it, and return happy status
       modules[moduleName] = new Module(service, handle);
-      return true;
+      return service;
    }
 
    // Umm, we should delete and unload module here!
    
    // If the module exists already, we shouldn't load it..
-   return false;
+   return 0;
 }
 
 
@@ -144,6 +142,31 @@ void Modules::unloadModule(const String& name) {
 }
 
 
+// Helper for the 'startAll' function below
+struct startModule {
+   // Where services is
+   Services& services;
+   
+   // Constructor
+   startModule(Services& s)
+     : services(s)
+     {};
+
+   // Operator which performs the starting
+   void operator()(Modules::modules_type::value_type& modulesData)
+     { modulesData.second->service->start(services); };
+};
+
+
+/* startAll - Start all modules in the list
+ * Original 20/09/2002 pickle
+ */
+void Modules::startAll(Services& services)
+{
+   (void)std::for_each(modules.begin(), modules.end(), startModule(services));
+}
+
+  
 /* exists - Check if a module exists
  * Original 07/06/2002 james
  */
