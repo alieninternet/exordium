@@ -29,6 +29,7 @@ namespace Exordium {
 	        static int maxChannelsUser(String const &);
 	        static int maxChannelsAccess(void);
 	        static String getChanName(int const &);
+	        static String getChanIDName(int const &);
 	        static void setTopic(String const &,String const &);
 	        static void updateTopic(String const &, String const &);
 	        static String getChanOwner(int const &);

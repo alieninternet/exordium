@@ -45,6 +45,7 @@ public:
 private:
    static void OPER_FUNC (parseHELP);
    static void OPER_FUNC (parseQUOTE);
+   static void OPER_FUNC (parseJUPE);
 };
 
 

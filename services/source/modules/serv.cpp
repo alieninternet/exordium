@@ -34,7 +34,6 @@ struct Serv::functionTableStruct const
   {"die", parseDIE},
   {"news", parseNEWS},
   {"synch", parseSYNCH},
-  {"clone", parseCLONE},
   {0}
 };
 void
@@ -82,17 +81,8 @@ if(reason=="")
 		return;
 	}
 
-String togo = "Services is \002shutting down\002 by request of \002"+origin+"\002 - "+reason;
-Services::helpme(togo,"Serv");
-Services::queueAdd(":Chan QUIT :"+togo);
-Services::queueAdd(":Nick QUIT :"+togo);
-Services::queueAdd(":Love QUIT :"+togo);
-Services::queueAdd(":Note QUIT :"+togo);
-Services::queueAdd(":Serv QUIT :"+togo);
-Services::queueAdd(":IRCDome QUIT :"+togo);
-Services::queueAdd(":Oper QUIT :"+togo);
-Services::queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+togo);
-Services::shutdown();
+String togo = "\002"+origin+"\002 - "+reason;
+Services::shutdown(togo);
 }
 void
 SERV_FUNC (Serv::parseSYNCH)
@@ -491,10 +481,6 @@ if(who=="" || reason=="")
 		Services::serviceNotice("Usage: delnick nickname reason","Serv",origin);
 		return;
 	}
-int faccess = Nickname::getAccess("Serv",who);
-int oaccess = Nickname::getAccess("Oper",who);
-Services::Debug(String::convert(faccess));
-Services::Debug(String::convert(oaccess));
 
 String togo = origin+" did \002delnick\002 on "+who+" for \002"+reason;
 Services::helpme(togo,"Serv");

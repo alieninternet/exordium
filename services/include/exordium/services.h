@@ -111,7 +111,7 @@ public:
   static Core serviceM;  
 
 //Function Declrations below here.
-	static void shutdown(void);
+	static void shutdown(String const &);
 	void SynchTime(void);
 	void expireRun(void);
 	static String getQuote(int const &number);
@@ -227,9 +227,17 @@ public:
       			}
 			else
 			{
+				if(!stopping)
+				{
 				std::cout << "Socky write fubared... disconnecting :(" << std::endl;
 				Exordium::Services::connected = false;
 				return false;
+				}
+				//Ignore if we're stopping.. YES I KNOW ITS BAD :(
+				else
+				{
+				exit(0);
+				}
 			}
 			}
 			else

@@ -21,14 +21,11 @@ namespace Exordium
 void
 Channel::RemoveBan(String const &id, String const &chan, String const &mask)
 {
-
 String tid = chan;
 int cid = tid.toInt();
 String channel = Channel::getChanName(cid);
-String todebug = "Removing " + mask + " from this channel";
+String todebug = "\002[\002Unban\002]\002 " + mask + " / " + channel;
 Services::Debug(todebug);
-Services::Debug(channel);
-Services::servicePrivmsg(todebug,"Chan",channel);
 Services::serverMode(channel,"-b",mask);
 String query = "DELETE from chanbans where id='"+id+"'";
 Sql::query(query);
@@ -169,14 +166,11 @@ Channel::isChanRegistered(String const &name)
         {
                 String foo  = ((std::string) row[0]).c_str();
 		res.free_result();
-                Services::Debug(foo);
                 if(foo.toInt() > 0)
                         {
-                        Services::Debug("Its registered");
                         return true;
                         }
         }
-Services::Debug("Its not registered");
 return false;
 }
 /* Return the access (if any) the given nickname has in the given channel */
@@ -289,6 +283,24 @@ while ((row = res.fetch_row()))
 res.free_result();
 return String("");
 }
+
+String
+Channel::getChanIDName(int const &number)
+{
+String query = "SELECT name from onlinechan where id="
++ String::convert(number);
+MysqlRes res = Sql::query(query);
+MysqlRow row;
+while ((row = res.fetch_row()))
+{
+        String name = ((std::string) row[0]).c_str();
+	res.free_result();
+        return name;
+}
+res.free_result();
+return String("");
+}
+
 
 /* Set the topic in the given channel, to the given text */
 
@@ -451,23 +463,18 @@ Channel::banChan(String const &chan, String const &mask, String const &reason)
                 String host = Nickname::getHost(tnick);
                 String full = String(tnick)+"!"+ident+"@"+host;
 		res.free_result();
-                Services::Debug(String::convert(foo));
-                Services::Debug(tnick);  
-                Services::Debug(ident);
-                Services::Debug(host); 
-                Services::Debug(full);
                 StringMask bar(mask);
                 bool hi = false;
                 hi = bar.matches(full);
                 if(hi==false)
                         {
                                 //Matched (despite being false?) :-)
-                        Services::Debug(full+" and "+bar.getMask()+" matches");  
                                 Services::serviceKick(chan,tnick,reason);
+				String togo = "\002[\002BanKick\002]\002 "+chan+" / "+tnick;
+				Services::Debug(togo);
                         }
                 if(hi==true)
                         {
-                Services::Debug("NO MATCH for "+full+" and "+bar.getMask());
                         }
         }
 }

@@ -55,7 +55,8 @@ namespace Exordium {
   		static String getLastHost (const String &nick);
   		static String getLastID (const String &nick);  
   		static String getRegDate (const String &nick);
-
+		static void setDeopAway(String const &, bool const &);
+		static bool deopAway(String const &);
 	};
 
 

@@ -221,8 +221,6 @@ Note::parseLine (String const &line, String const &requestor)
   String command = st.nextToken ().toLower ();
   for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {

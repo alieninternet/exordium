@@ -40,6 +40,7 @@ private:
   static void PARSER_FUNC (parseQUIT);
   static void PARSER_FUNC (parseSQUIT);
   static void PARSER_FUNC (parseSJOIN);
+  static void PARSER_FUNC (parseAWAY);
 };
 
 #endif

@@ -36,8 +36,6 @@ MysqlRes Sql::query(String const &query)
     long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec) - (((long long)start.tv_sec * 1000000) + start.tv_usec));
     String tolog = String("MySQL Query Took ") + String::convert(time) + " microseconds";
     Log::logLine(tolog);
-    Services::Debug(query);
-    Services::Debug(tolog);
     //MysqlRes togo = mysql.store_result();
     return mysql.store_result();
 }

@@ -30,6 +30,7 @@ struct Parser::functionTableStruct const
   {"QUIT", parseQUIT},
   {"SQUIT", parseSQUIT},
   {"SJOIN", parseSJOIN},
+  {"AWAY", parseAWAY},
   {0}
 };
 
@@ -58,7 +59,36 @@ Parser::parseLine (String & line)
     }
 Log::logLine(String("Unparsed Input!: ")+line);
 };
-
+void
+PARSER_FUNC (Parser::parseAWAY)
+{
+String reason = tokens.rest();
+Services::Debug("\002[\002Away\002]\002 "+origin+" has set away with reason "+reason);
+if(Nickname::deopAway(origin))
+	{
+		if(reason=="")
+			{
+				Services::Debug("User is coming back");
+				return;
+			}
+			else
+			{
+				Services::Debug("User is going away");
+				int nid = Nickname::getOnlineNickID(origin);
+				String query = "SELECT chanid from chanstatus where nickid="+String::convert(nid)+" AND status=2";
+				MysqlRes res = Sql::query(query);
+				MysqlRow row;
+				while ((row = res.fetch_row()))
+				{
+				String foo = ((std::string) row[0]).c_str();
+				String cname = Channel::getChanIDName(foo.toInt());
+				String cstr = origin+" "+origin;
+				Services::serverMode(cname,"-o+v",cstr);
+				}
+				
+			}
+	}
+}
 void
 PARSER_FUNC (Parser::parseS)
 {
@@ -88,8 +118,6 @@ if(dest[0]=='#')
 { 
 	if(!Channel::isChanRegistered(dest))
 	{
-		String togo = String("Fix Me:-> Ignoring non registered channel ")+dest;
-		Services::Debug(togo);
 		return;
 	}
 	String modes = tokens.nextColonToken();
@@ -111,15 +139,11 @@ if(dest[0]=='#')
 			if(add)
 			{
 				String target = tokens.nextToken();
-				String togo = String("+b ")+target+" @ "+dest;
-				Services::Debug(togo);
 				return;
 			}
 			if(take)
 			{
 				String target = tokens.nextToken();
-				String togo = String("+b ")+target+" @ "+dest;
-				Services::Debug(togo);
 				return;
 			}
 		}
@@ -128,15 +152,11 @@ if(dest[0]=='#')
 			if(add)
 			{
 				String target = tokens.nextToken();
-				String togo = "+o "+target+" "+dest;   
-				Services::Debug(togo);
 				Channel::internalOp(target,dest);
 			}
 			if(take)
 			{
 				String target = tokens.nextToken();
-				String togo = "-o "+target+" "+dest;
-				Services::Debug(togo);
 				Channel::internalDeOp(target,dest);
 			}
 		}
@@ -145,15 +165,11 @@ if(dest[0]=='#')
 			if(add)
 			{
 				String target = tokens.nextToken();
-				String togo = "+v "+target+" "+dest;
-				Services::Debug(togo);
 				Channel::internalVoice(target,dest);
 			}
 			if(take)
 			{
 				String target = tokens.nextToken();
-				String togo = "-v "+target+" "+dest;
-				Services::Debug(togo);
 				Channel::internalDeVoice(target,dest);
 			}
 		}
@@ -184,7 +200,6 @@ for (i = 0; i!=length; i++)
 			{
 				//Non-Authorised.
 				String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
-				Services::Debug(tosend);
 				Services::globop(tosend,"Oper");
 				String reason = "You have no permission to become an IRC Operator";
 				Services::killnick(origin, "Oper", reason);
@@ -193,7 +208,6 @@ for (i = 0; i!=length; i++)
 			if(axs==-1)
 			{
 				String tosend = origin+" just tried to become an IRC Operator - \002Suspended\002";
-				Services::Debug(tosend);
 				Services::globop(tosend,"Oper");
 				String reason = "You are suspended - Do not try to become an Operator";
 				Services::killnick(origin, "Oper", reason);
@@ -202,7 +216,6 @@ for (i = 0; i!=length; i++)
 			if(axs>0)
 			{
 				String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
-				Services::Debug(tosend);
 				Services::globop(tosend,"Oper");
 				return;
 				//Need to add to an online tables of opers..
@@ -219,7 +232,7 @@ PARSER_FUNC (Parser::parsePASS)
   long unsigned rx = Services::getCountRx();
   long unsigned tx = Services::getCountTx();
   String togo = String("Completed Network Synch: ")+String::convert(rx)+" Bytes received. "+String::convert(tx)+" Bytes transmitted";
-  Services::Debug(String(togo));
+  Services::helpme(String(togo),"Serv");
   return;
 }
 
@@ -242,7 +255,6 @@ if(tokens.countTokens() < 11)
 	Sql::query(query);
 	query = "DELETE from kills WHERE nick='"+origin+"'";
 	Sql::query(query);
-	Services::Debug(origin+"->"+newnick);
 	if(Nickname::isNickRegistered(newnick))
 	{
 		if(!Nickname::isIdentified(newnick))
@@ -276,8 +288,6 @@ tokens.nextToken();
 String realname = tokens.rest();
 Nickname::addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realname);
 int num = Nickname::countHost(host);
-String togo = nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+vwhost+" "+server+" "+modes+" :"+realname;
-Services::Debug(togo);
 String query = "SELECT txt from news where level=0 AND expires<"+String::convert(Services::currentTime);
 MysqlRes res = Sql::query(query);
 MysqlRow row;
@@ -291,7 +301,6 @@ if(num>2)
 {
 	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
 	Services::globop(alert,"Oper");
-	Services::Debug(alert);
 	//Add gline.
 }
 
@@ -301,8 +310,7 @@ PARSER_FUNC (Parser::parsePRIVMSG)
 {
   String originl = origin.IRCtoLower();
   String target = tokens.nextToken ();
-  String tmes = tokens.nextColonToken();
-  String message = Sql::makeSafe(tmes);
+  String message = tokens.nextColonToken();
   
   if ((message[0] == '\001') && (message[message.length () - 1] == '\001'))
     {
@@ -358,7 +366,6 @@ std::cout << target << std::endl;
    Services::SecurePrivmsg = false;
    if(!Services::serviceM.exists(target.toLower()))
 	{
-		Services::Debug("--> No module loaded to cope with "+target);
 		String togo = "Sorry - This part of Services is currently offline for maintenance - please try again later";
 		Services::serviceNotice(String(togo),target,originl);
 		return;
@@ -401,7 +408,7 @@ String query = "DELETE from onlineclients where nickname='"+origin+"'";
 Sql::query(query);
 query = "DELETE from identified where nick='"+String::convert(oid)+"'";
 Sql::query(query);
-Services::Debug("-->Client gone offline ("+reason+")");
+//Store the quit reason here
 }
 
 void
@@ -429,25 +436,20 @@ PARSER_FUNC (Parser::parseSJOIN)
 		String user = tokens.nextToken();
 		StringTokens luser (user);
 		String foo = luser.nextColonToken();
-		String togo = ts1 + " " + ts2 + " " + chan + " " + modes + " " + foo;
-		Services::Debug(togo);
 		if(foo[0]=='@')
 		{
-			Services::Debug("--> @ Op");
 			op = true;
 			voice = false;
 			normal = false;
 		}
 		if(foo[0]=='+')
 		{
-			Services::Debug("--> + Voice");
 			op = false;
 			voice = true;
 			normal = false;
 		}
 		if(foo[0]!='@' && foo[0]!='+')
 		{
-			Services::Debug("-->   Normal");
 			op = false;
 			voice = false;
 			normal = true;
@@ -462,13 +464,10 @@ PARSER_FUNC (Parser::parseSJOIN)
 		}
 		if(normal)
 		{
-			Services::Debug("->Normal user");
 			if(Nickname::isIdentified(foo.trim(),foo.trim()))
 			{
-				Services::Debug("-->Identified");
 				int access = Channel::getChanAccess(chan,foo.trim());
 				String togo = "Client: \002:"+foo.trim()+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";
-				Services::Debug(togo);
 				if(access>99)
 				{
 					Services::mode("Chan",chan,"+o",foo.trim());
@@ -482,7 +481,6 @@ PARSER_FUNC (Parser::parseSJOIN)
 					return;
 				}
 			}
-		Services::Debug("->Non identified");
 		Channel::internalAdd(foo.trim(),chan);
 
 		}

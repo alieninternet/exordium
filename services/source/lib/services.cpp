@@ -54,16 +54,17 @@ using namespace Exordium;
 
 static KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
-	Services::helpme("Services received rehash signal","Serv");
-   std::ostringstream debugOut;
-   debugOut << "Services got rehash signal, services is located at " << foo;
-   Log::logLine(debugOut.str());
+   String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal - commiting database";
+   Services::helpme(reason,"Serv");
+   Sql::query("COMMIT");
 }
 
 static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
-	Services::helpme("Services received " + String(sys_siglist[signal]) + " Shutting down", "Serv");
-	exit(0);
+	Sql::query("COMMIT");
+	String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Terminating";
+	Services::helpme(reason, "Serv");
+	Services::shutdown(reason);	
 }
 
 namespace Exordium {
@@ -208,10 +209,10 @@ int
 Services::init(void)
 {
    Log::logLine("Setting up signal handlers");
-   getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
-   getDaemon().getSignals().addHandler(&Death,
-				       Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
-				       (void *)this);
+   //getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
+   //getDaemon().getSignals().addHandler(&Death,
+//				       Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
+//				       (void *)this);
    
 	struct hostent *host;
 	queueKill ();
@@ -392,9 +393,17 @@ res.free_result();
 return String("0");
 }
 
-void Services::shutdown(void)
+void Services::shutdown(String const &reason)
 {
-Services::Debug("Entering shutdown state.");
+Services::helpme("Services is shutting down "+reason,"IRCDome");
+Services::queueAdd(":Chan QUIT :"+reason);
+Services::queueAdd(":Nick QUIT :"+reason);
+Services::queueAdd(":Love QUIT :"+reason);
+Services::queueAdd(":Note QUIT :"+reason);
+Services::queueAdd(":Serv QUIT :"+reason);
+Services::queueAdd(":IRCDome QUIT :"+reason);
+Services::queueAdd(":Oper QUIT :"+reason);
+Services::queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
 stopping = true;
 stopTime = currentTime + 10;
 }
@@ -465,9 +474,7 @@ void
 Services::doHelp(String const &nick, String const &service,
 		String const &topic, String const &parm)
 {
-Services::Debug("->Entering Help Client "+nick+" Service "+service+" Topic "+topic+" Parm "+parm);
 String lang = Nickname::getLanguage(nick);
-Services::Debug("-->Client has "+lang+" as their language");
 if(topic == "")
 	{
 		//No topic, no parm.
@@ -612,10 +619,8 @@ Services::servicePart(String const &service, String const &target)
 bool
 Services::usePrivmsg (String const &nick)
 {
-Services::Debug("Entering usePrivmsg");
 	if(!Nickname::isNickRegistered(nick))
 	{
-		Services::Debug("Not registered destination.. default to .. notice");
 		return false;
 	}
 String query = String("SELECT privmsg from nicks where nickname='") + nick + "'";
@@ -625,7 +630,6 @@ while ((row = res.fetch_row()))
 {
 	String foo = ((std::string) row[0]).c_str();
 	res.free_result();
-	Services::Debug(foo);
 	if(foo=="1")
 		return true;
 }	
@@ -635,7 +639,6 @@ return false;
 bool
 Services::unloadModule(String const &name)
 {
-	Services::Debug("Unloading Module "+name);
 	serviceM.delModule(name);
 	serviceM.delModule(name);
 	return true;
@@ -647,17 +650,17 @@ void *handle;
 handle = dlopen(fileName.c_str(), RTLD_NOW);
 if(!handle)
 {
-	String togo = "Error: Could not load "+fileName;
+	String togo = "\002[\002Module Error\002]\002 Could not load "+fileName;
 	Services::Debug(String(togo));
 	String foo = dlerror();
-	Services::Debug("dlError() returned: "+foo);
+	Services::Debug("\002[\002Module Error\002]\002 dlError() returned: "+foo);
 	return false;
 }
 Module *(*initfunc)(String const &) =
                 (Module *(*)(String const &))dlsym(handle, "service_init");
 if (initfunc == 0) 
 		{
-			String togo = "Error: Your module does not contain an init function";
+			String togo = "\002[\002Module Error\002]\002 Module does not contain an init function";
 			Services::Debug(togo);
 			return false;
         	}
@@ -686,12 +689,10 @@ Services::isOp(String const &nickname, String const &channel)
 		res.free_result();
 		if(status.toInt() == 2)
 			{
-			Services::Debug("Already opped");
 			return true;
 
 			}
 	}
-Services::Debug("Nah... they aint opped");
 return false;
 }
 
@@ -709,12 +710,10 @@ Services::isVoice(String const &nickname, String const &channel)
 		res.free_result();
 		if(status.toInt() == 1)
 			{
-			Services::Debug("Already voiced");
 			return true;
 
 			}
 	}
-Services::Debug("Nah... they aint voiced");
 return false;
 }
 

@@ -40,8 +40,6 @@ String command = st.nextToken ().toLower ();
 String ch = chan;
 for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {
@@ -63,8 +61,6 @@ Game::parseLine (String const &line, String const &requestor)
   String ch = "";
   for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {
@@ -109,9 +105,7 @@ GAME_FUNC (Game::parseQUOTE)
 	while ((row = res.fetch_row()))
 	{
 		String numb = ((std::string) row[0]).c_str();
-		Services::Debug("I have this many fortunes "+numb);
 		j = Services::random(numb.toInt());
-		Services::Debug("I choose "+String::convert(j));
 	}
 	res.free_result();
 	String thequote = Services::getQuote(j);

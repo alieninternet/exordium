@@ -19,6 +19,41 @@ namespace Exordium
 {
 
 void
+Nickname::setDeopAway(String const &nick, bool const &value)
+{
+	String query;
+	if(value)
+	{
+		query = "UPDATE nicks set deopaway=1 where nickname='"+nick+"'";
+	}
+	else
+	{
+		query = "UPDATE nicks set deopaway=0 where nickname='"+nick+"'";
+	}
+	Sql::query(query);
+}
+
+bool
+Nickname::deopAway(String const &nick)
+{
+	String query = "SELECT deopaway from nicks where nickname='"+nick+"'";
+	MysqlRes res = Sql::query(String(query));
+	MysqlRow row;
+	while ((row = res.fetch_row()))
+	{
+        String foo = ((std::string) row[0]).c_str();
+	if(foo=="1")
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+}
+void
 Nickname::updateHost (String const &nick, String const &host)
 {
         String query = "UPDATE nicks set lasthost='" + host + "' where nickname='" + nick + "'";
@@ -189,15 +224,12 @@ int
 Nickname::getOnlineNickID(String const &nick)
 {
 String query = "select id from onlineclients where nickname='" + nick + "'";
-String debug = "--->Fetching online identification for "+nick;
-Services::Debug(debug);
 MysqlRes res = Sql::query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
                 String id = ((std::string) row[0]).c_str();
 		res.free_result();
-                Services::Debug("---->Which is "+id);
                 return id.toInt();
 }
 res.free_result();
@@ -207,8 +239,6 @@ return 0;
 int
 Nickname::getRegisteredNickID(String const &nick)
 {
-        String debug = "--->Fetching registered identification for "+nick;
-        Services::Debug(debug);
         String query = "select id from nicks where nickname='" + nick + "'";
         MysqlRes res = Sql::query(String(query));
         MysqlRow row;
@@ -216,7 +246,6 @@ Nickname::getRegisteredNickID(String const &nick)
         {
                 String id = ((std::string) row[0]).c_str();
 		res.free_result();
-                Services::Debug("---->Which is "+id);
                 return id.toInt();
         }
 res.free_result();
@@ -296,7 +325,6 @@ bool
 Nickname::isIdentified (String const &nick, String const &as)
 {
 int onlineID = getOnlineNickID(nick);
-Services::Debug("--->Checking to see if "+nick+" is identified as "+as);
 String query = "SELECT idas from identified where nick='"+String::convert(onlineID)+"'";
         MysqlRes res = Sql::query(query);
         MysqlRow row;
@@ -305,13 +333,10 @@ String query = "SELECT idas from identified where nick='"+String::convert(online
                 String temp = ((std::string) row[0]).c_str();
                 String idnick = getNick(temp.toInt());
 		res.free_result();
-                Services::Debug("--->Does "+temp+" equal "+idnick);
                 if(idnick.toLower()==as.toLower())
                 {
-                        Services::Debug("---->Yes - Break");
                         return true;
                 }
-                Services::Debug("---->No - Loop");
         
         }
 	res.free_result();
@@ -418,7 +443,7 @@ Nickname::genAuth(String const &nickname)
 String authcode = Nickname::generatePassword("AUTHENTICATION",nickname);
 String query = "INSERT into pendingnicks values ('','"+nickname+"','" +authcode+"')";
 Sql::query(query);
-String tosend = "Generated new authcode for registered nickname "+nickname+"
+String tosend = "\002[\002New Registration\002]\002 Nickname "+nickname+"
 -> "+authcode;
 Services::Debug(tosend);
 return authcode;

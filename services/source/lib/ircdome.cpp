@@ -33,7 +33,6 @@ IRCDome::parseLine (String & line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          Services::Debug(String("IRCDome is entering ")+command);
           functionTable[i].function (origin, st);
           return;
         }

@@ -54,7 +54,6 @@ Nick::parseLine (String const &line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          Services::Debug(String("NICK is entering ")+command);
           functionTable[i].function (origin, st);
           return;
         }
@@ -73,8 +72,8 @@ NICK_FUNC (Nick::parseAUTH)
 		return;
 	}
 	String authcode = Nickname::getpendingCode(origin);
-	Services::Debug("The pending code is ->" + authcode);
-	Services::Debug("The given code was  ->" + gauth);
+	Services::Debug("\002[\002Auth System\002]\002 The pending code is ->" + authcode);
+	Services::Debug("\002[\002Auth System\002]\002 The given code was  ->" + gauth);
 	if(authcode==gauth)
 	{
 		Services::serviceNotice("Congratulations you have confirmed your nickname. You can now use services freely","Nick",origin);
@@ -435,11 +434,6 @@ NICK_FUNC (Nick::parseKILL)
 	}
 	String nickpass = Nickname::generatePassword(tokill,password);
 	String givepass = Nickname::getPass(tokill);
-	Services::Debug(nickpass);
-	Services::Debug(givepass);
-	Services::Debug(tokill);
-	Services::Debug(password);
-	Services::Debug(origin);
 	if(nickpass == givepass)
 	{
 		String reason = "Kill requested by "+origin;
@@ -483,8 +477,6 @@ NICK_FUNC (Nick::parseGHOST)
 	}
 	String nickpass = Nickname::generatePassword(toghost,password);
 	String givepass = Nickname::getPass(toghost);
-	Services::Debug(nickpass);
-	Services::Debug(givepass);
 	if(nickpass == givepass)
 	{
 		Services::registerService(toghost,"ghost","ghosts.ircdome.org",
@@ -525,8 +517,6 @@ NICK_FUNC (Nick::parseIDENTIFY)
 	}
 	String nickpass = Nickname::generatePassword(origin,password);
 	String givepass = Nickname::getPass(origin);
-	Services::Debug(nickpass);
-	Services::Debug(givepass);
 	if(nickpass == givepass)
 	{
 		int oid = Nickname::getOnlineNickID(origin);

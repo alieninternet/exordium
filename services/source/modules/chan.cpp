@@ -58,8 +58,6 @@ String command = st.nextToken ().toLower ();
 String ch = chan;
 for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {
@@ -81,8 +79,6 @@ Chan::parseLine (String const &line, String const &requestor)
   String ch = "";
   for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {
@@ -122,7 +118,6 @@ CHAN_FUNC (Chan::parseLISTBAN)
 	int tid = Channel::getChanID(channel);
 	Services::serviceNotice("\002[\002Ban List\002]\002 for \002"+channel,"chan",origin);
 	String tquery = "SELECT * from chanbans where chan='" + String::convert(tid) + "'";
-	Services::Debug(tquery);
 	MysqlRes res = Sql::query(tquery);
 	MysqlRow row;
 	int j=0;
@@ -309,18 +304,13 @@ CHAN_FUNC (Chan::parseBAN)
 			String temp2 = st.rest();
 			if(temp2.length()<2)
 			{
-				Services::Debug("Only nickname was given - Generating host based ban");
 				String tban = Nickname::getHost(temp1);
 				String toban = "*!*@"+tban;
 				who = toban;
 			}
-			Services::Debug("BEFORE THE AT " +temp1);
-			Services::Debug("AFTER THE AT " + temp2);
 			int cid = Channel::getChanID(channel);
 			Services::serverMode(channel,"+b",who);
-			Services::Debug(String::convert(Services::currentTime));
 			long newt = Services::currentTime + 120;
-			Services::Debug(String::convert(newt));
 			Channel::addChanBan(cid,who,origin,newt,reason);
 			String rs = "("+origin+"/"+currnick+") "+reason;
 			Channel::banChan(channel,who,rs);
@@ -397,15 +387,12 @@ CHAN_FUNC (Chan::parseOP)
 	while(more==true)
 	{
 		String currnick = st.nextToken();
-		Services::Debug(currnick);
 		int access = Channel::getChanAccess(channel,currnick);
-		Services::Debug(String::convert(access));
 		if(access>100)
 		{
 				String foo = tokens.nextToken();
 				if(foo=="")
 				{
-					Services::Debug("Is already op?");
 					if(!Services::isOp(origin,channel))
 					{
 						Services::mode("Chan",channel,"+o",origin);
@@ -469,15 +456,12 @@ CHAN_FUNC (Chan::parseDEOP)
 	while(more==true)
 	{
 		String currnick = st.nextToken();
-		Services::Debug(currnick);
 		int access = Channel::getChanAccess(channel,currnick);
-		Services::Debug(String::convert(access));
 		if(access>100)
 		{
 				String foo = tokens.nextToken();
 				if(foo=="")
 				{
-					Services::Debug("Is already op?");
 					if(Services::isOp(origin,channel))
 					{
 						Services::mode("Chan",channel,"-o",origin);
@@ -541,9 +525,7 @@ CHAN_FUNC (Chan::parseVOICE)
 	while(more==true)
 	{
 		String currnick = st.nextToken();
-		Services::Debug(currnick);
 		int access = Channel::getChanAccess(channel,currnick);
-		Services::Debug(String::convert(access));
 		if(access>50)
 		{
 				String foo = tokens.nextToken();
@@ -611,9 +593,7 @@ CHAN_FUNC (Chan::parseDEVOICE)
 	while(more==true)
 	{
 		String currnick = st.nextToken();
-		Services::Debug(currnick);
 		int access = Channel::getChanAccess(channel,currnick);
-		Services::Debug(String::convert(access));
 		if(access>50)
 		{
 				String foo = tokens.nextToken();
@@ -724,7 +704,6 @@ CHAN_FUNC (Chan::parseACCESS)
 	foo = Channel::isChanRegistered(channel);
 	if(foo==true)
 	{
-		Services::Debug("Its registered damn it!!!");
 	}
 	if(foo==false)
 	{

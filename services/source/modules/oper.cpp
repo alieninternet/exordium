@@ -37,8 +37,6 @@ String command = st.nextToken ().toLower ();
 String ch = chan;
 for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {
@@ -60,8 +58,6 @@ Oper::parseLine (String const &line, String const &requestor)
   String ch = "";
   for (int i = 0; functionTable[i].command != 0; i++)
     {
-	Services::Debug(line);
-	Services::Debug(requestor);
       // Does this match?   
       if (command == functionTable[i].command)
         {
