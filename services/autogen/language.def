@@ -40,9 +40,9 @@ tagPrefix = "exordium_";
 
 // Languages this file has data for..
 language = {
-   code = "en";
-   name = "English";
-   revision = "200303210";
+   langCode = "en";
+   langName = "English";
+   langRevision = "200303210";
 };
 
 
