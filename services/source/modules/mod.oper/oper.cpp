@@ -336,7 +336,7 @@ OPER_FUNC (Module::parseWHOIS)
 {
    Kine::Name target = tokens.nextToken();
    target = target.IRCtoLower();
-   
+
    if (target == "")
      {
 	origin.sendMessage(GETLANG(oper_WHOIS_USAGE),getNickname());
@@ -347,7 +347,7 @@ OPER_FUNC (Module::parseWHOIS)
      {
 	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
      }
-   
+
    else
      {
 	origin.sendMessage(GETLANG(oper_WHOIS_START,ptr->getNickname(),String::convert(ptr->getOnlineID())),getNickname());
@@ -356,7 +356,7 @@ OPER_FUNC (Module::parseWHOIS)
 	origin.sendMessage(GETLANG(oper_WHOIS_SERVICEINFO,String::convert(ptr->getFloodCount()),ptr->getIDList()),getNickname());
 	origin.sendMessage(GETLANG(oper_WHOIS_CHANNELS,"#this #would @#be +#a-chan-list"),getNickname());
      }
-   
+
 /* Intended example
  * > WHOIS REPLY:
  * > WHOIS for nick
@@ -364,7 +364,7 @@ OPER_FUNC (Module::parseWHOIS)
  * > Server: server Online Time: timestamp
  * > Flood Level: floodlevel Identified as: nick Registered Chan: #chan
  * > Channels: #chan @#list
- * > 
+ * >
  */
 }
 
@@ -422,8 +422,22 @@ bool Module::start(Exordium::Services& s)
    // Register and process our language tag name -> tag ID map
    Kine::langs().registerMap(Exordium::OperModule::Language::tagMap);
 
-   std::cout << "Hello! I'm OPER.. I'm STARTING.. HELLOOOO??? ANYONE THERE?? :( :(" << std::endl;
-   
+   int foofoo = 0;
+   for (;;)
+     {
+
+	std::cout << "TagMap " << foofoo << ": tag '" <<
+	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
+	  Language::tagMap[foofoo].tagID << std::endl;
+
+	if (Language::tagMap[++foofoo].tagName == 0)
+	  {
+
+	     break;
+	  }
+
+     }
+
    // Register ourself to the network
    services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
