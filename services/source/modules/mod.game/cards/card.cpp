@@ -44,6 +44,8 @@ using AISutil::StringTokens;
  * is much faster in the long run.
  * 
  * Note that the indexes of this list are - 1 of their real values
+ * 
+ * All of this should be autogen'd!! ;)
  */
 const char* Cards::Card::namesList[4][13] = {
      {	
@@ -109,11 +111,11 @@ const char* Cards::Card::namesList[4][13] = {
 };
 
 // List of suits for easy translation.. Note this is suit-1
-const char* Cards::Card::suitsList[4] = {
-   "CLUBS",
-   "SPADES",
-   "HEARTS",
-   "DIAMONDS"
+const Cards::Card::suitsList_type Cards::Card::suitsList[4] = {
+   { "CLUBS",		"\226\153\163" },
+   { "SPADES",		"\226\153\160" },
+   { "HEARTS",		"\226\153\165" },
+   { "DIAMONDS",	"\226\153\166" }
 };
 
 // List of ranks for easy translation.. Note this is index-1..
@@ -182,7 +184,7 @@ Cards::Card::Card(const String& name)
    
    // Try and find the suit..
    for (unsigned int i = 0; i != 4; i++) {
-      if (token == suitsList[i]) {
+      if (token == suitsList[i].name) {
 	 // Ahh a match! Return joyously..
 	 suit = ++i;
 	 return;
@@ -220,7 +222,7 @@ unsigned char Cards::Card::findSuit(const String& suitName)
    // Try and find the suit..
    for (unsigned int i = 0; i != 4; i++) {
       // If it matched, return it
-      if (name == suitsList[i]) {
+      if (name == suitsList[i].name) {
 	 return ++i;
       }
    }
@@ -238,7 +240,7 @@ const char* Cards::Card::nameSuit(const unsigned char suit)
       return "Unknown";
    }
    
-   return suitsList[suit - 1];
+   return suitsList[suit - 1].name;
 }
 
 /* populate - Populate the pack

@@ -78,7 +78,10 @@ namespace Cards {
       static const char* namesList[4][13];
       
       // More names, used for converting card names into proper ranking/suit
-      static const char* suitsList[4];
+      struct suitsList_type {
+	 const char* const name;		// Name of the suit
+	 const char* const glyph;		// Glyph for the suit (UTF-8)
+      } static const suitsList[4];
       static const char* ranksList[13];
 
       // A union, to allow for speedy copies of the data while saving memory
