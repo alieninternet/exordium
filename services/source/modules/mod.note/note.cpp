@@ -37,234 +37,248 @@
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
-
-   struct Note::functionTableStruct const
-     Note::functionTable[] =
-     {
-	  {"send", &Note::parseSEND},
-	  {"list", &Note::parseLIST},
-	  {"read", &Note::parseREAD},
-	  {"del", &Note::parseDEL},
-	  {"delete", &Note::parseDEL},
-	  {"erase", &Note::parseDEL},
-	  {0, 0}
-     };
-   void
-     NOTE_FUNC (Note::parseDEL)
-       {
-	  String num = tokens.nextToken();
-	  if(num=="all")
-	    {
-               services->getDatabase().dbDelete("notes", "nto='"+origin.getNickname()+"'");
-	       origin.sendMessage("All notes erased.",getName());
-	       services->log(origin,getName(),"Erased all notes");
-	       return;
-	    }
-          int nbRes = services->getDatabase().dbSelect("id", "notes", "nto='"+origin.getNickname()+"'");
-	  int j = 0;
-
-	  for(int i=0; i<nbRes; i++)
-	    {
-	       j++;
-	       if(j==num.toInt())
-		 {
-		    String togo = String("Note #\002")+num+"\002 deleted";
-		    origin.sendMessage(togo,getName());
-		    String ntext = services->getDatabase().dbGetValue();
-                    services->getDatabase().dbDelete("notes", "id='"+ntext+"'");
-		    services->log(origin,"Note","Deleted a single note");
-		    return;
-		 }
-               services->getDatabase().dbGetRow();
-	    }
-       }
-   void
-     NOTE_FUNC (Note::parseREAD)
-       {
-	  String num = tokens.nextToken();
-	  if(num.toLower()=="all")
-	    {
-               int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
-	       int j = 0;
-	       for(int i=0; i<nbRes; i++)
-		 {
-		    j++;
-		    String nfrom = services->getDatabase().dbGetValue(0);
-		    String nsent = services->getDatabase().dbGetValue(1);
-		    String ntext = services->getDatabase().dbGetValue(2);
-		    String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-		    origin.sendMessage(togo,getName());
-		    String tofo = ntext;
-		    origin.sendMessage(tofo,getName());
-                    services->getDatabase().dbGetRow();
-		 }
-	       services->log(origin,"Note","Read all notes");
-	       return;
-	    }
-
-          int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
-
-	  int j = 0;
-	  for(int i=0; i<nbRes; i++)
-	    {
-	       j++;
-	       if(j==num.toInt())
-		 {
-                    String nfrom = services->getDatabase().dbGetValue(0);
-                    String nsent = services->getDatabase().dbGetValue(1);
-                    String ntext = services->getDatabase().dbGetValue(2);
-		    String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-		    origin.sendMessage(togo,getName());
-		    String tofo = ntext;
-		    origin.sendMessage(tofo,getName());
-		    services->log(origin,"Note","Read a single note");
-		    return;
-		 }
-                 services->getDatabase().dbGetRow();
-	    }
-	  origin.sendMessage("No such note!",getName());
-	  return;
-       }
-   void
-     NOTE_FUNC (Note::parseLIST)
-       {
-          int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
-
-	  int j = 0;
-	  for(int i=0; i<nbRes; i++)
-	    {
-	       j++;
-               String nfrom = services->getDatabase().dbGetValue(0);
-               String nsent = services->getDatabase().dbGetValue(1);
-               String ntext = services->getDatabase().dbGetValue(2);
-	       String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-	       origin.sendMessage(togo,getName());
-               services->getDatabase().dbGetRow();
-	    }
-	  if(j==0)
-	    {
-	       origin.sendMessage("You have no notes stored",getName());
-	       return;
-	    }
-	  String tofo = String("To read a note, type /msg Note read Number");
-	  origin.sendMessage(tofo,getName());
-	  services->log(origin, "Note", "Listed their notes");
-       }
-   void
-     NOTE_FUNC (Note::parseSEND)
-       {
-	  String nto = tokens.nextToken();
-	  String note = tokens.rest();
-	  if(nto=="")
-	    {
-	       String togo = String("Usage is: /msg note send Nickname/#Channel Your Message Here");
-	       origin.sendMessage(String(togo),getName());
-	       return;
-	    }
-	  if(note=="")
-	    {
-	       String togo = String("Usage is: /msg note send Nickname Your Message Here");
-	       origin.sendMessage(String(togo),getName());
-	       return;
-	    }
-	  String it = (nto[0]);
-	  if(nto[0]=='#')
-	    {
-	       //Channel Note
-	       if(!services->getChannel().isChanRegistered(nto))
-		 {
-		    String tofo = String("That channel is not registered");
-		    origin.sendMessage(String(tofo),getName());
-		    return;
-		 }
-	       int chanid = services->getChannel().getChanID(nto);
-
-               int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", "chanid='"+String::convert(chanid) + "'");
-	       int j = 0;
-	       for(int i=0; i<nbRes; i++)
-		 {
-		    String nnid = services->getDatabase().dbGetValue();
-		    int nid = nnid.toInt();
-		    String nick = services->getNick(nid);
-		    if(nick.toLower()!=origin.getNickname().toLower())
-		      {
-			 j++;
-			 String txt = String("\002")+nto+"\002: "+note;
-			 services->sendNote(origin.getNickname(),nick,txt);
-		      }
-                    services->getDatabase().dbGetRow();
-		 }
-	       String toao = String("Your note was successfully sent to \002")+String::convert(j)+"\002 people on "+nto;
-	       origin.sendMessage(String(toao),getName());
-	       services->log(origin,"Note","Sent a channel note to "+nto);
-	       return;
-	    }
-
-	  if(!services->isNickRegistered(nto))
-	    {
-	       String togo = String("Error: Destination nickname is not registered");
-	       origin.sendMessage(togo,getName());
-	       return;
-	    }
-	  services->sendNote(origin.getNickname(),nto,note);
-	  origin.sendMessage("Your note was successfully sent to \002"+nto+"\002",getName());
-	  services->log(origin,"Note","Sent a private note to "+nto);
-       }
-
-   void
-     Note::parseLine (StringTokens& line, User& origin, String const &ch)
-       {
-	  return;
-       }
-
-   void
-     Note::parseLine (StringTokens& line, User& origin)
-       {
-	  StringTokens& st = line;
-	  if(!origin.isIdentified(origin.getNickname()))
-	    {
-	       origin.sendMessage("Sorry - You must be identified to use this service",getName());
-	       return;
-	    }
-	  String command = st.nextToken ().toLower ();
-	  for (int i = 0; functionTable[i].command != 0; i++)
-	    {
-	       // Does this match?
-	       if (command == functionTable[i].command)
-		 {
-		    // Run the command and leave
-		    (this->*(functionTable[i].function))(origin, st);
-		    return;
-		 }
-	    }
-	  origin.sendMessage ("Unrecognized Command",getName());
-       }
-
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Note();
-     }
-
-   // Module information structure
-   const Note::moduleInfo_type Note::moduleInfo = {
-      "Note Service",
-	0, 0,
-	Exordium::Service::moduleInfo_type::Events::NONE
-   };
+using namespace Exordium::NoteModule;
 
 
-   // Start the service
-   void Note::start(Exordium::Services& s)
-     {
-	// Set the services field appropriately
-	services = &s;
-	
-	// Register ourself to the network
-	services->registerService(getName(), getName(), 
-				 getConfigData().getHostname(), "+dz",
-				 getConfigData().getDescription());
-	services->serviceJoin(getName(),"#Debug");
-     }
+const Module::functionTableStruct Module::functionTable[] = {
+     { "send",		&Module::parseSEND },
+     { "list",		&Module::parseLIST },
+     { "read",		&Module::parseREAD },
+     { "del",		&Module::parseDEL },
+     { "delete",	&Module::parseDEL },
+     { "erase",		&Module::parseDEL },
+     { 0, 0 }
+};
 
 
+NOTE_FUNC(Module::parseDEL)
+{
+   String num = tokens.nextToken();
+   
+   if (num == "all") {
+      services->getDatabase().dbDelete("notes",
+				       "nto='" + origin.getNickname() + "'");
+      origin.sendMessage("All notes erased.", getName());
+      services->log(origin,getName(),"Erased all notes");
+      return;
+   }
+   
+   int nbRes = services->getDatabase().dbSelect("id", "notes",
+						"nto='" + 
+						origin.getNickname() + "'");
+   int j = 0;
+   
+   for (int i = 0; i < nbRes; i++) {
+      j++;
+      
+      if (j == num.toInt()) {
+	 origin.sendMessage(String("Note #\002") + num + "\002 deleted",
+			    getName());
+	 String ntext = services->getDatabase().dbGetValue();
+	 services->getDatabase().dbDelete("notes", "id='" + ntext + "'");
+	 services->log(origin, "Note", "Deleted a single note");
+	 return;
+      }
+      
+      services->getDatabase().dbGetRow();
+   }
+}
+
+
+NOTE_FUNC(Module::parseREAD)
+{
+   String num = tokens.nextToken();
+   
+   if(num.toLower() == "all") {
+      int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes",
+						   "nto='" + 
+						   origin.getNickname() + "'");
+      int j = 0;
+      
+      for (int i = 0; i < nbRes; i++) {
+	 j++;
+	 String nfrom = services->getDatabase().dbGetValue(0);
+	 String nsent = services->getDatabase().dbGetValue(1);
+	 String ntext = services->getDatabase().dbGetValue(2);
+	 origin.sendMessage("Note #\002" + String::convert(j) + 
+			    "\002 From: \002" + nfrom + "\002 Sent: \002" + 
+			    nsent + "\002",
+			    getName());
+	 origin.sendMessage(ntext, getName());
+	 services->getDatabase().dbGetRow();
+      }
+      services->log(origin, "Note", "Read all notes");
+      return;
+   }
+
+   int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
+   
+   int j = 0;
+   for (int i = 0; i < nbRes; i++) {
+      j++;
+      if (j == num.toInt()) {
+	 String nfrom = services->getDatabase().dbGetValue(0);
+	 String nsent = services->getDatabase().dbGetValue(1);
+	 String ntext = services->getDatabase().dbGetValue(2);
+	 String togo = String("Note #\002") + String::convert(j) + 
+	   "\002 From: \002" + nfrom + "\002 Sent: \002" + nsent + "\002";
+	 origin.sendMessage(togo,getName());
+	 String tofo = ntext;
+	 origin.sendMessage(tofo,getName());
+	 services->log(origin, "Note", "Read a single note");
+	 return;
+      }
+      services->getDatabase().dbGetRow();
+   }
+   
+   origin.sendMessage("No such note!", getName());
+   return;
+}
+
+
+NOTE_FUNC(Module::parseLIST) {
+   int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes",
+						"nto='" + 
+						origin.getNickname() + "'");
+   
+   int j = 0;
+   for(int i=0; i<nbRes; i++) {
+      j++;
+      String nfrom = services->getDatabase().dbGetValue(0);
+      String nsent = services->getDatabase().dbGetValue(1);
+      String ntext = services->getDatabase().dbGetValue(2);
+      String togo = String("Note #\002") + String::convert(j) + 
+	"\002 From: \002" + nfrom + "\002 Sent: \002" + nsent + "\002";
+      origin.sendMessage(togo, getName());
+      services->getDatabase().dbGetRow();
+   }
+   
+   if(j == 0) {
+      origin.sendMessage("You have no notes stored", getName());
+      return;
+   }
+   
+   String tofo = String("To read a note, type /msg Note read Number");
+   origin.sendMessage(tofo, getName());
+   services->log(origin, "Note", "Listed their notes");
+}
+
+
+NOTE_FUNC(Module::parseSEND) {
+   String nto = tokens.nextToken();
+   String note = tokens.rest();
+   
+   if (nto == "") {
+      origin.sendMessage("Usage is: /msg note send Nickname/#Channel Your "
+			 "Message Here",
+			 getName());
+      return;
+   }
+   
+   if(note == "") {
+      origin.sendMessage("Usage is: /msg note send Nickname Your Message Here",
+			 getName());
+      return;
+   }
+   
+   String it = (nto[0]);
+   if(nto[0] == '#') {
+      //Channel Note
+      if(!services->getChannel().isChanRegistered(nto)) {
+	 origin.sendMessage("That channel is not registered",getName());
+	 return;
+      }
+      
+      int chanid = services->getChannel().getChanID(nto);
+      
+      int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", 
+						   "chanid='" + 
+						   String::convert(chanid) + 
+						   "'");
+      int j = 0;
+      for (int i = 0; i < nbRes; i++) {
+	 String nnid = services->getDatabase().dbGetValue();
+	 int nid = nnid.toInt();
+	 String nick = services->getNick(nid);
+	 
+	 if (nick.toLower() != origin.getNickname().toLower()) {
+	    j++;
+	    String txt = String("\002") + nto + "\002: " + note;
+	    services->sendNote(origin.getNickname(), nick, txt);
+	 }
+	 
+	 services->getDatabase().dbGetRow();
+      }
+      
+      String toao = String("Your note was successfully sent to \002") + 
+	String::convert(j) + "\002 people on " + nto;
+      origin.sendMessage(toao, getName());
+      services->log(origin, "Note","Sent a channel note to " + nto);
+      return;
+   }
+   
+   if(!services->isNickRegistered(nto)) {
+      origin.sendMessage("Error: Destination nickname is not registered",
+			 getName());
+      return;
+   }
+   
+   services->sendNote(origin.getNickname(), nto, note);
+   origin.sendMessage("Your note was successfully sent to \002"+ nto + "\002",
+		      getName());
+   services->log(origin, "Note", "Sent a private note to " + nto);
+}
+
+
+void Module::parseLine(StringTokens& line, User& origin)
+{
+   if (!origin.isIdentified(origin.getNickname())) {
+      origin.sendMessage("Sorry - You must be identified to use this service",
+			 getName());
+      return;
+   }
+   
+   String command = line.nextToken().toLower();
+   
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == functionTable[i].command) {
+	 // Run the command and leave
+	 (this->*(functionTable[i].function))(origin, line);
+	 return;
+      }
+   }
+   
+   origin.sendMessage("Unrecognised Command", getName());
+}
+
+
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
+
+
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo = {
+   // Name
+   "Note Service",
+     
+   // Version (major, minor)
+   0, 0,
+     
+   // Event mask
+   Exordium::Service::moduleInfo_type::Events::NONE
+};
+
+
+// Start the service
+void Module::start(Exordium::Services& s)
+{
+   // Set the services field appropriately
+   services = &s;
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
+			     getConfigData().getHostname(), "+dz",
+			     getConfigData().getDescription());
+   services->serviceJoin(getName(),"#Debug");
+}

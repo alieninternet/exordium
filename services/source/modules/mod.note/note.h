@@ -27,64 +27,67 @@
 #ifndef _SOURCE_MODULES_NOTE_NOTE_H_
 # define _SOURCE_MODULES_NOTE_NOTE_H_ 1
 
-#ifdef HAVE_CONFIG_H
-# include "autoconf.h"
-#endif
+# ifdef HAVE_CONFIG_H
+#  include "autoconf.h"
+# endif
 
-#include <kineircd/str.h>
-#define NOTE_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
+# include <kineircd/str.h>
+# define NOTE_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
-#include <exordium/service.h>
-#include <exordium/services.h>
+# include <exordium/service.h>
 
-class Note : public Exordium::Service
-{
-private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
-   
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
-   
-  struct functionTableStruct
-  {
-    char const *command;
-     void NOTE_FUNC ((Note::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
-   
-public:
-   Note(void)
-   : configData(moduleInfo.fullName, "somewhere.org", "Note")
-   {
-   };
-  ~Note(void) 
-   {
-#ifdef DEBUG
-	std::cout << "YOU BASTARD, YOU KILLED NOTE" << std::endl;
-      // Hey, that was a little rude :(  -pickle
-#endif
-   };   
-   // Start the module
-   void start(Exordium::Services& s);
-   
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin, AISutil::String const &);
-   
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
 
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
+namespace Exordium {
+   namespace NoteModule {
+      // The note module
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    NOTE_FUNC((Module::* const function));
+	 };
+	 static const functionTableStruct functionTable[];
+	 
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Note")
+	   {};
+	 
+	 ~Module(void) 
+	   {};
+	 
+	 // Start the module
+	 void start(Exordium::Services& s);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   { return; };
+	 
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
    
-  void NOTE_FUNC (parseSEND);
-  void NOTE_FUNC (parseLIST);
-  void NOTE_FUNC (parseREAD);
-  void NOTE_FUNC (parseDEL);
-};
+       private:
+	 NOTE_FUNC(parseSEND);
+	 NOTE_FUNC(parseLIST);
+	 NOTE_FUNC(parseREAD);
+	 NOTE_FUNC(parseDEL);
+      }; // class Module
+   }; // namespace NoteModule
+}; // namespace Exordium
 
 #endif // _SOURCE_MODULES_NOTE_NOTE_H_
