@@ -872,7 +872,7 @@ namespace Exordium
 	       return false;
 	    }
 
-	  Service *service = (*initfunc)(*this, name);
+	  Service* const service = (*initfunc)(*this, name);
 	  
 	  if (service == 0) {
 	     Debug("\002[\002Module Error\002]\002 Module contains an invalid "

@@ -24,10 +24,13 @@
  *
  */
 
+#include <sstream>
+
 #include "exordium/modules.h"
 
 using namespace Exordium;
 using LibAIS::String;
+using LibAIS::StringTokens;
 
 
 /* ~Modules - Shut down all existing modules in the list
@@ -62,7 +65,7 @@ bool Modules::addModule(Service& s, void* const h)
 /* delModule - Remove a module from the list, and unload it
  * Original 07/06/2002 simonb
  */
-void Modules::delModule(const LibAIS::String& name) {
+void Modules::delModule(const String& name) {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
    
@@ -100,8 +103,7 @@ bool Modules::exists(const LibAIS::String& name) const
 /* throwLine - Throw a line at the appropriate service (sent directly)
  * Original 07/06/2002 simonb
  */
-void Modules::throwLine(const LibAIS::String& name, LibAIS::StringTokens& line,
-			User& origin) 
+void Modules::throwLine(const String& name, StringTokens& line, User& origin) 
 {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
@@ -116,8 +118,8 @@ void Modules::throwLine(const LibAIS::String& name, LibAIS::StringTokens& line,
 /* throwLine - Throw a line at the appropriate service (sent to a channel)
  * Original 07/06/2002 simonb
  */
-void Modules::throwLine(const LibAIS::String& name, LibAIS::StringTokens& line,
-			User& origin, const LibAIS::String& channel) 
+void Modules::throwLine(const String& name, StringTokens& line, User& origin,
+			const String& channel) 
 {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
