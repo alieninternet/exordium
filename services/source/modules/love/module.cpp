@@ -27,7 +27,6 @@
 
 #include <map>
 #include <sstream>
-
 #include <exordium/config.h>
 #include <exordium/module.h>
 
@@ -36,6 +35,7 @@
 #endif
 
 #include "love.h"
+
 
 // Use the stuff from the KineIRCd library using lovely short form
 using Kine::String;
@@ -77,11 +77,10 @@ const Love::commandTable_type Love::commandTable[] =
  */
 Love::Love(Exordium::Services& s, const String& mn)
   : services(s),
-myName(mn)
+    myName(mn)
 {
    services.registerService(myName, myName, "ircdome.org", "+dz",
-			    "Your local love slave(tm)");
-   services.serviceJoin(myName, "#Chapel"); // hehehe, temporary maybe
+			    "Your local love slave");
 }
 
 
@@ -95,46 +94,36 @@ void Love::parseLine(const String& line, const String& origin)
    String command = st.nextToken().toLower();
 
    // Run through the list of commands to find a match
-   for (int i = 0; commandTable[i].command != 0; i++)
-     {
+   for (int i = 0; commandTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == commandTable[i].command) {
 #ifdef DEBUG
-	std::ostringstream debugLine;
-	debugLine << "Love::parseLine() -> '" << line << "' from " << origin;
-	services.Debug(debugLine.str());
+	 // Oh "golly gosh", I hope the function really exists
+	 assert(commandTable[i].handler != 0);
 #endif
-
-	// Does this match?
-	if (command == commandTable[i].command)
-	  {
-#ifdef DEBUG
-	     // Oh "golly gosh", I hope the function really exists
-	     assert(commandTable[i].handler != 0);
-#endif
-
-	     // Check if the minimum number of parameters is achieved
-	     if (st.countTokens() < commandTable[i].minParams)
-	       {
-		  // Complain! We should send help here, really..
-		  sendMessage(origin, "You need to use more parameters");
-		  return;
-	       }
-
-	     // Check if the maximum number of parameters is set, if we have to
-	     if ((commandTable[i].maxParams !=
-		  Love::commandTable_type::MAX_PARAMS_UNLIMITED) &&
-		 ((st.countTokens() - 1) > commandTable[i].maxParams))
-	       {
-		  // Complain.. THIS IS CRAP.. like above..
-		  sendMessage(origin, "Too many parameters");
-		  return;
-	       }
-
-	     // Run the command and leave early
-	     (this->*(commandTable[i].handler))(origin, st);
-	     return;
-	  }
-     }
-
+	 
+	 // Check if the minimum number of parameters is achieved
+	 if (st.countTokens() < commandTable[i].minParams) {
+	    // Complain! We should send help here, really..
+	    sendMessage(origin, "You need to use more parameters");
+	    return;
+	 }
+	 
+	 // Check if the maximum number of parameters is set, if we have to
+	 if ((commandTable[i].maxParams !=
+	      Love::commandTable_type::MAX_PARAMS_UNLIMITED) &&
+	     ((st.countTokens() - 1) > commandTable[i].maxParams)) {
+	    // Complain.. THIS IS CRAP.. like above..
+	    sendMessage(origin, "Too many parameters");
+	    return;
+	 }
+	 
+	 // Run the command and leave early
+	 (this->*(commandTable[i].handler))(origin, st);
+	 return;
+      }
+   }
+   
    // Bitch and moan.. bitch and moan..
    sendMessage(origin, "Unrecognised Command");
 }
@@ -156,26 +145,23 @@ LOVE_FUNC(Love::handleCOMMANDS)
 
    // Start formulating the data..
    std::ostringstream list(" -=>");
-   for (int i = 0; commandTable[i].command != 0; i++)
-     {
-	// Add the command to the list
-	list << " " << commandTable[i].command;
-
-	// How are we for size?
-	if (list.str().length() >= lineLength)
-	  {
-	     // Dump it and reset the string stream thingy
-	     sendMessage(origin, list.str());
-	     list.str() = " -=>";
-	  }
-     }
-
+   for (int i = 0; commandTable[i].command != 0; i++) {
+      // Add the command to the list
+      list << " " << commandTable[i].command;
+      
+      // How are we for size?
+      if (list.str().length() >= lineLength) {
+	 // Dump it and reset the string stream thingy
+	 sendMessage(origin, list.str());
+	 list.str() = " -=>";
+      }
+   }
+   
    // Anything left to send still?
-   if (list.str().length() > 4)
-     {
-	sendMessage(origin, list.str());
-     }
-
+   if (list.str().length() > 4) {
+      sendMessage(origin, list.str());
+   }
+   
    // Send the footer (this shouldn't be hard-coded)
    sendMessage(origin, "End of command list");
 }
