@@ -43,7 +43,7 @@
 .LangCode = [+langCode+]
 .LangName = [+langName+][+ IF (exist? "langNote") +]
 .LangNote = [+langNote+][+ ENDIF +][+ IF (exist? "langMaintainer") +]
-.Maintainer[+ ENDIF +]
+.Maintainer = [+langMaintainer+][+ ENDIF +]
 .Revision = [+langRevision+]
 
 [+ FOR langtag +][+ IF 
