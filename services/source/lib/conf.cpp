@@ -14,6 +14,11 @@ using namespace Exordium;
 // Information used by the configuration parser
 const Kine::ConfigParser::defTable_type Config::definitionTable = {
      {
+	"LOGFILE",
+	  (void *)&Config::defLogFile, &varHandleString,
+	  0, 0
+     },
+     {
 	"MYSQLDB",
 	  (void *)&Config::defMySqlDb, &varHandleString,
 	  0, 0
@@ -38,17 +43,24 @@ const Kine::ConfigParser::defTable_type Config::definitionTable = {
 	  (void *)&Config::defMySqlUser, &varHandleString,
 	  0, 0
      },
+     {
+	"UPLINKHOST",
+	  (void *)&Config::defUplinkHost, &varHandleString,
+	  0, 0
+     },
      { 0, 0, 0, 0, 0 }
 };
 
 
 // Constructor to set up defaults, mainly. These defaults are dopey :(
 Config::Config(void)
-  : defMySqlDb("exordium"),
+  : defLogFile("services.log"),
+    defMySqlDb("exordium"),
     defMySqlHost("localhost"),
     defMySqlPass("exordium"),
     defMySqlPort(3306), // mysql port, as assigned by the iana
-    defMySqlUser("exordium")
+    defMySqlUser("exordium"),
+    defUplinkHost("127.0.0.1") // this is obsolete.. well eventually it will be
 {
    // nothing here!
 };

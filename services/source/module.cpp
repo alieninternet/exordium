@@ -96,7 +96,7 @@ namespace mod_exordium {
       Kine::Module::basicInfo_type::FLAG_UNIQUE_INSTANCE,
 
       // Configuration information (optional, but we will use it later)
-      0,
+      &Config::definitionTable,
 	
       // Our start and stop functions
       &moduleStart,

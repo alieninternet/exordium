@@ -21,11 +21,13 @@ namespace Exordium {
 
     private:
       // Variables
+      String defLogFile;			// Log filename
       String defMySqlDb;			// MySql server database
       String defMySqlHost;			// MySql server hostname
       String defMySqlPass;			// MySql server password
       unsigned short defMySqlPort;		// MySql server port
       String defMySqlUser;			// MySql server username
+      String defUplinkHost;			// Server to connect to
       
     public:
       // Constructor (sets up defaults mainly)
