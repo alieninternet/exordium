@@ -27,9 +27,9 @@
 #ifndef __BOT_H_
 #define __BOT_H_
 
-#include "exordium/service.h"
-#include "exordium/services.h"
-#include "exordium/user.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
+#include <exordium/user.h>
 
 #include <kineircd/str.h>
 

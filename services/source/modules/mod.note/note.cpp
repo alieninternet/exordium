@@ -25,9 +25,9 @@
  */
 
 #include "note.h"
-#include "exordium/service.h"
-#include "exordium/services.h"
-#include "exordium/channel.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
+#include <exordium/channel.h>
 #include <kineircd/str.h>
 #include <map>
 

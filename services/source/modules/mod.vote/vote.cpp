@@ -24,12 +24,12 @@
  *
  */
 
-#include "include/vote.h"
-#include "exordium/services.h"
-#include "exordium/nickname.h"
-#include "exordium/channel.h"
+#include "vote.h"
+#include <exordium/services.h>
+#include <exordium/nickname.h>
+#include <exordium/channel.h>
 #include <kineircd/str.h>
-#include "exordium/sql.h"
+#include <exordium/sql.h> // <=- is this correct?
 #include <sys/time.h>
 
 using AISutil::String;

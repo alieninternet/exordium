@@ -25,8 +25,8 @@
  */
 
 #include "serv.h"
-#include "exordium/services.h"
-#include "exordium/channel.h"
+#include <exordium/services.h>
+#include <exordium/channel.h>
 #include <kineircd/str.h>
 #include <sys/time.h>
 

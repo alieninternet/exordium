@@ -31,8 +31,8 @@
 
 # define SERV_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
 
-# include "exordium/service.h"
-# include "exordium/services.h"
+# include <exordium/service.h>
+# include <exordium/services.h>
 
 class Serv : public Exordium::Service
 {

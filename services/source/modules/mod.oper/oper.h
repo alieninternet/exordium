@@ -27,8 +27,8 @@
 #ifndef __OPER_H_
 #define __OPER_H_
 
-#include "exordium/service.h"
-#include "exordium/services.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
 #include <kineircd/str.h>
 
 #define OPER_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)

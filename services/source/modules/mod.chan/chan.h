@@ -27,9 +27,9 @@
 #ifndef __CHAN_H_
 #define __CHAN_H_
 
-#include "exordium/service.h"
-#include "exordium/services.h"
-#include "exordium/user.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
+#include <exordium/user.h>
 
 #include <kineircd/str.h>
 

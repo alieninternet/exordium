@@ -26,9 +26,9 @@
 
 #include "bot.h"
 
-#include "exordium/channel.h"
-#include "exordium/service.h"
-#include "exordium/services.h"
+#include <exordium/channel.h>
+#include <exordium/service.h>
+#include <exordium/services.h>
 #include <kineircd/str.h>
 #include <map>
 

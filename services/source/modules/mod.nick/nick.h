@@ -27,8 +27,8 @@
 #ifndef __NICK_H_
 #define __NICK_H_
 
-#include "exordium/services.h"
-#include "exordium/service.h"
+#include <exordium/services.h>
+#include <exordium/service.h>
 #include <kineircd/str.h>
 
 #define NICK_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)

@@ -31,8 +31,8 @@
 
 # define VOTE_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)
 
-#include "exordium/service.h"
-#include "exordium/services.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
 
 namespace Exordium {
 
