@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
