@@ -79,12 +79,6 @@ namespace Exordium {
       void dbConnect(void) { database->dbConnect(); }
       void dbDisconnect(void) { database->dbDisconnect(); }
 
-      void dbBeginTrans(void) { database->dbBeginTrans(); }
-      void dbCommit(void) { database->dbCommit(); }
-      void dbRollback(void) { database->dbRollback(); }
-
-      void dbSelectDB(LibAIS::String const &dbName) { database->dbSelectDB(dbName); }
-
 
       // Select * from <table>
       int dbSelect(LibAIS::String const &table);
@@ -151,6 +145,13 @@ namespace Exordium {
       db_engines_t db_engines;
      
       db_supported_engines_t db_supported_engines;
+
+      void dbBeginTrans(void) { database->dbBeginTrans(); }
+      void dbCommit(void) { database->dbCommit(); }
+      void dbRollback(void) { database->dbRollback(); }
+
+      void dbSelectDB(LibAIS::String const &dbName) { database->dbSelectDB(dbName); }
+
 
   }; // class CDatabase
 
