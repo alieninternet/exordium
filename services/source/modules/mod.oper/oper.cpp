@@ -49,6 +49,7 @@ const Module::functionTableStruct Module::functionTable[] =
      { "mdeop",		&Module::parseMDEOP },
      { "global",	&Module::parseGLOBAL },
      { "kill",		&Module::parseKILL },
+     { "jupe",		&Module::parseJUPE },
      { 0, 0 }
 };
 
@@ -75,7 +76,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	     return;
 	  }
      }
-   origin.sendMessage (GETLANG(ERROR_UNKNOWN_COMMAND), getNickname());
+   origin.sendMessage (GETLANG(ERROR_UNKNOWN_COMMAND,command), getNickname());
 }
 
 OPER_FUNC(Module::parseHELP)
@@ -281,6 +282,46 @@ OPER_FUNC (Module::parseKILL)
 	services->killnick(tokill,getNickname(),reason);
 	origin.sendMessage(GETLANG(oper_KILL_SUCCESS,tokill),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
+     }
+}
+
+OPER_FUNC (Module::parseJUPE)
+{
+   String tojupe = tokens.nextToken();
+   String reason = tokens.rest();
+
+   if (tojupe == "" | reason == "")
+     {
+	origin.sendMessage(GETLANG(oper_JUPE_USAGE),getNickname());
+	return;
+     }
+   int isserver = tojupe.find('.');
+   if (isserver > 0)
+     {
+
+     /* For now we just pray to god the server isn't online ;)
+     if (is the server connected?)
+       {
+	  origin.sendMessage(GETLANG(oper_JUPE_SERVER_ONLINE,tojupe),getNickname());
+       }
+   */
+	services->queueAdd("SERVER "+tojupe+" 2 :"+reason);
+	origin.sendMessage(GETLANG(oper_JUPE_SERVER_SUCCESS,tojupe,reason),getNickname());
+	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
+     }
+   else
+     {
+	User *ptr = services->findUser(tojupe);
+	if (ptr != 0)
+	  {
+	     services->killnick(tojupe,getNickname(),reason);
+	  }
+
+	services->registerService(tojupe,"jupe",
+				  getHostname(),
+				  reason);
+	origin.sendMessage(GETLANG(oper_JUPE_NICK_SUCCESS,tojupe,reason),getNickname());
+	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
      }
 }
 
