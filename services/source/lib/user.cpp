@@ -332,7 +332,7 @@ String
 bool
   User::isPending(void)
 {
-   if( services.getDatabase().dbSelect("id", "pendingnick", "nickname='"+nickname+"'") < 1 )
+   if( services.getDatabase().dbSelect("id", "pendingnicks", "nickname='"+nickname+"'") < 1 )
      return false;
 
    if ( services.getDatabase().dbGetValue().toInt() > 0 )
