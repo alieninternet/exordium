@@ -54,7 +54,7 @@ class Poker : public ChannelGame {
    bool playing;
    
    // The last card to be discarded
-   std::list<Cards::Card*> lastDiscardedCards;
+   std::list<Cards::Card> lastDiscardedCards;
 
    // A temporary list of cards being discarded in one turn
    std::list<Cards::Card> discardList;

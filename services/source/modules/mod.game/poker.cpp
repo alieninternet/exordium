@@ -490,8 +490,8 @@ EXORDI8_FUNC(Poker::parseDISCARD)
     * card can be placed down on the first move, so we can skip it if that
     * is the case.
     */
-   if (lastDiscardedCard.isValid())
-   {
+//   if (lastDiscardedCard.isValid())
+//   {
       /* If the queen of spades was the last discarded, skip the check since
        * anything is allowed to be put on the queen of spades
        */
@@ -542,12 +542,11 @@ EXORDI8_FUNC(Poker::parseDISCARD)
 		    }
 	       }
 	  }
-     }
-*/
+   }
    else
    {
 	// However, if this IS the first play, the queen of hearts cannot beused
-/*	if ((cardToDiscard.getSuit() == Cards::Card::Suit::Hearts) &&
+	if ((cardToDiscard.getSuit() == Cards::Card::Suit::Hearts) &&
 	    (cardToDiscard.getIndex() == Cards::Card::Rank::Queen))
 	  {
 	     sendMessage(origin,
@@ -555,14 +554,13 @@ EXORDI8_FUNC(Poker::parseDISCARD)
 			 "first move, sorry.");
 	     return true; // Keep the game alive
 	  }
-          */
    }
 
    // Is trumping okay?
 //   bool trumpingOkay = true;
 
    // If the queen of spades was on the top of the discard pile, devalue   trumps
-/*     if ((cardToDiscard.getSuit() == Cards::Card::Suit::Spades) &&
+     if ((cardToDiscard.getSuit() == Cards::Card::Suit::Spades) &&
 	 (cardToDiscard.getIndex() == Cards::Card::Rank::Queen))
        {
 	  trumpingOkay = false;
