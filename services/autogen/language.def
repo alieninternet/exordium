@@ -65,7 +65,19 @@ language = {
  * Tags for core Console 
  *
  */
- 
+
+langtag = {
+  name = "core_CONSOLE_LANGUAGE_COULDNT_LOAD";
+  component = "core";
+  data_en = "Couldn't load %p0: %p1";
+};
+
+langtag = {
+  name = "core_CONSOLE_LANGUAGE_LOADED";
+  component = "core";
+  data_en = "Loaded language file %p0";
+};
+
 langtag = {
   name = "core_CONSOLE_NOT_ENOUGH_ACCESS";
   component = "core";

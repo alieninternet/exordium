@@ -137,17 +137,20 @@ void CONSOLE_FUNC(Console::parseMODULE)
 void CONSOLE_FUNC(Console::parseLANGUAGE)
 {
    String command = tokens.nextToken().toLower();
+   User *ptr = services.findUser(origin); // <=- ick. just for GETLANG() ??
    
    if (command == "load") {
       std::string file = tokens.nextToken();
       std::string errString;
       
       if (Kine::langs().loadFile(file, errString)) {
-	 services.serviceNotice("Loaded",
+	 services.serviceNotice(GETLANG(core_CONSOLE_LANGUAGE_LOADED,
+					file),
 				services.getConfigInternal().getConsoleName(),
 				origin);
       } else {
-	 services.serviceNotice("Could not load: " + errString,
+	 services.serviceNotice(GETLANG(core_CONSOLE_LANGUAGE_COULDNT_LOAD,
+					file, errString),
 				services.getConfigInternal().getConsoleName(),
 				origin);
       }
