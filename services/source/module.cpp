@@ -26,14 +26,6 @@ namespace mod_exordium {
      {
 	cout << "mod_exordium::moduleStart()" << endl;
 
-	cout << 
-	  "Via kine's configuration thingy, we should connect sql to:\n\t" <<
-	  config->getMySqlHost() << ':' << config->getMySqlPort() << 
-	  " user: " << config->getMySqlUser() << 
-	  "; pass: " << config->getMySqlPass() << 
-	  "\n\tdatabase: " << config->getMySqlDb() << endl;
-	  
-	
 	// My, it looks an awful lot like main.cpp from here on... :) This is
 	// temporary, naturally.
         Sql db;
