@@ -24,7 +24,7 @@ namespace Exordium {
       
       struct functionTableStruct {
 	 const char* command;
-	 const void PARSER_FUNC((Parser::* const function));
+	 void PARSER_FUNC((Parser::* const function));
       } static const functionTable[];
       
     public:
