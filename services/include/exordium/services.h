@@ -23,8 +23,9 @@
 #include <fstream>
 #include <unistd.h>
 #include "exordium/log.h"
-#include "kineircd/utils.h"
-#include "kineircd/password.h"
+#include <kineircd/utils.h>
+#include <kineircd/password.h>
+#include <kineircd/daemon.h>
 #include "exordium/service.h"
 #include <signal.h>
 
@@ -51,6 +52,7 @@ class Services
 {
 private:
   String buffer;
+  Kine::Daemon &daemon;
   static int sock;
   static int maxSock;
   static char *inputBuffer;
@@ -75,6 +77,16 @@ private:
   static std::queue < String > ModeoutputQueue;
   static Kine::SocketIPv4TCP socky;
 public:
+   // dunno where you want these fellow james
+   // Mr. Constructor
+   Services(Kine::Daemon &d)
+     : daemon(d)
+       {};
+   
+   // Grab the daemon reference
+   Kine::Daemon &getDaemon(void) const
+     { return daemon; };
+   
 //Public Variables here.
   static time_t currentTime;
   static const Utils::base_type PasswordStrBase = 85;

@@ -30,7 +30,7 @@ namespace mod_exordium {
 	// My, it looks an awful lot like main.cpp from here on... :) This is
 	// temporary, naturally.
         Sql db;
-	Services me;
+	Services me(daemon);
 	Log::init();
 	Log::logLine("Services started, beginning initalisation");
 	me.load_config();

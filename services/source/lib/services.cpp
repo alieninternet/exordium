@@ -108,11 +108,6 @@ namespace Services {
 void
 Services::run(void)
 {
-  Signals signals;
-  rehashSignalHandler.foo = (void *)this;
-  signals.addHandler(rehashSignalHandler);
-  deathSignalHandler.foo = (void *)this;
-  signals.addHandler(deathSignalHandler);
   fd_set inputSet, outputSet;
   struct timeval timer;
   Log::logLine ("Entering main loop...");
@@ -201,6 +196,11 @@ Services::run(void)
 int
 Services::init(void)
 {
+   rehashSignalHandler.foo = (void *)this;
+   getDaemon().getSignals().addHandler(rehashSignalHandler);
+   deathSignalHandler.foo = (void *)this;
+   getDaemon().getSignals().addHandler(deathSignalHandler);
+   
 	struct hostent *host;
 	queueKill ();
 	startTime = currentTime = lastPing = lastExpireRun = lastCheckPoint = serverLastSpoke = time (NULL);
