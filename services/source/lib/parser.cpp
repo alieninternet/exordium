@@ -90,7 +90,8 @@ void PARSER_FUNC (Parser::parseAWAY)
    if(origin == 0)
      {
 	std::cout << "Our pointer is null." << std::endl;
-	exit(0);
+//	exit(0);
+	return;
      }
  
    if(origin->deopAway())
@@ -283,10 +284,18 @@ void
    services.getChannel().internalDel(OLDorigin,channel);
 }
 
-void
-  PARSER_FUNC (Parser::parseN)
+void PARSER_FUNC (Parser::parseN)
 {
-User *origin = services.findUser(OLDorigin);
+   User *origin = services.findUser(OLDorigin);
+   
+   // make sure this user doesn't already exist
+   if (origin != 0) {
+      return;
+   }
+   
+   // JAMES, add the user here or something?
+   std::cout << "Me gots an N: " << OLDorigin << std::endl;
+   
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
@@ -340,8 +349,9 @@ User *origin = services.findUser(OLDorigin);
    String server = tokens.nextToken();
 
   //Don't want the next two.
-   tokens.nextToken();
-   tokens.nextToken();
+   (void)tokens.nextToken();
+   (void)tokens.nextToken();
+   
    String realname = tokens.rest();
    services.getNickname().addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realname);
    int num = services.getNickname().countHost(host);
@@ -366,6 +376,14 @@ void
   PARSER_FUNC (Parser::parsePRIVMSG)
 {
    User *origin = services.findUser(OLDorigin);
+
+   // preserve sanity
+   if (origin == 0) {
+      std::cout << "privmsg from non-user or something: " << OLDorigin << 
+	std::endl;
+      return;
+   }
+   
    String OLDoriginl = OLDorigin.IRCtoLower();
    String target = tokens.nextToken ();
    
