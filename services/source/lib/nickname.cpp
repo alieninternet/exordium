@@ -228,7 +228,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String password = ((std::string) row[0]).c_str ();
+	       String password((char *)row[0],(String::size_type)20);
 	       res.free_result();
 	       return password;
 	    }
@@ -448,14 +448,16 @@ namespace Exordium
      Nickname::registerNick(String const &nick, String const &password, String const &email)
        {
 	  String gpass = generatePassword(nick.toLower(),password);
-	  String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'english','0','No MSN Set','http://ircdome.org',0,'None Set','None Set')";
+	  String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'english','0','No MSN Set','http://ircdome.org',0,'None Set','None Set','No Quit Message Recorded')";
 	  services.getDatabase().query(query);
        }
 
    String
      Nickname::genAuth(String const &nickname)
        {
-	  String authcode = generatePassword("AUTHENTICATION",nickname);
+	  String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::
+	    makePassword("VIVA LA FRANCE :)",nickname),Services::PasswordStrBase,Services::PasswordStrBaseLongPad);
+	  
 	  String query = "INSERT into pendingnicks values ('','"+nickname+"','" +authcode+"')";
 	  services.getDatabase().query(query);
 	  String tosend = "\002[\002New Registration\002]\002 Nickname "+nickname+"

@@ -337,6 +337,8 @@ namespace Exordium
 	  loadModule("game","./modules/game.so");
 	  loadModule("love","./modules/love.so");
 	  loadModule("oper","./modules/oper.so");
+	  loadModule("stats","./modules/stats.so");
+	  loadModule("vote","./modules/vote.so");
 	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			  "The service James forgot :(");
 	  serviceJoin ("IRCDome", "#debug");

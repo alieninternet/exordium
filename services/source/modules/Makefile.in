@@ -18,7 +18,9 @@ SOURCES=\
 	nick.cpp \
 	note.cpp \
 	oper.cpp \
-	serv.cpp
+	serv.cpp \
+	stats.cpp \
+	vote.cpp
 	
 OBJECTS=$(SOURCES:.cpp=.so)
 

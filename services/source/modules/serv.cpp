@@ -115,14 +115,19 @@ namespace Exordium
 	       services.serviceNotice(togo,"Serv",origin);
 	       return;
 	    }
+	  if(!services.getNickname().isNickRegistered(who))
+	    {
+
+	       services.serviceNotice("Error: Nickname is not registered","Serv",origin);
+	       return;
+	    }
 	  String epass =  String::convert(services.getNickname().generatePassword(who,newpass));
-	 String query = "UPDATE nicks set password='" + epass + "' where nickname='"+who+"'";
-	 services.getDatabase().query(query);
-	 String togo = "\002"+origin+"\002 changed password for nickname "+who+" to [HIDDEN]";
-	 services.helpme(togo,"Serv");
+	  String query = "UPDATE nicks set password='" + epass + "' where nickname='"+who+"'";
+	  services.getDatabase().query(query);
+	  String togo = "\002"+origin+"\002 changed password for nickname "+who+" to [HIDDEN]";
+	  services.helpme(togo,"Serv");
        }
-   
-	  
+
    void
      SERV_FUNC (Serv::parseRAW)
        {
@@ -456,7 +461,7 @@ namespace Exordium
 	       String tnick = ((std::string) row[0]).c_str();
 	       String thost = ((std::string) row[1]).c_str();
 	       String temail = ((std::string) row[2]).c_str();
-	       String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002"+temail+"\002";
+	       String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002 "+temail+"\002";
 	       if(dest=="")
 		 {
 		    services.serviceNotice(String(tosend),"Serv",origin);
@@ -529,6 +534,11 @@ namespace Exordium
 	       services.serviceNotice("Usage: delnick nickname reason","Serv",origin);
 	       return;
 	    }
+	  if(!services.getNickname().isNickRegistered(who))
+	    {
+	       services.serviceNotice("Error: Nickname is not registered","Serv",origin);
+	       return;
+	    }
 
 	  String togo = origin+" did \002delnick\002 on "+who+" for \002"+reason;
 	  services.helpme(togo,"Serv");
@@ -542,6 +552,12 @@ namespace Exordium
        {
 	  String who = tokens.nextToken();
 	  String send = tokens.nextToken();
+	  if(who=="")
+	    {
+	       services.serviceNotice("Usage: clist nickname <optional nick to send to>","Serv",origin);
+	       return;
+	    }
+
 	  if(!services.getNickname().isNickRegistered(who))
 	    {
 	       services.serviceNotice("That nickname is not registered","Serv",origin);
