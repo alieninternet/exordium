@@ -1,0 +1,25 @@
+This is the 'love' module, and is currently on hold.
+
+The ultimate goal for this module is for it to be more than your typical
+love service. The love service on most networks takes on the role of being a
+bit of a joke - you can send flowers through it, and maybe get "married"..
+
+That's pathetic!
+
+Look at the success of all those horrible dating websites out there, why
+isn't there a dating website for geeks? Because geeks are too busy in IRC.
+So why not create a love service where not only can you do the usual (send
+flowers, get married etc), but why not combine the power of Exordium's
+backend with the concept of a "dating service", or a "cupids service".
+
+This would require table in exordium's database for the service to store
+people's "vital statistics", and information about who they're looking for
+to assist a match-making engine..
+
+The love service could then send notes to people saying its found a possible
+match to their preferences and they could then go and look them up. Possibly
+even DCC photos? Or perhaps just links for people..
+
+Also would be neat if the service could introduce people if they're on-line
+at the same time. Eg. someone's profile matches (in both directions), one of
+the parties could get the service to introduce them or something :)
