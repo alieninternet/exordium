@@ -46,3 +46,4 @@ test
 *.lock
 Makefile.in
 .deps
+.dirstamp
