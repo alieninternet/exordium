@@ -346,10 +346,10 @@ SERV_FUNC (Module::parseSETPASS)
 	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getNickname());
 	return;
      }
-   if((services->getAccess(getNickname(),who)>0))
+   if((services->getStatic().getServiceAccess(getNickname(),who)>0))
      {
 	/* Ok staff nickname, unless the user is a level 500, reject it. */
-	if(services->getAccess(getNickname(),origin.getNickname())<500)
+	if(services->getStatic().getServiceAccess(getNickname(),origin.getNickname())<500)
 	  {
 	     origin.sendMessage(GETLANG(serv_NOT_ON_STAFF),getNickname());
 	     services->sendGOper(getNickname(),"\002Warning\002 "+origin.getNickname()+" tried to perform a \002setpass\002 on a staff nickname ("+who+")");
@@ -655,12 +655,12 @@ SERV_FUNC (Module::parseUSER)
 	     return;
 	  }
 	String blah = getNickname();
-	if(services->getAccess(blah,toadd)==0)
+	if(services->getStatic().getServiceAccess(blah,toadd)==0)
 	  {
 	     origin.sendMessage(GETLANG(serv_USER_DEL_NO_ACCESS),getNickname());
 	     return;
 	  }
-	int faccess = services->getAccess(blah,toadd);
+	int faccess = services->getStatic().getServiceAccess(blah,toadd);
 	if(faccess>access)
 	  {
 	     origin.sendMessage(GETLANG(serv_NOT_ON_STAFF),getNickname());
@@ -695,7 +695,7 @@ SERV_FUNC (Module::parseUSER)
 	  }
 	// Again temp.
 	String foo = getNickname();
-	if(services->getAccess(foo,toadd)>0)
+	if(services->getStatic().getServiceAccess(foo,toadd)>0)
 	  {
 	     origin.sendMessage(GETLANG(serv_USER_ADD_ALREADY_IN),getNickname());
 	     return;
@@ -887,10 +887,10 @@ SERV_FUNC (Module::parseDELNICK)
 	return;
      }
    /* Are we trying to delete a staff nickname? */
-   if(services->getAccess(getNickname(),who)>0)
+   if(services->getStatic().getServiceAccess(getNickname(),who)>0)
      {
 	/* Yep... Unless a 500 tell em to get stuffed */
-	if(services->getAccess(getNickname(),origin.getNickname())<500)
+	if(services->getStatic().getServiceAccess(getNickname(),origin.getNickname())<500)
 	  {
 	     origin.sendMessage(GETLANG(serv_NOT_ON_STAFF),getNickname());
 	     services->sendGOper(getNickname(),origin.getNickname()+" tried to perform a \002delnick\002 on a staff nickname ("+who+")");

@@ -1375,22 +1375,6 @@ void ServicesInternal::validateOper(Kine::Name &origin)
 
 }
 
-int
-  ServicesInternal::getAccess(String const &service, String const &nickname)
-{
-
-   if( database.dbSelect("access", "access", "nickname='"+String::convert(gstatic.getRegisteredNickID(nickname))+"' AND service='"+service+"'") < 1 )
-     return 0;
-   else
-     {
-#ifdef DEBUG
-	logLine("AXS:" + database.dbGetValue(),
-		Log::Debug);
-#endif
-	return database.dbGetValue().toInt();
-     }
-}
-
 time_t ServicesInternal::getStartTime()
 {
    return startTime;

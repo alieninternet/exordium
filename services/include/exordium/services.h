@@ -92,7 +92,6 @@ namespace Exordium {
           Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
         };
       // Function Declrations below here.
-      virtual int getAccess(AISutil::String const &, AISutil::String const &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;
       
       virtual void AddOnlineServer(AISutil::String const &,
