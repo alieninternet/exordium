@@ -225,7 +225,10 @@ Note::parseLine (String const &line, String const &requestor)
 
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   return new Module("note", new Note());
+   Services::registerService(name,name,"ircdome.org","+dz",
+			     "Note service thingy that James forgot :(");
+   Services::serviceJoin(name,"#Debug");
+   return new Module(name, new Note());
 }
 
 }
