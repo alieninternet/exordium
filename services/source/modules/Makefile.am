@@ -86,10 +86,25 @@ mod_nick_la_LIBADD=\
 mod_nick_la_LDFLAGS=\
 	-avoid-version -module
 mod_nick_la_SOURCES=\
+	mod.nick/language.cpp \
+	mod.nick/language.h \
 	mod.nick/nick.cpp \
 	mod.nick/nick.h \
 	mod.nick/tables.cpp \
 	mod.nick/tables.h
+
+mod.nick/language.cpp: mod.nick/language.tpl $(top_builddir)/autogen/language.def
+	autogen \
+		-b $(basename $@) \
+		-T $< \
+		$(top_builddir)/autogen/language.def
+
+mod.nick/language.h: mod.nick/language.tpl $(top_builddir)/autogen/language.def
+	autogen \
+		-b $(basename $@) \
+		-T $< \
+		$(top_builddir)/autogen/language.def
+
 
 mod_note_la_LIBADD=\
 	../libexordium.la
