@@ -159,10 +159,10 @@ int const dChan::getCount(void)
 void const dChan::addAccess(String &nick, String const &level)
 {
    std::cout << "inside a pointer thingy that simon hates about to adduser :(" << std::endl;
-   User *ptr = services.findUser(nick);
-  
+   //User *ptr = services.findUser(nick);
+   int nid = services.getRegisteredNickID(nick);
    services.getDatabase().dbInsert("chanaccess","'"+String::convert(getRegisteredID())+
-				   "','"+String::convert(ptr->getRegisteredNickID())+"','"+level+"'");
+				   "','"+String::convert(nid)+"','"+level+"'");
 }
 
 void const dChan::log(User& origin, String const &service,String const &text, String const &cname)

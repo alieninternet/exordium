@@ -518,6 +518,20 @@ void
 {
    database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
 }
+
+void
+  ServicesInternal::nickLinkAdd(String const &first, String const &second)
+{
+  
+   database.dbInsert("nicklinks","'"+String::convert(getRegisteredNickID(first))+"','"+String::convert(getRegisteredNickID(second))+"'");
+}
+
+void
+  ServicesInternal::nickLinkDel(String const &first, String const &second)
+{
+   database.dbDelete("nicklinks","fromnick='"+String::convert(getRegisteredNickID(first))+"','"+String::convert(getRegisteredNickID(second))+"'");
+}
+
 void
   ServicesInternal::sendGOper(String const &from, String const &text)
 {
@@ -1251,6 +1265,8 @@ String ServicesInternal::getNick(int const &id)
  */
 String ServicesInternal::getOnlineNick(int const &id)
 {
+   if(id==0)
+     return "";
    if( database.dbSelect("nickname", "onlineclients", "id='"+String::convert(id)+"'") < 1 )
      return "";
    else

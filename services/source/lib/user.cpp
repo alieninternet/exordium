@@ -324,15 +324,15 @@ String
    String idnick;
 
    int nbRes = services.getDatabase().dbSelect("idas", "nicksidentified", "nick='"+getOnlineIDString()+"'");
-
+   CResult *myRes = services.getDatabase().dbGetResultSet();
    for(int i=0; i<nbRes; i++)
    {
-     idnick = services.getNick(services.getDatabase().dbGetValue().toInt());
+     idnick = services.getNick(myRes->getValue(i,0).toInt());
      thelist += " ";
      thelist += idnick;
-     services.getDatabase().dbGetRow();
    }
    std::cout << "Returning " << thelist << std::endl;
+   delete myRes;
    return thelist;
 }
 

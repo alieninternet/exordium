@@ -242,13 +242,18 @@ SERV_FUNC (Module::parseFREEZE)
 	  }
 	delete myRes;
 	int mbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(coid)+" AND status=1");
-	CResult *mvRes = services->getDatabase().dbGetResultSet();
-	for(int j=0;j<nbRes;j++)
+	if(mbRes!=0)
 	  {
-	     String inick = services->getOnlineNick(mvRes->getValue(j,0).toInt());
-	     services->mode(getName(),chan,"-v",inick);
+
+	     CResult *mvRes = services->getDatabase().dbGetResultSet();
+	     for(int j=0;j<mbRes;j++)
+	       {
+		  String inick = services->getOnlineNick(mvRes->getValue(j,0).toInt());
+		  services->mode(getName(),chan,"-v",inick);
+	       }
+	     delete mvRes;
 	  }
-	delete mvRes;
+
 	services->mode(getName(),chan,"+ntm-ilsl","");
 	String topic = "This channel has been frozen by "+origin.getNickname()+" because \002"+reason;
 	services->getChannel().setTopic(chan,topic);

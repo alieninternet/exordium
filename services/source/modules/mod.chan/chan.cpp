@@ -374,17 +374,19 @@ CHAN_FUNC (Module::parseADDUSER)
 	return;
      }
    dChan *ptr = services->findChan(channel);
-   User *uptr = services->findUser(nickname);
+ /* Can't use a user pointer here, because the user may not be online */
+    if(!services->isNickRegistered(nickname))
+     {
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
+	return;
+     }
+   
     if(!ptr->isRegistered())
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
-   if(!uptr->isRegistered())
-     {
-	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
-	return;
-     }
+ 
    if(services->isFreezed(channel))
      {
 	
