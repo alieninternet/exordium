@@ -112,11 +112,12 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Game& game, const LibAIS::String& channel, Exordium::User& caller);
+   Exordi8(Game::Module& module, const LibAIS::String& channel,
+	   Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)
-     { return new Exordi8(game, channel, caller); }
+     { return new Exordi8(module, channel, caller); }
    
    // Parse a line..
    bool parseLine(Exordium::User& origin, LibAIS::String& command,

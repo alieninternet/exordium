@@ -32,6 +32,7 @@
 # include <kineircd/str.h>
 # include <map>
 
+# include "config.h"
 
 # define GAME_FUNC(x) \
      void x(Exordium::User& origin, LibAIS::StringTokens& line, \
@@ -42,75 +43,77 @@
 class ChannelGame;
 
 
-// The Game class.. :)
-class Game : public Exordium::Service {
- private:
-   // Our convenient type-definition of our handler functions
-   typedef GAME_FUNC(handler_type);
-   
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
-   
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
-   
-   // Our command table structure
-   struct commandTable_type {
-      const char* const command;		// The command name
-      const handler_type Game::* const handler;	// The function (handler)
-   };
-   
-   // Commands which are sent directly to us
-   static const commandTable_type directCommandTable[];
-   
-   // Commands which are sent to a channel we are on
-   static const commandTable_type channelCommandTable[];
-
-   // A list of channel games currently in progress
-   typedef std::map < LibAIS::String, ChannelGame* > channelGames_type;
-   channelGames_type channelGames;
-   
-   // Command handlers
-   handler_type handleHELP;
-   handler_type handleQUOTE;
-   handler_type handleSTART;
-   handler_type handleLIST;
-   
-public:
-   // Our constructor
-   Game(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Game")
-     {};
-
-   // Our destructor
-   ~Game(void)
-     {};
-
-   // Return the services thingy
-   Exordium::Services& getServices(void)
-     { return *services; };
-   
-   // Start the module
-   void start(Exordium::Services& s);
-   
-   // Stop the module (called just before a module is unloaded)
-   void stop(void);
+namespace Game {
+   // The Game module
+   class Module : public Exordium::Service {
+    private:
+      // Our convenient type-definition of our handler functions
+      typedef GAME_FUNC(handler_type);
       
-   // Parser for incoming stuff
-   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
-   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
-		  const LibAIS::String& channel);
-
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
-};
+      // Module information structure
+      static const Exordium::Service::moduleInfo_type moduleInfo;
+      
+      // Configuration data
+      Game::ConfigData configData;
+      
+      // Our command table structure
+      struct commandTable_type {
+	 const char* const command;			// The command name
+	 const handler_type Module::* const handler;	// The function
+      };
+      
+      // Commands which are sent directly to us
+      static const commandTable_type directCommandTable[];
+      
+      // Commands which are sent to a channel we are on
+      static const commandTable_type channelCommandTable[];
+      
+      // A list of channel games currently in progress
+      typedef std::map < LibAIS::String, ChannelGame* > channelGames_type;
+      channelGames_type channelGames;
+      
+      // Command handlers
+      handler_type handleHELP;
+      handler_type handleQUOTE;
+      handler_type handleSTART;
+      handler_type handleLIST;
+      
+    public:
+      // Our constructor
+      Module(void)
+	: configData(moduleInfo.fullName)
+	  {};
+      
+      // Our destructor
+      ~Module(void)
+	{};
+      
+      // Return the services thingy
+      Exordium::Services& getServices(void)
+	{ return *services; };
+      
+      // Start the module
+      void start(Exordium::Services& s);
+      
+      // Stop the module (called just before a module is unloaded)
+      void stop(void);
+      
+      // Parser for incoming stuff
+      void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
+      void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
+		     const LibAIS::String& channel);
+      
+      // Grab the information structure of a module
+      virtual const moduleInfo_type& getModuleInfo(void) const
+	{ return moduleInfo; };
+      
+      // Return an appropriate instance of a configuration data class
+      const Exordium::Service::ConfigData& getConfigData(void) const
+	{ return configData; };
+      Exordium::Service::ConfigData& getConfigData(void)
+	{ return configData; };
+   };
+}; // namespace Game
 
 // Complete the forwarded declaration
 # include "channelgame.h"

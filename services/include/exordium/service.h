@@ -32,7 +32,7 @@
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
-   Service* x(void)
+   Exordium::Service* x(void)
 
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
@@ -51,11 +51,10 @@ namespace Exordium {
       };
       
       class ConfigData : public LibAIS::ConfigData {
-       public:
+       private:
 	 // Configuration information (this is a default list for this base)
 	 static const LibAIS::ConfigParser::defTable_type defaultDefinitions;
 	 
-       private:
 	 LibAIS::String defDescription;			// Our description
 	 LibAIS::String defHostname;			// Our hostname
 	 LibAIS::String defName;			// Our name

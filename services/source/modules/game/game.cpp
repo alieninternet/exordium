@@ -33,9 +33,12 @@
 
 #include "game.h"
 
+using namespace Game;
 using LibAIS::String;
 using LibAIS::StringTokens;
-using namespace Exordium;
+using Exordium::Channel;
+using Exordium::User;
+using Exordium::Sql;
 
 
 /* service_init - Register ourselves to the core
@@ -43,32 +46,32 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Game();
+   return new Module();
 }
 
 
 // Module information structure
-const Game::moduleInfo_type Game::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo = {
    "Game Service",
      0, 0
 };
 
 
 // Our command table for directly sent commands (commands must be lower-case)
-const Game::commandTable_type Game::directCommandTable[] =
+const Module::commandTable_type Module::directCommandTable[] =
 {
-     { "quote",		&Game::handleQUOTE },
-     { "help",		&Game::handleHELP },
-     { "start",		&Game::handleSTART },
-     { "list",		&Game::handleLIST },
+     { "quote",		&Module::handleQUOTE },
+     { "help",		&Module::handleHELP },
+     { "start",		&Module::handleSTART },
+     { "list",		&Module::handleLIST },
      { 0, 0 }
 };
 
 
 // Our command table for channel commands (commands must be lower-case)
-const Game::commandTable_type Game::channelCommandTable[] =
+const Module::commandTable_type Module::channelCommandTable[] =
 {
-     { "quote",		&Game::handleQUOTE },
+     { "quote",		&Module::handleQUOTE },
      { 0, 0 }
 };
 
@@ -76,7 +79,7 @@ const Game::commandTable_type Game::channelCommandTable[] =
 /* start - Start the service
  * Original 17/09/2002 pickle
  */
-void Game::start(Exordium::Services& s)
+void Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -91,7 +94,7 @@ void Game::start(Exordium::Services& s)
 /* stop - Stop the service
  * Original 17/09/2002 pickle
  */
-void Game::stop(void)
+void Module::stop(void)
 {
    // Leave all the channels we're on..
    while (!channelGames.empty()) {
@@ -111,7 +114,7 @@ void Game::stop(void)
 /* parseLine - Parse an incoming message (which was sent to a channel)
  * Original 13/07/2002 james
  */
-void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
+void Module::parseLine(StringTokens& line__, User& origin, const String& channel)
 {
    // dirty kludge.. at least until the core strips the char properly??
    StringTokens line(line__.rest().substr(1));
@@ -149,7 +152,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Game::parseLine(StringTokens& line, User& origin)
+void Module::parseLine(StringTokens& line, User& origin)
 {
    String command = line.nextToken().toLower();
    std::cout << "Trying to throw command to commandtable thingy" << command << std::endl;
@@ -169,7 +172,7 @@ void Game::parseLine(StringTokens& line, User& origin)
 /* handleHELP - Parse the HELP command
  * Original 13/07/2002 james
  */
-GAME_FUNC(Game::handleHELP)
+GAME_FUNC(Module::handleHELP)
 {
    services->doHelp(origin, getName(), line.nextToken(),
 		    line.nextToken());
@@ -180,7 +183,7 @@ GAME_FUNC(Game::handleHELP)
  * Original 13/07/2002 james
  * Note: Mess :(
  */
-GAME_FUNC(Game::handleQUOTE) 
+GAME_FUNC(Module::handleQUOTE) 
 {
    return; // eek
    
@@ -223,7 +226,7 @@ GAME_FUNC(Game::handleQUOTE)
 /* handleSTART - Parse a 'start' command, to trigger the start of game
  * Original 29/08/2002 - pickle
  */
-GAME_FUNC(Game::handleSTART)
+GAME_FUNC(Module::handleSTART)
 {
    String chan = line.nextToken().IRCtoLower();
    String game = line.nextToken().toLower();
@@ -255,7 +258,7 @@ GAME_FUNC(Game::handleSTART)
 /* handleSTART - Parse a 'list' command, to list all available games
  * Original 16/09/2002 - josullivan
  */
-GAME_FUNC(Game::handleLIST)
+GAME_FUNC(Module::handleLIST)
 {
    // Check for the game
    origin.sendMessage("List of available games:", getName());

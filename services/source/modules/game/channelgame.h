@@ -36,13 +36,13 @@ class ChannelGame;
 # include "game.h"
 
 # define CHANNEL_GAME_CREATOR_FUNC(x) \
-     ChannelGame* x(Game& game, const LibAIS::String& channel, \
+     ChannelGame* x(Game::Module& module, const LibAIS::String& channel, \
 		    Exordium::User& caller)
 
 class ChannelGame {
  protected:
    // The game service (so we can send messages)
-   Game& game;
+   Game::Module& module;
    
    // The channel we are playing on
    const LibAIS::String channel;
@@ -58,8 +58,8 @@ class ChannelGame {
    } static const channelGameTable[];
 
    // Constructor
-   ChannelGame(Game& g, const LibAIS::String& c)
-     : game(g), 
+   ChannelGame(Game::Module& m, const LibAIS::String& c)
+     : module(m),
        channel(c)
        {};
    
@@ -77,13 +77,16 @@ class ChannelGame {
    
    // Send a message to the channel
    void sendMessage(const LibAIS::String& message) const
-     { game.getServices().servicePrivmsg(message, game.getName(), channel); };
+     {
+	module.getServices().servicePrivmsg(message, module.getName(), 
+					    channel);
+     };
 
    // Send a message to someone (specified)
    void sendMessage(Exordium::User& nick,
 		    const LibAIS::String& message) const
-     { nick.sendMessage(message, game.getName()); };
+     { nick.sendMessage(message, module.getName()); };
 };
    
 #endif // __CHANNELGAME_H__
-   
+
