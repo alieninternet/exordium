@@ -1,7 +1,7 @@
 /* $Id$
  *
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  *
@@ -55,7 +55,7 @@ Modules::~Modules(void)
  */
 Modules::Module::~Module(void)
 {
-   dlclose(handle);
+   lt_dlclose(handle);
    //   delete service; // this needs fixing :( is this being deleted before here?
 };
 
@@ -69,39 +69,36 @@ Service* const Modules::loadModule(const String& fileName,
 				   String& errString)
 {
    // Try to load the module
-   void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
+   lt_dlhandle handle; 
 
    // Check if that loaded okay
-   if (handle == 0)
-     {
-	// Set the error string appropriately
-	errString = "Could not load " + fileName + ": " + dlerror();
-	return 0;
-     }
+   if ((handle = lt_dlopen(fileName.c_str())) == NULL) {
+      // Set the error string appropriately
+      errString = "Could not load " + fileName + ": " + lt_dlerror();
+      return 0;
+   }
 
    // Locate the initialisation function
    EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((* const initfunc)) =
      ((EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*)))
-      (dlsym(handle, "service_init")));
+      (lt_dlsym(handle, "service_init")));
 
    // Check if we could find the init function
-   if (initfunc == 0)
-     {
-	errString = "Could not load " + fileName +
-	  ": Module does not contain an initialisation function";
-	return 0;
-     }
+   if (initfunc == 0) {
+      errString = "Could not load " + fileName +
+	": Module does not contain an initialisation function";
+      return 0;
+   }
 
    // Pull out the service data, this class contains all the other info we need
    Service* const service = (*initfunc)();
-
+   
    // Make sure the service was returned appropriately...
-   if (service == 0)
-     {
-	errString = "Could not load " + fileName +
-	  ": Module failed to initialise";
-	return 0;
-     }
+   if (service == 0) {
+      errString = "Could not load " + fileName + 
+	": Module failed to initialise";
+      return 0;
+   }
 
 #ifdef DEBUG
    std::cout << "Loaded module '" <<
@@ -115,12 +112,11 @@ Service* const Modules::loadModule(const String& fileName,
    String moduleName = service->getName().IRCtoLower();
 
    // Make sure this does not exist..
-   if (!exists(moduleName))
-     {
-	// Add it, and return happy status
-	modules[moduleName] = new Module(service, handle);
-	return service;
-     }
+   if (!exists(moduleName)) {
+      // Add it, and return happy status
+      modules[moduleName] = new Module(service, handle);
+      return service;
+   }
 
    // Umm, we should delete and unload module here!
    //
@@ -137,13 +133,12 @@ void Modules::unloadModule(const String& name, const String& reason)
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
 
    // If the module exists then stop it, delete it, and erase it - bye bye!
-   if (moduleLocation != modules.end())
-     {
-	(*moduleLocation).second->service->stop(reason);
-	delete (*moduleLocation).second;
-	modules.erase(moduleLocation);
-	return;
-     }
+   if (moduleLocation != modules.end()) {
+      (*moduleLocation).second->service->stop(reason);
+      delete (*moduleLocation).second;
+      modules.erase(moduleLocation);
+      return;
+   }
 
    // output to stdout.. temporary??
 #ifdef DEBUG
@@ -152,11 +147,10 @@ void Modules::unloadModule(const String& name, const String& reason)
 }
 
 // Helper for the 'startAll' function below
-struct startModule
-{
+struct startModule {
    // Where services is
    Services& services;
-
+   
    // Constructor
    startModule(Services& s)
      : services(s)
@@ -180,13 +174,12 @@ void Modules::startAll(Services& services)
  */
 void Modules::unloadAll(const String& reason)
 {
-   while (!modules.empty())
-     {
-	(*modules.begin()).second->service->stop(reason);
-	delete (*modules.begin()).second;
-	modules.erase(modules.begin());
-	return;
-     }
+   while (!modules.empty()) {
+      (*modules.begin()).second->service->stop(reason);
+      delete (*modules.begin()).second;
+      modules.erase(modules.begin());
+      return;
+   }
 }
 
 /* exists - Check if a module exists
@@ -199,11 +192,10 @@ bool Modules::exists(const String& name) const
      modules.find(name.IRCtoLower());
 
    // If the module exists, be happy
-   if (moduleLocation != modules.end())
-     {
-	return true;
-     }
-
+   if (moduleLocation != modules.end()) {
+      return true;
+   }
+   
    // Could not find it..
    return false;
 }
@@ -218,10 +210,9 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
 
    // If the module exists, throw the line at it
-   if (moduleLocation != modules.end())
-     {
-	(*moduleLocation).second->service->parseLine(line, origin, safe);
-     }
+   if (moduleLocation != modules.end()) {
+      (*moduleLocation).second->service->parseLine(line, origin, safe);
+   }
 }
 
 /* throwLine - Throw a line at the appropriate service (sent to a channel)
@@ -234,10 +225,9 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
 
    // If the module exists, throw the line at it
-   if (moduleLocation != modules.end())
-     {
-	(*moduleLocation).second->service->parseLine(line, origin, channel);
-     }
+   if (moduleLocation != modules.end()) {
+      (*moduleLocation).second->service->parseLine(line, origin, channel);
+   }
 }
 
 /* handleClientSignon - Handle the signing on of a new client, and
@@ -248,23 +238,21 @@ void
   Modules::handleClientSignon(User& origin)
 {
    for (modules_type::const_iterator it = modules.begin();
-	it != modules.end(); it++)
-     {
-
-	String tmp =  (*it).first;
-	if((*it).second->service->getModuleInfo().eventsMask &
-	   Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON)
-	  {
-
-	     /* Ok this module wants to know about signons */
+	it != modules.end(); it++) {
+      
+      String tmp =  (*it).first;
+      if((*it).second->service->getModuleInfo().eventsMask &
+	 Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON) {
+	 
+	 /* Ok this module wants to know about signons */
 #ifdef DEBUG
-	     std::cout << tmp << " would like to know when someone signs on" << std::endl;
+	 std::cout << tmp << " would like to know when someone signs on" << std::endl;
 #endif
-	     (*it).second->service->handleClientSignon(origin);
-	  }
-
-     }
-
+	 (*it).second->service->handleClientSignon(origin);
+      }
+      
+   }
+   
 }
 
 /* handleAway - Handle an AWAY message from the parser and throw it
@@ -272,25 +260,22 @@ void
  *
  */
 
-void
-  Modules::handleAway(User& origin, const AISutil::String &message)
-{
+void Modules::handleAway(User& origin, const AISutil::String &message) {
+   
    for (modules_type::const_iterator it = modules.begin();
-	it != modules.end(); it++)
-     {
-	String tmp =  (*it).first;
-	if((*it).second->service->getModuleInfo().eventsMask &
-	   Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY)
-	  {
-	     /* Ok this module wants to know about aways */
+	it != modules.end(); it++) {
+      String tmp =  (*it).first;
+      if((*it).second->service->getModuleInfo().eventsMask &
+	 Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY) {
+	 /* Ok this module wants to know about aways */
 #ifdef DEBUG
-	     std::cout << tmp << " would like to know when someone goes away" << std::endl;
+	 std::cout << tmp << " would like to know when someone goes away" << std::endl;
 #endif
-	     (*it).second->service->handleAway(origin,message);
-	  }
-
-     }
-
+	 (*it).second->service->handleAway(origin,message);
+      }
+      
+   }
+   
 }
 
 /* dumpModules - Dump a list of modules
@@ -307,11 +292,10 @@ String Modules::dumpModules(void) const
 
    // Iterate through the module list
    for (modules_type::const_iterator it = modules.begin();
-	it != modules.end(); it++)
-     {
-	tmp << (*it).first << ' ';
-     }
-
+	it != modules.end(); it++) {
+      tmp << (*it).first << ' ';
+   }
+   
 #ifdef DEBUG
    // output it to stdout.. temporary??
    std::cout << tmp.str() << std::endl;
