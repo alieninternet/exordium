@@ -76,19 +76,39 @@ void CPgSQL::dbDisconnect()
 
 int CPgSQL::dbQuery(String const &query)
 {
+  logger.logLine("Before clear!!!");
   // clear results of previous query
-  if(pgres != NULL) 
-    PQclear(pgres);
+  if(clearres) 
+   {
+     clearres=false;
+     PQclear(pgres);
+   }
+
+  logger.logLine("After clear!!!!");
 
   std::cout << "DEBUG: Query=" << query << std::endl;
   logger.logLine("DEBUG: Query=" + query);
 
-  pgres = PQexec(pgconn, query.c_str());
+  pgres = PQexec(pgconn, query.data());
+
+  logger.logLine("After EXEC!!!");
 
   currow=0;
 
-  if( pgres != NULL )
-     return PQntuples(pgres);
+  if(pgres != NULL)
+  {
+    if(PQresultStatus(pgres)==PGRES_COMMAND_OK)
+    {
+      clearres=false;
+      PQclear(pgres);
+      return 0;
+    }
+    else if(PQresultStatus(pgres)==PGRES_TUPLES_OK)
+    {
+      clearres=true;
+      return PQntuples(pgres);
+    }
+  }
   else
      return 0;
 }
@@ -98,13 +118,19 @@ int CPgSQL::dbQuery(String const &query)
 
 String CPgSQL::dbGetValue(void)
 {
-  return PQgetvalue(pgres, currow, 0);
+  if(PQntuples(pgres)>0)
+     return PQgetvalue(pgres, currow, 0);
+  else
+     return "";
 }
 
 
 String CPgSQL::dbGetValue(int field)
 {
-  return PQgetvalue(pgres, currow, field);
+  if(PQntuples(pgres)>0)
+     return PQgetvalue(pgres, currow, field);
+  else
+     return "";
 }
 
 void CPgSQL::dbGetRow(void)

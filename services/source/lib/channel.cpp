@@ -321,9 +321,11 @@ void
 {
    int nbRes = services.getDatabase().dbSelect("name,topic,modes", "chans");
 
+   std::cout << "nbRes:" << String::convert(nbRes) << std::endl;
 
    for(int i=0; i<nbRes; i++)
    {
+     std::cout << "inside FOR!!!!!!" << std::endl;
      synchChannel(services.getDatabase().dbGetValue(0), services.getDatabase().dbGetValue(1), 
                   services.getDatabase().dbGetValue(2));
      services.getDatabase().dbGetRow();

@@ -1176,7 +1176,7 @@ String
      return "";
    else
    {
-     String ret(database.dbGetValue(),(String::size_type)20);
+     String ret(database.dbGetValue().data(),(String::size_type)20);
       std::cout << "Pass DEBUG: Size of return is" << ret.length() << std::endl;
      return ret;
    }

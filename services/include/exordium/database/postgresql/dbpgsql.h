@@ -55,7 +55,7 @@ namespace Exordium {
   { 
     public:
       CPgSQL(Config &c, Log &l) : config(c), logger(l)
-      { pgopts=NULL; pgtty=NULL; }
+      { pgopts=NULL; pgtty=NULL; pgres=NULL; clearres=false; }
 
       virtual ~CPgSQL(void);
 
@@ -93,6 +93,7 @@ namespace Exordium {
       char *pgtty;
 
       int currow;
+      bool clearres;
 
   }; // class CPgSQL
 
