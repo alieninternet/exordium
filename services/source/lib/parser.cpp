@@ -499,7 +499,7 @@ void
 	services.getIRCDome().parseLine(message,OLDoriginl);
 	return;
      }
-   std::cout << target << std::endl;
+   std::cout << '\'' << target << '\'' << std::endl;
    if(target[0]=='#')
      {
 	//Oke channel msg :>
@@ -519,7 +519,7 @@ void
 	StringTokens dodgeydodgeydodgeyAGAIN(message);
 	services.serviceM.throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
 				    target);
-
+	return;
      }
    //Hard check for nick if its @ircdome.org ......
    if(target.toLower()=="nick@ircdome.org")
