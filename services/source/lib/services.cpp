@@ -1634,7 +1634,7 @@ int
 
 /* RegisterEvent - Just something im fiddling with */
 bool
-  Services::RegisterEvent ( const eventType& event, Service* module)
+  Services::RegisterEvent ( const eventType event, Service* module)
 {
    eventList[event].push_back(module);
    std::cout << "Events[]: Have registered a module "<< 

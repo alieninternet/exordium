@@ -41,7 +41,7 @@ namespace Exordium {
 	  EVENT_NONE = 0x00000000,
 	  EVENT_NICK = 0x00000001
      };
-   typedef unsigned char eventType;
+   typedef enum event_types eventType;
    /* Channel events... not complete */
    enum chan_events 
      {
