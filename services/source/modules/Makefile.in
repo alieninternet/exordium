@@ -4,6 +4,7 @@ RM=rm -f
 CXX=g++
 #CXXFLAGS=-g -Wall -Winline -Werror -pg -O0 -fmemoize-lookups
 CXXFLAGS=-g -Wall -Werror -O0 -fpic -ggdb
+INCDIRS=-I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include
 LDFLAGS=
 LIBS=-lmysqlclient
 
@@ -16,20 +17,13 @@ SOURCES=chan.cpp \
 	note.cpp \
 	game.cpp \
 	bot.cpp
+	
 OBJECTS=$(SOURCES:.cpp=.so)
 
-TARGET=modules
+all: $(OBJECTS)
 
-all: $(TARGET)
-
-$(TARGET):
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o love.so love.cpp
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o nick.so nick.cpp
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o chan.so chan.cpp
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o serv.so serv.cpp
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o note.so note.cpp
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o game.so game.cpp
-	$(CXX) $(CXXFLAGS) -I../../include -I../../../kineircd/src/lib -I../../../kineircd/include -I/usr/local/mysql/include -shared -o bot.so bot.cpp
+%.so: %.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -shared -c $< -o $@
 
 clean:
 	$(RM) *.so modules
