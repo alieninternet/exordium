@@ -215,8 +215,13 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
 
    if (withMatchNotify) {
       // Tell the player what they need to get..
-      if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
-	  (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen)) {
+      if ((lastDiscardedCard.getIndex() == 8) && (nextSuit != 0)) {
+	 sendMessage((*currentPlayer).first, 
+		     Kine::String("To discard, you need to put down a card of "
+				  "the " + Cards::Card::nameSuit(nextSuit) + 
+				  " suit"));
+      } else if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
+		 (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen)) {
 	 sendMessage((*currentPlayer).first, 
 		     "You can put down any card you like, since the last "
 		     "card discarded was the Queen of Spades");
