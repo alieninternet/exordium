@@ -25,7 +25,6 @@
  */
 
 #include "exordium/channel.h"
-#include "exordium/nickname.h"
 #include <kineircd/str.h>
 #include "exordium/services.h"
 #include "exordium/sql.h"
@@ -68,7 +67,7 @@ void
   Channel::internalOp(String const &nickname, String const &channel)
 {
    int cid = getOnlineChanID(channel);
-   int nid = services.getNickname().getOnlineNickID(nickname);
+   int nid = services.locateID(nickname);
    services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid));
    services.getDatabase().query("INSERT into chanstatus values ('"+String::convert(cid)+"','"+String::convert(nid)+"','2')");
    services.Debug("Have marked "+nickname+" as being opped in "+channel);
@@ -81,7 +80,7 @@ void
   Channel::internalVoice(String const &nickname, String const &channel)
 {
    int cid = getOnlineChanID(channel);
-   int nid = services.getNickname().getOnlineNickID(nickname);
+   int nid = services.locateID(nickname);
    services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid));
    services.getDatabase().query("INSERT into chanstatus values ('"+String::convert(cid)+"','"+String::convert(nid)+"','1')");
    services.Debug("Have marked "+nickname+" as being voiced in "+channel);
@@ -94,7 +93,7 @@ void
   Channel::internalAdd(String const &nickname, String const &channel)
 {
    int cid = getOnlineChanID(channel);
-   int nid = services.getNickname().getOnlineNickID(nickname);
+   int nid = services.locateID(nickname);
    services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid));
    services.getDatabase().query("INSERT into chanstatus values ('"+String::convert(cid)+"','"+String::convert(nid)+"','0')");
    services.Debug("Have marked "+nickname+" as being NORMAL in "+channel);
@@ -140,7 +139,7 @@ void
 void
   Channel::internalDel(String const &nickname, String const &channel)
 {
-   services.getDatabase().query("DELETE from chanstatus where chanid='"+String::convert(getOnlineChanID(channel))+"' AND nickid='"+String::convert(services.getNickname().getOnlineNickID(nickname))+"'");
+   services.getDatabase().query("DELETE from chanstatus where chanid='"+String::convert(getOnlineChanID(channel))+"' AND nickid='"+String::convert(services.locateID(nickname))+"'");
    return;
 }
 
@@ -149,7 +148,7 @@ void
   Channel::internalDeOp(String const &nickname, String const &channel)
 {
    int chanid = getOnlineChanID(channel);
-   int nickid = services.getNickname().getOnlineNickID(nickname);
+   int nickid = services.locateID(nickname);
    services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(chanid)+" AND nickid="+String::convert(nickid));
    services.getDatabase().query("INSERT into chanstatus values('','"+String::convert(chanid)+"','"+String::convert(nickid)+"')");
 }
@@ -160,7 +159,7 @@ void
   Channel::internalDeVoice(String const &nickname, String const &channel)
 {
    int chanid = getOnlineChanID(channel);
-   int nickid = services.getNickname().getOnlineNickID(nickname);
+   int nickid = services.locateID(nickname);
    services.getDatabase().query("DELETE from chanstatus where chanid='"
      +String::convert(chanid)+"' AND nickid='"
      + String::convert(nickid) + "' AND status='1'");
@@ -216,7 +215,7 @@ bool
 int
   Channel::getChanAccess(String const &name, String const &nick)
 {
-   int nickid = services.getNickname().getRegisteredNickID(nick);
+   int nickid = services.getRegisteredNickID(nick);
    int chanid = getChanID(name);
    String query = "SELECT access from chanaccess where chanid='"
      + String::convert(chanid)+"' AND nickid='"
@@ -279,7 +278,7 @@ int
 int
   Channel::maxChannelsUser(String const &nick)
 {
-   int id = services.getNickname().getRegisteredNickID(nick);
+   int id = services.getRegisteredNickID(nick);
    MysqlRes res = services.getDatabase().query("SELECT count(*) from chanaccess where nickid='"
      + String::convert(id)+"'");
    MysqlRow row;
@@ -363,7 +362,7 @@ String
 void
   Channel::chanAddAccess(String const &name, String const &nick, String const &level)
 {
-   int nickid = services.getNickname().getRegisteredNickID(nick);
+   int nickid = services.getRegisteredNickID(nick);
    int chanid = getChanID(name);
    String query = "INSERT into chanaccess values ('"
      + String::convert(chanid)+"','"+String::convert(nickid)
@@ -374,7 +373,7 @@ void
 void
   Channel::chanDelAccess(String const &name, String const &nick)
 {
-   int nickid = services.getNickname().getRegisteredNickID(nick);
+   int nickid = services.getRegisteredNickID(nick);
    int chanid = getChanID(name);
    String query = "DELETE from chanaccess where chanid='"
      + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)
@@ -477,9 +476,10 @@ void
      {
 	String nid = ((std::string) row[0]);
 	int foo = nid.toInt();
-	String tnick = services.getNickname().getOnlineNick(foo);
-	String ident = services.getNickname().getIdent(tnick);
-	String host = services.getNickname().getHost(tnick);
+	String tnick = services.getOnlineNick(foo);
+	User *ptr = services.findUser(tnick);
+	String ident = ptr->getIdent();
+	String host = ptr->getHost();
 	String full = String(tnick)+"!"+ident+"@"+host;
 	res.free_result();
 	StringMask bar(mask);

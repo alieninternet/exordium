@@ -26,7 +26,6 @@
 
 #include "exordium/parser.h"
 #include "exordium/services.h"
-#include "exordium/nickname.h"
 #include "exordium/channel.h"
 #include "exordium/log.h"
 #include <kineircd/str.h>
@@ -126,7 +125,7 @@ void
    String serverName = tokens.nextToken ();
    String hops = tokens.nextToken ();
    String description = tokens.rest();
-   if (!services.getNickname().isAuthorised (serverName))
+   if (!services.isAuthorised (serverName))
      {
 	String tosend =
 	  String (":services.ircdome.org SQUIT ") + serverName +
@@ -236,7 +235,7 @@ void
 	     if(add)
 	       {
 		  //Active Oper? (hah :-)
-		  int axs = services.getNickname().getAccess("Oper",OLDorigin);
+		  int axs = services.getAccess("Oper",OLDorigin);
 		  if(axs==0)
 		    {
 		       //Non-Authorised.
@@ -294,11 +293,11 @@ void PARSER_FUNC (Parser::parseN)
 	origin->setNick(tokens.nextToken());
 	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
-	if(services.getNickname().isNickRegistered(origin->getNickname()))
+	if(services.isNickRegistered(origin->getNickname()))
 	  {
-	     if(!services.getNickname().isIdentified(origin->getNickname()))
+	     if(!services.isIdentified(origin->getNickname()))
 	       {
-		  if(!services.getNickname().isPending(origin->getNickname()))
+		  if(!services.isPending(origin->getNickname()))
 		    {
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
@@ -308,7 +307,7 @@ void PARSER_FUNC (Parser::parseN)
 		       if(origin->modNick())
 			 {
 			    
-		       services.getNickname().addCheckidentify(origin->getNickname());
+		       services.addCheckidentify(origin->getNickname());
 			 }
 		       
 		    }
@@ -344,14 +343,14 @@ void PARSER_FUNC (Parser::parseN)
       return;
    }
    
-   if(services.getNickname().isNickRegistered(nick))
+   if(services.isNickRegistered(nick))
      {
-	if(!services.getNickname().isPending(nick))
+	if(!services.isPending(nick))
 	  {
 	     if(newNick->modNick())
 	       {
 		  
-		  services.getNickname().addCheckidentify(nick);
+		  services.addCheckidentify(nick);
 	       }
 	     
 	  }
@@ -359,7 +358,7 @@ void PARSER_FUNC (Parser::parseN)
      }
 
    
-   int num = services.getNickname().countHost(host);
+   int num = services.countHost(host);
    String query = "SELECT txt from news where level=0 AND expires<"+String::convert(services.currentTime);
    MysqlRes res = services.getDatabase().query(query);
    MysqlRow row;
@@ -496,7 +495,7 @@ void
   PARSER_FUNC (Parser::parseQUIT)
 {
    String reason = tokens.nextColonToken();
-   int oid = services.getNickname().getOnlineNickID(OLDorigin);
+   int oid = services.locateID(OLDorigin);
    String query = "DELETE from onlineclients where nickname='"+OLDorigin+"'";
    services.getDatabase().query(query);
    query = "DELETE from identified where nick='"+String::convert(oid)+"'";
@@ -559,7 +558,7 @@ void
 	  }
 	if(normal)
 	  {
-	     if(services.getNickname().isIdentified(foo.trim(),foo.trim()))
+	     if(services.isIdentified(foo.trim(),foo.trim()))
 	       {
 		  int access = services.getChannel().getChanAccess(chan,foo.trim());
 		  String togo = "Client: \002:"+foo.trim()+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";

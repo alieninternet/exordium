@@ -26,7 +26,6 @@
 
 #include "exordium/services.h"
 #include "exordium/channel.h"
-#include "exordium/nickname.h"
 #include "exordium/user.h"
 #include <queue>
 #include <map>
@@ -210,7 +209,6 @@ namespace Exordium
    database(db),
    config(c),
    parser(*this),
-   nickname(*this),
    channel(*this),
    ircdome(*this)
 
@@ -526,9 +524,9 @@ namespace Exordium
 
    void Services::expireRun(void)
      {
-	String nc = nickname.getRegNickCount();
+	String nc = getRegNickCount();
 	String cc = channel.getChanCount();
-	String oc = nickname.getOnlineCount();
+	String oc = getOnlineCount();
 	String lc = getLogCount();
 	String gc = getGlineCount();
 	String noc = getNoteCount();
@@ -584,7 +582,7 @@ namespace Exordium
      Services::doHelp(String const &nick, String const &service,
 		      String const &topic, String const &parm)
        {
-	  String lang = nickname.getLanguage(nick);
+	  String lang = getLanguage(nick);
 	  if(topic == "")
 	    {
 	       //No topic, no parm.
@@ -692,9 +690,9 @@ namespace Exordium
    void
      Services::log (String const &nick, String const &service, String const &text, String const &cname)
        {
-	  String nicks = nickname.getIDList(nick);
-	  String ident = nickname.getIdent(nick);
-	  String host = nickname.getHost(nick);
+	  String nicks = getIDList(nick);
+	  String ident = getIdent(nick);
+	  String host = getHost(nick);
 	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"')";
 	  database.query(query);
        }
@@ -702,9 +700,9 @@ namespace Exordium
    void
      Services::log (String const &nick, String const &service, String const &text)
        {
-	  String nicks = nickname.getIDList(nick);
-	  String ident = nickname.getIdent(nick);
-	  String host = nickname.getHost(nick);
+	  String nicks = getIDList(nick);
+	  String ident = getIdent(nick);
+	  String host = getHost(nick);
 	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','')";
 	  database.query(query);
        }
@@ -767,7 +765,7 @@ namespace Exordium
    bool
      Services::usePrivmsg (String const &nick)
        {
-	  if(!nickname.isNickRegistered(nick))
+	  if(!isNickRegistered(nick))
 	    {
 	       return false;
 	    }
@@ -843,7 +841,7 @@ namespace Exordium
      Services::isOp(String const &nick, String const &chan)
        {
 	  int chanid = channel.getOnlineChanID(chan);
-	  int nickid = nickname.getOnlineNickID(nick);
+	  int nickid = getOnlineNickID(nick);
 	  String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
 	  MysqlRes res = database.query(query);
 	  MysqlRow row;
@@ -864,7 +862,7 @@ namespace Exordium
      Services::isVoice(String const &nick, String const &chan)
        {
 	  int chanid = channel.getOnlineChanID(chan);
-	  int nickid = nickname.getOnlineNickID(nick);
+	  int nickid = getOnlineNickID(nick);
 	  String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
 	  MysqlRes res = database.query(query);
 	  MysqlRow row;
@@ -904,11 +902,11 @@ namespace Exordium
        {
 	  String query = String("insert into notes values('','")+from+"','"+to+"',NOW(),'"+text+"')";
 	  database.query(query);
-	  int foo = nickname.getOnlineNickID(to);
+	  int foo = getOnlineNickID(to);
 	  if(foo>0)
 	    {
 	       //Client is online.. But are they identified HUHUHUH?!!?
-	       if(nickname.isIdentified(to,to))
+	       if(isIdentified(to,to))
 		 {
 		    String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
 		    serviceNotice(togo,"Note",to);
@@ -941,9 +939,9 @@ namespace Exordium
 		      {
 			 foo++;
 			 newnick = tomod+String::convert(foo);
-			 if(!nickname.isNickRegistered(newnick))
+			 if(!isNickRegistered(newnick))
 			   {
-			      if(nickname.getOnlineNickID(newnick)==0)
+			      if(getOnlineNickID(newnick)==0)
 				{
 				   //Oke we can use this one :)
 				   running = false;

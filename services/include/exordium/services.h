@@ -59,7 +59,6 @@ extern "C" {
 #include "exordium/conf.h"
 #include "exordium/sql.h"
 #include "exordium/parser.h"
-#include "exordium/nickname.h"
 #include "exordium/channel.h"
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
@@ -77,7 +76,6 @@ namespace Exordium {
 	const Config& config;
 
 	Parser parser;
-	Nickname nickname;
 	Channel channel;
 	IRCDome ircdome;
 	
@@ -137,10 +135,6 @@ namespace Exordium {
 	const Config& getConfig(void) const
 	  { return config; };
 
-	// Return the nickname thingy
-	Nickname& getNickname(void)
-	  { return nickname; };
-	
 	// Return the channel thingy
 	Channel& getChannel(void)
 	  { return channel; };
@@ -387,6 +381,7 @@ namespace Exordium {
 	Kine::String getRegDate(String const &);
 	Kine::String getLastID(String const &);
 	Kine::String getLastHost(String const &);
+
 	
      };
 }; // namespace Exordium
