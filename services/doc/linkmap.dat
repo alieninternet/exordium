@@ -23,6 +23,7 @@ digraph intranet_map {
   graph [splines=true,overlap=false];
   node [style=filled];
   decorate=true;
+  sep=0.1;
 
   // Binaries
   node [shape=box,color=indianred1];
