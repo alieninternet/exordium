@@ -1,3 +1,69 @@
+2003-03-13 12:58  ircdome
+
+	* source/lib/parser.cpp: 
+	
+	Fixed bug where services was tracking quit messages for
+	non-registered nicknames which was doing unnessary db queries.
+	
+	See:
+	http://sourceforge.net/tracker/index.php?func=detail&aid=702434&group_id=30144&atid=398385
+
+2003-03-13 12:05  ircdome
+
+	* AUTHORS, doc/example.conf, include/exordium/config.h,
+	source/lib/config.h, source/modules/mod.chan/chan.cpp,
+	source/modules/mod.nick/nick.cpp: 
+	
+	Removed hardcoding of IRCDome/PeopleChat as the network name, now
+	uses the config variable NetworkName provided by Kine (see
+	example.conf)
+	
+	Added Scott to the authors list.
+
+2003-03-13 11:17  ircdome
+
+	* source/lib/channel.cpp: 
+	
+	Fixed bug where +r wasn't being removed on a channel drop.
+	
+	See
+	http://sourceforge.net/tracker/index.php?func=detail&aid=702845&group_id=30144&atid=398385
+
+2003-03-13 11:12  ircdome
+
+	* source/lib/channel.cpp: 
+	
+	Fixed bug with registering channels where +r wasn't being set.
+	
+	See
+	http://sourceforge.net/tracker/index.php?func=detail&aid=702846&group_id=30144&atid=398385
+	for details
+
+2003-03-13 11:06  ircdome
+
+	* source/modules/mod.nick/nick.cpp: 
+	
+	Fixed bugs in info/ghost commands. Details at
+	http://sourceforge.net/tracker/index.php?func=detail&aid=702872&group_id=30144&atid=398385
+
+2003-03-13 11:02  ircdome
+
+	* source/: lib/database/mysql/dbmysql.cpp,
+	modules/mod.nick/nick.cpp: 
+	
+	Fixed the null pointer bug in /msg nick kill (See :
+	http://sourceforge.net/tracker/index.php?func=detail&aid=702884&group_id=30144&atid=398385
+	) for reference.
+	
+	Added a user+pass check to the function, and tidied up the null
+	pointer check
+
+2003-03-13 10:22  ircdome
+
+	* ChangeLog, source/lib/services.cpp: 
+	
+	Updating the ChangeLog
+
 2003-03-13 09:28  ircdome
 
 	* source/: lib/console.cpp, modules/mod.chan/chan.cpp: 
