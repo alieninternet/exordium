@@ -348,7 +348,7 @@ void PARSER_FUNC (Parser::parseN)
      {
 	if(!services.getNickname().isPending(nick))
 	  {
-	     if(origin->modNick())
+	     if(newNick->modNick())
 	       {
 		  
 		  services.getNickname().addCheckidentify(nick);
