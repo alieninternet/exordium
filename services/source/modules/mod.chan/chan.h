@@ -77,7 +77,7 @@ namespace Exordium {
 	 void handleAway(Exordium::User& origin, 
 			 const AISutil::String& reason);
 
-         void handleTopic(const AISutil::String&, dChan& channel);
+         void handleTopic(const AISutil::String&, dChan& channel, const AISutil::String &);
 	 
 	 // Grab the information structure of a module
 	 virtual const moduleInfo_type& getModuleInfo(void) const

@@ -220,6 +220,45 @@ CHAN_FUNC (Module::parseSET)
 		  origin.sendMessage(GETLANG(chan_SET_SECURE_USAGE),getName());
 		  return;
 	       } // Secure
+
+             if(command=="enforcebans")
+               {
+                  if(value=="true")
+                    {
+                       ptr->setEnforceBans(true);
+                       origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_TRUE), getName());
+                       return;
+                    }
+                  if(value=="false")
+                    {
+                       ptr->setEnforceBans(false);
+                       origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_FALSE), getName());
+                       return;
+                    }
+                  origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_USAGE),getName());
+                  return;
+
+               } // Enforcebans
+
+             if(command=="tracktopics")
+               {
+                  if(value=="true")
+                    {
+                       ptr->setTrackTopics(true);
+                       origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_TRUE), getName());
+                       return;
+                    }
+                  if(value=="false")
+                    {
+                       ptr->setTrackTopics(false);
+                       origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_FALSE), getName());
+                       return;
+                    }
+                  origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_USAGE),getName());
+                  return;
+
+               }
+
 	     origin.sendMessage(GETLANG(chan_SET_UNSUPPORTED_OPTION),getName());
 	     return;
 	  }
@@ -1031,7 +1070,7 @@ void
 // Context: When we enter this method we know that the channel is valid
 // and that the channel is registered.
 void
-  Module::handleTopic(const String& origin, Exordium::dChan& channel)
+  Module::handleTopic(const String& origin, Exordium::dChan& channel, const String &newTopic)
 {
 
   // If the TOPIC was sent by myself(chan) we just return
@@ -1054,6 +1093,11 @@ void
      // If the user doesnt have required access we revert back
      if( channel.getAccess( origin ) <= 100 )
          channel.setTopic( getName(), channel.getTopic() );
+     else
+     {
+         if( channel.getTrackTopics() )
+             channel.updateTopic( newTopic );
+     }
  
   }
 
