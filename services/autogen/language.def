@@ -810,6 +810,12 @@ langtag = {
    component = "mod_oper";
    data_en = "I have successfully juped the nickname %p0 (%p1)";
 };
+
+langtag = {
+   name = "oper_JUPE_SERVER_ONLINE";
+   component = "mod_oper";
+   data_en = "The server \b%p0\b is currently connected to the network. Please SQUIT this server before juping it";
+};
  
  
   
