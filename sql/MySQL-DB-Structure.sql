@@ -1,6 +1,12 @@
 # $Id$
-# Host: localhost    Database: services
-#--------------------------------------------------------
+#
+# This is the layout for the MySQL backend of Exordium.
+# it should be imported into a database called 'services'
+# like so;
+# mysqladmin create services
+# mysql services < thisfile.sql
+#
+
 
 
 #
