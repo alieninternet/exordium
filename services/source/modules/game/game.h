@@ -36,10 +36,11 @@ private:
    
  public: // temporary, I'm in a rush.
    Exordium::Services& services;
+   const String myName;
 
 public:
-   Game(Exordium::Services& s)
-	: Service(), services(s)
+   Game(Exordium::Services& s, const String& mn)
+	: Service(), services(s), myName(mn)
 	{
 		std::cout << "Game" << std::endl;
 	};
@@ -49,7 +50,6 @@ public:
 	};
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
-  static String me;
 private:
    void GAME_FUNC (parseHELP);
    void GAME_FUNC (parseQUOTE);

@@ -159,7 +159,7 @@ namespace Exordium
 	std::cout << "I am called " << name << std::endl;
 	services.registerService("game","game","ircdome.org", "+dz", "Network Games!");
 	services.serviceJoin("game", "#Debug");
-	return new Module("game", new Game(services));
+	return new Module("game", new Game(services, name));
 
      }
 
