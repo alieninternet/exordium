@@ -15,8 +15,7 @@
 
 using namespace Exordium;
 
-namespace mod_exordium {
-
+namespace {
    // Our special little classes, we need these so we can delete them later
    static Config *config = 0;
    static Log *logger = 0;
@@ -91,9 +90,7 @@ namespace mod_exordium {
       &moduleStart,
       &moduleStop
    };
-}; // namespace mod_exordium
-
-using namespace mod_exordium;
+}; // namespace
 
 // called when the module is initially loaded
 KINE_MODULE_INIT
