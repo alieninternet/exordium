@@ -1,7 +1,7 @@
 /* $Id$
  *
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002 Exordium Development Team
  *
  * This file is a part of Exordium.
  *
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
@@ -76,10 +76,11 @@ void Parser::parseLine(const String& line)
 {
    StringTokens st (line);
    String origin = "";
+#ifdef DEBUG
    std::cout << "DEBUG RX: " << line << std::endl;
+#endif
    char c;
    c = line[0];
-   std::cout << "The Ascii Value of " << c << " is " << (int)c << std::endl;
    if (line[0] == ':')
      {
 	// Skip the first parameter, we do not care about it anyway
@@ -88,8 +89,6 @@ void Parser::parseLine(const String& line)
      }
 
    String command = st.nextToken ();
-
-
 
    for (int i = 0; functionTable[i].command != 0; i++)
      {
@@ -102,16 +101,15 @@ void Parser::parseLine(const String& line)
 	  }
      }
 
-
    services.logLine("Unparsed Input!: " + line,
 		    Log::Debug);
 };
 
 void PARSER_FUNC (Parser::parseGNOTICE)
 {
-// OLDorigin = server
-// txt = the rest.
-String txt = tokens.rest();   
+   // OLDorigin = server
+   // txt = the rest.
+   String txt = tokens.rest();
 
 }
 
@@ -146,9 +144,9 @@ void
 void
   PARSER_FUNC (Parser::parseUSERAWAY)
 {
-   
-/* THIS DOESNT DO ANYTHING, BUT NEEDED TO STOP MY CONSOLE FILLING UP WITH 
-   ANNOYING AWAY MESSAGES FROM CLIENTS *STARES AT PRAETORIAN*  
+
+/* THIS DOESNT DO ANYTHING, BUT NEEDED TO STOP MY CONSOLE FILLING UP WITH
+   ANNOYING AWAY MESSAGES FROM CLIENTS *STARES AT PRAETORIAN*
  */
 }
 
@@ -330,13 +328,13 @@ void PARSER_FUNC (Parser::parseN)
    //   services.getDatabase().dbGetRow();
    //}
 
-//   if(num>2)
-//     {
-//	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
-//	services.sendGOper("Oper",alert);
-//	//Add gline.
-//     }
-
+   //   if(num>2)
+   //     {
+   //	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
+   //	services.sendGOper("Oper",alert);
+   //	//Add gline.
+   //     }
+   //
 }
 void
   PARSER_FUNC (Parser::parsePRIVMSG)
@@ -510,8 +508,8 @@ void
      {
 
         if(!more)
-           services.getConfigInternal().getModules().handleChannelJoin( *musr, *dptr, 0 );
-        
+	  services.getConfigInternal().getModules().handleChannelJoin( *musr, *dptr, 0 );
+
      }
 
    while(more)
@@ -531,7 +529,6 @@ void
 	     if ((username[0]=='@') || (username[0]=='+'))
 	       username=username.substr(1, username.length()-1);
 	  }
-
 
         User *ptr = services.findUser(username);
 	if(ptr==0)
@@ -598,7 +595,7 @@ void
 	     dptr->addUser(*ptr,status);
           }
 
-          services.getConfigInternal().getModules().handleChannelJoin( *ptr, *dptr, status );
+	services.getConfigInternal().getModules().handleChannelJoin( *ptr, *dptr, status );
 
      }
 
@@ -641,31 +638,29 @@ void
    origin->sendMessage("Please see http://sf.net/projects/exordium for details on the project",Kine::config().getOptionsServerName(),false);
 }
 
-
-
 void
   PARSER_FUNC (Parser::parseTOPIC)
 {
-  // OLDorigin can be either a user or a server so we dont consider it,
-  // the user is given later
+   // OLDorigin can be either a user or a server so we dont consider it,
+   // the user is given later
+   //
+   String channel = tokens.nextToken();
+   String source = tokens.nextToken();
 
-  String channel = tokens.nextToken();
-  String source = tokens.nextToken();
+   // Skip timestamp
+   tokens.nextToken();
 
-  // Skip timestamp
-  tokens.nextToken();
+   String newTopic = tokens.nextColonToken();
 
-  String newTopic = tokens.nextColonToken();
+   dChan *chan = services.findChan( channel );
 
-  dChan *chan = services.findChan( channel );
+   if( chan == 0 )
+     {
+	services.logLine("Error in Parser::parseTOPIC - Null pointer for channel " + channel);
+	return;
+     }
 
-  if( chan == 0 )
-  {
-     services.logLine("Error in Parser::parseTOPIC - Null pointer for channel " + channel);
-     return;
-  }
-
-  // We only care if the channel is registered
-  if( chan->isRegistered() )
+   // We only care if the channel is registered
+   if( chan->isRegistered() )
      services.getConfigInternal().getModules().handleTopic( source, *chan, newTopic );
 }
