@@ -65,7 +65,7 @@ class Serv : public Exordium::Service
    void stop(void) {};
 
    void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
-   void parseLine (LibAIS::StringTokens &line, Exordium::User& origin, LibAIS::String const &);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin, LibAIS::String const &);
 
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

@@ -52,10 +52,6 @@ private:
   };
   static struct functionTableStruct const functionTable[];
    
-  void sendMessage(const LibAIS::String &message, const LibAIS::String &to)
-	{
-		services->serviceNotice(message,getName(),to);
-	}
 public:
    Chan(void)
      : configData(moduleInfo.fullName, "somewhere.org", "Chan")
