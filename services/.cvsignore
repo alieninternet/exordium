@@ -1,2 +1,16 @@
-configure *.o Makefile services *.orig *~ config.* auto4* *.so *.a
+configure
+*.o
+Makefile
+services
+*.orig
+*~
+config.*
+auto4*
+*.so
+*.a
 autom4te.cache
+aclocal.m4
+depcomp
+install-sh
+missing
+mkinstalldirs
