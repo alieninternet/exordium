@@ -37,17 +37,17 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 	  (void *)&Config::defLogfile, &varHandleString,
 	  0, 0
      },
-     {
+     { // This should be temporary, being a server is Kine's job
         "SERVICESHOSTNAME",
           (void *)&Config::defServicesHostname, &varHandleHostName,
           0, 0
      },
-     {
+     { // This should be temporary, being a server is Kine's job
 	"UPLINKHOST",
 	  (void *)&Config::defUplinkHost, &varHandleHostName,
 	  0, 0
      },
-     {
+     { // This should be temporary, being a server is Kine's job
         "SERVICESDESCRIPTION",
           (void *)&Config::defServicesDescription, &varHandleString,
           0, 0
@@ -62,7 +62,7 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
           (void *)&Config::defServicesConsoleDescription, &varHandleString,
           0, 0
      },
-     {
+     { // This should be temporary, being a server is Kine's job
         "UPLINKPORT",
           (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
           0, 0
@@ -111,12 +111,12 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 Config::Config(void)
   : defLogfile("services.log"),
 
-// 'SQL' class
-defSqlDatabase("services"),
-defSqlHostname("localhost"),
-defSqlPassword(""),
-defSqlPort(3306), // mysql port, as assigned by the iana
-defSqlUsername("root")
+    // 'SQL' class
+    defSqlDatabase("services"),
+    defSqlHostname("localhost"),
+    defSqlPassword(""),
+    defSqlPort(3306), // mysql port, as assigned by the iana
+    defSqlUsername("root")
 {
    // nothing here!
 };
