@@ -21,6 +21,7 @@ const Kine::ConfigParser::defTable_type Config::definitionTable = {
      {
 	"UPLINK",
 	  (void *)&Config::defUplink, &varHandleString,
+	  0, 0
      },
      {
 	"SQL",
