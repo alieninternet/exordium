@@ -50,29 +50,29 @@ namespace Exordium {
          mysqlres(0)
        {};
 
-      virtual ~CMySQL(void);
+      ~CMySQL(void);
 
-      virtual void dbConnect(void);
-      virtual void dbDisconnect(void);
+      void dbConnect(void);
+      void dbDisconnect(void);
 
-      virtual void dbSelectDB(AISutil::String const &dbName);
+      void dbSelectDB(AISutil::String const &dbName);
 
-      virtual int dbQuery(AISutil::String const &query);
+      int dbQuery(AISutil::String const &query);
 
-      virtual AISutil::String dbGetValue(void);
-      virtual AISutil::String dbGetValue(int field);
+      AISutil::String dbGetValue(void);
+      AISutil::String dbGetValue(int field);
 
-      virtual void dbGetRow(void);
+      void dbGetRow(void);
 
-      virtual void dbClearRes(void);
+      void dbClearRes(void);
 
-      virtual void dbLock(AISutil::String const &table);
-      virtual void dbUnlock(void);
+      void dbLock(AISutil::String const &table);
+      void dbUnlock(void);
 
       // Commit and roolback (transaction mode) not implemented in MySQL
-      virtual void dbBeginTrans(void) {}
-      virtual void dbCommit(void) {}
-      virtual void dbRollback(void) {}
+      void dbBeginTrans(void) {}
+      void dbCommit(void) {}
+      void dbRollback(void) {}
 
 
     private:
