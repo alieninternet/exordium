@@ -44,17 +44,8 @@ namespace {
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
      {
-	// Dump some copyright info.
-	std::cout << std::endl << "Exordium Network Services, Copyright
-				    (C) 2002 IRCDome Development Team" << std::endl;
-	std::cout << "Exordium comes with ABSOLUTELY NO WARRANTY; for details see" << std::endl;
-	std::cout << "The enclosed LICENSE file.  This is free software"<<std::endl;
-	std::cout << "And you are welcome to redistribute it under certain" << std::endl;
-	std::cout << "conditions; please see the enclosed LICENSE file" << std::endl;
-	std::cout << "mod_exordium::moduleStart()" << std::endl;
-
 	// Check the configuration was completely setup, otherwise get cranky
-/* I will uncomment this shortly
+/* Uncomment this when the database engine config thing is complete       
 	if (!config.checkConfig()) {
 	   // Tell KineIRCd that we refuse to start
 	   return false;
@@ -82,12 +73,34 @@ namespace {
    // called just before unloading the module
    static KINE_MODULE_STOP(moduleStop)
      {
-	std::cout << "mod_exordium::moduleStop()" << std::endl;
 	delete services;
 	delete config;
         delete db;
      }
 
+   /* This is a zero-terminated array of lines to be appended to the list for
+    * /INFO. Lines must be 60 visible characters long or shorter. Do not use
+    * control characters other than those used in formatting IRC text. The
+    * character set for data here should be UTF-8. A ruler is provided to
+    * aid you keeping the data within 60 chars..
+    * 
+    * Note to developers: This should probably be placed in another file and
+    * passed through AutoGen.. It'll probably want a logo made up too..
+    */
+   static const Kine::Module::versionInfo_type versionInfo = 
+     {/* Ruler:
+       *          1         2         3         4         5         6
+       * 123456789012345678901234567890123456789012345678901234567890 */
+	"Exordium Network Services, Copyright (C) 2002 IRCDome ",
+	"Development Team",
+	"",
+	"Exordium comes with ABSOLUTELY NO WARRANTY; for details see",
+	"The enclosed LICENSE file.  This is free software",
+	"And you are welcome to redistribute it under certain",
+	"conditions; please see the enclosed LICENSE file",
+	0
+     };
+   
    // information about ourselves
    static const Kine::Module::basicInfo_type moduleInfo =
      {
@@ -99,6 +112,7 @@ namespace {
 	  0, // Minor version number
 	  0, // Patch-level (may be set to 0 if none)
 	  ".pre-alpha", // extra information (may be set to null or 0 if none)
+	  (Kine::Module::versionInfo_type*)&versionInfo,
 
       /* Note that I set up the version numbers above on purpose to
        * illustrate how the version fields come together. The above comes
