@@ -86,46 +86,22 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 namespace Exordium
 {
 
-   //namespace Services {
+/* Services run 
+ * 
+ * This is called from the module (loaded into kine) to begin
+ * the operation of services.
+ * 
+ * original: James Wilkins
+ * 
+ */
 
-   //  int sock = -1;
-   //  int maxSock = -1;
-   //  char *inputBuffer = 0;
-   //  unsigned int inputBufferSize = 512;
-   //  unsigned int inputBufferPosition = 0;
-   //  struct sockaddr_in addr;
-   //  String UplinkHost = "";
-   //  time_t startTime;
-   //  time_t lastPing;
-   //  time_t currentTime;
-   //  time_t serverLastSpoke;
-   //  time_t disconnectTime = 0;
-   //  time_t stopTime = 0;
-   //  time_t lastCheckPoint;
-   //  time_t lastExpireRun;
-   //  time_t lastModeRun;
-   //  bool connected = false;
-   //  bool stopping = false;
-   //  bool sentPing = false;
-   //  bool burstOk = false;
-   //  unsigned long countTx = 0;
-   //  unsigned long countRx = 0;
-   //  unsigned long remoteAddress;
-   //    std::queue < String > outputQueue;
-   //    std::queue < String > ModeoutputQueue;
-   //  bool SecurePrivmsg = false;
-   //  Core serviceM;
-   //  Kine::SocketIPv4TCP socky;
-   //};
-
-/* Services run */
+   
    void
      Services::run(void)
        {
 	  fd_set inputSet, outputSet;
 	  struct timeval timer;
 	  disconnectTime = 0;
-	  
 	  connected = false;
 	  srand(time(NULL));
 	  logger.logLine ("Entering main loop...");
@@ -267,12 +243,14 @@ namespace Exordium
 	  }
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
+/* Hard Coding is icky --- needs to move to a config option */
 	if ((host = gethostbyname ("chrome.tx.us.ircdome.org")) == NULL)
 	  {
 	     logger.logLine ("Fatal Error: Error resolving uplinkhost");
 	     exit (1);
 	  }
 	memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
+	/* Same here... */
 	addr.sin_port = htons (6667);
      }
 
@@ -283,9 +261,6 @@ namespace Exordium
 	     return false;
 	  }
 	countTx += line.length ();
-	std::cout << countTx << std::endl;
-	std::cout << line.length() << std::endl;
-	std::cout << countTx << std::endl;
 	if (::write (sock, line.c_str(), (int)line.length ()) +::
 	    write (sock, "\n", 1) != (int)line.length () + 1)
 	  {
@@ -294,7 +269,15 @@ namespace Exordium
 	return true;
      }
 
-/* Handle Input */
+/* HandleInput()
+ * 
+ * This handles the incoming data from our uplink, and hands it over
+ * to our parser.
+ * 
+ * Original: James Wilkins
+ * 
+ */
+   
    bool Services::handleInput (void)
      {
 	std::stringstream bufferin;
@@ -311,7 +294,12 @@ namespace Exordium
 	return true;
      };
 
-/* Disconnect from Server */
+/* disconnect()
+ * 
+ * (Uncleanly?) say bye bye to our uplink..
+ * 
+ */
+   
    void
      Services::disconnect (void)
        {
@@ -320,7 +308,12 @@ namespace Exordium
 	  connected = false;
        }
 
-/* Connect to Server */
+/* connect()
+ * 
+ * Connect to our uplink! Yeah!
+ * 
+ */
+   
    bool Services::connect (void)
      {
 	logger.logLine ("Attempting Connection to Uplink");
@@ -330,6 +323,7 @@ namespace Exordium
 	     socky.close();
 	     sock = -1;
 	  }
+/* Again, hard coded, needs to be shifted to a config option */
 	socky.setRemoteAddress("209.51.139.254");
 	socky.setRemotePort(6667);
 	if(!socky.connect())
@@ -337,12 +331,19 @@ namespace Exordium
 	     std::cout << "Socky.connect() returned an error" << std::endl;
 
 	  }
+/* I'm not particulary happy with how this is coded.
+ * In all honesty, we should await some verification from the uplink
+ * that it is ready to receive data, as opposed to just blinding throwing
+ * everything at our uplink.. and possibly (at a later stage) filling
+ * up our sendQ on the server 
+ */
 	connected = true;
-	std::cout << "CONNECTED. CONNECTED" << std::endl;
 	logger.logLine ("Beginning handshake with uplink");
 	maxSock = socky.getFD() + 1;
+/* *Whistles* Config option */
 	queueAdd ("PASS pass :TS");
 	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
+/* Jesus, so many hard coded stuff :( */
 	queueAdd ("SERVER services.ircdome.org 1 :IRCDome Network Services");
 	queueAdd ("SERVER ircdome.org 2 :IRCDome Console");
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
@@ -353,7 +354,13 @@ namespace Exordium
 	return true;
      };
 
-/* Send Services Connection Burst */
+/* doBurst()
+ * 
+ * Load our modules... (move to a config option thingie)
+ * and send our burst stuff to the uplink
+ * 
+ */
+   
    void
      Services::doBurst (void)
        {
@@ -375,22 +382,32 @@ namespace Exordium
 	  serviceM.dumpModules();
 	  return;
        }
-
+/* getQuote(int)
+ * 
+ * This proberly doesn't belong here...
+ * 
+ * It fetches a quote from the database for the Game:: module
+ * 
+ */
+   
    String Services::getQuote(int const &number)
      {
-	String query = "SELECT body from fortunes where id='" + String::convert(number) + "'";
-	MysqlRes res = database.query(query);
+	MysqlRes res = database.query("SELECT body from fortunes where id='" + String::convert(number) + "'");
 	MysqlRow row;
 	while ((row = res.fetch_row()))
 	  {
-	     String foo = ((std::string) row[0]);
-	     res.free_result();
+	     String foo = row[0];
 	     return foo;
 	  }
-	res.free_result();
 	return String("");
      }
 
+/* getLogCount()
+ * 
+ * Count the total number of log entries in our database..
+ * 
+ */
+   
    String Services::getLogCount(void)
      {
 	String query = "SELECT count(*) from log";
@@ -406,6 +423,12 @@ namespace Exordium
 	return String("0");
      }
 
+/* getNoteCount()
+ * 
+ * Count and return the total number of notes in our database
+ * 
+ */
+   
    String Services::getNoteCount(void)
      {
 	String query = "SELECT count(*) from notes";
@@ -420,7 +443,12 @@ namespace Exordium
 	res.free_result();
 	return String("0");
      }
-
+/* getGlineCount()
+ * 
+ * Count and return the total number of glines in our database
+ * 
+ */
+   
    String Services::getGlineCount(void)
      {
 	String query = "SELECT count(*) from glines";
@@ -436,6 +464,13 @@ namespace Exordium
 	return String("0");
      }
 
+/* shutdown(String)
+ * 
+ * Initiate a services shutdown with the given reason being
+ * propagated accross the network
+ * 
+ */
+   
    void Services::shutdown(String const &reason)
      {
 	helpme("Services is shutting down "+reason,"IRCDome");
@@ -451,6 +486,14 @@ namespace Exordium
 	stopTime = currentTime + 10;
      }
 
+/* SynchTime()
+ * 
+ * Perform various tasks that need doing on an ongoing basis
+ * those being;
+ * 	Expire any channel bans that need expiring
+ * 
+ */
+   
    void Services::SynchTime(void)
      {
 	//Undo any expired glines
@@ -471,6 +514,15 @@ namespace Exordium
 	//Lastly commit any outstanding db changes.
      }
 
+/* expireRun()
+ * 
+ * Again, perform any tasks that need doing at a regular interval
+ * 
+ * These being expiring glines, and statistical counts for information
+ * purposes
+ * 
+ */
+   
    void Services::expireRun(void)
      {
 	String nc = nickname.getRegNickCount();
@@ -496,6 +548,12 @@ namespace Exordium
 	clients.test();
      }
 
+   /* AddOnlineServer(ServerName,Hops,Description)
+    * 
+    * Add a server into our database thingie oo :((((
+    * 
+    */
+   
    void
      Services::AddOnlineServer (String const &servername, String const &hops, String const &description)
        {
@@ -503,20 +561,35 @@ namespace Exordium
 	    servername + "','" + hops + "','" + description + "')";
 	  database.query(query);
        }
-
+/* doPong(line)
+ * 
+ * Ping... Pong!
+ * 
+ */
+   
    void
      Services::doPong (String const &line)
        {
 	  queueAdd (String (":services.ircdome.org PONG ") + line);
        }
 
+/* mode(String,String,String,String)
+ * 
+ * A messy way of sending a mode 
+ * 
+ */
+   
    void
      Services::mode (String const &who, String const &chan, String const &mode,
 		     String const &target)
        {
 	  queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
        }
-
+/* doHelp(String,String,String,String)
+ * 
+ * Generate a help page from our dynamic help system
+ * 
+ */
    void
      Services::doHelp(String const &nick, String const &service,
 		      String const &topic, String const &parm)
@@ -530,11 +603,10 @@ namespace Exordium
 	       MysqlRow row;
 	       while ((row = res.fetch_row()))
 		 {
-		    String line = ((std::string) row[0]);
+		    String line = row[0];
 		    line = parseHelp(line);
 		    serviceNotice(line,service,nick);
 		 }
-	       res.free_result();
 	       return;
 	    }
 	  // End
@@ -546,11 +618,10 @@ namespace Exordium
 	       MysqlRow row;
 	       while ((row = res.fetch_row()))
 		 {
-		    String line = ((std::string) row[0]);
+		    String line = row[0];
 		    line = parseHelp(line);
 		    serviceNotice(line,service,nick);
 		 }
-	       res.free_result();
 	       return;
 	    }
 	  // End
@@ -559,14 +630,20 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String line = ((std::string) row[0]);
+	       String line = row[0];
 	       line = parseHelp(line);
 	       serviceNotice(line,service,nick);
 	    }
-	  res.free_result();
 	  return;
 
        }
+/* sendEmail(String,String,String)
+ * 
+ * post an email into the database, which is polled later by a third party
+ * utilite to send any pending emails
+ * 
+ */
+   
    void
      Services::sendEmail (String const &to, String const &subject, String const &text)
        {
@@ -574,6 +651,13 @@ namespace Exordium
 	  database.query(query);
        }
 
+/* parseHelp(In)
+ * 
+ * This parses our special codes in the help files
+ * allowing for items such as bold, italics etc
+ * 
+ */
+   
    String
      Services::parseHelp (String const &instr)
        {
@@ -605,6 +689,16 @@ namespace Exordium
 	  return retstr;
        }
 
+/* log(String,String,String)
+ * 
+ * Logs the given information into the database
+ * which can later be accessed by staff and/or
+ * the web interface
+ * 
+ * There are two versions, one for normal logs, and the other 
+ * for channel based access.
+ */
+   
    void
      Services::log (String const &nick, String const &service, String const &text, String const &cname)
        {
@@ -658,12 +752,28 @@ namespace Exordium
 	return substr(s, e - s);
      }
 
+   /* servicePart(String,String)
+    * 
+    * Make a given service part a channel.
+    * 
+    * Perhaps this should be handed over to each individual module
+    * to control
+    * 
+    */
+   
    void
      Services::servicePart(String const &service, String const &target)
        {
 	  queueAdd (String (":") + service + " PART " + target);
        }
 
+   /* usePrivmsg(nick)
+    * 
+    * Figure out whether we should use the privmsg or 
+    * the notice interface to talk to a client.
+    * 
+    */
+   
    bool
      Services::usePrivmsg (String const &nick)
        {
@@ -683,7 +793,13 @@ namespace Exordium
 	    }
 	  return false;
        }
-
+/* unloadModule(String)
+ * 
+ * Unload the given module.
+ * 
+ *
+ */
+   
    bool
      Services::unloadModule(String const &name)
        {
@@ -691,6 +807,13 @@ namespace Exordium
 	  serviceM.delModule(name);
 	  return true;
        }
+   
+/* loadModule(String,String)
+ * 
+ * Load the given module and initialise it.
+ * 
+ */
+   
    bool
      Services::loadModule (String const &name, String const &fileName)
        {
