@@ -22,7 +22,7 @@ namespace Exordium {
       
       struct functionTableStruct {
 	 const char* command;
-	 const void IRCDOME_FUNC((IRCDome::* const function));
+	 void IRCDOME_FUNC((IRCDome::* const function));
       } static const functionTable[];
       
       void IRCDOME_FUNC(parseMODULE);
