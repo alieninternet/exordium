@@ -1,4 +1,4 @@
-/* oper.cpp,v 1.28 2003/04/05 16:54:46 praetorian100 Exp $
+/* $Id$
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
