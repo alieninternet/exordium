@@ -63,7 +63,7 @@ language = {
 
 language = {
    langCode = "fr";
-   langName = "French";
+   langName = "Français";
    langRevision = "200303220";
 };
 
