@@ -25,8 +25,8 @@
  */
 
 
-#ifndef _INCLUDE_EXORDIUM_DATABASE_MYSQL_DBMYSQL_H_
-# define _INCLUDE_EXORDIUM_DATABASE_MYSQL_DBMYSQL_H_ 1
+#ifndef _SOURCE_LIB_DATABASE_MYSQL_DBMYSQL_H_
+# define _SOURCE_LIB_DATABASE_MYSQL_DBMYSQL_H_ 1
 
 #include <exordium/database/base.h>
 
@@ -84,4 +84,4 @@ namespace Exordium {
 
 }; // namespace Exordium
 
-#endif // _INCLUDE_EXORDIUM_DATABASE_MYSQL_DBMYSQL_H_
+#endif // _SOURCE_LIB_DATABASE_MYSQL_DBMYSQL_H_
