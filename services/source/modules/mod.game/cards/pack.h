@@ -57,9 +57,7 @@ namespace Cards {
       // Constructor (populates the pack, all cards are in 'mint' order)
       Pack(bool withJoker = false) 
         { std::cerr << "TEST7\n"; 
-          std::cerr << &CardType << std::endl;
-          std::cerr << &Allocator << std::endl;
-          Allocator(cards); 
+          Allocator allocator; allocator(cards); 
           std::cerr << "TEST10\n"; }
 
       // Return the number of cards left in the pack
