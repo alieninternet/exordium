@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include "exordium/conf.h"
-#include "exordium/services.h"
 #include "exordium/log.h"
 #include "exordium/mysql.h" // was "mysql.h" -- did I change this in error?
 #include <kineircd/str.h>
@@ -21,11 +20,10 @@ namespace Exordium {
    class Sql {
     private: 
       int sock;
-      Services& services;
       Log& logger;
       
     public:
-      Sql(Services& s, Log& l, const Config& c);
+      Sql(Log& l, const Config& c);
       
       MysqlRes query(const String&);
       String makeSafe(const String&);
