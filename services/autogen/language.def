@@ -207,6 +207,11 @@ langtag = {
    data_en = "Error: That channel is currently frozen";
 };
 
+langtag = {
+   name = "ERROR_CHANNEL_NOT_REGISTERED";
+   data_en = "Error: That channel is not registered";
+};
+
 /*
  * Tags for mod_note
  */
@@ -273,6 +278,18 @@ langtag = {
   data_en = "Usage: send nickname/#channel Message here";
   data_fr = "Instructions: send pseudonyme/#canal Message";
   data_tr = "Yönerge: send takma_ad/#kanal Mesaj";
+};
+
+langtag = {
+  name = "note_SEND_CHANNEL_SUCCESS";
+  component = "mod_note";
+  data_en = "Your note was successfully sent to %p0 people on %p1";
+};
+
+langtag = {
+  name = "note_SEND_USER_SUCCESS";
+  component = "mod_note";
+  data_en = "Your not was successfully sent to %p0";
 };
 
 /*

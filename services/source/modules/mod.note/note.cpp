@@ -180,7 +180,7 @@ NOTE_FUNC(Module::parseSEND) {
    if(nto[0] == '#') {
       //Channel Note
       if(!services->getChannel().isChanRegistered(nto)) {
-	 origin.sendMessage("That channel is not registered",getNickname());
+	 origin.sendMessage(GETLANG(ERROR_CHANNEL_NOT_REGISTERED),getNickname());
 	 return;
       }
       
@@ -206,22 +206,20 @@ NOTE_FUNC(Module::parseSEND) {
 
       }
       
-      String toao = String("Your note was successfully sent to \002") + 
-	String::convert(j) + "\002 people on " + nto;
-      origin.sendMessage(toao, getNickname());
+      origin.sendMessage(GETLANG(note_SEND_CHANNEL_SUCCESS,String::convert(j),nto), getNickname());
       services->log(origin, "Note","Sent a channel note to " + nto);
       delete myRes;
       return;
    }
    
    if(!services->isNickRegistered(nto)) {
-      origin.sendMessage("Error: Destination nickname is not registered",
+      origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 			 getNickname());
       return;
    }
    
    services->sendNote(origin.getNickname(), nto, note);
-   origin.sendMessage("Your note was successfully sent to \002"+ nto + "\002",
+   origin.sendMessage(GETLANG(note_SEND_USER_SUCCESS,nto),
 		      getNickname());
    services->log(origin, "Note", "Sent a private note to " + nto);
 }
@@ -230,7 +228,7 @@ NOTE_FUNC(Module::parseSEND) {
 void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    if (!origin.isIdentified(origin.getNickname())) {
-      origin.sendMessage("Sorry - You must be identified to use this service",
+      origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),
 			 getNickname());
       return;
    }
@@ -246,7 +244,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
       }
    }
    
-   origin.sendMessage("Unrecognised Command", getNickname());
+   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND), getNickname());
 }
 
 
