@@ -29,6 +29,8 @@
 #endif
 
 #include "oper.h"
+#include "language.h"
+
 #include <exordium/service.h>
 #include <exordium/services.h>
 
@@ -39,12 +41,10 @@ using namespace Exordium::OperModule;
 const Module::functionTableStruct Module::functionTable[] =
 {
      { "help",		&Module::parseHELP },
-     { "jupe",		&Module::parseJUPE },
      { "join",		&Module::parseJOIN },
      { "part",		&Module::parsePART },
      { "commands",	&Module::parseCOMMANDS },
      { "zline",		&Module::parseZLINE },
-     { "gline",		&Module::parseGLINE },
      { "qline",		&Module::parseQLINE },
      { "mdeop",		&Module::parseMDEOP },
      { "global",	&Module::parseGLOBAL },
@@ -64,7 +64,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
              int access = origin.getAccess(getNickname());
              if(required>access)
                {
-		  origin.sendMessage("You do not have enough access for that command",getNickname());
+		  origin.sendMessage(GETLANG(oper_NOT_ENOUGH_ACCESS),getNickname());
 		  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
                   services->logLine(togo, Log::Warning);
                   return;
@@ -75,7 +75,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	     return;
 	  }
      }
-   origin.sendMessage ("Unrecognized Command", getNickname());
+   origin.sendMessage (GETLANG(ERROR_UNKNOWN_COMMAND), getNickname());
 }
 
 OPER_FUNC(Module::parseHELP)
@@ -90,11 +90,9 @@ OPER_FUNC(Module::parseGLOBAL)
    String txt = tokens.rest();
    if(txt=="")
      {
-	origin.sendMessage("Usage: global Your global here",getNickname());
+	origin.sendMessage(GETLANG(oper_GLOBAL_USAGE),getNickname());
 	return;
      }
-
-   /* And goo.... */
    int nbRes = services->getDatabase().dbSelect("servername","onlineservers");
    CResult *myRes = services->getDatabase().dbGetResultSet();
    for(int i=0;i<nbRes;i++)
@@ -111,23 +109,19 @@ OPER_FUNC(Module::parseMDEOP)
    String channel = tokens.nextToken();
    if(channel=="")
      {
-	origin.sendMessage("Usage: mdeop #channel", getNickname());
+	origin.sendMessage(GETLANG(oper_MDEOP_USAGE), getNickname());
 	return;
      }
-
-	/* Get the id.. */
    int cid = services->getChannel().getOnlineChanID(channel);
-	/* Iterate over members.. */
-
    int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
    CResult *myRes = services->getDatabase().dbGetResultSet();
    dChan *dptr = services->findChan(channel);
    if(dptr==0)
      {
-	origin.sendMessage("Error: Cannot locate that channel",getNickname());
+	origin.sendMessage(GETLANG(oper_MDEOP_NOT_FOUND),getNickname());
 	return;
      }
-   
+
    for (int i=0; i<nbRes; i++)
      {
 	String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
@@ -136,10 +130,9 @@ OPER_FUNC(Module::parseMDEOP)
 	User *ptr = services->findUser(inick);
 	dptr->delUser(*ptr);
 	dptr->addUser(*ptr,0);
-	
+
      }
-   
-   
+
    services->sendGOper(getNickname(),origin.getNickname()+" performed a \002massdeop\002 in "+channel);
    delete dptr;
    delete myRes;
@@ -150,7 +143,7 @@ OPER_FUNC(Module::parseQLINE)
    String command = tokens.nextToken();
    if(command=="")
      {
-	origin.sendMessage("Usage: qline add/del", getNickname());
+	origin.sendMessage(GETLANG(oper_QLINE_OPTS), getNickname());
 	return;
      }
    if(command=="del")
@@ -158,13 +151,13 @@ OPER_FUNC(Module::parseQLINE)
 	String mask = tokens.nextToken();
 	if(mask=="")
 	  {
-	     origin.sendMessage("Usage: qline del mask (either channel/nick mask)",getNickname());
+	     origin.sendMessage(GETLANG(oper_QLINE_DEL_USAGE),getNickname());
 	     return;
 	  }
 	String togo = origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("UNSQLINE 0 "+mask);
-	origin.sendMessage("qline removed",getNickname());
+	origin.sendMessage(GETLANG(oper_QLINE_DEL_SUCCESS,mask),getNickname());
      }
 
    if(command=="add")
@@ -173,53 +166,13 @@ OPER_FUNC(Module::parseQLINE)
 	String reason = tokens.rest();
 	if(mask=="" | reason=="")
 	  {
-	     origin.sendMessage("Usage: qline add mask reason",getNickname());
+	     origin.sendMessage(GETLANG(oper_QLINE_ADD_USAGE),getNickname());
 	     return;
 	  }
 	String togo = origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("SQLINE "+mask+" :"+reason);
-	origin.sendMessage("qline added",getNickname());
-	return;
-     }
-
-}
-OPER_FUNC(Module::parseGLINE)
-{
-   String command = tokens.nextToken();
-   if(command=="")
-     {
-	origin.sendMessage("Usage: gline add/del", getNickname());
-	return;
-     }
-   if(command=="del")
-     {
-	String mask = tokens.nextToken();
-	if(mask=="")
-	  {
-	     origin.sendMessage("Usage: gline del mask",getNickname());
-	     return;
-	  }
-	String togo = origin.getNickname() + " removed a net wide \002gline\002 on \002"+mask+"\002";
-	services->sendGOper("Oper",togo);
-	services->queueAdd("GLINE 0 -"+mask);
-	origin.sendMessage("Gline removed",getNickname());
-     }
-
-   if(command=="add")
-     {
-	String mask = tokens.nextToken();
-	String expire = tokens.nextToken();
-	String reason = tokens.rest();
-	if(mask=="" | expire=="" | reason=="")
-	  {
-	     origin.sendMessage("Usage: gline add mask expire reason",getNickname());
-	     return;
-	  }
-	String togo = origin.getNickname() + " placed a net wide \002gline\002 on \002"+mask+"\002 expiring in \002"+expire+"\002 seconds (\002"+reason+"\002)";
-	services->sendGOper("Oper",togo);
-	services->queueAdd("GLINE 0 +"+mask+" "+expire+" :"+reason);
-	origin.sendMessage("Gline added",getNickname());
+	origin.sendMessage(GETLANG(oper_QLINE_ADD_SUCCESS,mask,reason),getNickname());
 	return;
      }
 
@@ -230,7 +183,7 @@ OPER_FUNC(Module::parseZLINE)
    String command = tokens.nextToken();
    if(command=="")
      {
-	origin.sendMessage("Usage: zline add/del", getNickname());
+	origin.sendMessage(GETLANG(oper_ZLINE_OPTS), getNickname());
 	return;
      }
    if(command=="del")
@@ -238,13 +191,13 @@ OPER_FUNC(Module::parseZLINE)
 	String ip = tokens.nextToken();
 	if(ip=="")
 	  {
-	     origin.sendMessage("Usage: zline del IP",getNickname());
+	     origin.sendMessage(GETLANG(oper_ZLINE_DEL_USAGE),getNickname());
 	     return;
 	  }
 	String togo = origin.getNickname() + " removed a net wide \002zline\002 on \002"+ip;
 	services->sendGOper("Oper",togo);
 	services->queueAdd("UNSZLINE " + ip);
-	origin.sendMessage("Zline removed",getNickname());
+	origin.sendMessage(GETLANG(oper_ZLINE_DEL_SUCCESS,ip),getNickname());
      }
 
    if(command=="add")
@@ -254,49 +207,31 @@ OPER_FUNC(Module::parseZLINE)
 
 	if(ip=="" | reason=="")
 	  {
-	     origin.sendMessage("Usage: zline add IP Reason",getNickname());
+	     origin.sendMessage(GETLANG(oper_ZLINE_ADD_USAGE),getNickname());
 	     return;
 	  }
 
 	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("SZLINE " + ip +" :"+reason);
-	origin.sendMessage("Zline added",getNickname());
+	origin.sendMessage(GETLANG(oper_ZLINE_ADD_SUCCESS,ip,reason),getNickname());
 	return;
      }
 
 }
-OPER_FUNC(Module::parseJUPE)
-{
-   String command = tokens.nextToken();
-   if(command=="")
-     {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 jupe add/list/del",getNickname());
-	return;
-     }
-   if(command=="add")
-     {
-	String nickname = tokens.nextToken();
-	String reason = tokens.rest();
-	if(nickname=="" | reason=="")
-	  {
-	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe",getNickname());
-	     return;
-	  }
-     }
-}
+
 
 OPER_FUNC(Module::parseJOIN)
 {
    String chan = tokens.nextToken().IRCtoLower();
    if(chan=="")
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 join #channel",getNickname());
+	origin.sendMessage(GETLANG(oper_JOIN_USAGE),getNickname());
 	return;
      }
    if(chan[0] != '#')
      {
-        origin.sendMessage("Error: Channel names must begin with the '#' symbol",getNickname());
+        origin.sendMessage(GETLANG(oper_JOIN_NO_HASH),getNickname());
         return;
      }
    else
@@ -304,6 +239,7 @@ OPER_FUNC(Module::parseJOIN)
 	services->serviceJoin(getNickname(), chan);
 	services->serverMode(chan, "+o", getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" join \002"+chan+"\002");
+	origin.sendMessage(GETLANG(oper_JOIN_SUCCESS,chan),getNickname());
      }
 }
 
@@ -312,18 +248,19 @@ OPER_FUNC(Module::parsePART)
    String chan = tokens.nextToken().IRCtoLower();
    if(chan=="")
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 part #channel",getNickname());
+	origin.sendMessage(GETLANG(oper_PART_USAGE),getNickname());
 	return;
      }
    if(chan[0] != '#')
      {
-        origin.sendMessage("Error: Channel names must begin with the '#' symbol",getNickname());
+        origin.sendMessage(GETLANG(oper_JOIN_NO_HASH),getNickname());
         return;
      }
    else
      {
 	services->servicePart(getNickname(), chan);
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" part \002"+chan+"\002");
+	origin.sendMessage(GETLANG(oper_PART_SUCCESS),getNickname());
      }
 }
 
@@ -334,7 +271,7 @@ OPER_FUNC (Module::parseCOMMANDS)
 
    // Send the banner (this shouldn't be hard-coded)
    // sendMessage(origin, "Command list for " + getNickname() + ":");
-   origin.sendMessage("Command list for " + getNickname() + ":",getNickname());
+   origin.sendMessage(GETLANG(COMMAND_LIST_START,getNickname()),getNickname());
    // Start formulating the data..
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++)
@@ -358,7 +295,7 @@ OPER_FUNC (Module::parseCOMMANDS)
      }
 
    // Send the footer (this shouldn't be hard-coded)
-   origin.sendMessage("End of command list",getNickname());
+   origin.sendMessage(GETLANG(COMMAND_LIST_END),getNickname());
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION

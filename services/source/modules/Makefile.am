@@ -139,8 +139,17 @@ mod_oper_la_LIBADD= \
 mod_oper_la_LDFLAGS= \
 	-avoid-version -module
 mod_oper_la_SOURCES= \
+	mod.oper/language.cpp \
+	mod.oper/language.h \
 	mod.oper/oper.cpp \
 	mod.oper/oper.h
+
+mod.oper/language.cpp mod.oper/language.h: mod.oper/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T mod.oper/language.tpl \
+		$(top_builddir)/autogen/language.def
+
 
 mod_serv_la_LIBADD= \
 	../libexordium.la

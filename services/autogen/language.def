@@ -212,6 +212,126 @@ langtag = {
    data_en = "Error: That channel is not registered";
 };
 
+/* 
+ * Tags for mod_oper
+ */
+langtag = {
+   name = "oper_NOT_ENOUGH_ACCESS";
+   component = "mod_oper";
+   data_en = "You do not have enough access for that command";
+   
+};
+
+langtag = {
+   name = "oper_GLOBAL_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: global <Message to send here>";
+};
+
+langtag = {
+   name = "oper_MDEOP_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: mdeop #channel";
+};
+
+langtag = {
+   name = "oper_MDEOP_NOT_FOUND";
+   component = "mod_oper";
+   data_en = "Error: That channel does not exist";
+};
+
+langtag = {
+   name = "oper_QLINE_OPTS";
+   component = "mod_oper";
+   data_en = "Usage: qline add/del";
+};
+
+langtag = {
+   name = "oper_QLINE_DEL_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: qline del <mask>";
+};
+
+langtag = {
+   name = "oper_QLINE_DEL_SUCCESS";
+   component = "mod_oper";
+   data_en = "Qline %p0 has been removed";
+};
+
+langtag = {
+   name = "oper_QLINE_ADD_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: qline add <mask> <reason>";
+};
+
+langtag = {
+   name = "oper_QLINE_ADD_SUCCESS";
+   component = "mod_oper";
+   data_en = "Qline %p0 has been added (%p1)";
+};
+
+langtag = {
+   name = "oper_ZLINE_OPTS";
+   component = "mod_oper";
+   data_en = "Usage: zline add/del";
+};
+
+langtag = {
+   name = "oper_ZLINE_DEL_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: zline del <ip>";
+};
+
+langtag = {
+   name = "oper_ZLINE_DEL_SUCCESS";
+   component = "mod_oper";
+   data_en = "Zline on %p0 has been removed";
+};
+
+langtag = {
+   name = "oper_ZLINE_ADD_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: zline add <ip> <reason>";
+};
+
+langtag = {
+   name = "oper_ZLINE_ADD_SUCCESS";
+   component = "mod_oper";
+   data_en = "Zline on %p0 has been added (%p1)";
+};
+
+langtag = {
+   name = "oper_JOIN_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: join <#channel>";
+};
+
+langtag = {
+   name = "oper_JOIN_NO_HASH";
+   component = "mod_oper";
+   data_en = "Error: Channels must begin with the # symbol";
+};
+
+langtag = {
+   name = "oper_JOIN_SUCCESS";
+   component = "mod_oper";
+   data_en = "I have joined %p0 as requested";
+};
+
+langtag = {
+   name = "oper_PART_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: part <#channel>";
+};
+
+langtag = {
+   name = "oper_PART_SUCCESS";
+   component = "mod_oper";
+   data_en = "I have left %p0 as requested";
+};
+
+
+   
 /*
  * Tags for mod_note
  */

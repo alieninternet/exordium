@@ -80,12 +80,10 @@ namespace Exordium {
        private:
 	 OPER_FUNC(parseHELP);
 	 OPER_FUNC(parseQUOTE);
-	 OPER_FUNC(parseJUPE);
          OPER_FUNC(parseJOIN);
          OPER_FUNC(parsePART);
          OPER_FUNC(parseCOMMANDS);
 	 OPER_FUNC(parseZLINE);
-	 OPER_FUNC(parseGLINE);
 	 OPER_FUNC(parseQLINE);
 	 OPER_FUNC(parseMDEOP);
 	 OPER_FUNC(parseGLOBAL);
