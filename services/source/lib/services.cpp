@@ -242,6 +242,7 @@ namespace Exordium
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
 	std::cout << config.getUplinkHost() << std::endl;
+	std::cout << config.getUplinkPort() << std::endl;
 	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
 	     logger.logLine ("Fatal Error: Error resolving uplinkhost");
