@@ -39,7 +39,7 @@ namespace Exordium {
       virtual ~CResult(void)
 	{};
       
-      virtual AISutil::String getValue(const int &,const int &)=0;
+      virtual AIS::Util::String getValue(const int &,const int &)=0;
 
    };
 };

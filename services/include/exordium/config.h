@@ -43,7 +43,7 @@ namespace Exordium {
       AISutil::String defSqlHostname;		// MySql server hostname
       AISutil::String defSqlPassword;		// MySql server password
       unsigned short defSqlPort;		// MySql server port
-      
+      bool defSqlSSLEnabled;			// Mysql SSL Boolean
       AISutil::String defSqlUsername;		// MySql server username
       AISutil::String defSqlEngine;             // Database engine
       
@@ -71,6 +71,9 @@ namespace Exordium {
 	{ return defSqlUsername; };
       const AISutil::String& getSqlEngine(void) const
         { return defSqlEngine; };
+      const bool getSqlSSLEnabled(void) const
+	{ return defSqlSSLEnabled; };
+	    
    };
 }; // namespace Exordium
 

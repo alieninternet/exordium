@@ -60,18 +60,18 @@ namespace Exordium {
       virtual void dbCommit(void)=0;
       virtual void dbRollback(void)=0;
 
-      virtual void dbSelectDB(AISutil::String const &dbName)=0;
+     virtual void dbSelectDB(AIS::Util::String const &dbName)=0;
 
-      virtual int dbQuery(AISutil::String const &query)=0;
+     virtual int dbQuery(AIS::Util::String const &query)=0;
 
-      virtual AISutil::String dbGetValue(void)=0;
-      virtual AISutil::String dbGetValue(int field)=0;
+     virtual AIS::Util::String dbGetValue(void)=0;
+     virtual AIS::Util::String dbGetValue(int field)=0;
 
       virtual void dbGetRow(void)=0;
 
       virtual void dbClearRes(void)=0;
 
-      virtual void dbLock(AISutil::String const &table)=0;
+     virtual void dbLock(AIS::Util::String const &table)=0;
       virtual void dbUnlock(void)=0;
       virtual CResult* dbGetResultSet(void)=0;
 

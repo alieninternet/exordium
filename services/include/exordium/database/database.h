@@ -71,33 +71,33 @@ namespace Exordium {
 
 
       // Select * from <table>
-      int dbSelect(AISutil::String const &table);
+     int dbSelect(AIS::Util::String const &table);
 
       // Select <fields> from <table>
-      int dbSelect(AISutil::String const &fields, AISutil::String const &table);
+     int dbSelect(AIS::Util::String const &fields, AIS::Util::String const &table);
 
       // Select <fields> from <table> where <whereargs>
-      int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
+     int dbSelect(AIS::Util::String const &fields, AIS::Util::String const &table, AIS::Util::String const &whereargs);
 
       // Select <fields> from <table> where <whereargs> order by <orderargs>
-      int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs);
+     int dbSelect(AIS::Util::String const &fields, AIS::Util::String const &table, AIS::Util::String const &whereargs, AIS::Util::String const &orderargs);
 
 
       // Select count(*) from <table>
-      int dbCount(AISutil::String const &table);
+     int dbCount(AIS::Util::String const &table);
 
       // Select count(*) from <table> where <whereargs>
-      int dbCount(AISutil::String const &table, AISutil::String const &whereargs);
+     int dbCount(AIS::Util::String const &table, AIS::Util::String const &whereargs);
 
 
 
       // Insert into <table> values <values>
-      void dbInsert(AISutil::String const &table,  AISutil::String const &values);
+     void dbInsert(AIS::Util::String const &table,  AIS::Util::String const &values);
 
      // (Delayed - Not important) Insert into <table> values <values>
-      void dbDelayedInsert(AISutil::String const &table, AISutil::String const &values);
+     void dbDelayedInsert(AIS::Util::String const &table, AIS::Util::String const &values);
      
-      void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
+     void dbUpdate(AIS::Util::String const &table, AIS::Util::String const &values, AIS::Util::String const &whereargs);
 
 
       // Delete * from <table> using <usingargs> WHERE <whereargs>

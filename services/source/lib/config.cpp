@@ -162,6 +162,13 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::defClassSql =
           (void *)&Config::defSqlUsername, &varHandleStringOneWord,
           0, 0
      },
+     {
+        "SSLENABLED", 6,
+	 (void *)&ConfigInternal::defSqlSSLEnabled, &varHandleBoolean,
+	           0, 0
+     }
+     ,
+     
      { 0, 0, 0, 0, 0, 0 }
 };
 
@@ -177,7 +184,8 @@ Config::Config(void)
     defSqlHostname("localhost"),
     defSqlPassword(""),
     defSqlPort(3306), // mysql port, as assigned by the iana
-    defSqlUsername("root")
+    defSqlUsername("root"),
+    defSqlSSLEnabled(false)
 {}
 
 
