@@ -1138,10 +1138,11 @@ User*
 		      String const &server, String const &modes,
 		      String const &realname)
 {
-   database.query("INSERT into onlineclients('','"+nick.toLower()+"','"
+   database.query("INSERT into onlineclients values ('','"+nick.toLower()+"','"
 		  +hops + "','" + timestamp + "','" + username + "','"
 		  +host + "','" + vwhost + "','" + server + "','"
 		  +modes+ "','" + database.makeSafe(realname) + "')");
+   std::cout << "Just insert an entry for the user " << nick.toLower() << std::endl;
    int foo = locateID(nick);
    String client = nick.IRCtoLower();
    User *ptr = addUser(client,foo);
