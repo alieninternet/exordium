@@ -13,8 +13,7 @@ a regular feature of Exordium.
 This game is based on as much as can be remembered of a drunked card game
 marathon one night a few years ago at my holiday house... Needless to say,
 the game is original, however there are enough variations on "eights" for it
-to be easily confused with something similar. I don't know of any game based
-on eights which uses the joker, though.
+to be easily confused with something similar.
 
 You're free to use it where-ever you like, but not to claim credit for it.
 Not that I care, really.. I just don't want to meet someone in a few years
@@ -37,12 +36,11 @@ number of players. However in Exordium's implementation it may be wise to
 limit the number of players both for sanity and to avoid a denial of service
 attack. Let's say, 50 players maximum (but this should be configurable!!)
 
-A standard pack is used, as well as the joker card (53 cards per pack). In
+A standard pack is used, however not the joker card (52 cards per pack). In
 the event of a large number of players, more packs will be used shuffled
-together to form essentially a larger pack. This will also mean a larger
-number of jokers (more than one), however given the number of players it
-would probably be benificial. To determine how many packs are necessary,
-there should be a maximum of 6 players to a pack to allow for an ample stock.
+together to form essentially a larger pack. To determine how many packs are
+necessary, there should be a maximum of 6 players to a pack to allow for an
+ample stock.
 
 For the first game, anyone can be the dealer. After each game, the winner
 becomes the dealer.
@@ -77,8 +75,7 @@ However, the following cards have special meanings:
    suit, or pick up a card from the stock. If there are no cards left in the
    stock, then the player has the ability to discard any card they have in
    their hand - effectivly turning the 8 into a wild-card. When used wisely
-   this play can force a player into having to pick up a card. A joker cannot
-   be used to counter-act this play.
+   this play can force a player into having to pick up a card. 
    
  * Jacks: When discarded, the next player may put down any card of a matching
    suit colour. For example, if the Jack of Hearts was on the top of the
