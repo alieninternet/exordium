@@ -57,16 +57,9 @@ language = {
 
 language = {
    langCode = "no";
-   langName = "norsk";
+   langName = "Norsk";
    langRevision = "200303210";
    langMaintainer = "mail@hawkon.net";
-};
-
-language = {
-  langCode = "x-windows-no";
-  langName = "norsk";
-  langRevision = "200303210";
-  langMaintainer = "mail@hawkon.net";
 };
 
 language = {
@@ -77,21 +70,7 @@ language = {
 };
 
 language = {
-   langCode = "x-windows-fr";
-   langName = "Français";
-   langRevision = "200303220";
-   langMaintainer = "plv@users.sf.net";
-};
-
-language = {
    langCode = "tr";
-   langName = "Türkçe";
-   langRevision = "200303260";
-   langMaintainer = "idil@angelvox.org";
-};
-
-language = {
-   laneCode = "x-windows-tr";
    langName = "Türkçe";
    langRevision = "200303260";
    langMaintainer = "idil@angelvox.org";
@@ -2414,12 +2393,14 @@ langtag = {
  */
 langtag = {
    name = "irc2_RPL_WHOISSTAFF_GETPASS";
+   component = "none";
    noprefix;
    data_en = "is able to retrieve passwords";
 };
 
 langtag = {
    name = "irc2_RPL_WHOISSTAFF_MAINTAIN";
+   component = "none";
    noprefix;
    data_en = "maintains the %N services";
 };
