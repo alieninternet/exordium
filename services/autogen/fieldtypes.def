@@ -24,6 +24,19 @@
  */
 autogen definitions fieldtypes;
 
+/* Note to developers:
+ *
+ * Everything here is group per list, and sorted ALPHABETICALLY by their
+ * names. Keep it that way, so this file is easier to edit.
+ */
+
+
+/*****************************************************************************
+ **                                                                         **
+ **                      FIELD TYPE TRANSLATION LIST                        **
+ **                                                                         **
+ *****************************************************************************/
+
 
 fieldtypes = {
    name			= "Boolean";
@@ -243,4 +256,31 @@ fieldtypes = {
 fieldtypes = {
    name			= "Void";
    comment		= "No type, an ignored field";
+};
+
+
+
+
+/*****************************************************************************
+ **                                                                         **
+ **                           FIELD FLAGS LIST                              **
+ **                                                                         **
+ *****************************************************************************/
+
+
+fieldflags = {
+   name			= "Key";
+   comment		= "A key";
+};
+
+
+fieldflags = {
+   name			= "NotNull";
+   comment		= "Disallow a null value";
+};
+
+
+fieldflags = {
+   name			= "PrimaryKey";
+   comment		= "The primary key";
 };

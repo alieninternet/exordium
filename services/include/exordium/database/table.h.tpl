@@ -78,6 +78,19 @@ namespace Exordium {
 	 
 	 // The default value of the field. Make this a null pointer for 'NULL'
 	 const char* const defaultValue;
+	 
+	 // Flags to tighten the field's definition
+	 struct Flags { // <=- should be namespace too :(
+	    enum {[+ (define bitvalue 1) +][+ FOR fieldflags +]
+	       [+ (define bitvalue (* bitvalue 2))
+	          (sprintf "%-13s = 0x%08X, // %s"
+		   (get "name")
+		   (/ bitvalue 2)
+		   (get "comment"))
+                +][+ ENDFOR fieldtypes +]
+	    };
+	 };
+	 const unsigned int flags;
       } const fields[];
    }; // struct DatabaseTable
 }; // namespace Exordium
