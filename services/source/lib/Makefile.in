@@ -32,7 +32,7 @@ clean:
 	$(RM) *.o *~ libservices.so
 
 distclean:
-	$(RM) *.o *~ libservices.so
+	$(RM) *.o *~ libservices.so Makefile
 
 pretty:
 	indent *.cpp

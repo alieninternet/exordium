@@ -29,5 +29,5 @@ clean:
 	$(RM) *.so modules
 
 distclean:
-	$(RM) *.so modules
+	$(RM) *.so modules Makefile
 

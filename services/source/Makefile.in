@@ -33,7 +33,7 @@ clean:
 	$(RM) *.o *~ services *.log
 
 distclean:
-	$(RM) *.o *~ services *.log
+	$(RM) *.o *~ services *.log Makefile
 
 pretty:
 	indent *.cpp
