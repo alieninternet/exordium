@@ -15,22 +15,22 @@
 using namespace Exordium;
 
 namespace mod_exordium {
+
+   // Ourself! We will want to delete this when stopping
+   static Services *services;
    
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
      {
-	cout << "moduleStart().. btw the daemon is located at " << &daemon <<
-	  "\nFrom kine config:"
-	  "\n\tMy network is " << daemon.getConfig().getNetworkName() <<
-	  "\n\tWe are " << daemon.getConfig().getOptionsServername() <<
-	  " (" << daemon.getConfig().getOptionsDescription() << ")" <<
-	  endl;
-	
+	cout << "mod_exordium::moduleStart()" << endl;
 
 	// My, it looks an awful lot like main.cpp from here on... :) This is
 	// temporary, naturally.
         Sql db;
-	Services me(daemon);
+	
+	// Create the new services instance
+	services = new Services(daemon);
+	
 	Log::init();
 	Log::logLine("Services started, beginning initalisation");
 	me.load_config();
@@ -48,7 +48,8 @@ namespace mod_exordium {
    // called just before unloading the module
    static KINE_MODULE_STOP(moduleStop)
      {
-	cout << "moduleStop()" << endl;
+	cout << "mod_exordium::moduleStop()" << endl;
+	delete services;
      }
    
    
