@@ -52,7 +52,8 @@ else
   echo "<tr><td id=\"label\">set your modes</td><td id=\"field\">";
   $CHAN->chan_mode_checkboxes();
   echo "</td></tr>";
-  echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" name=\"submit\" value=\"Register Channel\"></form>";
+
+  echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" name=\"submit\" value=\"Register this room\"></form>";
   echo "</table>";
 }
 page_end();
