@@ -1,0 +1,3921 @@
+2003-03-12 22:11  ircdome
+
+	* doc/example.conf, source/lib/config.cpp, source/lib/config.h,
+	source/lib/services.cpp: 
+	
+	Added a new config option called defConsoleChan (see example.conf)
+
+2003-03-12 21:55  ircdome
+
+	* doc/example.conf: 
+	
+	Added the entry for uplinkPass so people know its their :-)
+
+2003-03-12 21:47  ircdome
+
+	* include/exordium/config.h, source/lib/config.cpp,
+	source/lib/config.h, source/lib/services.cpp,
+	utils/email-sender/mailer.php: 
+	
+	Added a new config variable for the configuration file:
+	
+	(String) uplinkPass
+	
+	Defines the password to be used for connecting to the uplink.
+	
+	This means developers must have an entry for this in their config
+	files else it won't work!!
+
+2003-03-12 19:10  pickle
+
+	* .cvsignore, ltmain.sh: James overwrote the ltdl stuff.. I have
+	nfi if this will fix it :(
+
+2003-03-12 18:52  ircdome
+
+	* source/lib/services.cpp: 
+	
+	Removing hardcoding and updating with config variables
+
+2003-03-12 18:39  pickle
+
+	* AUTHORS: umm.. james over-wrote my changes.
+
+2003-03-12 18:30  ircdome
+
+	* AUTHORS, configure.ac, dev.sh, ltmain.sh, autogen/fieldtypes.def,
+	doc/Bot-Interface, doc/Functions, doc/Module-Coding,
+	doc/example.conf, doc/linkmap.dat, include/exordium/channel.h,
+	include/exordium/config.h, include/exordium/dchan.h,
+	include/exordium/log.h, include/exordium/regchannel.h,
+	include/exordium/reguser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/singleton.h,
+	include/exordium/user.h, include/exordium/utils.h,
+	include/exordium/database/base.h,
+	include/exordium/database/database.h,
+	include/exordium/database/table.h.tpl, source/Makefile.am,
+	source/module.cpp, source/version.h, source/lib/channel.cpp,
+	source/lib/config.cpp, source/lib/config.h, source/lib/console.cpp,
+	source/lib/console.h, source/lib/dchan.cpp, source/lib/modules.cpp,
+	source/lib/modules.h, source/lib/parser.cpp, source/lib/parser.h,
+	source/lib/regchannel.cpp, source/lib/reguser.cpp,
+	source/lib/service.cpp, source/lib/services.cpp,
+	source/lib/services.h, source/lib/user.cpp, source/lib/utils.cpp,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/mysql/dbmysql.h,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/lib/database/postgresql/dbpgsql.h, source/libbank/bank.cpp,
+	source/libbank/bank.h, source/libbank/tables.cpp,
+	source/libbank/tables.h, source/modules/mod.bot/bot.cpp,
+	source/modules/mod.bot/bot.h, source/modules/mod.chan/chan.cpp,
+	source/modules/mod.chan/chan.h, source/modules/mod.chan/tables.cpp,
+	source/modules/mod.chan/tables.h,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/channelgame.cpp,
+	source/modules/mod.game/channelgame.h,
+	source/modules/mod.game/config.cpp,
+	source/modules/mod.game/config.h,
+	source/modules/mod.game/exordi8.cpp,
+	source/modules/mod.game/exordi8.h,
+	source/modules/mod.game/game.cpp, source/modules/mod.game/game.h,
+	source/modules/mod.game/hangman.cpp,
+	source/modules/mod.game/hangman.h,
+	source/modules/mod.game/poker.cpp, source/modules/mod.game/poker.h,
+	source/modules/mod.game/cards/card.cpp,
+	source/modules/mod.game/cards/card.h,
+	source/modules/mod.game/cards/hand.cpp,
+	source/modules/mod.game/cards/hand.h,
+	source/modules/mod.game/cards/pack.h,
+	source/modules/mod.game/cards/shuffler.h,
+	source/modules/mod.game/cards/stock.h,
+	source/modules/mod.game/dice/die.h,
+	source/modules/mod.love/love.cpp, source/modules/mod.love/love.h,
+	source/modules/mod.love/tables.cpp,
+	source/modules/mod.love/tables.h, source/modules/mod.nick/nick.cpp,
+	source/modules/mod.nick/nick.h, source/modules/mod.nick/tables.cpp,
+	source/modules/mod.nick/tables.h, source/modules/mod.note/note.cpp,
+	source/modules/mod.note/note.h, source/modules/mod.note/tables.cpp,
+	source/modules/mod.note/tables.h, source/modules/mod.oper/oper.cpp,
+	source/modules/mod.oper/oper.h, source/modules/mod.serv/serv.cpp,
+	source/modules/mod.serv/serv.h, source/modules/mod.serv/tables.cpp,
+	source/modules/mod.serv/tables.h,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h,
+	source/modules/mod.stats/tables.cpp,
+	source/modules/mod.stats/tables.h,
+	source/modules/mod.vote/vote.cpp, source/modules/mod.vote/vote.h: 
+	
+	'The' commit
+
+2003-03-12 09:14  pickle
+
+	* AUTHORS: Uhh, got PLV's email addy wrong...... or did I?...... ;)
+
+2003-03-12 07:56  pickle
+
+	* install/: README, en.exordium.lang: Added an example langtags
+	thingy for james to sink his teeth into. Ooohh, it's GPL'd, and
+	there's a little idea I had while I was writing it popped in there
+	for consideration.. *cough cough* :)
+	
+	Okay, this is probably better autogen'd (that way, keeping the tags
+	updated for all languages would be a LOT easier, since the
+	languages which are missing tag data would be found very easily in
+	a .def file).. I'm debating the same thing with Kine's language
+	files.
+
+2003-03-12 07:34  pickle
+
+	* AUTHORS: updated.. nobody else would have..
+
+2003-03-08 11:13  pickle
+
+	* source/: module.cpp, version.h, lib/modules.cpp, lib/modules.h,
+	lib/utils.cpp: Updated copyright info (oops - forgot to do this)
+
+2003-03-06 11:36  pickle
+
+	* .cvsignore, configure.ac, dev.sh, ltmain.sh, source/Makefile.am,
+	source/module.cpp, source/lib/modules.cpp, source/lib/modules.h,
+	source/lib/utils.cpp: Switched to using libltdl (libtool's portable
+	dynamic loader) instead of dlopen() which is a porting nightmare.
+	
+	Also did a *tiny* clean-up here and there, but nothing special to
+	warrant this many words to describe it.
+
+2003-03-03 21:48  ircdome
+
+	* source/: lib/console.cpp, modules/mod.chan/chan.cpp,
+	modules/mod.oper/oper.cpp, modules/mod.oper/oper.h: 
+	
+	Various stuff.
+
+2003-03-03 18:18  aka
+
+	* configure.ac, dev.sh, source/modules/mod.oper/oper.cpp,
+	source/modules/mod.oper/oper.h: 
+	
+	Jay's stuffie
+
+2003-03-03 16:57  ircdome
+
+	* source/modules/mod.serv/serv.cpp: 
+	
+	Status function changes (it was broke)
+
+2003-03-03 15:43  ircdome
+
+	* include/exordium/services.h, source/lib/services.cpp,
+	source/lib/services.h, source/modules/mod.serv/serv.cpp: 
+	
+	k
+
+2003-03-03 00:52  ircdome
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/services.h: 
+	
+	Added sendGOper(from,text) function to send services globops
+
+2003-03-02 22:47  ircdome
+
+	* include/exordium/services.h, include/exordium/utils.h,
+	source/lib/services.cpp, source/lib/services.h,
+	source/lib/utils.cpp, source/lib/database/mysql/dbmysql.cpp,
+	source/modules/mod.chan/chan.cpp, source/modules/mod.chan/chan.h,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.nick/nick.h,
+	source/modules/mod.serv/serv.cpp, source/modules/mod.serv/serv.h: 
+	
+	Todays stuff :)
+
+2003-03-01 01:46  ircdome
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/reguser.cpp, source/lib/services.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.nick/nick.h,
+	source/modules/mod.serv/serv.cpp, source/modules/mod.serv/serv.h: 
+	
+	tonights commit.
+
+2003-02-27 22:24  ircdome
+
+	* source/: lib/channel.cpp, lib/parser.cpp, lib/services.cpp,
+	lib/user.cpp, lib/utils.cpp, modules/mod.credits/credits.h,
+	modules/mod.game/channelgame.h, modules/mod.game/game.h,
+	modules/mod.love/love.h, modules/mod.nick/nick.cpp: 
+	
+	Fixed up some stupid bugs :)
+
+2002-11-26 21:34  pickle
+
+	* include/exordium/channel.h, include/exordium/config.h,
+	include/exordium/console.h, include/exordium/dchan.h,
+	include/exordium/modules.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/user.h,
+	include/exordium/database/base.h,
+	include/exordium/database/database.h, source/lib/config.h,
+	source/lib/console.h, source/lib/dchan.cpp, source/lib/modules.h,
+	source/lib/parser.h, source/lib/services.h: Rolled back the main
+	trunk to its previous working state. I have removed the 'singleton'
+	branch and reinstated it to the point just before this one.
+	
+	If you need that branch back, use "cvs checkout -r singleton
+	services" so that anything you commit to that branch remains within
+	that branch..
+
+2002-11-26 21:30  pickle
+
+	* source/modules/mod.love/love.cpp: Fix to match kine's new
+	autogen's config parser. The options { limits {} }; section has
+	been moved to the top-level scope (that is, the limits{} section is
+	now outside of the options{} section)
+
+2002-11-13 05:24  pickle
+
+	* source/version.h: Fiddling :) (testing the mailing list thingy
+	mainly)
+
+2002-11-12 06:25  pvincent
+
+	* include/exordium/channel.h, include/exordium/config.h,
+	include/exordium/console.h, include/exordium/dchan.h,
+	include/exordium/modules.h, include/exordium/regchannel.h,
+	include/exordium/reguser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/singleton.h,
+	include/exordium/user.h, source/lib/config.h, source/lib/console.h,
+	source/lib/dchan.cpp, source/lib/modules.h, source/lib/parser.h,
+	source/lib/services.h: applying add/removes
+
+2002-11-12 06:02  pvincent
+
+	* include/exordium/singleton.h, source/lib/reguser.cpp,
+	source/lib/regchannel.cpp: Initial revision
+
+2002-11-12 06:02  pvincent
+
+	* .cvsignore, AUTHORS, Makefile.am, configure.ac, dev.sh,
+	ltmain.sh, doc/.cvsignore, doc/Bot-Interface,
+	doc/Database-Public-Api, doc/Functions, doc/Module-Coding,
+	doc/example.conf, doc/linkmap.dat, include/.cvsignore,
+	include/exordium/channel.h, include/exordium/config.h,
+	include/exordium/log.h, include/exordium/singleton.h,
+	include/exordium/service.h, include/exordium/services.h,
+	include/exordium/user.h, include/exordium/console.h,
+	include/exordium/modules.h, include/exordium/parser.h,
+	include/exordium/regchannel.h, include/exordium/reguser.h,
+	include/exordium/database/database.h,
+	include/exordium/database/.cvsignore,
+	include/exordium/database/base.h,
+	include/exordium/database/table.h.tpl, source/.cvsignore,
+	source/Makefile.am, source/module.cpp, source/version.h,
+	source/lib/channel.cpp, source/lib/console.cpp,
+	source/lib/modules.cpp, source/lib/parser.cpp,
+	source/lib/service.cpp, source/lib/services.cpp,
+	source/lib/user.cpp, source/lib/config.cpp, source/lib/reguser.cpp,
+	source/lib/regchannel.cpp, source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/mysql/dbmysql.h,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/lib/database/postgresql/dbpgsql.h,
+	source/libbank/Makefile.am, source/libbank/bank.cpp,
+	source/libbank/bank.h, source/libbank/tables.cpp,
+	source/libbank/tables.h, source/modules/Makefile.am,
+	source/modules/mod.bot/bot.cpp, source/modules/mod.bot/bot.h,
+	source/modules/mod.chan/chan.cpp, source/modules/mod.chan/chan.h,
+	source/modules/mod.chan/tables.cpp,
+	source/modules/mod.chan/tables.h,
+	source/modules/mod.credits/Makefile.am,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/Makefile.am,
+	source/modules/mod.game/channelgame.cpp,
+	source/modules/mod.game/channelgame.h,
+	source/modules/mod.game/config.cpp,
+	source/modules/mod.game/config.h,
+	source/modules/mod.game/exordi8.cpp,
+	source/modules/mod.game/exordi8.h,
+	source/modules/mod.game/game.cpp, source/modules/mod.game/game.h,
+	source/modules/mod.game/hangman.cpp,
+	source/modules/mod.game/hangman.h,
+	source/modules/mod.game/poker.cpp, source/modules/mod.game/poker.h,
+	source/modules/mod.game/factory.h,
+	source/modules/mod.game/cards/Makefile.am,
+	source/modules/mod.game/cards/README,
+	source/modules/mod.game/cards/card.cpp,
+	source/modules/mod.game/cards/card.h,
+	source/modules/mod.game/cards/hand.cpp,
+	source/modules/mod.game/cards/hand.h,
+	source/modules/mod.game/cards/pack.h,
+	source/modules/mod.game/cards/shuffler.h,
+	source/modules/mod.game/cards/stock.h,
+	source/modules/mod.game/dice/README,
+	source/modules/mod.game/dice/die.h, source/modules/mod.love/README,
+	source/modules/mod.love/love.cpp, source/modules/mod.love/love.h,
+	source/modules/mod.love/tables.cpp,
+	source/modules/mod.love/tables.h, source/modules/mod.nick/nick.cpp,
+	source/modules/mod.nick/nick.h, source/modules/mod.nick/tables.cpp,
+	source/modules/mod.nick/tables.h, source/modules/mod.note/note.cpp,
+	source/modules/mod.note/note.h, source/modules/mod.note/tables.cpp,
+	source/modules/mod.note/tables.h, source/modules/mod.oper/oper.cpp,
+	source/modules/mod.oper/oper.h, autogen/fieldtypes.def,
+	source/modules/mod.serv/serv.cpp, source/modules/mod.serv/serv.h,
+	source/modules/mod.serv/tables.cpp,
+	source/modules/mod.serv/tables.h,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h,
+	source/modules/mod.stats/tables.cpp,
+	source/modules/mod.stats/tables.h,
+	source/modules/mod.vote/vote.cpp, source/modules/mod.vote/vote.h,
+	utils/email-sender/mailer.php, utils/logger/logger.php,
+	utils/mailer/mailer.php: Importing new stuff
+
+2002-11-12 05:55  pvincent
+
+	* doc/.cvsignore, doc/Bot-Interface, doc/Database-Public-Api,
+	doc/Functions, doc/Module-Coding, doc/example.conf,
+	doc/linkmap.dat, include/.cvsignore, source/.cvsignore,
+	source/Makefile.am, source/module.cpp, source/version.h,
+	source/lib/channel.cpp, source/lib/conf.cpp, source/lib/config.cpp,
+	source/lib/config.h, source/lib/console.cpp, source/lib/console.h,
+	source/lib/dchan.cpp, source/lib/modules.cpp, source/lib/modules.h,
+	source/lib/parser.cpp, source/lib/parser.h, source/lib/service.cpp,
+	source/lib/services.cpp, source/lib/services.h,
+	source/lib/user.cpp, source/lib/utils.cpp,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/mysql/dbmysql.h,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/lib/database/postgresql/dbpgsql.h,
+	source/modules/Makefile.am, source/modules/mod.bot/bot.cpp,
+	source/modules/mod.bot/bot.h, source/modules/mod.chan/chan.cpp,
+	source/modules/mod.chan/chan.h, source/modules/mod.chan/tables.cpp,
+	source/modules/mod.chan/tables.h,
+	source/modules/mod.credits/Makefile.am,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/Makefile.am,
+	source/modules/mod.game/channelgame.cpp,
+	source/modules/mod.game/channelgame.h,
+	source/modules/mod.game/config.cpp,
+	source/modules/mod.game/config.h,
+	source/modules/mod.game/exordi8.cpp,
+	source/modules/mod.game/exordi8.h,
+	source/modules/mod.game/factory.h,
+	source/modules/mod.game/game.cpp, source/modules/mod.game/game.h,
+	source/modules/mod.game/hangman.cpp,
+	source/modules/mod.game/hangman.h,
+	source/modules/mod.game/poker.cpp, source/modules/mod.game/poker.h,
+	source/modules/mod.game/cards/Makefile.am,
+	source/modules/mod.game/cards/README,
+	source/modules/mod.game/cards/card.cpp,
+	source/modules/mod.game/cards/card.h,
+	source/modules/mod.game/cards/hand.cpp,
+	source/modules/mod.game/cards/hand.h,
+	source/modules/mod.game/cards/pack.h,
+	source/modules/mod.game/cards/shuffler.h,
+	source/modules/mod.game/cards/stock.h,
+	source/modules/mod.game/dice/README,
+	source/modules/mod.game/dice/die.h,
+	source/modules/mod.love/Makefile.am,
+	source/modules/mod.love/README, source/modules/mod.love/love.cpp,
+	source/modules/mod.love/love.h, source/modules/mod.love/tables.cpp,
+	source/modules/mod.love/tables.h, source/modules/mod.nick/nick.cpp,
+	source/modules/mod.nick/nick.h, source/modules/mod.nick/tables.cpp,
+	source/modules/mod.nick/tables.h, source/modules/mod.note/note.cpp,
+	source/modules/mod.note/note.h, source/modules/mod.note/tables.cpp,
+	source/modules/mod.note/tables.h, source/modules/mod.oper/oper.cpp,
+	source/modules/mod.oper/oper.h, source/modules/mod.serv/serv.cpp,
+	source/modules/mod.serv/serv.h, source/modules/mod.serv/tables.cpp,
+	source/modules/mod.serv/tables.h,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h,
+	source/modules/mod.stats/tables.cpp,
+	source/modules/mod.stats/tables.h,
+	source/modules/mod.vote/vote.cpp, source/modules/mod.vote/vote.h,
+	utils/email-sender/mailer.php, utils/logger/logger.php,
+	utils/mailer/mailer.php: cleaning branch singleton
+
+2002-11-12 05:48  pvincent
+
+	* include/exordium/: reguser.h, log.h, channel.h, config.h,
+	regchannel.h, service.h, services.h, user.h, utils.h,
+	database/.cvsignore, database/base.h, database/database.h,
+	database/table.h.tpl, database/mysql/dbmysql.h,
+	database/postgresql/dbpgsql.h: test
+
+2002-11-12 05:42  pvincent
+
+	* include/exordium/dchan.h: re-adding dchan.h
+
+2002-11-12 05:34  pvincent
+
+	* include/exordium/dchan.h: test
+
+2002-11-12 00:39  pvincent
+
+	* include/exordium/: regchannel.h, reguser.h: Committing new files
+
+2002-11-12 00:39  pvincent
+
+	* include/exordium/regchannel.h: file regchannel.h was initially
+	added on branch singleton.
+
+2002-11-12 00:39  pvincent
+
+	* include/exordium/reguser.h: file reguser.h was initially added on
+	branch singleton.
+
+2002-11-12 00:39  pvincent
+
+	* include/exordium/database/: base.h, database.h: Adding headers
+
+2002-11-12 00:36  pvincent
+
+	* include/exordium/dchan.h: Removing dchan.h
+
+2002-11-08 16:22  pickle
+
+	* source/module.cpp: No special change - another mailing list
+	check, mainly.. :)
+
+2002-11-08 09:56  pickle
+
+	* source/module.cpp: Testing the mailing list mailer thingy..
+
+2002-11-05 10:29  josullivan
+
+	* source/modules/mod.game/factory.h: Fixed bug with substr not
+	trimming the .so off the end of the filename
+
+2002-11-05 10:09  josullivan
+
+	* source/modules/mod.game/game.cpp: Fixed error checking if invalid
+	game name entered
+
+2002-11-05 09:44  josullivan
+
+	* doc/example.conf: Added game module lines
+
+2002-11-05 09:43  josullivan
+
+	* source/modules/mod.game/: Makefile.am, channelgame.cpp,
+	channelgame.h, config.cpp, exordi8.cpp, exordi8.h, factory.h,
+	game.cpp, hangman.cpp, hangman.h, poker.cpp, poker.h: 1) Games are
+	now split into their own modules.  2) Config now loads the game
+	modules 3) Factory modified to load the game modules and register
+	the init functions 4) Factory::listModules() added
+	
+	Enjoy
+
+2002-11-03 23:15  josullivan
+
+	* source/modules/mod.game/: channelgame.h, config.cpp, config.h,
+	exordi8.h, game.cpp, game.h, hangman.h, poker.h: Removed all
+	#include <kineircd/str.h> lines Started adding the ability to load
+	each game as a separate module
+
+2002-11-03 21:16  pickle
+
+	* include/exordium/service.h, source/lib/service.cpp,
+	source/modules/mod.game/config.cpp: Added a 'distribution' variable
+	- this is the scope for which the services are distributed over the
+	network..
+
+2002-11-03 15:58  pickle
+
+	* doc/linkmap.dat: Added some font stuff, graphs are smaller and a
+	bit better organised.. this is pretty much ready to be posted
+	somewhere
+
+2002-11-02 10:45  pickle
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/services.h: Moved the CTCP replying functions from
+	Services:: into the parser
+
+2002-11-02 09:50  pickle
+
+	* include/exordium/service.h, include/exordium/services.h,
+	source/lib/modules.cpp, source/lib/modules.h,
+	source/lib/parser.cpp, source/lib/services.cpp,
+	source/modules/mod.bot/bot.cpp, source/modules/mod.bot/bot.h,
+	source/modules/mod.chan/chan.cpp, source/modules/mod.chan/chan.h,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/game.cpp, source/modules/mod.game/game.h,
+	source/modules/mod.love/love.cpp, source/modules/mod.love/love.h,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.nick/nick.h,
+	source/modules/mod.note/note.cpp, source/modules/mod.note/note.h,
+	source/modules/mod.oper/oper.cpp, source/modules/mod.oper/oper.h,
+	source/modules/mod.serv/serv.cpp, source/modules/mod.serv/serv.h,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h, source/modules/mod.vote/vote.cpp,
+	source/modules/mod.vote/vote.h: Moved the 'securePrivmsg' boolean
+	from services into something that is distributed with the line..
+
+2002-11-02 08:38  pickle
+
+	* source/lib/utils.cpp: CVS errored on this, this is my second
+	attempt to commit this file..
+
+2002-11-02 08:37  pickle
+
+	* include/exordium/services.h, include/exordium/utils.h,
+	source/Makefile.am, source/lib/services.cpp, source/lib/user.cpp,
+	source/modules/mod.game/game.cpp, source/modules/mod.nick/nick.cpp,
+	source/modules/mod.serv/serv.cpp: Moved Services::random() and
+	Services::generatePassword() out into their own Exordium::Utils::
+	namespace since they were utility functions
+
+2002-11-01 19:33  josullivan
+
+	* source/modules/mod.game/factory.h: This is a singleton factory
+	for creating ChannelGame's.
+
+2002-11-01 17:10  pickle
+
+	* include/exordium/services.h, source/lib/services.cpp,
+	source/lib/services.h, source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/game.cpp: Removed the game module specific
+	'getQuote' function from Services:: and placed its contents within
+	the QUOTE commands' function directly.. it was a simple enough
+	function :) This also meant removing the 'QUOTE' command from the
+	credits module, however I believe it was there in error.
+
+2002-11-01 16:31  pickle
+
+	* include/exordium/services.h, source/lib/services.h,
+	source/modules/mod.chan/chan.cpp, source/modules/mod.game/game.cpp,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.serv/serv.cpp,
+	source/modules/mod.serv/serv.h: Added a serviceQuit() function and
+	stopped modules from being naughty and using the queueAdd()
+	function in Services:: - that function is IRC/2 server to server
+	specific and cannot possibly be used in the future.
+
+2002-11-01 14:54  pickle
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/services.cpp, source/lib/services.h,
+	source/lib/user.cpp, source/modules/mod.nick/nick.cpp: Started
+	moving some stuff around..
+
+2002-11-01 12:38  pickle
+
+	* doc/example.conf, source/lib/channel.cpp, source/lib/config.cpp,
+	source/lib/config.h, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/services.h: Removed the
+	'serviceshostname' and 'servicesdescription' config options, in
+	favour of kine's.. since kine's will always exist anyway.
+	
+	You will now need to add to your config file: options {  
+	servername = whatever.your.hostname.was;   description = "whatever
+	your description was"; };
+
+2002-10-30 21:16  pickle
+
+	* include/exordium/services.h, source/lib/services.cpp,
+	source/lib/services.h, source/modules/mod.bot/bot.cpp,
+	source/modules/mod.chan/chan.cpp,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.game/game.cpp, source/modules/mod.love/love.cpp,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.note/note.cpp,
+	source/modules/mod.oper/oper.cpp, source/modules/mod.serv/serv.cpp,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.vote/vote.cpp: Services don't have modes :( For
+	now they're being emulated as clients, yes, so instead of copying
+	the modes through-out all the services for now, it's hidden away in
+	the core - ready for when kine comes along.. although, when kine
+	comes along a few more details will disappear too :( But still,
+	it's a start, and highlighted a few interesting hardcoded facts
+	about the core *sigh*
+
+2002-10-30 20:50  pickle
+
+	* source/lib/database/postgresql/dbpgsql.h: Oops - see, told you I
+	didn't compile the pgsql stuff ;)
+
+2002-10-30 18:01  pickle
+
+	* source/modules/: mod.bot/bot.cpp, mod.bot/bot.h,
+	mod.credits/credits.cpp, mod.credits/credits.h,
+	mod.game/channelgame.h, mod.game/exordi8.cpp, mod.game/exordi8.h,
+	mod.game/game.cpp, mod.game/game.h, mod.game/hangman.cpp,
+	mod.game/hangman.h, mod.game/poker.cpp, mod.game/poker.h,
+	mod.oper/oper.cpp, mod.oper/oper.h, mod.vote/vote.cpp,
+	mod.vote/vote.h: Made the module namespaces uniform *sigh*
+
+2002-10-30 17:30  pickle
+
+	* include/exordium/service.h, source/lib/modules.cpp,
+	source/modules/mod.bot/bot.cpp, source/modules/mod.bot/bot.h,
+	source/modules/mod.chan/chan.cpp, source/modules/mod.chan/chan.h,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/game.cpp, source/modules/mod.game/game.h,
+	source/modules/mod.love/love.cpp, source/modules/mod.love/love.h,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.nick/nick.h,
+	source/modules/mod.note/note.cpp, source/modules/mod.note/note.h,
+	source/modules/mod.oper/oper.cpp, source/modules/mod.oper/oper.h,
+	source/modules/mod.serv/serv.cpp, source/modules/mod.serv/serv.h,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h, source/modules/mod.vote/vote.cpp,
+	source/modules/mod.vote/vote.h: Threw booleans on the start()
+	functions for modules. Currently the core does nothing with this
+	information, though... :(
+
+2002-10-30 15:44  pickle
+
+	* source/modules/: Makefile.am, mod.serv/serv.cpp, mod.serv/serv.h,
+	mod.serv/tables.cpp, mod.serv/tables.h: Described the 'serverlist'
+	table..
+
+2002-10-30 15:29  pickle
+
+	* source/modules/: Makefile.am, mod.stats/stats.cpp,
+	mod.stats/stats.h, mod.stats/tables.cpp, mod.stats/tables.h:
+	Described the 'stats' table
+
+2002-10-30 09:26  pickle
+
+	* source/libbank/: Makefile.am, tables.cpp, tables.h: Wrote info
+	for the 'bank' table, however it's currently disjointed and isn't
+	being sent for affirmation - Mental?
+
+2002-10-30 07:03  pickle
+
+	* include/exordium/services.h, source/Makefile.am,
+	source/module.cpp, source/lib/services.cpp, source/lib/services.h,
+	source/modules/mod.love/love.cpp: Updates for kine api change (yes,
+	I did the singleton thing too.. again..  *sigh*)
+
+2002-10-30 06:51  pickle
+
+	* source/modules/Makefile.am: Fixed a typo which was sending
+	automake tropo :(
+
+2002-10-30 06:05  pickle
+
+	* configure.ac, autogen/fieldtypes.def,
+	include/exordium/database/table.h.tpl, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/user.cpp,
+	source/modules/Makefile.am, source/modules/mod.chan/chan.cpp,
+	source/modules/mod.chan/chan.h, source/modules/mod.chan/tables.cpp,
+	source/modules/mod.chan/tables.h,
+	source/modules/mod.love/Makefile.am,
+	source/modules/mod.love/love.cpp, source/modules/mod.love/love.h,
+	source/modules/mod.love/tables.cpp,
+	source/modules/mod.love/tables.h, source/modules/mod.nick/nick.cpp,
+	source/modules/mod.nick/nick.h, source/modules/mod.nick/tables.cpp,
+	source/modules/mod.nick/tables.h, source/modules/mod.note/note.cpp,
+	source/modules/mod.note/tables.cpp,
+	source/modules/mod.note/tables.h: 
+	* Created table descriptions in various modules.. A few minor
+	changes have   been made to the structure but nothing which should
+	majorly effect existing   databases adversely
+	
+	* Introduced naming scheme, <modulename><table>, so that tables can
+	be easily   tracked to their specific module
+	
+	* 'pendingnicks' table became 'nickspending'
+	
+	* 'identified' table became 'nicksidentified'
+	
+	* Added a 'single character' type, 'Character1' (the 1 is there
+	because it is	necessary for it not to be confused with a
+	wide-character type which has not   yet been defined, but may be in
+	the future)
+	
+	* Cleaned and finished up the table.h template file.
+	
+	* 'Love' is made from the modules makefile like other modules. I
+	also   cleaned up the makefile and the configure.ac file (dammit,
+	alphabetical   order is so important!!)
+	
+	* With above, I added a 'lovers' table in the love module - it is
+	set up like   the chan module (for multiple tables) since to add a
+	marriage list and a   cupid engine would require other tables..
+	this table has nothing interesting   in it yet *sigh*
+	
+	* Tables not yet described:   - access	 - commands   - emails
+	(this table should be removed and a more intellegent email system  
+	  written)   - glines	- kills   - log   - news   - serverlist   -
+	stats	- topics (it appears redundant/no longer in use?)   -
+	triggers   - words (needs to be renamed to gamehangmanwords, or
+	gamewords.. Mr. Mental?)
+	
+	I had no problems compiling, but I think I saw an automake warning
+	float past. If anyone has any problems please tell me :)
+
+2002-10-24 21:34  pickle
+
+	* source/modules/: Makefile.am, mod.note/note.cpp,
+	mod.note/tables.cpp, mod.note/tables.h: Added table description for
+	the 'notes' table. This is the first of many :)
+
+2002-10-24 20:40  pickle
+
+	* configure.ac: Added the subdir-objects option. This should allow
+	modules to have the same file names within their subdirectories
+	without automake overwriting the files like an idiot. This means
+	'module.cpp' files can be made, yay!
+
+2002-10-24 20:38  pickle
+
+	* include/exordium/database/table.h.tpl: Changed the fields table
+	pointer to something sane.. shame you can't embed arrays within
+	structure initialisers, else it would look really neat :( This
+	fixes one (of many, probably) teething problems
+
+2002-10-24 20:06  pickle
+
+	* source/modules/mod.note/: note.cpp, note.h: Namespace and
+	formatting fixes
+
+2002-10-24 08:47  pickle
+
+	* doc/linkmap.dat: A few minor fixes
+
+2002-10-24 08:42  pickle
+
+	* doc/linkmap.dat: Chucked in the newer exordium stuff relating to
+	the credits module, the bank library, etc..
+
+2002-10-24 08:38  pickle
+
+	* doc/linkmap.dat: Removed the kine modules - this graph should
+	really be specific to exordium, right? :)
+
+2002-10-24 08:30  pickle
+
+	* configure.ac: I must be blind - fixed the configure script so you
+	can indeed disable the modules now :)
+
+2002-10-24 07:47  pickle
+
+	* source/lib/services.cpp: Fixed a bug where it wasn't bothering to
+	.IRCtoLower() the nickname it was using as a key - grr
+
+2002-10-23 13:46  pickle
+
+	* configure.ac, source/modules/Makefile.am: Added a thingy so that
+	you can disable the compilation of specific modules, similar to
+	kine's method. This will speed up compilation during development,
+	especially for people who are only working on one or two modules
+	and don't care about the others :)
+
+2002-10-23 13:05  pickle
+
+	* source/modules/: Makefile.am, mod.stats/stats.cpp,
+	mod.stats/stats.h, mod.vote/vote.cpp, mod.vote/vote.h: *FINALLY*
+	converted the vote/stats modules (grr, james :)
+
+2002-10-23 11:30  pickle
+
+	* autogen/fieldtypes.def, include/exordium/database/table.h.tpl:
+	Chucked in some flags ;)
+
+2002-10-23 11:02  pickle
+
+	* autogen/fieldtypes.def, include/exordium/database/table.h.tpl:
+	Fixed up the DatabaseTable:: class' header template a bit better
+	(although it still needs a bit more work to generate properly
+	written C++ code - the comma on the last enum value is naughty, but
+	my scheme isn't very good)..
+	
+	I have populated the fieldtypes definition table for autogen with
+	values already used by the database, and extended it a bit further
+	(such as all the integer types, all string types etc). I have added
+	translation data for mysql and postgresql tables, of which I hope
+	the postgresql types are actually correct.
+	
+	BTW, the use of 'DATETIME' in mysql didn't seem as portable as
+	'TIMESTAMP' (according to my SQL-92 spec docs too).. So I've
+	changed it over to being TIMESTAMP entirely - this way when the
+	data is handled within exordium it is consistant, and probably also
+	a lot easier/efficient to rip apart.. So anyway, be aware of that
+	change.. *sigh* :(
+
+2002-10-23 10:58  pickle
+
+	* include/exordium/database/database.h: Added the affirmTable()
+	routine.. it'll become a virtual function later I suppose. PLV -
+	Please be aware this is the table maintenance thingy :)
+
+2002-10-23 04:12  pickle
+
+	* Makefile.am, doc/example.conf, include/exordium/conf.h,
+	include/exordium/config.h, include/exordium/modules.h,
+	include/exordium/services.h, include/exordium/user.h,
+	include/exordium/database/base.h,
+	include/exordium/database/database.h, source/Makefile.am,
+	source/module.cpp, source/lib/conf.cpp, source/lib/config.cpp,
+	source/lib/config.h, source/lib/console.cpp,
+	source/lib/modules.cpp, source/lib/modules.h,
+	source/lib/parser.cpp, source/lib/services.cpp,
+	source/lib/services.h: Renamed the conf.* files to config.* - this
+	was inflexibility originally was a product of the autoconf header
+	(config.h) being in the include/exordium directory.
+	
+	The Config:: class has been turned into a base class for
+	ConfigInternal:: to hide many unnecessary variables. This included
+	the Modules:: class, of which has had its header moved into the
+	library's directory since it is only used internally.
+	
+	Instead of using the console's hostname for the underling server,
+	two new configuration variables have been made - underlingHostname
+	and underlingDescription. Both variables relate to the underling
+	server. If the hostname is not set, the server will not be created.
+
+2002-10-23 01:16  pickle
+
+	* Makefile.am, configure.ac, autogen/fieldtypes.def,
+	include/exordium/database/.cvsignore,
+	include/exordium/database/table.h.tpl: Very basic start on the
+	database table management thingy whatsit doohickey..  This included
+	the tables.h file, however it's an autogen template. My reasoning
+	is that the types of variables can be automatically mapped using
+	autogen for the various database engines (i.e. name = 'Integer';
+	mysql_type = 'int'; or something in the definition file). This
+	change required the header files to be listed in the top makefile,
+	and autogen to be checked in the autoconf script. The addition of
+	the header files to the top makefile also allows them to be
+	installed automatically now ;)
+	
+	Phew - that was a nasty slab of writing :)
+
+2002-10-22 23:48  pickle
+
+	* include/exordium/database/base.h,
+	include/exordium/database/database.h,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/mysql/dbmysql.h,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/lib/database/postgresql/dbpgsql.h: Formatting fix: Added
+	$id$ info to the files missing it - it's used for revision tracking
+	in snapshots (and eventually releases)
+
+2002-10-22 19:36  pickle
+
+	* source/lib/services.cpp: In my haste I forgot to replace a few
+	Services:: -> ServicesInternal:: bits :( Sorry :(
+
+2002-10-22 04:59  pickle
+
+	* include/exordium/console.h, include/exordium/parser.h,
+	include/exordium/services.h, include/exordium/database/database.h,
+	source/module.cpp, source/lib/channel.cpp, source/lib/console.cpp,
+	source/lib/console.h, source/lib/parser.cpp, source/lib/parser.h,
+	source/lib/services.cpp, source/lib/services.h,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.serv/serv.cpp:
+	Turned Services:: into an ABC, and inherited ServicesInternal::
+	from that.  ServicesInternal:: contains all the hidden code and
+	variables, and Services:: is simply a basic container. This has
+	already sped up compilation times, although the interface stuff
+	still needs a lot of work. Many routines still need to be removed
+	and put in other places, such as in their respective modules, etc.
+	
+	Services::Debug(), Services::helpme() and Services::globop() calls
+	have all been converted into using the logLine() stuff.
+	
+	This is a rather ignorant edit, but it was a long one :(
+
+2002-10-22 03:50  pickle
+
+	* source/modules/mod.game/hangman.cpp: Oops, missing include file
+	:)
+
+2002-10-21 22:46  pickle
+
+	* source/lib/database/: mysql/dbmysql.h, postgresql/dbpgsql.h:
+	Fixed ifdef's to be uniform..
+
+2002-10-21 22:44  pickle
+
+	* include/exordium/database/postgresql/dbpgsql.h: I suppose this
+	one had to go too.. :)
+
+2002-10-21 22:43  pickle
+
+	* include/exordium/database/mysql/dbmysql.h: Deleted as per request
+	(mental ;)
+
+2002-10-21 22:42  josullivan
+
+	* source/: lib/database/database.cpp,
+	lib/database/mysql/dbmysql.cpp, lib/database/mysql/dbmysql.h,
+	lib/database/postgresql/dbpgsql.cpp,
+	lib/database/postgresql/dbpgsql.h, modules/Makefile.am,
+	modules/mod.credits/Makefile.am: Moved mysql and postgres headers
+	to source/lib/database/*
+
+2002-10-21 22:13  josullivan
+
+	* include/exordium/database/database.h,
+	source/lib/database/database.cpp: Moved includes to mysql and
+	postgres from header to footer.  This is better since its now
+	internal.
+
+2002-10-21 21:16  pickle
+
+	* doc/example.conf: Removed unused variables - the console
+	variables are handled within their own subsection/class/thingy :)
+
+2002-10-21 12:03  pickle
+
+	* include/exordium/channel.h, include/exordium/conf.h,
+	include/exordium/console.h, include/exordium/dchan.h,
+	include/exordium/log.h, include/exordium/modules.h,
+	include/exordium/parser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/user.h,
+	include/exordium/database/base.h,
+	include/exordium/database/database.h,
+	include/exordium/database/mysql/dbmysql.h,
+	include/exordium/database/postgresql/dbpgsql.h,
+	source/libbank/bank.h, source/modules/mod.bot/bot.h,
+	source/modules/mod.chan/chan.h,
+	source/modules/mod.game/channelgame.h,
+	source/modules/mod.game/config.h,
+	source/modules/mod.game/exordi8.h, source/modules/mod.game/game.h,
+	source/modules/mod.game/hangman.h, source/modules/mod.game/poker.h,
+	source/modules/mod.game/cards/card.h,
+	source/modules/mod.game/cards/hand.h,
+	source/modules/mod.game/cards/pack.h,
+	source/modules/mod.game/cards/shuffler.h,
+	source/modules/mod.game/cards/stock.h,
+	source/modules/mod.game/dice/die.h, source/modules/mod.love/love.h,
+	source/modules/mod.nick/nick.h, source/modules/mod.note/note.h,
+	source/modules/mod.oper/oper.h, source/modules/mod.serv/serv.h,
+	source/modules/mod.stats/stats.h, source/modules/mod.vote/vote.h:
+	Switched to using a uniform include #ifndef/#define system.. It's
+	kinda rediculous having the limited scope, and it was soon found to
+	come down to there being a conflict. Also, the #define's are given
+	a value (1) so that crappy preprocessors actually define it..
+
+2002-10-21 10:13  josullivan
+
+	* source/modules/mod.game/: poker.cpp, poker.h: Altered poker to
+	use the new Cards::Stock class.
+
+2002-10-21 10:01  pickle
+
+	* include/exordium/console.h, include/exordium/ircdome.h,
+	include/exordium/services.h, source/Makefile.am,
+	source/lib/console.cpp, source/lib/ircdome.cpp,
+	source/lib/parser.cpp, source/lib/services.cpp: ircdome.* ->
+	console.*
+	
+	However, the console.h file should be in source/lib/. and not in
+	the main include file. This should be a hidden aspect of the core!
+	:(
+
+2002-10-21 09:57  josullivan
+
+	* configure.ac, doc/example.conf, source/Makefile.am,
+	source/libbank/Makefile.am, source/libbank/bank.cpp,
+	source/libbank/bank.h, source/modules/Makefile.am,
+	source/modules/mod.credits/Makefile.am,
+	source/modules/mod.credits/credits.cpp,
+	source/modules/mod.credits/credits.h,
+	source/modules/mod.game/module.cpp:
+	source/modules/mod.game/module.cpp isn't needed anymore as its now
+	game.cpp
+	
+	Added a libexordium_bank which allows us to use money within
+	services.
+	
+	Added mod.credits which is a user interface to libexordium_bank. 
+	Internals should use the library functions directly.
+
+2002-10-21 07:14  pickle
+
+	* source/lib/services.cpp: Changed all the cout's in services:: to
+	be logLine()'s..
+
+2002-10-19 17:35  pickle
+
+	* source/module.cpp: Swapped the delete's around to be in reverse
+	order.. of how they were created. Afterall, services may need the
+	database stuff while shutting down.
+
+2002-10-19 17:31  pickle
+
+	* source/module.cpp: Swapped the delete's around to be in reverse
+	order.. of how they were created. Afterall, services may need the
+	database stuff while shutting down.
+
+2002-10-19 17:30  pickle
+
+	* source/module.cpp: Stopped services taking control - no run
+	function..
+
+2002-10-19 17:27  pickle
+
+	* source/module.cpp: Changed the services new's assert to an if,
+	since kine will need to know if it cannot start rather than
+	exordium being rude..
+
+2002-10-17 22:17  pickle
+
+	* configure.ac: Shh, pretend it was never there... :)
+
+2002-10-17 22:07  pickle
+
+	* configure.ac: This is a 'half' fix to the mysql checker.. It's
+	technically correct, in that it is actually passing the libraries
+	and defines properly to the test compile. However, the actual
+	problem lies within mysql_config itself.
+
+2002-10-17 21:03  josullivan
+
+	* configure.ac, source/Makefile.am: Fixed the check for
+	mysql_config.
+
+2002-10-17 20:03  pickle
+
+	* include/exordium/services.h: Silly conversion - kine's logger
+	uses std::string, so exordium's wrapper now does too.
+
+2002-10-17 19:59  pickle
+
+	* include/exordium/: log.h, services.h: Now using kine's loggers
+	properly. This is a full logger integration now. A new KineIRCd
+	snapshot will be required to compile this change.
+
+2002-10-17 11:05  pickle
+
+	* doc/example.conf: Removed the logfile variable thingy from the
+	example
+
+2002-10-17 09:13  josullivan
+
+	* configure.ac, source/Makefile.am, source/modules/Makefile.am,
+	source/modules/mod.game/Makefile.am,
+	source/modules/mod.love/Makefile.am: Alterd configure.ac to add
+	PGSQL_INCDIR and PGSQL_LDFLAGS rather than using CPPFLAGS and
+	LDFLAGS.  Updated relevant Makefile.am files.
+
+2002-10-17 09:12  josullivan
+
+	* include/exordium/database/postgresql/dbpgsql.h,
+	source/lib/database/postgresql/dbpgsql.cpp: Changed the order of
+	pgres in the constructor to fix an ordering warning Added using
+	AISutil::String to cpp file to fix a compilation error
+
+2002-10-17 09:08  josullivan
+
+	* source/modules/mod.game/exordi8.cpp: The stock is now shuffled
+
+2002-10-17 06:10  josullivan
+
+	* source/modules/mod.game/cards/: card.cpp, pack.h, stock.h:
+	Changed stock_type from a stack to a vector so that we can shuffle
+	it.
+
+2002-10-15 21:22  josullivan
+
+	* source/modules/mod.game/cards/: pack.h, shuffler.h, stock.h:
+	Shuffler was turned into a templated function rather than a
+	functor.  Updated stock and pack to use the new shuffler.
+
+2002-10-15 20:46  josullivan
+
+	* source/modules/mod.game/cards/shuffler.h: Shuffler functor
+
+2002-10-15 15:11  pickle
+
+	* include/exordium/services.h, source/lib/services.cpp: Did a rough
+	cleanup of services.h:
+	
+	 * Moved a few functions into private: scope, since they were only
+	   used internally;
+	
+	 * Removed/commented out a few functions that have become obsolete,
+	or only
+	   served a menial purpose with Parser::, which of course is
+	temporary;
+	
+	 * Added a few comments, regarding functions that should be moved
+	out of
+	   Services:: and into their respective modules;
+	
+	 * Converted a few functions to static that I knew off the top of
+	my head
+	   didn't actually use the services structure, but rather serve a
+	more
+	   utilitarian purpose;
+	
+	 * Removed the redundant mode queue, which was an addition which
+	quickly fell
+	   into redundancy considering kine will handle command merging.
+	Anything
+	   associated with the mode queue has been merged with the real
+	output queue;
+	
+	This small change has actually sliced two minutes off my compile
+	time. If someone would like to clean up Services:: properly, it
+	would save a lot of time and probably make exordium more
+	efficient..
+
+2002-10-15 13:59  pickle
+
+	* include/exordium/log.h, include/exordium/services.h,
+	source/lib/parser.cpp, source/lib/services.cpp: Added logging
+	levels to the Services::logLine() function.
+
+2002-10-15 13:12  pickle
+
+	* include/: .cvsignore, exordium/.cvsignore: Fixed the cvs ignore
+	rules after the change to the autoconf header
+
+2002-10-15 13:10  pickle
+
+	* source/: lib/channel.cpp, lib/database/mysql/dbmysql.cpp,
+	modules/mod.game/exordi8.cpp: Fixed the errors gcc was spouting..
+
+2002-10-15 12:47  pickle
+
+	* configure.ac, dev.sh, include/exordium/config.h.in,
+	include/exordium/services.h, source/module.cpp,
+	source/lib/channel.cpp, source/lib/conf.cpp, source/lib/dchan.cpp,
+	source/lib/ircdome.cpp, source/lib/modules.cpp,
+	source/lib/parser.cpp, source/lib/service.cpp,
+	source/lib/services.cpp, source/lib/user.cpp,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/modules/mod.bot/bot.cpp, source/modules/mod.bot/bot.h,
+	source/modules/mod.chan/chan.cpp,
+	source/modules/mod.game/channelgame.cpp,
+	source/modules/mod.game/config.cpp,
+	source/modules/mod.game/exordi8.cpp,
+	source/modules/mod.game/game.cpp,
+	source/modules/mod.game/hangman.cpp,
+	source/modules/mod.game/module.cpp,
+	source/modules/mod.game/poker.cpp,
+	source/modules/mod.game/cards/card.cpp,
+	source/modules/mod.game/cards/hand.cpp,
+	source/modules/mod.game/dice/die.h,
+	source/modules/mod.love/love.cpp, source/modules/mod.nick/nick.cpp,
+	source/modules/mod.note/note.cpp, source/modules/mod.note/note.h,
+	source/modules/mod.oper/oper.cpp, source/modules/mod.serv/serv.cpp,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h, source/modules/mod.vote/vote.cpp,
+	source/modules/mod.vote/vote.h: Moved include/exordium/config.h to
+	include/autoconf.h - it's bad for the autoconf generated header
+	file to be installed, and so it shouldn't be included in
+	libexordium's headers..
+
+2002-10-15 12:11  pickle
+
+	* source/modules/mod.love/love.cpp~: I don't know why this is
+	here?!
+
+2002-10-15 12:09  pickle
+
+	* configure.ac, source/module.cpp, source/lib/channel.cpp,
+	source/lib/conf.cpp, source/lib/dchan.cpp, source/lib/ircdome.cpp,
+	source/lib/modules.cpp, source/lib/parser.cpp,
+	source/lib/service.cpp, source/lib/services.cpp,
+	source/lib/user.cpp, source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/modules/mod.bot/bot.cpp, source/modules/mod.chan/chan.cpp,
+	source/modules/mod.game/channelgame.cpp,
+	source/modules/mod.game/config.cpp,
+	source/modules/mod.game/exordi8.cpp,
+	source/modules/mod.game/game.cpp,
+	source/modules/mod.game/hangman.cpp,
+	source/modules/mod.game/module.cpp,
+	source/modules/mod.game/poker.cpp,
+	source/modules/mod.game/cards/card.cpp,
+	source/modules/mod.game/cards/hand.cpp,
+	source/modules/mod.game/dice/die.h,
+	source/modules/mod.love/love.cpp,
+	source/modules/mod.love/love.cpp~,
+	source/modules/mod.nick/nick.cpp, source/modules/mod.note/note.cpp,
+	source/modules/mod.note/note.h, source/modules/mod.oper/oper.cpp,
+	source/modules/mod.serv/serv.cpp,
+	source/modules/mod.stats/stats.cpp,
+	source/modules/mod.stats/stats.h, source/modules/mod.vote/vote.cpp,
+	source/modules/mod.vote/vote.h: Started actually using the autoconf
+	ifdefs..
+
+2002-10-15 09:17  pickle
+
+	* configure.ac, source/Makefile.am,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp: Switched dbmysql.cpp's
+	and dbpgsql.cpp's ifdefs into being an automake/makefile
+	conditional to avoid unnecessarily compiling the files.  Exordium
+	compiles a tad-bit faster now :)
+
+2002-10-14 09:02  pickle
+
+	* include/exordium/conf.h, include/exordium/log.h,
+	include/exordium/services.h, source/Makefile.am,
+	source/lib/conf.cpp, source/lib/log.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp: Switched all the logging stuff over to a
+	logLine() function in services, which for now just throws the
+	output to clog.. You may need to run ./dev.sh to fix up automake's
+	dependancy checking stuff :( This meant the old logger was useless
+	and has been removed; So long and thanks for the fish.
+
+2002-10-14 08:25  pickle
+
+	* include/exordium/services.h, source/module.cpp,
+	source/lib/channel.cpp, source/lib/conf.cpp,
+	source/lib/modules.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/modules/mod.bot/bot.h, source/modules/mod.chan/chan.cpp,
+	source/modules/mod.game/game.cpp,
+	source/modules/mod.game/hangman.cpp,
+	source/modules/mod.game/module.cpp,
+	source/modules/mod.game/cards/card.cpp,
+	source/modules/mod.game/dice/die.h, source/modules/mod.note/note.h,
+	source/modules/mod.stats/stats.h, source/modules/mod.vote/vote.h:
+	Wrapped cout, cerr, clog and assert() calls in #ifdef DEBUG's.
+	Remember if kine is not compiled with --enable-debugging then
+	stdin, stdout and stderr will be closed, and anything outputted
+	through cout, cerr or clog could cause havok..
+
+2002-10-14 07:47  pickle
+
+	* include/exordium/services.h, source/module.cpp,
+	source/lib/services.cpp: Moved the creation of the logger to the
+	Services:: class.. for now..
+
+2002-10-14 07:18  josullivan
+
+	* source/modules/mod.game/: exordi8.cpp, cards/stock.h: Added a
+	shuffle method to Cards::Stock (adapted from Cards::Pack::shuffle)
+	cause shuffling each pack isn't enough when you have a stock of > 1
+	packs.
+
+2002-10-14 06:17  pickle
+
+	* include/exordium/database/base.h,
+	include/exordium/database/database.h,
+	include/exordium/database/mysql/dbmysql.h,
+	include/exordium/database/postgresql/dbpgsql.h, source/module.cpp,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp: Removed the logger
+	dependancy from the database stuff; The debugging still exists,
+	passed via std::clog, instead, so long as 'DEBUG' is defined in
+	config.h..
+
+2002-10-14 03:49  josullivan
+
+	* source/modules/mod.game/: exordi8.cpp, exordi8.h, cards/hand.h,
+	cards/pack.h, cards/stock.h: Moved the stock manipulation into its
+	own class from exordi8 since it will be useful for other card
+	games.	Also started to implement a discard pile for exordi8.
+	
+	Fixed the NULL warning in cards/hand.h
+
+2002-10-13 17:25  pickle
+
+	* source/module.cpp: Removed the redundant comment about the
+	version 'INFO' thingy, since it's in version.h now
+
+2002-10-13 17:17  pickle
+
+	* source/: module.cpp, version.h: Updated to suit the new module
+	interface; I finally got around to converting Kine's module API
+	over to being inherited classes, something I should have done a
+	long time ago :)
+
+2002-10-09 09:23  josullivan
+
+	* source/modules/mod.game/: exordi8.cpp, cards/pack.h: Removed TEST
+	debugging lines which I added while trying to track down the
+	_populator problem.
+
+2002-10-09 09:18  josullivan
+
+	* source/modules/mod.game/cards/pack.cpp: Since everything is now
+	in a template in pack.h this file is not needed
+
+2002-10-09 09:15  josullivan
+
+	* source/modules/mod.game/cards/pack.h: Pack is now being populated
+	by _populator.	Thanks to pickle for fixing this.
+
+2002-10-09 06:48  josullivan
+
+	* source/modules/mod.game/cards/hand.h: Fixed a comparison between
+	a signed and an unsigned integer
+
+2002-10-09 06:26  josullivan
+
+	* source/modules/mod.game/: exordi8.cpp, poker.cpp,
+	cards/Makefile.am, cards/card.cpp, cards/card.h, cards/pack.cpp,
+	cards/pack.h: Templated pack and converted exordi8 and poker to use
+	it
+
+2002-10-09 06:04  pickle
+
+	* source/modules/mod.game/dice/README: Wrote a little README to
+	accompany the lonely looking die.h file - poor guy :( He needs
+	another friend I suppose, "dice.h" - to manage multiple dice..	The
+	die class, btw, was made with the thought of monopony (and a large
+	array of games which could possibly need a dice) coming in the
+	future.. otherwise I wouldn't have bothered doing anything with it
+	:)
+
+2002-10-09 06:02  pickle
+
+	* source/modules/mod.game/dice/die.h: Wrote die routine (in a
+	'Dice' namespace); done with one hand while on the phone to a very
+	boring person :)
+
+2002-10-07 12:49  pickle
+
+	* source/module.cpp: Change for Kine API change - moved the
+	license/copyright information that was send via std::cout into a
+	block used to append to the /INFO information.	Remember that when
+	kine is not in debugging mode, stdin, stdout and stderr get closed
+	- ultimately the output from exordium to stdout/stderr won't work,
+	and naturally won't be visible to people running it. Now it's
+	available in the version info block.
+
+2002-10-05 23:05  pickle
+
+	* source/modules/mod.game/cards/card.h: Added an anonymous
+	union/struct pair (which HOPEFULLY works - you may need a gcc 3.x
+	compiler) to facilitate some speedy copies and black
+	initialisations... Well that's the plan anyway, this is a blind
+	edit :(
+
+2002-10-05 14:13  pickle
+
+	* source/module.cpp: Slight fix for a small kine api change. Also
+	changed a few comments to be a little more relative to the code
+	surrounding them
+
+2002-10-05 04:06  josullivan
+
+	* source/modules/mod.game/cards/: pack.cpp, pack.h: Altered
+	Cards::Pack so that, though french cards will be standard, you can
+	inherit from this class to create other packs.. ie. German which
+	will be used in Karnoffel.
+
+2002-10-04 22:09  josullivan
+
+	* source/modules/mod.game/: poker.cpp, poker.h: Ok it didn't
+	compile before but it does now
+
+2002-10-04 21:57  josullivan
+
+	* source/modules/mod.game/: Makefile.am, channelgame.cpp,
+	poker.cpp, poker.h, cards/hand.h: This is the start of a poker
+	game.  The game doesn't work at the moment, I am mainly committing
+	it as a placeholder.
+
+2002-10-04 09:24  josullivan
+
+	* source/modules/mod.game/: exordi8.cpp, cards/hand.h: Added
+	Cards::Card getCardAtIndex(unsigned int) which retrieves a card by
+	number in hand.  Updated exordi8 to use getCardAtIndex().
+
+2002-10-03 14:11  pickle
+
+	* include/exordium/database/: mysql/dbmysql.h,
+	postgresql/dbpgsql.h: Removed the virtual keywords to avoid
+	unnecessary RTTI bloat
+
+2002-10-03 13:22  pickle
+
+	* include/exordium/: channel.h, dchan.h, ircdome.h, log.h,
+	parser.h, service.h, services.h, user.h, database/base.h,
+	database/database.h, database/mysql/dbmysql.h,
+	database/postgresql/dbpgsql.h: A few (sort of) minor things:  *
+	Removed 'using ...' keywords from headers - they are dangerous
+	there, and    should never be used in headers unless embedded
+	within a class or    structure definition (i.e. the scope of the
+	keyword is limited to the    header alone).   * A few const fixes  
+	* Moved Config& and Log& references into the base class (since all 
+	   inherited classes need them)   * Minor header fixes
+	(technicality really) - When included by external code	   from the
+	library they should be referenced as if they were installed. This  
+	  doesn't apply to the library code itself, of course.	 * Moved
+	sets of assignment operators into the initialisation bracket of a  
+	  class (much faster class initialisation)   * Moved #.. calls that
+	weren't starting at char #1 to the front of the     line. Many
+	compilers' pre-processors cannot chew on them unless the # is	 
+	the first character on the line and makes it not very portable,
+	however     white-space between the # and the tag is portable.	 *
+	Added missing void's in prototypes without parameters	* Added
+	missing destructors
+
+2002-10-03 12:11  pickle
+
+	* doc/example.conf, include/exordium/conf.h, source/module.cpp,
+	source/lib/conf.cpp: Started on the flexible database configuration
+	thingies - place-holders mainly for now
+
+2002-10-02 08:51  josullivan
+
+	* configure.ac: Added --enable-mysql-path to change the path of
+	where mysql_config resides.  Added routine to check for
+	mysql_config
+
+2002-10-02 05:21  pickle
+
+	* source/: module.cpp, modules/mod.note/note.cpp,
+	modules/mod.note/note.h, modules/mod.stats/stats.cpp,
+	modules/mod.stats/stats.h, modules/mod.vote/vote.cpp,
+	modules/mod.vote/vote.h: Fixed a few namespace things,
+	predominantly the fact that some modules were nesting themselves
+	inside the Exordium namespace which is exclusively drawn our for
+	libexordium and *not* the modules. I also created a small notice in
+	the kine module .cpp file (source/module.cpp) which notes that the
+	anonymous namespace for that module is intentional.
+
+2002-10-02 05:06  pickle
+
+	* source/modules/mod.game/hangman.cpp: Oops, a header I forgot
+
+2002-10-02 05:04  pickle
+
+	* source/modules/: mod.bot/bot.cpp, mod.bot/bot.h,
+	mod.chan/chan.cpp, mod.chan/chan.h, mod.nick/nick.cpp,
+	mod.nick/nick.h, mod.note/note.cpp, mod.note/note.h,
+	mod.oper/oper.cpp, mod.oper/oper.h, mod.serv/serv.cpp,
+	mod.serv/serv.h, mod.stats/stats.cpp, mod.stats/stats.h,
+	mod.vote/vote.cpp, mod.vote/vote.h: Fixed up the module headers -
+	from the modules' perspective it should look upon libexordium as if
+	it's already installed, practically as if it's a system library.
+	When compiling inside the Exordium package, the -I compiler
+	parameter over-rides the compiler looking at the system headers.
+	This is ultimately a technicality, but provides a much better
+	example to outside parties who may install exordium and begin
+	development on their own module(s).
+
+2002-10-02 04:55  pickle
+
+	* .cvsignore: Added evil automake/autoconf related files to the
+	ignore list, and reformatted it a little
+
+2002-10-01 22:55  josullivan
+
+	* source/modules/mod.game/: hangman.cpp, hangman.h: 1) Added
+	ability to solve puzzle using .guess <word> 2) Added uint
+	maxWrongGuesses to allow wrong solutions to count against you 3)
+	Made sure that the word and guess are both lowercase
+
+2002-10-01 21:46  josullivan
+
+	* source/modules/mod.game/hangman.cpp: Fixed a bug with the random
+	word selector which would crash services
+
+2002-10-01 20:19  josullivan
+
+	* source/modules/: mod.game/hangman.cpp, mod.game/hangman.h,
+	mod.game/cards/Makefile, mod.game/cards/Makefile.in,
+	mod.love/Makefile, mod.love/Makefile.in: Deleted Makefiles that
+	shouldn't have been in CVS Changed the hangman image to something a
+	little more compact and added random word selection
+
+2002-09-30 21:24  ircdome
+
+	* source/: Makefile.am, modules/mod.game/exordi8.cpp,
+	modules/mod.game/cards/Makefile,
+	modules/mod.game/cards/Makefile.in, modules/mod.love/Makefile,
+	modules/mod.love/Makefile.in, modules/mod.nick/nick.cpp,
+	modules/mod.note/note.cpp, modules/mod.oper/oper.cpp,
+	modules/mod.serv/serv.cpp: 
+	
+	Fixed some little tweaks and stuff
+
+2002-09-30 20:25  josullivan
+
+	* include/exordium/services.h: rolled back and removed writeData
+
+2002-09-30 20:25  josullivan
+
+	* source/lib/: parser.cpp, services.cpp: rolled back to a previous
+	version of services removed services::writeData added #include
+	"exordium/channel.h" back into parser.cpp
+
+2002-09-30 20:01  josullivan
+
+	* include/exordium/dchan.h: reverted back to previous version
+
+2002-09-30 19:59  josullivan
+
+	* source/lib/dchan.cpp: reverting to previous version
+
+2002-09-30 09:14  pickle
+
+	* source/lib/parser.cpp: Wrote a little notice for other developers
+	to read to create an understanding about why the parser seems so
+	dodgey. Everyone seems to complain about the parser ;)
+
+2002-09-29 20:49  ircdome
+
+	* configure.ac: 
+	
+	Few fixes.
+
+2002-09-29 04:04  pickle
+
+	* configure.ac, configure.in, dev.sh: Fixed up the configure script
+	to suit more modern GNU automake/autoconf standards - this included
+	removing the obsolete form of AM_INIT_AUTOMAKE and renaming the
+	configure script to configure.ac instead of configure.in.. :(
+
+2002-09-28 21:25  ircdome
+
+	* source/modules/mod.game/: Makefile.am, channelgame.cpp,
+	channelgame.h, config.cpp, config.h, exordi8.cpp, exordi8.h,
+	game.cpp, game.h, hangman.cpp, hangman.h, module.cpp,
+	cards/Makefile.in: 
+	
+	Ok fixing the last commit where I deleted everything :-(
+	
+	SORRY.
+
+2002-09-28 21:07  ircdome
+
+	* aclocal.m4, config.guess, config.sub, depcomp, install-sh,
+	missing, mkinstalldirs, source/modules/Makefile.am: 
+	
+	Tidied up the root structure... left automake to copy a lot of the
+	files over instead of keeping them in cvs.
+
+2002-09-28 20:34  pvincent
+
+	* include/exordium/dchan.h, include/exordium/services.h,
+	source/Makefile.am, source/lib/dchan.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp: Trying to remove the evil empty dirs :)
+
+2002-09-28 20:30  ircdome
+
+	* source/modules/Makefile.am: 
+	
+	DAMN YOU CVS REMOVE MY DIRECTORIES.
+
+2002-09-28 20:21  ircdome
+
+	* source/modules/: bot.cpp, chan.cpp, nick.cpp, note.cpp, oper.cpp,
+	serv.cpp, stats.cpp, vote.cpp: 
+	
+	Cleanup
+
+2002-09-28 20:04  ircdome
+
+	* source/modules/: mod.bot/bot.cpp, mod.bot/bot.h,
+	mod.chan/chan.cpp, mod.chan/chan.h, mod.game/cards/Makefile,
+	mod.game/cards/Makefile.am, mod.game/cards/Makefile.in,
+	mod.game/cards/README, mod.game/cards/card.cpp,
+	mod.game/cards/card.h, mod.game/cards/hand.cpp,
+	mod.game/cards/hand.h, mod.game/cards/pack.cpp,
+	mod.game/cards/pack.h, mod.love/Makefile, mod.love/Makefile.am,
+	mod.love/Makefile.in, mod.love/README, mod.love/love.cpp,
+	mod.love/love.cpp~, mod.love/love.h, mod.nick/nick.cpp,
+	mod.nick/nick.h, mod.note/note.cpp, mod.note/note.h,
+	mod.oper/oper.cpp, mod.oper/oper.h, mod.serv/serv.cpp,
+	mod.serv/serv.h, mod.stats/stats.cpp, mod.stats/stats.h,
+	mod.vote/vote.cpp, mod.vote/vote.h: 
+	
+	Big move around and stuff :x
+
+2002-09-28 19:06  ircdome
+
+	* include/exordium/modules.h, include/exordium/service.h,
+	source/lib/modules.cpp, source/lib/parser.cpp,
+	source/modules/nick.cpp: 
+	
+	Nick.so now controls identification requests
+
+2002-09-28 14:45  ircdome
+
+	* include/exordium/service.h, source/lib/modules.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp: 
+	
+	More events move over stuff.
+
+2002-09-28 14:04  ircdome
+
+	* include/exordium/events.h, include/exordium/modules.h,
+	include/exordium/service.h, include/exordium/services.h,
+	source/lib/modules.cpp, source/modules/bot.cpp: 
+	
+	Example of the mask stuff for modules... bot now knows when people
+	go away :-)
+
+2002-09-28 13:18  ircdome
+
+	* include/exordium/events.h, include/exordium/modules.h,
+	include/exordium/service.h, include/exordium/services.h,
+	source/lib/modules.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/oper.cpp,
+	source/modules/serv.cpp: 
+	
+	Fixed the event stuff...
+	
+	Read the headers, comments and stuff its pretty self explanitory
+	
+	Modules register what events they want to receive in their own
+	module_information thingy..
+	
+	Modules:: will decide what to pass down to the modules in terms of
+	virtual functions, the next cvs commit will give a working example.
+
+2002-09-28 04:34  pvincent
+
+	* include/exordium/services.h: Changed vector<vector<Service*>> for
+	map<eventType, vector<Service*>>    Untested since I cant compile
+	kine :-)   To insert a service: eventList[myevent].push_back(my
+	service);   To see the first Service entry for event 0: 
+	eventList[0][0]   2nd service entry: eventList[0][1]   etc..
+
+2002-09-28 03:10  josullivan
+
+	* include/exordium/events.h, include/exordium/services.h,
+	source/lib/services.cpp: Changed eventType enum event_types rather
+	than unsigned char Added std:: to vector and list in services.h
+
+2002-09-27 21:37  ircdome
+
+	* include/exordium/events.h: 
+	Helps if i include this file ;-)
+
+2002-09-27 21:36  ircdome
+
+	* include/exordium/service.h, include/exordium/services.h,
+	source/lib/modules.cpp, source/lib/services.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp: 
+	
+	Decided to try this way to do the event registration.. this commit
+	is still broken :-)
+
+2002-09-27 19:02  ircdome
+
+	* include/exordium/service.h, source/lib/modules.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp: 
+	
+	Starting working on a mask thingy for modules.. this revision is
+	broken.
+
+2002-09-27 17:57  ircdome
+
+	* configure.in, include/exordium/config.h.in,
+	include/exordium/database/mysql/dbmysql.h, source/lib/services.cpp,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp: 
+	
+	Tidied up the database stuff to set its defines in
+	include/exordium/config.h as opposed to on the command line.
+
+2002-09-27 17:26  ircdome
+
+	* COPYING, ChangeLog, INSTALL, NEWS, README, aclocal.m4, dev.sh: 
+	
+	Just tidying up.
+
+2002-09-27 16:45  ircdome
+
+	* source/: Makefile.am, lib/dchan.cpp: 
+	
+	More dynamic channel class stuff
+
+2002-09-27 16:35  ircdome
+
+	* include/exordium/services.h, source/lib/services.cpp,
+	source/lib/user.cpp, source/lib/database/mysql/dbmysql.cpp: 
+	
+	More functions for the dynamic channel class.
+	
+	Fixed a bug that appeared when i configured without postgres (but
+	with mysql) support.
+
+2002-09-27 16:23  ircdome
+
+	* source/: lib/user.cpp, modules/chan.cpp: 
+	
+	Fixed bug that was causing services to crash intermittandtly :)
+
+2002-09-26 09:17  pickle
+
+	* doc/Database-Public-Api, doc/linkmap.dat,
+	include/exordium/channel.h, include/exordium/conf.h,
+	include/exordium/dchan.h, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/modules.h,
+	include/exordium/parser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/user.h,
+	include/exordium/database/base.h,
+	include/exordium/database/database.h,
+	include/exordium/database/mysql/dbmysql.h,
+	include/exordium/database/postgresql/dbpgsql.h,
+	source/lib/channel.cpp, source/lib/conf.cpp,
+	source/lib/ircdome.cpp, source/lib/log.cpp, source/lib/modules.cpp,
+	source/lib/parser.cpp, source/lib/service.cpp,
+	source/lib/services.cpp, source/lib/user.cpp,
+	source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/oper.cpp,
+	source/modules/serv.cpp, source/modules/stats.cpp,
+	source/modules/vote.cpp: Changes required following the LibAIS ->
+	LibAISutil name change (evil conflicting libraries - grr)
+
+2002-09-26 03:50  pickle
+
+	* source/: Makefile.am, modules/Makefile.am: Changed 'libservices'
+	to 'libexordium'. Why? There is already a 'libservices' (ref:
+	sourceforge/freshmeat/countless other websites). The existing
+	libservices has been around for over a year and a half now, and the
+	conflict isn't worth the bother. 'libexordium' however has no
+	conflicts.
+
+2002-09-25 21:13  ircdome
+
+	* source/lib/services.cpp: 
+	
+	Fixed a bug where services wasn't deleting the old temporary tables
+	before it started up.
+
+2002-09-25 17:33  ircdome
+
+	* include/exordium/services.h, source/lib/services.cpp: 
+	
+	Started on the functions to interface with the new channel class
+
+2002-09-25 09:24  ircdome
+
+	* include/exordium/: dchan.h, services.h: 
+	
+	Start of the dynamic channel class....
+
+2002-09-24 21:21  pickle
+
+	* doc/linkmap.dat: Quick fix to make the graph look a little neater
+	in neato.. James likes neato's output better than dot's, so this
+	should stop the splines going too close to the polygons
+
+2002-09-24 21:09  pickle
+
+	* doc/linkmap.dat: Fixed exordium's mod_snmp linkage map.. evil
+	netsnmp api changes :)
+
+2002-09-24 18:20  pickle
+
+	* source/lib/: conf.cpp, service.cpp: Updated to work with the
+	additions to LibAIS::ConfigParser
+
+2002-09-24 02:38  pvincent
+
+	* include/exordium/database/postgresql/dbpgsql.h,
+	source/lib/channel.cpp, source/lib/services.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp: The password is
+	tricky.. i'm trying to add .data(), the former way was
+	(char*)row[0], so it implies a char*..
+
+2002-09-23 21:08  ircdome
+
+	* source/lib/: services.cpp, user.cpp: 
+	
+	Just fixed a typo in the query.
+	
+	Passwords are still not working - seems the string is of length 0
+	after services.getPass()
+
+2002-09-23 14:25  pickle
+
+	* doc/linkmap.dat: Started playing with ranking and the subgraph
+	stuff.. then kinda got bored with it :(
+
+2002-09-23 13:53  pickle
+
+	* doc/linkmap.dat: Added a few missing bits to the graph, and added
+	some coding to denote optional libraries and which are dynamically
+	loaded shared objects and which are run-time-linked (libraries)..
+	
+	Also added a few bits which should sort out this graph working with
+	neato.	Neato generates a more compressed graph however it's a
+	little harder to read. However, since the graph is technically
+	directional (it points down the chain of linked objects) it's
+	probably better to keep it as a dot formed graph anyway.
+
+2002-09-23 06:15  pickle
+
+	* source/lib/conf.cpp: Re-ordered to be in alphabetical order
+	(keeps us coders sane if things are in logical order where
+	possible)
+
+2002-09-23 06:14  pickle
+
+	* source/lib/: conf.cpp, service.cpp: Changed a few config defines
+	over to using the "one-word" parser instead of reading in a full
+	string, since those definitions needed to be one word anyway..
+
+2002-09-23 02:09  pvincent
+
+	* source/lib/database/mysql/dbmysql.cpp: Changed c_str() for data()
+	when issuing a query
+
+2002-09-23 01:54  pvincent
+
+	* source/lib/database/mysql/dbmysql.cpp: Changed mysql_query to
+	mysql_real_query
+
+2002-09-22 22:59  pvincent
+
+	* source/lib/: channel.cpp, services.cpp, user.cpp: Added some
+	validations when doing dbSelect(), so that we dont call toInt() on
+	an empty string
+
+2002-09-22 22:32  pvincent
+
+	* source/lib/: parser.cpp, database/mysql/dbmysql.cpp: Fixed a
+	select, added protection in dbGetValue()
+
+2002-09-22 22:09  pvincent
+
+	* source/lib/database/database.cpp: Added #ifdef's so that the
+	compiler doesnt complain for unsupported DB classes
+
+2002-09-22 22:03  josullivan
+
+	* source/lib/database/database.cpp: Added a missing using statement
+
+2002-09-22 21:41  pvincent
+
+	* configure.in, include/exordium/database/mysql/dbmysql.h,
+	include/exordium/database/postgresql/dbpgsql.h,
+	source/lib/database/database.cpp: Fixed configure.in to use
+	mysql_config and pg_config, fixed dbpgsql.h to include the correct
+	file, fixed CDatabase() by adding an else which sends an error
+	since engine=<mydb> isnt present in config file
+
+2002-09-22 16:57  pvincent
+
+	* doc/Database-Public-Api, include/exordium/database/database.h:
+	Added public API reference in doc/ , made methods dbBeginTrans,
+	dbBeginCommit and dbRollback of CDatabase private since they are
+	used 'under the hood ;)'
+
+2002-09-22 16:17  pvincent
+
+	* configure.in, doc/example.conf, include/exordium/conf.h,
+	include/exordium/modules.h, include/exordium/mysql.h,
+	include/exordium/services.h, include/exordium/sql.h,
+	include/exordium/user.h, include/exordium/database/base.h,
+	include/exordium/database/database.h,
+	include/exordium/database/mysql/dbmysql.h,
+	include/exordium/database/postgresql/dbpgsql.h, source/Makefile.am,
+	source/module.cpp, source/lib/channel.cpp, source/lib/conf.cpp,
+	source/lib/parser.cpp, source/lib/services.cpp, source/lib/sql.cpp,
+	source/lib/user.cpp, source/lib/database/database.cpp,
+	source/lib/database/mysql/dbmysql.cpp,
+	source/lib/database/postgresql/dbpgsql.cpp,
+	source/modules/Makefile.am, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/oper.cpp,
+	source/modules/serv.cpp: Big commit: We are now using the new DB
+	engine. Support for MySQL and PostgreSQL, MySQL has been tested
+	somewhat, it is possible ( ;) ) that you find bugs, like a typo in
+	a query etc etc since it is not fully tested. Check the new
+	example.conf too, there's a new line. It is _very_ verbose right
+	now, all queries are shown and logged. If you find a bug plz tell
+	me :)  Basically the new configure.in has code to check if u have
+	the libs for MySQL and PostgreSQL, it will compile with support
+	according to the result. You must choose what DB to use in the
+	.conf in the sql subsection, engine=mysql or engine=postgresql,
+	i'll start writing the API's documentation ASAP..
+
+2002-09-21 22:56  pickle
+
+	* doc/linkmap.dat: Changed the example from using neato to dot..
+	dot looks better since neato squishes everything together and I'm
+	too lazy to manually assign gaps for each bubble *sigh* :(
+
+2002-09-21 12:30  pickle
+
+	* doc/linkmap.dat: Uhh, oops, fixed a few oversights :)
+
+2002-09-21 11:55  pickle
+
+	* doc/linkmap.dat: Added the kine/exordium/library linkage map
+	thingy.. after I cleaned it up a little..
+	
+	This is basically a directional graph to show how parts of the
+	software depend on each other. Objects which use something from
+	another object will point to it, such as Kine's library using
+	dlopen() to open modules - libkineircd points to libdl.
+	
+	Grab graphviz from http://www.research.att.com/sw/tools/graphviz/
+	and have a look. Perhaps a generated graph should be posted
+	somewhere on the sourceforge website to more clearly explain how
+	modular exordium is..
+
+2002-09-21 09:40  pickle
+
+	* include/exordium/modules.h, include/exordium/service.h,
+	source/lib/ircdome.cpp, source/lib/modules.cpp,
+	source/lib/services.cpp, source/modules/chan.cpp: Fixed up the stop
+	functions. They now have a reason string sent to them, and are no
+	longer required (no longer a pure virtual in the Service:: class)..
+	I don't like the way they quit, but they unload neatly.. Upon
+	services shutdown they don't seem to manage sending out their quit
+	reasons, but it's technically correct and should work okay after
+	the transition to kine is complete (whenever that will be) :(
+	
+	This is my last edit for a while..
+
+2002-09-21 08:38  pickle
+
+	* doc/example.conf, include/exordium/conf.h, source/lib/conf.cpp,
+	source/lib/ircdome.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp: Added a proper config thingy for the
+	console.. but for some reason it's not registering/registering
+	itself before the other modules (how???)
+
+2002-09-21 08:10  pickle
+
+	* include/exordium/modules.h: Serves me right for hacking at code
+	when my mind is on another task.. :(
+
+2002-09-21 08:04  pickle
+
+	* include/exordium/modules.h: Moved the modules list typedef into
+	public visibility.. I did think it was odd GCC allowed the startAll
+	helper thingy to access that typedef... :)
+
+2002-09-20 17:37  pickle
+
+	* dev.sh: The space after the #! isn't just a pretty formatting
+	thing :(
+
+2002-09-20 16:35  pickle
+
+	* doc/example.conf, source/lib/conf.cpp, source/lib/services.cpp:
+	Finished the completed configuration binding code (derived from
+	Kine's module loading code).
+	
+	Modules are now configurable, HOWEVER be aware of three things:
+	
+	 * Inherited Exordium::Service::ConfigData classes will be required
+	to copy
+	   the existing configuration definition table from
+	source/lib/service.cpp
+	   and add to THAT. The default variables will need to be filled,
+	unless the
+	   service is going to break the rules just to confuse the user. At
+	least the
+	   compiler will force you into providing defaults for those
+	values.
+	
+	 * LibAIS::ConfigParser and associated routines are designed to be
+	*PASSIVE*.
+	   In this respect, anything unconfigured that requires a value
+	must either
+	   be given a default in construction (preferred) or checked at
+	some stage
+	   prior to use to determine whether it has been configured
+	(discouraged for
+	   values other than booleans).
+	
+	 * LibAIS::ConfigParser is evolving, and currently will break
+	program flow
+	   upon a configuration file being loaded with a class it cannot
+	configure. To
+	   this end, that means missing modules in Exordium configured via
+	a full
+	   configuration statement (with the braces and in-depth values)
+	will make
+	   the configuration parser break in a seemingly ugly way. This is
+	a temporary
+	   thing and will change in future. As stated above, this will
+	eventually
+	   result simply in the configuration parser sending out a warning
+	about the
+	   module being unable to load, and continuing on.
+	
+	Good luck Exordium coders :)
+
+2002-09-20 16:10  pickle
+
+	* include/exordium/service.h: Oops! Made the variables accessable
+	to inherited classes .. uhh.. I'm an idiot :(
+
+2002-09-20 15:22  pickle
+
+	* include/exordium/modules.h, source/lib/ircdome.cpp,
+	source/lib/modules.cpp, source/lib/services.cpp: Umm, made a
+	startAll() function and moved the Services& passing into the start
+	functions proper
+
+2002-09-20 13:26  pickle
+
+	* doc/example.conf, include/exordium/service.h: Added an example
+	configuration thingy to the game module to show the two Jameses how
+	it works :) This involved a namespace modification and a few fixes
+	to service.h
+
+2002-09-20 09:53  ircdome
+
+	* source/: lib/services.cpp, modules/Makefile.am, modules/oper.cpp:
+	
+	
+	Converted the Oper:: module and enabled its compilation in the
+	makefiles
+	
+	For some reason the validate oper function isn't working as
+	desired, basically it tries to validate *every* online person, and
+	as a consequence of this ends up killing most of them because they
+	aren't authorised to become IRC Operators :)
+
+2002-09-20 03:33  pickle
+
+	* source/lib/: conf.cpp, modules.cpp: Changed 'simonb's to
+	'pickle's to reflect the repository change from James' place to
+	sourceforge..... finally... ;)
+
+2002-09-19 22:40  ircdome
+
+	* source/modules/: Makefile.am, serv.cpp: 
+	
+	Ok ok, slap my wrists my last cvs commit was broken, but I blame
+	automake for not letting me comment things out :-(
+	
+	Anyway i've fixed the Serv module, so everything is happy
+
+2002-09-19 22:02  ircdome
+
+	* include/exordium/services.h, source/lib/services.cpp,
+	source/modules/Makefile.am, source/modules/serv.cpp: 
+	
+	Added a getAccess() to Services:: , because sometimes we need to
+	find out what access a user has to a service, even when they aren't
+	online , thus we can't use findUser().
+	
+	Started converting the serv module over... still quite a few errors
+	so it's commented out of source/modules/Makefile.am , uncomment it
+	at your own peril :-)
+
+2002-09-19 20:42  josullivan
+
+	* dev.sh: commented out aclocal because it overwrites the one in
+	cvs
+
+2002-09-19 11:48  ircdome
+
+	* source/Makefile.am: 
+	
+	Namechange... lib_ex -> mod_exordim.so
+
+2002-09-19 11:46  pickle
+
+	* include/exordium/service.h, source/lib/modules.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp: Moved services
+	reference (which is now a pointer, unfortunately) to being
+	initialised upon start(). This is because when the module will be
+	initialised, services won't have - this works identical to how
+	kine's module system works now, the start() starts the module, and
+	init fires it up and gets it ready (and feeds services some much
+	needed information about the module)...
+
+2002-09-19 11:42  ircdome
+
+	* configure.in, dev.sh, include/exordium/config.h.in,
+	include/exordium/services.h, source/Makefile.am,
+	source/lib/modules.cpp, source/lib/services.cpp,
+	source/modules/Makefile.am: 
+	
+	Tidied up the automake structure... add'd some flags and stuff..
+	
+	modules are now in source/modules/.libs etc .. (sorry!)
+
+2002-09-19 11:01  pickle
+
+	* include/exordium/modules.h, include/exordium/service.h,
+	source/lib/ircdome.cpp, source/lib/modules.cpp,
+	source/lib/services.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp: Shed the hard-coded names and name passing
+	upon module initialisation in favour of using the defaults within
+	the configuration data
+
+2002-09-19 10:17  pickle
+
+	* .cvsignore, include/exordium/.cvsignore, source/.cvsignore: That
+	should be the last of the little unknown buggers... Oh how I hate
+	them!! :)
+
+2002-09-19 10:15  pickle
+
+	* doc/example.conf, include/exordium/conf.h,
+	include/exordium/service.h, source/lib/conf.cpp,
+	source/lib/service.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/oper.cpp: Start of the
+	configuration data integration, woop woop!
+
+2002-09-19 10:03  pickle
+
+	* source/Makefile.am: Switched to using kineircd's .la file so it
+	*theoretically* does the -rpath stuff automatically... :(
+
+2002-09-18 20:21  ircdome
+
+	* aclocal.m4, configure.in, ltmain.sh: 
+	
+	Fixed some things I forgot
+
+2002-09-18 20:06  ircdome
+
+	* COPYING, ChangeLog, INSTALL, Makefile.am, Makefile.in, NEWS,
+	aclocal.m4, config.guess, config.sub, configure.in, depcomp,
+	dev.sh, mkinstalldirs, source/Makefile.am, source/Makefile.in,
+	source/lib/Makefile.am, source/lib/Makefile.in,
+	source/modules/Makefile.in: 
+	Ok - yes its a big commit!
+	
+	Basically i've changed over to using automake/libtool etc etc etc
+	etc.
+	
+	I haven't used lots of recursing makefiles like we used to because
+	it seemed a silly thing to do (apparantly recursive makefiles are
+	bad according to GNU ;-) so the source/Makefile.am controls the
+	building of all parts of services... this also allows us to let it
+	nicely link all the libraries together
+	
+	All the modules have been renamed to lib_note.so, etc. (including
+	mod_exordium -> lib_mod_exordium.so) and *all* of these are now
+	placed in source/.libs ..
+	
+	Have fun..
+	
+	(Oh btw my version of automake is .. 1.6.3 test and let me know if
+	you have probs)
+
+2002-09-18 19:20  ircdome
+
+	* source/lib/: Makefile.am, Makefile.in: 
+	
+	Completed conversion to automake type stuff... need to fix the
+	other dirs, doing it now :-)
+
+2002-09-18 18:17  ircdome
+
+	* configure.in, dev.sh, missing: 
+	
+	Oh oh - look YET ANOTHER FILE :)
+
+2002-09-18 18:14  ircdome
+
+	* config.guess, config.sub, install-sh: 
+	
+	According to gnu's docs these files are required for configure ...
+	well WE'D BETTER JUST LISTEN TO THEM THEN HAD'T WE????? :-(
+
+2002-09-18 18:08  ircdome
+
+	* configure.in, autoconf/.cvsignore, autoconf/configure.in,
+	source/lib/services.cpp: 
+	Moved the configure.in into the root... and stuff
+
+2002-09-18 16:36  ircdome
+
+	* source/: lib/parser.cpp, lib/services.cpp, modules/Makefile.in,
+	modules/oper.cpp: 
+	
+	Fixed various bits.. still trying to find the null pointer bit tho
+	:-)
+
+2002-09-18 16:01  pickle
+
+	* source/lib/parser.cpp: ARGH!! You don't know how insane the lack
+	of that space made me!!!! :(
+
+2002-09-18 12:39  ircdome
+
+	* source/lib/user.cpp: 
+	
+	Temporarily fixed User::modnick - it was always returning false
+	thus not initiating an identification request for a registered
+	nick.
+
+2002-09-18 11:40  pickle
+
+	* doc/example.conf, include/exordium/conf.h,
+	include/exordium/log.h, include/exordium/modules.h,
+	include/exordium/services.h, source/lib/ircdome.cpp,
+	source/lib/modules.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp: Moved serviceM (modules list) from
+	Services:: to Config::, and
+	Services::loadModule()/Services::unloadModule() to Modules::. A few
+	lines of code needed changing to reflect the relocation, as well as
+	a few header file modifications to avoid preinitialisation of
+	classes (grr I hate that, I wish CPP could be smarter)..
+	
+	Nearly there, the service throwing stuff is temporary, that will
+	need to be done through start() since the Services:: instance won't
+	actually exist at configuration time because of the way kine
+	works.. But that's okay :)
+
+2002-09-18 11:19  ircdome
+
+	* autoconf/configure.in, source/lib/parser.cpp,
+	source/lib/user.cpp, source/modules/note.cpp: 
+	
+	Note is now converted over and loading correctly.
+	
+	This is an interim cvs - do not update.
+
+2002-09-17 22:09  ircdome
+
+	* source/: lib/services.cpp, modules/Makefile.in, modules/nick.cpp:
+	
+	
+	Finished converting the nick module over to the new User& api
+	
+	It now compiles correctly etc
+
+2002-09-17 20:42  josullivan
+
+	* Makefile.in, source/Makefile.in, source/lib/Makefile.in,
+	source/modules/Makefile.in: make will now quit compiling on an
+	error.. and I also fixed clean and distclean
+
+2002-09-17 17:23  pickle
+
+	* include/exordium/user.h: Why is it the small things that I screw
+	up so easily? :(
+
+2002-09-17 17:19  pickle
+
+	* include/exordium/user.h: Fixed embarrasingly stupid bug :(
+
+2002-09-17 14:45  pickle
+
+	* include/exordium/modules.h, include/exordium/service.h,
+	source/lib/modules.cpp, source/lib/services.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp: Added start and
+	stop functions. Can someone have a look at the fixed up
+	Modules::Module::~Module? (modules.cpp) - it seems a little ill, I
+	think there's a delete on services prior to then, I don't know..
+	Perhaps James would know better??
+
+2002-09-17 13:14  pickle
+
+	* source/lib/modules.cpp: Added a hard delete function upon
+	Modules:: destruction :(
+
+2002-09-17 13:04  pickle
+
+	* source/lib/parser.cpp: Another fix..
+
+2002-09-17 12:52  pickle
+
+	* source/lib/parser.cpp: Added a quick fix..
+	
+	Why?
+	
+	Let's examine what was happening:
+	
+	You'd execute a command in a channel:	.access
+	
+	Services would be 'smart' and send a message from the target of the
+	message, but the target was a channel! So the channel can't talk
+	the remote server would end up ignoring it and trying to KILL it :(
+	
+	So anyway, yes.. a quick fix :) This is why game's commands aren't
+	working - something is making services think game is offline... I'm
+	too lazy to bother with it just now..
+
+2002-09-17 12:40  pickle
+
+	* include/exordium/service.h, source/lib/modules.cpp,
+	source/lib/services.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/oper.cpp,
+	source/modules/serv.cpp, source/modules/stats.cpp,
+	source/modules/vote.cpp: Added a static module info structure..
+	currently only contains minor version info, someone should probably
+	extend it later to include author, descriptor, copyright..
+	whatever..
+
+2002-09-17 10:33  pickle
+
+	* source/lib/: modules.cpp, services.cpp: Quick cleanup..
+
+2002-09-17 10:26  pickle
+
+	* include/exordium/modules.h, source/lib/Makefile.in,
+	source/lib/modules.cpp: Moved module routines out into a separate
+	file instead of being inlines in the class.. they're not used
+	enough and are a bit 'bulky' to be inlined anyway :(
+
+2002-09-17 07:45  pickle
+
+	* include/exordium/module.h, include/exordium/modules.h,
+	include/exordium/service.h, include/exordium/services.h,
+	source/lib/services.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/oper.cpp,
+	source/modules/serv.cpp, source/modules/stats.cpp,
+	source/modules/vote.cpp: Removed the Module:: class, renamed the
+	Core:: class to the Modules:: class and broke it into its own
+	header file. Changed the interface so that Module:: wasn't
+	requried, since back when it was the names given to modules were
+	hard-coded (ewwwwwwwwwww!), so it was unnecessary. Also, the double
+	new call within modules has been changed to reflect this. It should
+	work, I've given it a quick test but not a real test (since I can't
+	connect to the database server just yet while James installs
+	GenToo)..
+	
+	The work continues..
+
+2002-09-17 05:22  pickle
+
+	* source/lib/services.cpp: Added additional parenthesis to assert
+	assignment and boolean evaluation etc etc
+
+2002-09-17 05:20  josullivan
+
+	* source/modules/: chan.cpp, nick.cpp: Modified in line with the
+	new services::log arguments
+
+2002-09-17 05:16  pickle
+
+	* source/lib/channel.cpp: Added additional parenthesis to assert an
+	assignment and boolean evalution *sigh*
+
+2002-09-17 04:28  josullivan
+
+	* include/exordium/services.h, source/lib/services.cpp: Modified
+	Services::log to take User as its first argument
+
+2002-09-17 03:24  pvincent
+
+	* source/lib/: parser.cpp, user.cpp: Fixed validateOper on new
+	nick, was passing empty string..
+
+2002-09-17 00:45  josullivan
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/parser.cpp, source/lib/services.cpp,
+	source/lib/user.cpp, source/modules/bot.cpp,
+	source/modules/chan.cpp: 1) Changed doHelp to take User as it's
+	first argument instead of a nick string 2) Removed getLanguage from
+	services and implemented it in user 3) Updated modules to reflect
+	changes to doHelp
+
+2002-09-16 21:59  pvincent
+
+	* include/exordium/channel.h, include/exordium/parser.h,
+	include/exordium/services.h, include/exordium/user.h,
+	source/lib/channel.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp, source/lib/user.cpp:
+	Added table onlineopers (functionnal, maybe we'll have to add some
+	fields in it.., mode 'o' now checked on new user (NICK), chans are
+	deleted from onlinechan upon part if empty
+
+2002-09-16 20:32  josullivan
+
+	* AUTHORS: Added my details
+
+2002-09-16 11:49  ircdome
+
+	* AUTHORS, source/lib/services.cpp: 
+	
+	Just some small changes.
+
+2002-09-16 10:12  pickle
+
+	* include/exordium/service.h: Moved services and myName variables
+	into the Service:: class (why repeat ourselves?).. this is the
+	start of using inheritance in a nice polite way to avoid repeated
+	code and minimise maintenance..
+
+2002-09-16 10:10  pickle
+
+	* source/lib/services.cpp: Added error message output to the
+	socket.connect() error (even tho it's most likely not an error but
+	a warning saying the operation is in progress.. the socket is
+	non-blocking remember)
+
+2002-09-16 09:33  pickle
+
+	* source/lib/user.cpp: Added extra parenthesis around a while()
+	statement to ensure assignment and boolean evaluation
+
+2002-09-16 09:25  pickle
+
+	* source/modules/Makefile.in: Commented out nick/note since they're
+	still incomplete... No point trying to compile unfinished work in
+	the CVS if it's going to break the compile :(
+
+2002-09-16 09:24  pickle
+
+	* include/exordium/conf.h, source/lib/conf.cpp: Re-ordered the
+	definitions in the configuation class and table to be in
+	alphabetical order (this IMHO makes it much much *MUCH* easier to
+	maintain).  Also added defaults for parameters which do not have
+	defaults since the LibAIS::ConfigParser routines are passive by
+	nature - they do not in any way guarantee a value being set or not
+
+2002-09-16 09:18  pickle
+
+	* source/lib/services.cpp: Added a return to shut gcc up :( James,
+	you should reconsider that function's design ..
+
+2002-09-16 09:17  pickle
+
+	* source/lib/channel.cpp: Added additional parenthesis around an
+	while() statement to assert assignment and boolean evaluation
+
+2002-09-16 07:32  josullivan
+
+	* source/lib/services.cpp: Changed string to String
+
+2002-09-16 03:42  pvincent
+
+	* include/exordium/channel.h, include/exordium/user.h,
+	source/lib/channel.cpp, source/lib/parser.cpp, source/lib/user.cpp:
+	Completed user mode change, now updates table onlineclients
+
+2002-09-16 01:01  pvincent
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/services.cpp: update DB on nick change, client quit,
+	server squit
+
+2002-09-16 00:35  pickle
+
+	* autoconf/configure.in: Commented out troublesome getloadavg test
+	(this may be simply an autoconf 2.54 bug though)
+
+2002-09-15 21:28  pickle
+
+	* source/lib/conf.cpp: Added a few comments about a few of the
+	config entries, since they're temporary and kine already provides
+	some of them (servicesHostname and servicesDescription technically
+	could already be daemon.getConfig().getOptionsServerName() and
+	daemon.getConfig().getOptionsDescription() respectively..
+
+2002-09-15 17:51  pickle
+
+	* include/exordium/sql.h, source/lib/services.cpp,
+	source/modules/Makefile.in: Made Sql::makeSafe() static since it
+	needs no access to its own class
+
+2002-09-15 17:46  pvincent
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/services.cpp: Added UPDATE query on nick change, added
+	stripping for @+ together
+
+2002-09-15 15:51  pickle
+
+	* include/exordium/channel.h, include/exordium/conf.h,
+	include/exordium/ircdome.h, include/exordium/log.h,
+	include/exordium/mysql.h, include/exordium/parser.h,
+	include/exordium/service.h, include/exordium/services.h,
+	include/exordium/sql.h, include/exordium/user.h,
+	source/lib/channel.cpp, source/lib/conf.cpp,
+	source/lib/ircdome.cpp, source/lib/log.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp, source/lib/user.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp: Fixed stuff
+	necessary for new kine (much of kine was broken out to libais).  I
+	have also cleaned up a few headers, and removed any using
+	<whatever>'s from headers I saw (naughty James, naughty!)...
+	
+	Note: You will need the latest libais and kineircd to get this to
+	compile now!
+
+2002-09-15 14:33  ircdome
+
+	* source/modules/nick.cpp: 
+	
+	More changes on converting nick.
+
+2002-09-15 11:08  ircdome
+
+	* source/modules/: Makefile.in, nick.cpp: 
+	
+	Broken Commit - Just a safety thing incase my hard-drive blows up
+	and shatters into little tiny fragments before i get chance to
+	commit again (.. well you never know)
+	
+	In the middle of converting the nickname module over to ptr
+	thingies :(
+
+2002-09-15 09:07  pickle
+
+	* source/lib/parser.cpp: Did a double-up on the string tokens
+	creation because of the dodgey way channel commands are thrown to
+	services :(
+
+2002-09-15 04:07  pvincent
+
+	* source/lib/services.cpp: Removing debug stuff (...)
+
+2002-09-15 04:03  pvincent
+
+	* source/lib/: parser.cpp, services.cpp: Fixed the cant find user
+	error on sjoin and fixed inconsistency in nickname passing
+	(sometimes passed as myname and other times @myname)
+
+2002-09-15 02:54  pvincent
+
+	* doc/example.conf, include/exordium/services.h,
+	source/lib/conf.cpp: Modified HOSTNAME to SERVICESHOSTNAME and
+	DESCRIPTION to SERVICESDESCRIPTION for the sake of clarity. Updated
+	the example.conf
+
+2002-09-15 01:02  pvincent
+
+	* doc/example.conf, include/exordium/conf.h, source/lib/conf.cpp,
+	source/lib/services.cpp: Added options HOSTNAME, DESCRIPTION,
+	CONSOLEHOSTNAME and CONSOLEDESCRIPTION. Updated the example.conf
+
+2002-09-15 00:33  pvincent
+
+	* source/lib/parser.cpp: Forgot to remove a debug cout (...)
+
+2002-09-15 00:31  pvincent
+
+	* source/lib/: parser.cpp, services.cpp: Fixed
+	services::isAuthorised() to work in case the table is empty (ie
+	initial start)
+
+2002-09-14 22:45  ircdome
+
+	* source/: lib/services.cpp, modules/Makefile.in, modules/chan.cpp:
+	
+	
+	Converted chan over to use the new User stuff
+	
+	There is an error with in channel parsing (i.e .access in a
+	channel) will crash services, but according to the backtrace this
+	is an error in game (can you look simon?)
+	
+	James.
+
+2002-09-14 21:04  ircdome
+
+	* source/: lib/services.cpp, modules/bot.cpp: 
+	
+	Ok.
+	
+	For the time being I have had to remove the self registration of
+	modules (i.e where they use registerService) because for some
+	FUCKED up reason the queueAdd's that they are doing are getting a
+	higher priority then the ALREADY SENT queueadd's from services.. so
+	we end with a server chatter like so:
+	
+	:NICK game BLAH BLAH BLAH :NICK love BLAH BLAH BLAH :PASS PASS :TS
+	:SERVER services.ircdome.org
+	
+	Screwed aye? I couldn't figure out - perhaps I'm just too tired.
+
+2002-09-14 20:52  pvincent
+
+	* include/exordium/conf.h, source/lib/conf.cpp,
+	source/lib/services.cpp: Added UplinkPort config option and
+	un-hardcoded host/port
+
+2002-09-14 20:41  ircdome
+
+	* source/lib/: parser.cpp, services.cpp: [no log message]
+
+2002-09-14 19:32  ircdome
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/services.cpp, source/modules/bot.cpp: 
+	
+	Fixed the previous CVS's compiler errors
+
+2002-09-14 16:43  ircdome
+
+	* include/exordium/services.h, source/lib/channel.cpp,
+	source/lib/ircdome.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp: 
+	
+	Broken CVS - don't check out unless you want to fix a few bugs.
+
+2002-09-14 16:25  ircdome
+
+	* include/exordium/nickname.h, source/lib/Makefile.in,
+	source/lib/nickname.cpp: 
+	
+	Removed the Nickname:: class.
+
+2002-09-14 16:24  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/nickname.cpp, source/lib/services.cpp,
+	source/lib/user.cpp: 
+	
+	Finished the nickname:: disecting !
+
+2002-09-14 15:31  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/services.cpp, source/lib/user.cpp: 
+	
+	Have shifted a lot more Nickname:: functions over into User::
+	
+	*warning* i haven't removed the unresolved defines in nickname.h so
+	this will proberly generate unresolved symbols and stuff..  i'll do
+	that shortly after i've finished the last 12 or so functions in
+	nickname::
+
+2002-09-14 12:50  ircdome
+
+	* source/lib/services.cpp: 
+	
+	:-)
+
+2002-09-14 10:15  pickle
+
+	* source/lib/parser.cpp: Umm.. not the origin, the newNick simon..
+	the NEW nick :(
+
+2002-09-14 10:06  pickle
+
+	* source/lib/parser.cpp: I think that should have added the client
+	properly...
+
+2002-09-14 10:02  pickle
+
+	* include/exordium/services.h, source/lib/services.cpp: OH I SEE..
+	oh well, needed cleaning up anyway - two iterations through the
+	list to add a user, pfft :( That addUser() thingy would probably be
+	best suited to being inline, or inside addClient() (to avoid people
+	getting confused like I just did)
+
+2002-09-14 09:59  pickle
+
+	* include/exordium/services.h, source/lib/parser.cpp,
+	source/lib/services.cpp: Fiddled with addUser()'n stuff :( James
+	you need to add the SQL stuff, read the comment :(
+
+2002-09-14 09:52  pickle
+
+	* source/lib/parser.cpp: Added a few sanity checky thingies, and
+	cleaned up a few thingies as I went.. but otherwise it really needs
+	something to ADD the user to the users list James :)
+
+2002-09-14 05:48  pickle
+
+	* source/lib/parser.cpp: Correction necessary to compile (thanks to
+	Peter!)
+
+2002-09-13 18:03  ircdome
+
+	* include/exordium/parser.h, source/lib/parser.cpp,
+	source/lib/user.cpp: 
+	
+	This commit is broken.
+	
+	(& -> * crap)
+	
+	We couldn't obtain the user pointer at the top of Parser:: because
+	you aren't guaranteed to be working with a user (could be a server)
+
+2002-09-13 14:03  ircdome
+
+	* source/lib/services.cpp: 
+	
+	Temp fix only .. will remove later..
+
+2002-09-13 13:37  pickle
+
+	* source/lib/: nickname.cpp, services.cpp: Changed the utils.h
+	include to point to the REAL utils.h (kine's)
+
+2002-09-13 13:33  pickle
+
+	* include/exordium/channel.h, include/exordium/conf.h,
+	include/exordium/config.h.in, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/module.h,
+	include/exordium/mysql.h, include/exordium/nickname.h,
+	include/exordium/parser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/sql.h,
+	include/exordium/user.h, source/module.cpp, source/lib/channel.cpp,
+	source/lib/conf.cpp, source/lib/ircdome.cpp, source/lib/log.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp, source/lib/user.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp: Okay.. fixed the
+	boiler plates once and for all (I hope)
+
+2002-09-13 13:22  pickle
+
+	* include/exordium/utils.h: Removed because it's really a part of
+	kine.. and this was outdated I think..
+
+2002-09-13 13:12  pickle
+
+	* source/modules/config.log: Removed this weird file (from
+	autoconf? weird that this was here..)
+
+2002-09-13 13:05  pickle
+
+	* source/modules/Makefile.in: Uncommented game/love - they should
+	be working now.
+
+2002-09-13 12:48  pickle
+
+	* include/exordium/user.h: Added an equal-to operator for my own
+	sanity..
+
+2002-09-13 11:32  pickle
+
+	* include/exordium/nickname.h, include/exordium/parser.h,
+	include/exordium/service.h, source/lib/parser.cpp,
+	source/modules/bot.cpp: Started moving over to using User:: in
+	modules (and StringTokens::)..	HOWEVER.. JAMES: FIX YOUR
+	UNRESOLVED SYMBOLS - How much code is missing from the
+	repository?!?!
+
+2002-09-13 10:51  pickle
+
+	* include/exordium/user.h: Okay, I got a little excited. Since I
+	know you use -Werror james i'll stop it from generating errors.
+	
+	You should still use const more :(
+
+2002-09-13 10:47  pickle
+
+	* include/exordium/user.h: Got ANGRY and fixed a few things which
+	should have been const'd.. THEY WERE ALSO COPYING?!?!?!?!?!
+	WHY?!?!?!?! :(
+
+2002-09-13 10:10  pickle
+
+	* include/exordium/: service.h, services.h: Moved the init function
+	macro defines into service.h
+
+2002-09-13 02:43  pickle
+
+	* source/Makefile.in: Removed EVIL flags...
+
+2002-09-12 23:23  pickle
+
+	* doc/example.conf: Added an example KineIRCd configuration file
+	snippet
+
+2002-09-12 12:37  ircdome
+
+	* include/exordium/services.h, source/lib/services.cpp: 
+	
+	More Nickname:: depreciation
+
+2002-09-12 11:54  ircdome
+
+	* include/exordium/user.h, source/lib/user.cpp: 
+	
+	Moved more things accross, added getHost() etc :(
+
+2002-09-12 11:44  ircdome
+
+	* source/lib/user.cpp: 
+	
+	Forget to add the description for addCheckIdentify() :-(
+
+2002-09-12 11:43  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/services.cpp, source/lib/user.cpp: 
+	
+	More Nickname:: depreciation :-)
+
+2002-09-12 11:23  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/services.cpp, source/lib/user.cpp: 
+	
+	Depreciated more nickname functions.. shifted a few non nickname
+	functions into services (why where they in Nickname:: WHY PLEASE
+	TELL ME ?!?!! :-( )
+
+2002-09-12 10:59  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/services.cpp, source/lib/user.cpp,
+	source/modules/Makefile.in: 
+	
+	Ugg I hate vi.. anyway
+	
+	added services::setNick to modify the record for a user's nickname
+	..
+	
+	changed setnick to take a User:: as a parm as opposed to a string
+
+2002-09-12 09:29  ircdome
+
+	* include/exordium/services.h, include/exordium/userbase.h,
+	source/lib/Makefile.in, source/lib/nickname.cpp,
+	source/lib/parser.cpp, source/lib/services.cpp,
+	source/lib/userbase.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp: 
+	
+	Removed the UserBase:: class and moved the map to inside
+	Services::, along with the addUser,findUser and delUser functions
+
+2002-09-11 22:18  ircdome
+
+	* include/exordium/parser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/user.h,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/user.cpp, source/lib/userbase.cpp,
+	source/modules/nick.cpp: 
+	
+	More moving towards lovley nickname objects !
+	
+	You'll see that a pointer to the nickname class is now inside
+	Parser:: I have not yet replaced origin with it.. as I intend to
+	run both Nickname api's (being the services.getNickname()) crap and
+	the new ptr->crap methods along side each other until the
+	transition of functions from Nickname:: -> User:: is complete.
+
+2002-09-11 20:31  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	include/exordium/userbase.h, source/lib/Makefile.in,
+	source/lib/nickname.cpp, source/lib/services.cpp,
+	source/lib/user.cpp, source/lib/userbase.cpp,
+	source/modules/chan.cpp: 
+	
+	Ok!
+	
+	I have created the UserBase:: and User:: class ... its kinda hard
+	to explain what they are, the code itself is well documentated ..
+	and makes good sense to me!
+	
+	In the next commit you'll see Nickname:: functions ported over to
+	User:: functions allowing us to do things like User *ptr =
+	services.clients.findUser("james"); ptr->sendMessage("fooo","chan")
+	
+	... as an example of course :)
+	
+	James.
+
+2002-09-10 22:59  pickle
+
+	* source/: lib/Makefile.in, modules/Makefile.in: Got angry with
+	having to edit out the stupid flags from the makefiles all the
+	time.. so ONCE AND FOR ALL, bye bye..
+	
+	Sorry James, looks like you'll have to add your whacky gcc 3.2
+	stuff to CXXFLAGS and ./configure again :)
+
+2002-09-10 22:53  pickle
+
+	* source/services.conf: Removed the (now redundant) services
+	configuration file
+
+2002-09-10 19:56  ircdome
+
+	* source/lib/services.cpp: 
+	
+	Just did some extra commenting and stuff.
+
+2002-09-10 19:15  ircdome
+
+	* include/exordium/services.h, source/lib/channel.cpp,
+	source/lib/services.cpp: 
+	
+	Fixed parser bug relating to RX/TX counters.
+	
+	More info at
+	https://sourceforge.net/tracker/?func=detail&atid=498275&aid=605718&group_id=61753
+
+2002-09-10 17:57  ircdome
+
+	* source/lib/channel.cpp: 
+	
+	A bit more sql tidying :)
+
+2002-09-10 17:28  ircdome
+
+	* CHANGES, IDEAS, README, TODO: 
+	
+	Just some documentation updating...
+
+2002-09-10 16:21  ircdome
+
+	* source/lib/channel.cpp: 
+	
+	Tidied up some of the sql queries.
+
+2002-09-10 08:45  ircdome
+
+	* include/exordium/services.h, include/exordium/user.h,
+	source/lib/parser.cpp, source/lib/services.cpp,
+	source/modules/serv.cpp: 
+	
+	This is a commit with changes occured whilst we waited for
+	sourceforge to import our existing cvs.
+	
+	From memory, there are several bug fixes, as well as the initial
+	creation of the Users:: class, a step towards using true objects
+	for nicknames.
+	
+	James
+
+2002-09-04 21:13  james
+
+	* AUTHORS, IDEAS, source/lib/channel.cpp, source/modules/chan.cpp:
+	[no log message]
+
+2002-09-04 15:00  james
+
+	* include/exordium/channel.h, include/exordium/conf.h,
+	include/exordium/config.h.in, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/module.h,
+	include/exordium/mysql.h, include/exordium/nickname.h,
+	include/exordium/parser.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/sql.h,
+	source/module.cpp, source/lib/channel.cpp, source/lib/conf.cpp,
+	source/lib/ircdome.cpp, source/lib/log.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp: 
+	
+	Added license headers... license file... etc etc :(
+
+2002-08-31 22:24  simonb
+
+	* autoconf/configure.in: Added the "so-far" on exordi8 (the card
+	game), the card routines (still more could be done but they're
+	enough of a proof of concept for me) and a few makefile
+	additions/changes to suit
+
+2002-08-31 19:45  simonb
+
+	* TODO: Added a thing todo, duh :)
+
+2002-08-31 18:29  simonb
+
+	* autoconf/configure.in, source/modules/Makefile.in: Moved the love
+	module into its own little house :)
+
+2002-08-29 14:13  james
+
+	* source/lib/parser.cpp: [no log message]
+
+2002-08-29 12:32  simonb
+
+	* source/modules/nick.cpp: Fixed the infinite loop thingy
+
+2002-08-29 11:30  james
+
+	* include/exordium/nickname.h, source/lib/channel.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/modules/nick.cpp: [no log message]
+
+2002-08-29 10:57  simonb
+
+	* autoconf/configure.in, source/Makefile.in,
+	source/modules/Makefile.in: Added entries for the
+	source/modules/game directory and added sub-directory recursion to
+	the existing makefiles. Yes, you can now make the entire thing from
+	the source directory, give or take several thousand edits you need
+	to make to avoid James' customised setup *GRRRRRRRR*
+
+2002-08-25 21:39  james
+
+	* TODO: f
+
+2002-08-25 21:35  james
+
+	* CHANGES, IDEAS, TODO, source/lib/parser.cpp,
+	source/modules/chan.cpp, source/modules/serv.cpp: 
+	
+	Forgotton :(
+
+2002-08-25 05:38  james
+
+	* TODO, include/exordium/services.h, source/Makefile.in,
+	source/lib/Makefile.in, source/lib/channel.cpp,
+	source/lib/nickname.cpp, source/lib/services.cpp,
+	source/lib/sql.cpp, source/modules/Makefile.in,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/serv.cpp: [no log message]
+
+2002-08-24 20:39  james
+
+	* CHANGES: [no log message]
+
+2002-08-24 20:31  james
+
+	* CHANGES: [no log message]
+
+2002-08-24 20:25  james
+
+	* TODO: [no log message]
+
+2002-08-24 19:27  james
+
+	* AUTHORS, IDEAS: [no log message]
+
+2002-08-24 19:22  james
+
+	* TODO, CHANGES: [no log message]
+
+2002-08-24 18:19  james
+
+	* source/modules/nick.cpp: [no log message]
+
+2002-08-24 18:05  james
+
+	* source/modules/: chan.cpp, nick.cpp: [no log message]
+
+2002-08-23 16:08  james
+
+	* utils/logger/logger.php: 
+	
+	Ok, lets try ADDING the file before commiting :)
+
+2002-08-23 16:07  james
+
+	* include/exordium/channel.h, source/lib/channel.cpp,
+	source/modules/chan.cpp, utils/email-sender/mailer.php: 
+	
+	Added /msg chan set #channel log true/false to active/deactive
+	channel reports
+	
+	Added php script to generate channel log emails
+
+2002-08-23 10:52  james
+
+	* include/exordium/nickname.h, source/lib/nickname.cpp,
+	source/lib/parser.cpp, source/modules/nick.cpp: [no log message]
+
+2002-08-23 10:24  james
+
+	* source/lib/nickname.cpp, source/lib/services.cpp,
+	source/modules/Makefile.in, source/modules/serv.cpp,
+	source/modules/stats.cpp, source/modules/vote.cpp,
+	utils/mailer/mailer.php: [no log message]
+
+2002-08-22 21:43  simonb
+
+	* include/exordium/mysql.h, include/exordium/sql.h,
+	source/lib/sql.cpp: Half optimised the sql query thingy (by not
+	constantly copying strings), half made it 8-bit clean :) Which also
+	kinda optimised it by removing recurring strlen() calls
+
+2002-08-22 21:33  james
+
+	* include/exordium/mysql.h, source/lib/nickname.cpp,
+	source/modules/nick.cpp: 
+	
+	Dunno :)
+
+2002-08-22 21:09  james
+
+	* include/exordium/nickname.h, source/lib/nickname.cpp,
+	source/lib/parser.cpp, source/modules/nick.cpp,
+	source/modules/serv.cpp: 
+	
+	Boo!
+
+2002-08-22 11:48  james
+
+	* source/: module.cpp, lib/channel.cpp, lib/conf.cpp,
+	lib/ircdome.cpp, lib/log.cpp, lib/nickname.cpp, lib/parser.cpp,
+	lib/services.cpp, lib/sql.cpp, modules/bot.cpp, modules/chan.cpp,
+	modules/nick.cpp, modules/note.cpp, modules/oper.cpp,
+	modules/serv.cpp: 
+	
+	Formated.. :)
+
+2002-08-22 09:49  james
+
+	* source/Makefile.in: 
+	
+	Modified library flag thingies :(
+
+2002-08-22 09:48  james
+
+	* source/lib/nickname.cpp: 
+	
+	Fixed registration error (incorrect mysql count)
+
+2002-08-20 10:02  simonb
+
+	* source/: lib/Makefile.in, modules/Makefile.in: Ordered the source
+	files in the makefile in alphabetical order for my own personal
+	sanity on slow compiles :( :(
+
+2002-08-20 10:00  james
+
+	* dev.sh: [no log message]
+
+2002-08-20 09:58  james
+
+	* dev.sh: 
+	test
+
+2002-08-20 09:16  simonb
+
+	* source/module.cpp: Switched the mod_exordium namespace to being
+	an anonymous one - it's totally safe now.
+
+2002-08-18 16:24  james
+
+	* source/lib/nickname.cpp, source/lib/services.cpp,
+	source/lib/sql.cpp, utils/mailer/mailer.php: 
+	
+	:) :) :) :)
+
+2002-08-17 16:03  james
+
+	* source/lib/services.cpp: 
+	
+	Fixed ! :)
+	
+	Thank you simon
+
+2002-08-17 14:13  james
+
+	* include/exordium/services.h, source/lib/services.cpp: 
+	
+	Fixed some things :(
+
+2002-08-16 21:22  simonb
+
+	* include/exordium/parser.h: feh
+
+2002-08-16 21:09  simonb
+
+	* source/modules/chan.cpp: converted - happy birthday james..
+
+2002-08-16 21:05  simonb
+
+	* source/modules/serv.cpp: converted and what not..
+
+2002-08-16 21:01  simonb
+
+	* source/modules/nick.cpp: blah blah blah converted
+
+2002-08-16 20:56  simonb
+
+	* source/modules/note.cpp: done.. converted.. blah blah
+
+2002-08-16 20:48  simonb
+
+	* source/modules/oper.cpp: converted blah
+
+2002-08-16 20:44  simonb
+
+	* source/modules/bot.cpp: converted blah blah
+
+2002-08-16 13:57  simonb
+
+	* include/exordium/ircdome.h: *pout* :(
+
+2002-08-16 13:15  simonb
+
+	* include/exordium/services.h, source/lib/services.cpp: Made the
+	module init thingy also pass on a reference to the instance of
+	services
+
+2002-08-16 12:59  simonb
+
+	* include/exordium/services.h, source/lib/services.cpp: blah blah
+	blah
+
+2002-08-16 12:58  simonb
+
+	* source/module.cpp: Fixed a boo boo :(
+
+2002-08-16 12:51  simonb
+
+	* include/exordium/ircdome.h, source/lib/ircdome.cpp: converted..
+	blah blah blah :(
+
+2002-08-16 12:44  simonb
+
+	* include/exordium/nickname.h, source/lib/nickname.cpp: Fixed,
+	converted.. whatever.. lazy bum James :(
+
+2002-08-16 12:38  simonb
+
+	* include/exordium/channel.h, source/lib/channel.cpp: Fixed,
+	converted, and whatever else'd.. :)
+
+2002-08-16 12:18  simonb
+
+	* include/exordium/parser.h, source/lib/parser.cpp: Fixed/convertd
+	:)
+
+2002-08-16 11:38  simonb
+
+	* include/exordium/services.h, source/module.cpp,
+	source/lib/services.cpp: Started fixing up the services class...
+	but it seems the other classes need fixing before I can continue..
+
+2002-08-16 10:48  simonb
+
+	* include/exordium/sql.h, source/lib/sql.cpp: Okay okay, the SQL
+	thingy seems fixed now :)
+
+2002-08-16 10:18  simonb
+
+	* include/exordium/sql.h, source/module.cpp, source/lib/sql.cpp:
+	Fixed the Sql:: class, maybe.. :)
+
+2002-08-16 10:03  simonb
+
+	* include/exordium/log.h, source/module.cpp, source/lib/log.cpp:
+	Fixed up the logger, it's no longer static ;)
+
+2002-08-16 09:20  james
+
+	* include/exordium/log.h, include/exordium/services.h,
+	include/exordium/sql.h, source/module.cpp, source/lib/sql.cpp: 
+	
+	Yes its broke.
+
+2002-08-14 20:10  james
+
+	* include/exordium/channel.h, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/nickname.h,
+	include/exordium/parser.h, include/exordium/services.h,
+	include/exordium/sql.h, source/lib/services.cpp: 
+	Weeeeee its BROKE!
+
+2002-08-14 19:12  simonb
+
+	* source/lib/conf.cpp: fixed the "uplink" config variable
+
+2002-08-14 19:10  james
+
+	* include/exordium/conf.h, source/lib/conf.cpp,
+	source/lib/services.cpp, source/modules/serv.cpp: 
+	
+	can we fix it, bob the builder!
+
+2002-08-12 22:39  james
+
+	* include/exordium/channel.h, include/exordium/nickname.h,
+	include/exordium/parser.h, include/exordium/services.h,
+	source/lib/channel.cpp, source/lib/ircdome.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/oper.cpp, source/modules/serv.cpp: 
+	Hrm :)
+
+2002-08-11 18:31  simonb
+
+	* source/lib/services.cpp: Put a logline thingy before the signal
+	handlers to prove they're about to be called
+
+2002-08-11 18:01  james
+
+	* source/modules/: oper.cpp, serv.cpp: 
+	
+	Started the jupe command
+
+2002-08-11 18:00  simonb
+
+	* source/lib/services.cpp: Fixed the signal handling dudes up,
+	hopefully.. Needs testing, but this is for the new interface
+	(slightly modified) for Kine::Signals::..
+
+2002-08-11 17:40  james
+
+	* source/lib/services.cpp: 
+	
+	Uhhh, never touch * in a cvs controlled directory :( :(
+
+2002-08-11 17:38  james
+
+	* source/modules/: Makefile.in, oper.cpp: 
+	
+	Added the long lost forgotten IRC Operator service :)
+
+2002-08-11 17:33  james
+
+	* source/module.cpp: 
+	
+	Modified version string to reflect true stature of Exordium :)
+
+2002-08-11 17:32  james
+
+	* include/exordium/services.h, source/lib/Makefile.in,
+	source/lib/channel.cpp, source/lib/services.cpp,
+	source/modules/Makefile.in, source/modules/serv.cpp: 
+	
+	Fixed shutdown sequence. You now called Services::shutdown(void)
+	when you wish to initiate a services shutdown (make sure you send
+	all relevant notices BEFORE calling this).
+	
+	Fixed the silly bug when removing bans (bans now removed properly
+	from channels)
+	
+	Tidied something up that raff mentioned, but I can't rememer it now
+	
+	Fixed some sql bugs (which simon demonstrated via topic bugs) - the
+	solution at present isn't as nice as i would like, but at least the
+	bug itself is finished.
+	
+	Added serv DIE command - currently set to level 400, you must give
+	the reason for shutdown i.e /msg serv die because we're upgrading!!
+	:)
+
+2002-08-11 16:28  simonb
+
+	* source/lib/services.cpp: Forced staticness upon the poor little
+	signal handler info thingies.. may their compilations be fruitful
+	under stricter gcc's :)
+
+2002-08-11 16:21  simonb
+
+	* source/lib/services.cpp: Uncommented the thingies that do the
+	signal handleringaring thinging..
+
+2002-08-11 15:56  james
+
+	* source/: lib/parser.cpp, lib/services.cpp, lib/sql.cpp,
+	modules/chan.cpp, modules/note.cpp, modules/serv.cpp: 
+	
+	Some changes.. and stuff
+
+2002-08-09 22:56  james
+
+	* include/exordium/channel.h, include/exordium/services.h,
+	source/lib/channel.cpp, source/lib/nickname.cpp,
+	source/lib/parser.cpp, source/lib/services.cpp,
+	source/modules/chan.cpp, source/modules/serv.cpp: 
+	Started to tidy up the messages coming back from services - trying
+	to adopt a more 'smarter' and 'generic' look, please adopt these.
+	
+	Tidied up the Channel ban code, if only a nickname is given, then
+	services will ban their host.
+	
+	Channel bans now expire (by default only 120 seconds - but thats
+	partly due to testing, and also due to the fact i couldn't decide
+	how to allow a user settable expire (in terms of syntax))
+	
+	Added a channel command listban/.listban to list the current bans
+	in a channel.
+	
+	Added the starts of a news system (as can be seen by the annoying
+	news items on signup :D), it supports three levels, those being
+	0=all users, 1=services helpers, 2=irc operators, giving the
+	appropiate news to each type of user as they signon(or +h/oper up).
+	
+	I don't even know why im waffling on here, since I bet im the only
+	one who reads this :)
+	
+	GOODNIGHT!
+
+2002-08-09 17:23  james
+
+	* source/: Makefile.in, modules/Makefile.in: Test
+
+2002-08-09 14:03  simonb
+
+	* source/: Makefile.in, module.cpp: Updates to make the world
+	beautiful again (to work with latest kine snapshot doohickey). The
+	module code is no longer segmented (as it was with
+	extensions/protocols/services), they are one. THEREFORE, if you
+	BREAK something, it's mostly YOUR FAULT!
+	WBABEHhawehAHBEhaebhAHEHahehAEHahehAEhaehAHEHhaHEhaehhahehaehHAEHhaehAHEHhaehhAHheahaEahEHhAEahehahehAHEHAHEHAEWHH!
+	*coughs* *straightens tie* Sorry about that, won't happen again.
+
+2002-07-31 13:44  simonb
+
+	* include/exordium/mysql.h: de-microsoft'd the memory deleting
+	routing. I still don't like the 'new', and the .free_result()'s on
+	results shall have to be removed (another mass edit, or a roll-back
+	if you dare James ;)
+
+2002-07-31 13:04  james
+
+	* include/exordium/module.h, include/exordium/mysql.h,
+	include/exordium/service.h, include/exordium/services.h,
+	source/module.cpp, source/lib/channel.cpp, source/lib/conf.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp,
+	source/modules/chan.cpp, source/modules/nick.cpp,
+	source/modules/note.cpp, source/modules/serv.cpp:
+	----------------------------------------------------------------------
+	include/exordium/module.h include/exordium/mysql.h CVS:
+	include/exordium/service.h include/exordium/services.h CVS:
+	source/module.cpp source/lib/channel.cpp source/lib/conf.cpp CVS:
+	source/lib/nickname.cpp source/lib/parser.cpp CVS:
+	source/lib/services.cpp source/lib/sql.cpp CVS: 
+	source/modules/chan.cpp source/modules/game.cpp CVS: 
+	source/modules/nick.cpp source/modules/note.cpp CVS: 
+	source/modules/serv.cpp CVS:
+	----------------------------------------------------------------------
+	the big mysql_free commit :(
+
+2002-07-31 11:54  simonb
+
+	* source/modules/nick.cpp: Fixed the string constant from being
+	multi-line to being multi-part.. which should cheer gcc 3.1 up ;)
+
+2002-07-29 08:50  simonb
+
+	* include/exordium/channel.h, include/exordium/ircdome.h,
+	include/exordium/module.h, include/exordium/nickname.h,
+	include/exordium/parser.h, include/exordium/services.h,
+	include/exordium/utils.h, source/lib/channel.cpp,
+	source/lib/ircdome.cpp, source/lib/log.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/serv.cpp: Fixed kine's header defines (i.e. #include
+	"kineircd/str.h" -> #include <kineircd/str.h") since it was causing
+	some issues with my manual installation of kine (I was testing)...
+
+2002-07-28 09:57  simonb
+
+	* source/Makefile.in: Switched to generating smod_exordium.so
+	instead of mod_exordium.so (to match kine style - smod = service
+	module)
+
+2002-07-27 18:29  simonb
+
+	* source/lib/services.cpp: Changed dlopen() call from using
+	RTLD_LAZY to RTLD_NOW - Look at all the symbol linking problems
+	which seemed like bugs James!! :(
+
+2002-07-26 13:32  simonb
+
+	* include/exordium/conf.h, include/exordium/log.h,
+	source/module.cpp, source/lib/conf.cpp, source/lib/log.cpp,
+	source/lib/sql.cpp: A handful of configuration fixes:
+	
+	 * Removed uplinkhost variable, it was obsolete and wasn't even
+	used! Kine
+	   will eventually deal with this, so the setting remaining
+	hard-coded is no
+	   real issue
+	
+	 * Make the logfile variable ACTUALLY DO SOMETHING! This is
+	achieved by
+	   throwing a reference to the Config:: instance at the Log::init()
+	function
+	   and also through the new getLogfile() thing.
+	
+	 * Migrated mysql* variables into an sql {}; class (and renamed
+	them and their
+	   'get' functions subsequently).
+
+2002-07-25 20:39  james
+
+	* source/: main.cpp, lib/services.cpp: 
+	Removed configuration parser.
+	
+	Removed main.cpp
+
+2002-07-25 19:42  simonb
+
+	* source/module.cpp: Removed the temporary debugging thingy which
+	outputted the kine configuration state.. it's no longer needed
+
+2002-07-25 19:38  simonb
+
+	* include/exordium/services.h, include/exordium/sql.h,
+	source/module.cpp, source/lib/services.cpp, source/lib/sql.cpp:
+	Migrated to using Kine's configuration parser - WOO! it worked! The
+	old configuration parser (now obsolete) and it's variables are
+	commented out (services.h/services.cpp).
+
+2002-07-25 18:02  simonb
+
+	* include/exordium/services.h, source/module.cpp: Added a reference
+	thingy to the configuration class' instance for Services:: so that
+	those friendly fellows can look at the configuration stuff.
+
+2002-07-25 17:51  simonb
+
+	* include/exordium/conf.h, source/module.cpp, source/lib/conf.cpp:
+	Forgot two fields :( Also updated module.cpp to tell Kine where to
+	find the definition table
+
+2002-07-25 17:42  simonb
+
+	* include/exordium/conf.h, source/module.cpp,
+	source/lib/Makefile.in, source/lib/conf.cpp: Started adding stuff
+	that integrates with Kine's configuration parser
+
+2002-07-25 15:40  simonb
+
+	* source/module.cpp: Sorry, jumped the gun on the compile. This one
+	compiles :)
+
+2002-07-25 15:23  simonb
+
+	* source/module.cpp: Removed the manditory configuration flag,
+	modules will have to deal with it themselves (sorry) :(
+
+2002-07-25 15:21  simonb
+
+	* source/module.cpp: Quick (rough) cleanup; Added a services
+	pointer so that a new instance of the Services:: class can be
+	neatly deleted upon the moduleStop() function being called.
+
+2002-07-25 15:10  simonb
+
+	* include/exordium/services.h, source/Makefile.in,
+	source/module.cpp, source/lib/services.cpp: Obsoleted main.cpp :(
+	Well not entirely, but soon enough :( I added a tiny contructor to
+	Services:: which accepts a reference to Kine's daemon (passed when
+	the module initialises). When the configuration thing is done the
+	Services::init() function can be totally replaced by the destructor
+	all on its own. I moved the signal handler assignment stuff from
+	the Services::run() function into Services::init() (at the top) and
+	removed the self-initialisation of a Kine::Signals:: class; Now it
+	uses the given daemon reference to jump into the daemon's signal
+	handler so it can integrate in a friendly way. I also added
+	Services::getDaemon() to return the reference - not really a
+	protection device but rather an implementation protection device. I
+	have used getDaemon() in Services::init() to save any future
+	maintenance issues, i.e. if the Daemon type changes it's only a
+	quick edit of the getDaemon() function to restore functionality.
+	
+	I strongly encourage you to migrate stuff to being non-static :( It
+	would allow you to break stuff up into smaller chunks James :(
+
+2002-07-24 10:39  james
+
+	* include/exordium/mysql.h: 
+	Changed something
+
+2002-07-24 07:49  simonb
+
+	* source/module.cpp: Added the basic info extension for the basic
+	information structure. This will be used to define where the
+	configuration information structure is for kine's configuration
+	parser
+
+2002-07-23 06:49  simonb
+
+	* source/module.cpp: Added the mandatory configuration flag.. which
+	will be used soon, honest :)
+
+2002-07-23 04:03  simonb
+
+	* source/modules/note.cpp: Okay, so I screwed it up :( All fixed :)
+
+2002-07-23 04:01  simonb
+
+	* source/modules/note.cpp: Made note register himself, I hope..
+
+2002-07-23 03:56  simonb
+
+	* source/lib/services.cpp: Made IRCDome register itself.. again..
+	:)
+
+2002-07-22 23:47  simonb
+
+	* source/module.cpp: Did the 'proper thing' and moved the local
+	stuff into the mod_exordium namespace, a mini-namespace thingy for
+	the module <-> services core interface doohickey
+
+2002-07-22 23:27  simonb
+
+	* source/module.cpp: Made the start/stop functions static for
+	completeness (and security, sort of). The only thing that needs to
+	be visible is the module's init function
+
+2002-07-22 22:40  simonb
+
+	* source/module.cpp: Added more proof we are tied nicely into the
+	kine daemon by pulling information from its configuration (several
+	chains away from us) - this is also a mini-example for you, James
+	:)
+
+2002-07-22 20:54  simonb
+
+	* source/module.cpp: Added proof that the module's start function
+	is receiving the reference pointer to the daemon class which is
+	going to operate it from hense on...
+
+2002-07-22 18:01  simonb
+
+	* source/modules/serv.cpp: Converted.. sort'a.. so I can fiddle
+	with raw :)
+
+2002-07-22 10:32  simonb
+
+	* source/lib/services.cpp: Updated the code for the 'void *foo'
+	variable added to the signal handler structure. Services will now
+	use the foo variable to know about the Services:: instance blah
+	blah blah blah.. you get the idea :) Now services can do something
+	with the signals a little smarter than previously
+
+2002-07-22 09:05  simonb
+
+	* source/lib/sql.cpp: Fixed the time thing.. again.. I didn't
+	multiply the microseconds properly and I added the long-long
+	type-cast just in case.. but.. yeah.. so much for rushed hacks :)
+
+2002-07-22 08:32  simonb
+
+	* source/module.cpp: Added a return value (true for now) to the
+	start function.. even if it is quite meaningless at the moment,
+	it's more correct! :)
+
+2002-07-22 06:22  simonb
+
+	* source/module.cpp: Added the unique instance flag (I'm pretty
+	sure exordium only needs to be loaded once :)
+
+2002-07-20 21:53  james
+
+	* autoconf/configure.in: 
+	Opps :)
+
+2002-07-20 21:48  james
+
+	* autoconf/configure.in, include/exordium/config.h,
+	source/Makefile, source/Makefile.in, source/lib/Makefile,
+	source/lib/Makefile.in, source/modules/Makefile,
+	source/modules/Makefile.in: 
+	
+	Fixing some silly bugs :)
+
+2002-07-20 20:04  simonb
+
+	* source/lib/services.cpp: Added the KINE_ prefix to the
+	SIGNAL_HANDLER_FUNC template thingies.. :(
+
+2002-07-20 18:11  james
+
+	* source/: lib/nickname.cpp, modules/chan.cpp: 
+	Dunno I can't actually remember - I think it was making chan
+	automated registration... :)
+
+2002-07-20 17:52  james
+
+	* source/modules/: bot.cpp, nick.cpp: 
+	Converted Nick() to use self registration
+
+2002-07-20 17:42  james
+
+	* source/lib/services.cpp: 
+	Removed all registration of services - Modules now have to do it
+	themselves.
+	
+	Added bot + game to initial module loading list.
+
+2002-07-20 17:40  james
+
+	* include/exordium/nickname.h, source/lib/nickname.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp: 
+	Converted Bot() to use self registration
+
+2002-07-20 10:38  james
+
+	* Makefile.in, doc/Functions, include/exordium/config.h,
+	source/Makefile, source/module.cpp, source/lib/nickname.cpp,
+	source/modules/Makefile, source/modules/nick.cpp: 
+	Seperated MSN/AIM
+	
+	Added appropiate functions to retreive
+	
+	Added make dump in root to dump the db
+
+2002-07-19 20:58  simonb
+
+	* source/: Makefile.in, module.cpp: Added the start of the
+	mod_exordium stuff.. woop woop
+
+2002-07-19 14:38  simonb
+
+	* source/lib/sql.cpp: Fixed, hopefully, the sql time thingy
+
+2002-07-19 14:13  simonb
+
+	* source/lib/services.cpp: Love registers himself now.. herself..
+	itself.. what the hell is love?! hermaphrodite to please all? hmm..
+	better put some thought into that one..
+
+2002-07-19 14:06  simonb
+
+	* source/modules/: bot.cpp, chan.cpp, nick.cpp, note.cpp, serv.cpp:
+	Fart fart fart... oh.. oh I see.. you want me to write something
+	meaningful here?
+	
+	Well.. I REFUSE..
+	
+	Oh alright.. you win..
+	
+	I swapped out the service_init shit and replaced it with the
+	EXORDIUM_SERVICE_INIT_FUNCTION define usage thingy.. why? MIND YOUR
+	OWN BUSINESS
+	
+	oh.. you want a real answer.. well.. it's more maintainable, and if
+	you change the thing it changes all over the package (which means
+	nothing left in the stack etc).. blah blah blah, blah bling blah
+	blah.
+
+2002-07-19 13:56  simonb
+
+	* include/exordium/services.h: Added a define for the services
+	initialisation function, so no more hunting through code and
+	editing crap. Is this where you wanted in, though, james?
+
+2002-07-16 21:37  james
+
+	* include/exordium/config.h, source/lib/services.cpp,
+	source/modules/Makefile: 
+	The init_function for modules is now passed an extra parameter,
+	being the name of the module (as referenced from the loadModule
+	call)
+	
+	This enables modules to be non-hardcoded as to their names, thus
+	making for lovley clean code!
+	
+	- Also reabled the forced changing nicks since it was confusing
+	services having it disabled, and making it very hard to read debug
+	text in #exordium
+
+2002-07-14 14:27  james
+
+	* Makefile.in, include/exordium/config.h,
+	include/exordium/service.h, source/modules/Makefile,
+	source/modules/Makefile.in:  :)
+
+2002-07-14 11:53  james
+
+	* include/exordium/config.h, source/modules/Makefile,
+	source/modules/Makefile.in: beginning with `CVS:' are removed
+	automatically CVS:  CVS: Committing in . CVS:  CVS: Modified Files:
+	source/modules/Makefile.in CVS:
+	----------------------------------------------------------------------
+	:)
+
+2002-07-14 11:52  simonb
+
+	* source/modules/Makefile.in: Made a real rule to make .so's from
+	.cpp's
+
+2002-07-14 11:43  simonb
+
+	* include/exordium/service.h: Made the header a little less
+	dependant on everything being set up before it (like using
+	Kine::String etc etc) - narky little bugger. This uses fully
+	qualified names to get around it, which is how it should be done so
+	people don't need to work around qwerks.. This is probably why
+	people say 'using' should *never* be used in headers :(
+
+2002-07-14 11:16  james
+
+	* include/exordium/bot.h, include/exordium/chan.h,
+	include/exordium/config.h, include/exordium/game.h,
+	include/exordium/ircdome.h, include/exordium/love.h,
+	include/exordium/nick.h, include/exordium/note.h,
+	include/exordium/serv.h, include/exordium/services.h,
+	source/main.cpp, source/lib/services.cpp, source/modules/Makefile,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/serv.cpp: 
+	
+	Done module include moving thingie :)
+
+2002-07-13 21:05  james
+
+	* doc/Bot-Interface, doc/Functions, doc/Module-Coding,
+	include/exordium/config.h, include/exordium/module.h,
+	source/lib/services.cpp, source/modules/Makefile,
+	source/modules/chan.cpp, source/modules/nick.cpp: 
+	Wrote doc/Functions - documenting functions available to module
+	coders.
+	
+	Tinkered with a few files - nothing special.
+
+2002-07-13 16:54  james
+
+	* Makefile.in, autoconf/configure.in, doc/Bot-Interface,
+	doc/Module-Coding, include/exordium/bot.h, include/exordium/chan.h,
+	include/exordium/channel.h, include/exordium/config.h.in,
+	include/exordium/game.h, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/love.h,
+	include/exordium/module.h, include/exordium/mysql.h,
+	include/exordium/nick.h, include/exordium/nickname.h,
+	include/exordium/note.h, include/exordium/parser.h,
+	include/exordium/serv.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/sql.h,
+	source/main.cpp, source/services.conf, source/services.logu,
+	source/lib/channel.cpp, source/lib/ircdome.cpp, source/lib/log.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp,
+	source/modules/bot.cpp, source/modules/chan.cpp,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/serv.cpp: 
+	Added the standard header to most files, removed a shitty log.
+
+2002-07-13 16:45  james
+
+	* Makefile.in: 
+	Testing some subs.
+
+2002-07-13 16:41  james
+
+	* autoconf/.cvsignore, doc/.cvsignore, include/.cvsignore,
+	source/.cvsignore: 
+	
+	More sanity file ignoring
+
+2002-07-13 16:40  james
+
+	* .cvsignore: 
+	Some sanity ignores to stop people checking in silly objects etc :)
+
+2002-07-13 16:35  james
+
+	* doc/: Bot-Interface, Module-Coding: 
+	
+	Testing.
+
+2002-07-13 16:33  simonb
+
+	* doc/Bot-Interface: [no log message]
+
+2002-07-13 16:31  james
+
+	* Makefile.in, dev.sh, source/Makefile, source/Makefile.in,
+	source/main.cpp, source/services.conf, source/services.logu,
+	source/lib/Makefile, source/lib/Makefile.in,
+	source/lib/channel.cpp, source/lib/ircdome.cpp, source/lib/log.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp, autoconf/configure.in,
+	doc/Bot-Interface, doc/Module-Coding, include/exordium/bot.h,
+	include/exordium/chan.h, include/exordium/channel.h,
+	include/exordium/config.h, include/exordium/config.h.in,
+	include/exordium/game.h, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/love.h,
+	include/exordium/module.h, include/exordium/mysql.h,
+	include/exordium/nick.h, include/exordium/nickname.h,
+	include/exordium/note.h, include/exordium/parser.h,
+	include/exordium/serv.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/sql.h,
+	include/exordium/utils.h, source/modules/Makefile,
+	source/modules/Makefile.in, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/config.log,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/serv.cpp: Initial revision
+
+2002-07-13 16:31  james
+
+	* Makefile.in, dev.sh, source/Makefile, source/Makefile.in,
+	source/main.cpp, source/services.conf, source/services.logu,
+	source/lib/Makefile, source/lib/Makefile.in,
+	source/lib/channel.cpp, source/lib/ircdome.cpp, source/lib/log.cpp,
+	source/lib/nickname.cpp, source/lib/parser.cpp,
+	source/lib/services.cpp, source/lib/sql.cpp, autoconf/configure.in,
+	doc/Bot-Interface, doc/Module-Coding, include/exordium/bot.h,
+	include/exordium/chan.h, include/exordium/channel.h,
+	include/exordium/config.h, include/exordium/config.h.in,
+	include/exordium/game.h, include/exordium/ircdome.h,
+	include/exordium/log.h, include/exordium/love.h,
+	include/exordium/module.h, include/exordium/mysql.h,
+	include/exordium/nick.h, include/exordium/nickname.h,
+	include/exordium/note.h, include/exordium/parser.h,
+	include/exordium/serv.h, include/exordium/service.h,
+	include/exordium/services.h, include/exordium/sql.h,
+	include/exordium/utils.h, source/modules/Makefile,
+	source/modules/Makefile.in, source/modules/bot.cpp,
+	source/modules/chan.cpp, source/modules/config.log,
+	source/modules/nick.cpp, source/modules/note.cpp,
+	source/modules/serv.cpp: [no log message]
+
