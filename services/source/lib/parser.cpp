@@ -317,7 +317,7 @@ void PARSER_FUNC (Parser::parseN)
 	return;
      }
    String nick = tokens.nextToken();
-   std::cout << "NEW CLIENT" << nick << std::endl;
+   std::cout << "NEW CLIENT:" << nick << std::endl;
 
    String hops = tokens.nextToken();
    String timestamp = tokens.nextToken();
@@ -531,9 +531,25 @@ void
 	String user = tokens.nextToken();
 	StringTokens luser (user);
 	String foo = luser.nextColonToken();
-	String test = foo.trim();
-	
-	User *ptr = services.findUser(test);
+	String username = foo.trim();
+
+        // Strip leading @ if there is one
+        if (username[0]=='@')
+           username=username.substr(1, username.length()-1);
+
+
+
+        /******* NOTE
+         Bug fixed: leading @ was causing user not found errors.
+         Solution: foo is only used to toggle the booleans, username 
+                   contains the nick without leading # or +.
+                   Thus when we need to pass the nick we use username.
+         -- PLV
+        *******/
+
+
+        User *ptr = services.findUser(username);
+
 	if(foo[0]=='@')
 	  {
 	     op = true;
@@ -554,11 +570,11 @@ void
 	  }
 	if(op)
 	  {
-	     services.getChannel().internalOp(foo.trim(),chan);
+	     services.getChannel().internalOp(username,chan);
 	  }
 	if(voice)
 	  {
-	     services.getChannel().internalVoice(foo.trim(),chan);
+	     services.getChannel().internalVoice(username,chan);
 	  }
 	if(normal)
 	  {
@@ -569,22 +585,22 @@ void
 	     
 	     if(ptr->isIdentified(foo))
 	       {
-		  int access = services.getChannel().getChanAccess(chan,foo.trim());
-		  String togo = "Client: \002:"+foo.trim()+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";
+		  int access = services.getChannel().getChanAccess(chan,username);
+		  String togo = "Client: \002:"+username+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";
 		  if(access>99)
 		    {
-		       services.mode("Chan",chan,"+o",foo.trim());
-		       services.getChannel().internalOp(foo.trim(),chan);
+		       services.mode("Chan",chan,"+o",username);
+		       services.getChannel().internalOp(username,chan);
 		       return;
 		    }
 		  if(access>49)
 		    {
-		       services.mode("Chan",chan,"+v",foo.trim());
-		       services.getChannel().internalVoice(foo.trim(),chan);
+		       services.mode("Chan",chan,"+v",username);
+		       services.getChannel().internalVoice(username,chan);
 		       return;
 		    }
 	       }
-	     services.getChannel().internalAdd(foo.trim(),chan);
+	     services.getChannel().internalAdd(username,chan);
 
 	  }
 	more = tokens.hasMoreTokens();
