@@ -1691,7 +1691,7 @@ bool
   MysqlRes res = database.query(query);
   MysqlRow row;
 
-  while (row = res.fetch_row())
+  while ((row = res.fetch_row()))
   {
     return true;
   }
