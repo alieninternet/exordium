@@ -169,7 +169,7 @@ void Exordi8::showHand(const player_type& player) const
 /* nextPlayer - Jump to the next player, telling the channel why parse
  * Original 30/08/2002 simonb
  */
-void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify = true)
+void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
 {
    std::ostringstream out;
    out << (*currentPlayer).first << ' ' << why << ". It is ";
@@ -483,7 +483,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	 
 	 // Tell everyone what happened.. (notice - no next player)
 	 sendMessage(origin + " has discarded the " + cardToDiscard.getName() +
-		     ', and now needs to select a suit.');
+		     ", and now needs to select a suit.");
 
 	 // Tell the player what happens next
 	 sendMessage(origin, 
