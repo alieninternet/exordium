@@ -53,12 +53,10 @@ KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
    String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal - commiting database";
    ((Services *)foo)->helpme(reason,"Serv");
-   ((Services *)foo)->getDatabase().query("COMMIT");
 }
 
 KINE_SIGNAL_HANDLER_FUNC(Death)
 {
-   ((Services *)foo)->getDatabase().query("COMMIT");
    String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Terminating";
    ((Services *)foo)->helpme(reason, "Serv");
    ((Services *)foo)->shutdown(reason);	
@@ -442,10 +440,6 @@ while (( row = res.fetch_row()))
 	}
 
 //Lastly commit any outstanding db changes.
-String bquery = "COMMIT";
-database.query(bquery);
-String aquery = "SET autocommit=0";
-database.query(aquery);
 }
 
 void Services::expireRun(void)

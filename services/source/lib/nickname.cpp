@@ -44,10 +44,12 @@ Nickname::deopAway(String const &nick)
         String foo = ((std::string) row[0]).c_str();
 	if(foo=="1")
 		{
+			services.Debug("DeopAway is true - SHOULD BE DEOPED");
 			return true;
 		}
 		else
 		{
+			services.Debug("DeopAway is false - Leave em alone");
 			return false;
 		}
 	}

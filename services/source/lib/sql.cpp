@@ -48,7 +48,6 @@ Sql::Sql(Log& l, const Config& config)
    query("DELETE from kills");
    query("DELETE from onlineservers");
    query("DELETE from onlinechan");
-   query("SET autocommit=0");
 }
 
 

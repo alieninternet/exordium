@@ -83,6 +83,7 @@ GAME_FUNC (Game::parseHELP)
 void
 GAME_FUNC (Game::parseQUOTE)
 {
+	return;
 	String channel = "";
 	if(chan!="")
 	{
