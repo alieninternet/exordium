@@ -1344,7 +1344,7 @@ void ServicesInternal::validateOper(String &origin)
 }
 
 int
-  ServicesInternal::getAccess(String &service, String &nickname)
+  ServicesInternal::getAccess(String const &service, String const &nickname)
 {
    if( database.dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
      return 0;

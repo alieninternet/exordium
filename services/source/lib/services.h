@@ -124,7 +124,7 @@ namespace Exordium {
       void run(void);
       
       // Function Declrations below here.
-      int getAccess(AISutil::String &, AISutil::String &);
+      int getAccess(AISutil::String const &, AISutil::String const &);
       void shutdown(const AISutil::String &);
       
       void AddOnlineServer(AISutil::String const &, AISutil::String const &, 

@@ -85,7 +85,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	     if(required>access)
 	       {
 		  origin.sendMessage("You do not have enough access for that command",getName());
-		  String togo = "\002 WARNING!\002 "+origin.getNickname()+" tried to use the \002"+command+"\002";
+		  String togo = "\002 WARNING!\002 "+origin.getNickname()+" tried to use the \002"+command+"\002 on Serv";
 		  services->logLine(togo, Log::Warning);
 		  services->sendGOper(getName(),togo);
 		  return;
@@ -151,7 +151,7 @@ SERV_FUNC (Module::parseDIE)
    String reason = tokens.rest();
    if(reason=="")
      {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: die reason for shutdown here",getName());
+	origin.sendMessage("Usage: die reason for shutdown here",getName());
 	return;
      }
    String tofo = origin.getNickname()+" issued an immediate services \002shutdown\002 for \002"+reason;
@@ -180,7 +180,7 @@ SERV_FUNC (Module::parseGETHASH)
      }
    int nbRes = services->getDatabase().dbSelect("auth","nickspending","nickname='"+who+"'");
    String auth = services->getDatabase().dbGetValue();
-   String togo = "The authorisation code is "+auth;
+   String togo = "The authorisation code for the nickname \002"+who+"\002 is \002"+auth;
    origin.sendMessage(togo,getName());
    services->sendGOper(getName(),origin.getNickname()+" did a \002gethash\002 on "+who);
    return;
@@ -202,6 +202,18 @@ SERV_FUNC (Module::parseSETPASS)
 	origin.sendMessage("Error: Nickname is not registered",getName());
 	return;
      }
+   if((services->getAccess(getName(),who)>0))
+     {
+	/* Ok staff nickname, unless the user is a level 500, reject it. */
+	if(services->getAccess(getName(),origin.getNickname())<500)
+	  {
+	     origin.sendMessage("Error: You may not perform that command on staff",getName());
+	     services->sendGOper(getName(),"\002Warning\002 "+origin.getNickname()+" tried to perform a \002setpass\002 on a staff nickname ("+who+")");
+	     return;
+	  }
+	
+     }
+   
    String epass =  Utils::generatePassword(who, newpass);
    services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
@@ -213,7 +225,7 @@ SERV_FUNC (Module::parseRAW)
 {
    std::string c = tokens.rest();
    services->queueAdd(c);
-   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
+   String togo = origin.getNickname()+" did a services \002raw\002 - "+c;
    services->logLine(String(togo), Log::Warning);
    services->sendGOper(getName(),togo);
 }
@@ -325,6 +337,12 @@ SERV_FUNC (Module::parseCHAN)
 	     origin.sendMessage("Error: New owner's nickname is not registered",getName());
 	     return;
 	  }
+	if(!services->getChannel().isChanRegistered(channel))
+	  {
+	     origin.sendMessage("Error: That channel is not registered",getName());
+	     return;
+	  }
+	
 	String newtopic = "This channel is now owned by "+newowner;
 	services->getChannel().setTopic(channel,newtopic);
 	services->getChannel().updateTopic(channel,newtopic);
@@ -473,7 +491,6 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage("Usage is user del nickname",getName());
 	     return;
 	  }
-	// Blah only temp.
 	String blah = getName();
 	if(services->getAccess(blah,toadd)==0)
 	  {
@@ -710,7 +727,19 @@ SERV_FUNC (Module::parseDELNICK)
 	origin.sendMessage("Error: Nickname is not registered",getName());
 	return;
      }
-
+   /* Are we trying to delete a staff nickname? */
+   if(services->getAccess(getName(),who)>0)
+     {
+	/* Yep... Unless a 500 tell em to get stuffed */
+	if(services->getAccess(getName(),origin.getNickname())<500)
+	  {
+	     origin.sendMessage("Error: You may not perform that command on a staff nick",getName());
+	     services->sendGOper(getName(),origin.getNickname()+" tried to perform a \002delnick\002 on a staff nickname ("+who+")");
+	     return;
+	  }
+	
+     }
+   
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
    services->logLine(togo, Log::Warning);
    services->sendGOper(getName(),togo);
