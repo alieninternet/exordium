@@ -1105,13 +1105,14 @@ void ServicesInternal::setNick(User &who, String &newnick)
 #ifdef DEBUG
    logLine("setNick: " + newnick, Log::Debug);
 #endif
+   String fixedNewNick = newnick.IRCtoLower();
    user_map::iterator user = users.find(who.getNickname().IRCtoLower());
    users.erase(user);
-   users[newnick] = &who;
-   who.setNick(newnick);
+   users[fixedNewNick] = &who;
+   who.setNick(fixedNewNick);
 
    // Update nickname in table onlineclients
-   database.dbUpdate("onlineclients", "nickname='"+newnick+"'", "id="+who.getOnlineIDString());
+   database.dbUpdate("onlineclients", "nickname='"+fixedNewNick+"'", "id="+who.getOnlineIDString());
 };
 
 /* getRegNickCount()
