@@ -108,8 +108,8 @@ class Hangman : public ChannelGame {
 
  public:
    // Constructor
-   Hangman(Game::Module& module, const AISutil::String& channel,
-Exordium::User& caller);
+   Hangman(Exordium::GameModule::Module& module,
+	   const AISutil::String& channel, Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)

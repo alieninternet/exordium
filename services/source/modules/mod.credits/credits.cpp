@@ -34,20 +34,20 @@
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
 
-using namespace Credits;
+
+using namespace Exordium::CreditsModule;
 using AISutil::String;
 using AISutil::StringTokens;
 using Exordium::User;
+
 
 /* service_init - Register ourselves to the core
  * Original 13/07/2002 james
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-     return new Module();
-}
+{ return new Module(); }
+
 
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo = {
@@ -55,6 +55,7 @@ const Module::moduleInfo_type Module::moduleInfo = {
     0, 0,
     Exordium::Service::moduleInfo_type::Events::NONE
 };
+
 
 // Our command table for directly sent commands (commands must be lower-case)
 const Module::commandTable_type Module::directCommandTable[] =
@@ -65,12 +66,14 @@ const Module::commandTable_type Module::directCommandTable[] =
      { 0, 0 }
 };
 
+
 // Our command table for channel commands (commands must be lower-case)
 const Module::commandTable_type Module::channelCommandTable[] =
 {
      { "quote",         &Module::handleQUOTE },
      { 0, 0 }
 };
+
 
 /* start - Start the service
  * Original 17/09/2002 pickle
@@ -125,7 +128,7 @@ std::endl;
 /* handleHELP - Parse the HELP command
  * Original 13/07/2002 james
  */
-CREDIT_FUNC(Module::handleHELP)
+CREDITS_FUNC(Module::handleHELP)
 {
    services->doHelp(origin, getName(), line.nextToken(),
 		    line.nextToken());
@@ -136,7 +139,7 @@ CREDIT_FUNC(Module::handleHELP)
  * Original 13/07/2002 james
  * Note: Mess :(
  */
-CREDIT_FUNC(Module::handleQUOTE) 
+CREDITS_FUNC(Module::handleQUOTE) 
 {
    return; // eek
    
@@ -171,10 +174,11 @@ CREDIT_FUNC(Module::handleQUOTE)
    
 }
 
-/* handleSTART - Parse a 'balance' command, returns the users current balance
+
+/* handleBALANCE - Parse a 'balance' command, returns the users current balance
  * Original 20/10/2002 - josullivan
  */
-CREDIT_FUNC(Module::handleBALANCE)
+CREDITS_FUNC(Module::handleBALANCE)
 {
   int balance = bank.getBalance(origin);
   if(balance > 0)

@@ -32,11 +32,10 @@
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
 
 #include "game.h"
 
-using namespace Game;
+using namespace Exordium::GameModule;
 using AISutil::String;
 using AISutil::StringTokens;
 using Exordium::Channel;
@@ -47,9 +46,7 @@ using Exordium::User;
  * Original 13/07/2002 james
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Module();
-}
+{ return new Module(); }
 
 
 // Module information structure

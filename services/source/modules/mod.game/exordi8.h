@@ -113,7 +113,7 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Game::Module& module, const AISutil::String& channel,
+   Exordi8(Exordium::GameModule::Module& module, const AISutil::String& channel,
 	   Exordium::User& caller);
    
    // Handy creation function

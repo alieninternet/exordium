@@ -109,8 +109,8 @@ class Poker : public ChannelGame {
 
  public:
    // Constructor
-   Poker(Game::Module& module, const AISutil::String& channel,
-	   Exordium::User& caller);
+   Poker(Exordium::GameModule::Module& module, const AISutil::String& channel,
+	 Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)

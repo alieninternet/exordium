@@ -38,16 +38,16 @@
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
-struct Bot::functionTableStruct const
-  Bot::functionTable[] =
-{
-     {"help", &Bot::parseHELP},
-     {0, 0}
+using namespace Exordium::BotModule;
+
+
+const Module::functionTableStruct Module::functionTable[] = {
+     { "help",		&Module::parseHELP },
+     { 0, 0 }
 };
 
 void
-  Bot::parseLine (StringTokens& line, User& origin,
+  Module::parseLine (StringTokens& line, User& origin,
 		  const String& channel)
 {
    StringTokens& st = line;
@@ -68,7 +68,7 @@ void
 }
 
 void
-  Bot::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 
 {
    StringTokens& st = line;
@@ -87,20 +87,19 @@ void
    origin.sendMessage("Unrecognized Command", getName());
 }
 
-void
-  BOT_FUNC (Bot::parseHELP)
+
+BOT_FUNC(Module::parseHELP)
 {
    services->doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
 }
 
+
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Bot();
-}
+{ return new Module(); }
 
 
 // Module information structure
-const Bot::moduleInfo_type Bot::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo = {
    "Bot Assistance Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::NONE
@@ -108,7 +107,7 @@ const Bot::moduleInfo_type Bot::moduleInfo = {
 
 
 // Start the service
-bool Bot::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -117,7 +116,6 @@ bool Bot::start(Exordium::Services& s)
    services->registerService(getName(), getName(), 
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
-   services->serviceJoin(getName(),"#Debug");
    
    // We started okay :)
    return true;

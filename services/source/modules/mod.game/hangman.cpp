@@ -118,7 +118,7 @@ const char* hangman[10][7] = {{"",
 /* Hangman - Constructor for a new Hangman game being played on a channel
  * Original 17/09/2002 josullivan
  */
-Hangman::Hangman(Game::Module& module, const String& channel, 
+Hangman::Hangman(Exordium::GameModule::Module& module, const String& channel, 
 		 Exordium::User& caller)
   : ChannelGame(module, channel.IRCtoLower()),
     playing(false)

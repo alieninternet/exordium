@@ -41,7 +41,7 @@ using AISutil::StringTokens;
 /* Poker - Constructor for a new Poker card game being played on a channel
  * Original 29/08/2002 pickle
  */
-Poker::Poker(Game::Module& module, const String& channel,
+Poker::Poker(Exordium::GameModule::Module& module, const String& channel,
 		 Exordium::User& caller)
   : ChannelGame(module, channel.IRCtoLower()),
 playing(false),

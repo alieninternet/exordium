@@ -32,28 +32,21 @@
 #include <exordium/services.h>
 #include <exordium/channel.h>
 #include <kineircd/str.h>
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
+
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::VoteModule;
 
-   struct Vote::functionTableStruct const
-     Vote::functionTable[] =
-     {
-	  {"help", &Vote::parseHELP},
-	  {0, 0}
-     };
-   void
-     Vote::parseLine (StringTokens& line, User& origin, const String& channel)
-       {
-	  return;
-       }
+
+const Module::functionTableStruct Module::functionTable[] = {
+     { "help", &Module::parseHELP },
+     { 0, 0 }
+};
+
 
    void
-     Vote::parseLine (StringTokens& line, User& origin)
+     Module::parseLine (StringTokens& line, User& origin)
        {
 	  String command = line.nextToken ().toLower ();
 	  for (int i = 0; functionTable[i].command != 0; i++)
@@ -68,8 +61,8 @@ using namespace Exordium;
 	  origin.sendMessage("Unrecognized Command", getName());
        }
    
-   void
-     VOTE_FUNC (Vote::parseHELP)
+
+     VOTE_FUNC (Module::parseHELP)
        {
 	  String word = tokens.nextToken();
 	  String parm = tokens.nextToken();
@@ -78,21 +71,21 @@ using namespace Exordium;
 	  services->log(origin,getName(),String(tolog));
        }
 
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Vote();
-     }
 
-   // Module information structure
-   const Vote::moduleInfo_type Vote::moduleInfo = {
-      "Voting Service",
-	0, 0,
-	Exordium::Service::moduleInfo_type::Events::NONE
-   };
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
+
+
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo = {
+   "Voting Service",
+     0, 0,
+     Exordium::Service::moduleInfo_type::Events::NONE
+};
 
 
 // Start the service
-bool Vote::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;

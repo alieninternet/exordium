@@ -31,59 +31,56 @@
 #include <exordium/services.h>
 #include <kineircd/str.h>
 
-#define OPER_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
+#define OPER_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
 
-class Oper : public Exordium::Service
-{
-private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
-   
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
-   
-  struct functionTableStruct
-  {
-    char const *command;
-     void OPER_FUNC ((Oper::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
+namespace Exordium {
+   namespace OperModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    OPER_FUNC((Module::* const function));
+	 } static const functionTable[];
 
-public:
-   Oper(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Oper")
-	{
-	};
-
-  ~Oper(void)
-	{
-	};
-   // Start the module
-   bool start(Exordium::Services& s);
-   
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin, AISutil::String const &);
-   
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-   
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     {
-	 return configData; 
-     }
-   ;
-   Exordium::Service::ConfigData& getConfigData(void)
-     {
-	 return configData; 
-     }
-   ;
-   
-private:
-   void OPER_FUNC (parseHELP);
-   void OPER_FUNC (parseQUOTE);
-   void OPER_FUNC (parseJUPE);
-};
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Oper")
+	   {};
+	 
+	 ~Module(void)
+	   {};
+	 
+	 // Start the module
+	 bool start(Exordium::Services& s);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel);
+	 
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+	 
+       private:
+	 OPER_FUNC(parseHELP);
+	 OPER_FUNC(parseQUOTE);
+	 OPER_FUNC(parseJUPE);
+      }; // class Module
+   }; // namespace OperModule
+}; // namespace Exordium
 
 #endif // _SOURCE_MODULES_OPER_OPER_H_

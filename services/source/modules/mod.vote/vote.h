@@ -33,56 +33,57 @@
 
 #include <kineircd/str.h>
 
-# define VOTE_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens& tokens)
+# define VOTE_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
 #include <exordium/service.h>
-#include <exordium/services.h>
 
 
-class Vote : public Exordium::Service
-{
-private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
+namespace Exordium {
+   namespace VoteModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    VOTE_FUNC((Module::* const function));
+	 } static const functionTable[];
+	 
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Vote")
+	   {};
    
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
+	 ~Module(void)
+	   {};
+	 
+	 // Start the module
+	 bool start(Exordium::Services& s);
    
-  struct functionTableStruct
-  {
-    char const *command;
-     void VOTE_FUNC ((Vote::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
-   
- public:
-   Vote(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Vote")
-     {};
-   
-   ~Vote(void)
-     {};
-   
-   // Start the module
-   bool start(Exordium::Services& s);
-   
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-		  const AISutil::String& channel);
-   
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-   
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-      { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-      { return configData; };
- 
-private:
-void VOTE_FUNC (parseHELP);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   {};
 
-};
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+	 
+       private:
+	 VOTE_FUNC (parseHELP);
+      }; // class Module
+   }; // class VoteModule
+}; // class Exordium
 
 #endif // _SOURCE_MODULES_VOTE_VOTE_H_
