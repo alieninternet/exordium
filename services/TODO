@@ -30,3 +30,6 @@ Add ? support in serv commands, i.e nlist, elist etc
 
 
 Tidy up ban code........
+
+
+Return Nulls for nick info.. and don't show if not set..
