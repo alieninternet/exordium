@@ -30,7 +30,7 @@
 
 #include "language.h"
 
-static Kine::Language::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR langtag +]
+Kine::Languages::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR langtag +]
    { "[+
    (string-upcase
       (sprintf "%s%s"
@@ -54,7 +54,7 @@ namespace Exordium {
 	 };
 	 
 	 // The language map
-	 static Kine::Language::tagMap_type tagMap;
+	 static Kine::Languages::tagMap_type tagMap;
       }; // struct Language
    }; // namespce NickModule
 }; // namespace Exordium
