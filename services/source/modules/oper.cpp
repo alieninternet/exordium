@@ -23,9 +23,9 @@ using namespace Exordium;
 
 struct Oper::functionTableStruct const
   Oper::functionTable[] = {
-  {"help", parseHELP},
-  {"jupe", parseJUPE},
-  {0}
+       {"help", &Oper::parseHELP},
+       {"jupe", &Oper::parseJUPE},
+       {0, 0}
 };
 
 void
@@ -41,7 +41,7 @@ for (int i = 0; functionTable[i].command != 0; i++)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st, ch);
+          (this->*(functionTable[i].function))(origin, st, ch);
           return;
         }
     }
@@ -62,7 +62,7 @@ Oper::parseLine (String const &line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st, ch);
+          (this->*(functionTable[i].function))(origin, st, ch);
           return;
         }
     }
@@ -74,7 +74,7 @@ OPER_FUNC (Oper::parseHELP)
 {
 	String word = tokens.nextToken();
 	String parm = tokens.nextToken();
-	Services::doHelp(origin,"oper",word,parm);
+	services.doHelp(origin,"oper",word,parm);
 }
 
 void
@@ -83,7 +83,7 @@ OPER_FUNC (Oper::parseJUPE)
 	String command = tokens.nextToken();
 	if(command=="")
 	{
-		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 jupe add/list/del","Oper",origin);
+		services.serviceNotice("\002[\002Incorrect Usage\002]\002 jupe add/list/del","Oper",origin);
 		return;
 	}
 	if(command=="add")
@@ -92,16 +92,16 @@ OPER_FUNC (Oper::parseJUPE)
 		String reason = tokens.rest();
 		if(nickname=="" | reason=="")
 		{
-			Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe","oper",origin);
+			services.serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe","oper",origin);
 			return;
 		}
 	}
 }
 EXORDIUM_SERVICE_INIT_FUNCTION {
-	Services::registerService(name,name,"ircdome.org", "+dz",
+	services.registerService(name,name,"ircdome.org", "+dz",
 					"IRC Operator Services");
-	Services::serviceJoin(name,"#Debug");
-	return new Module("oper",new Oper(name));
+	services.serviceJoin(name,"#Debug");
+	return new Module("oper",new Oper(services, name));
 }
 
 

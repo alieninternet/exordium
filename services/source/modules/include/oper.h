@@ -22,17 +22,18 @@ private:
   struct functionTableStruct
   {
     char const *command;
-    void OPER_FUNC ((*function));
+     void OPER_FUNC ((Oper::* const function));
   };
   static struct functionTableStruct const functionTable[];
+   Exordium::Services& services;
   const String myName;
   void sendMessage(const String &to, const String &message)
 	{
-		Exordium::Services::serviceNotice(message,myName,to);
+		services.serviceNotice(message,myName,to);
 	}
 public:
-  Oper(const String &mn)
-	: myName(mn)
+   Oper(Exordium::Services& s, const String &mn)
+	: services(s), myName(mn)
 	{
 	};
 
@@ -43,9 +44,9 @@ public:
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
 private:
-   static void OPER_FUNC (parseHELP);
-   static void OPER_FUNC (parseQUOTE);
-   static void OPER_FUNC (parseJUPE);
+   void OPER_FUNC (parseHELP);
+   void OPER_FUNC (parseQUOTE);
+   void OPER_FUNC (parseJUPE);
 };
 
 
