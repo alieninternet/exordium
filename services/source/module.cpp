@@ -124,11 +124,6 @@ namespace {
 	 }
  */
 
-	 // This will be unnecessary beyond the next kine snapshot.
-    	 if (lt_dlinit() != 0) {
-	    return false; // :(
-	 }
-	 
 	 // Create new database Instance
 	 db = new CDatabase(config);
 #ifdef DEBUG
@@ -158,4 +153,10 @@ namespace {
 
 
 // This is called when the module is initially loaded
-KINE_MODULE_INIT { return new mod_exordium(); };
+KINE_MODULE_INIT {
+   // This will be unnecessary beyond the next kine snapshot. Remove it
+   // when it's available.
+   (void)lt_dlinit();
+	 
+   return new mod_exordium();
+};
