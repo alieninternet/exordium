@@ -34,6 +34,7 @@ struct Serv::functionTableStruct const
   {"die", parseDIE},
   {"news", parseNEWS},
   {"synch", parseSYNCH},
+  {"clone", parseCLONE},
   {0}
 };
 void
@@ -89,6 +90,7 @@ Services::queueAdd(":Love QUIT :"+togo);
 Services::queueAdd(":Note QUIT :"+togo);
 Services::queueAdd(":Serv QUIT :"+togo);
 Services::queueAdd(":IRCDome QUIT :"+togo);
+Services::queueAdd(":Oper QUIT :"+togo);
 Services::queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+togo);
 Services::shutdown();
 }

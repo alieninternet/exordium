@@ -24,6 +24,7 @@ using namespace Exordium;
 struct Oper::functionTableStruct const
   Oper::functionTable[] = {
   {"help", parseHELP},
+  {"jupe", parseJUPE},
   {0}
 };
 
@@ -80,6 +81,26 @@ OPER_FUNC (Oper::parseHELP)
 	Services::doHelp(origin,"oper",word,parm);
 }
 
+void
+OPER_FUNC (Oper::parseJUPE)
+{
+	String command = tokens.nextToken();
+	if(command=="")
+	{
+		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 jupe add/list/del","Oper",origin);
+		return;
+	}
+	if(command=="add")
+	{
+		String nickname = tokens.nextToken();
+		String reason = tokens.rest();
+		if(nickname=="" | reason=="")
+		{
+			Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe","oper",origin);
+			return;
+		}
+	}
+}
 EXORDIUM_SERVICE_INIT_FUNCTION {
 	Services::registerService(name,name,"ircdome.org", "+dz",
 					"IRC Operator Services");
