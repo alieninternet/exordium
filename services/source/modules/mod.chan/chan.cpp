@@ -32,6 +32,7 @@
 #include "tables.h"
 #include <exordium/channel.h>
 #include <kineircd/str.h>
+#include <kineircd/config.h>
 
 
 using AISutil::String;
@@ -487,7 +488,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    int owned = services->getChannel().ownedChannels(origin.getNickname());
    if(owned>0)
      {
-	origin.sendMessage("Error: You are only permitted own one channel per nickname on IRCDome",getName());
+	origin.sendMessage("Error: You are only permitted own one channel per nickname on "+Kine::config().getNetworkName(),getName());
 	return;
      }
    if(services->getChannel().isChanRegistered(channel))

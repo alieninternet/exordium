@@ -83,6 +83,7 @@ namespace Exordium {
         { return defUplinkPort; };
       const AISutil::String& getUplinkPass(void) const
 	{ return defUplinkPass; };
+
       // 'CONSOLE' class
       const AISutil::String& getConsoleDescription(void) const
 	{ return defConsoleDescription; };

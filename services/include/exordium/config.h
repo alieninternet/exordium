@@ -37,12 +37,13 @@ namespace Exordium {
       // Variables (top class from the definition table above)
       AISutil::String defUnderlingHostname;	// Underling server hostname
       AISutil::String defUplinkPass;
-      
+
       // 'SQL' variables
       AISutil::String defSqlDatabase;		// MySql server database name
       AISutil::String defSqlHostname;		// MySql server hostname
       AISutil::String defSqlPassword;		// MySql server password
       unsigned short defSqlPort;		// MySql server port
+      
       AISutil::String defSqlUsername;		// MySql server username
       AISutil::String defSqlEngine;             // Database engine
       
@@ -57,7 +58,6 @@ namespace Exordium {
       // Top variables
       const AISutil::String& getUnderlingHostname(void) const
 	{ return defUnderlingHostname; };      
-      
       // 'SQL' class
       const AISutil::String& getSqlDatabase(void) const
 	{ return defSqlDatabase; };

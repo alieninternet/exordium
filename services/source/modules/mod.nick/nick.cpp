@@ -32,6 +32,7 @@
 #include "tables.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
+#include <kineircd/config.h>
 #include <exordium/utils.h>
 #include <sstream>
 
@@ -564,11 +565,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	origin.sendMessage (tosend, getName());
 	return;
      }
-   origin.sendMessage("Here on IRCDome we require email validation before allowing our users", getName());
+   origin.sendMessage("Here on "+Kine::config().getNetworkName()+" we require email validation before allowing our users", getName());
    origin.sendMessage("to register nicknames, this is a simple process and only takes a few minutes to complete",getName());
    origin.sendMessage("You will shortly receive an email with further instructions",getName());
    origin.sendMessage("This will be delivered to the account :\002"+email+"\002",getName());
-   origin.sendMessage("Thank you for using IRCDome!",getName());
+   origin.sendMessage("Thank you for using "+Kine::config().getNetworkName()+"!",getName());
    services->registerNick(origin.getNickname(),password,email);
    services->log(origin,getName(),"Registered nickname with email "+email);
    String authcode = services->genAuth(origin.getNickname());
@@ -578,7 +579,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
      "\n"
      "\n"
      "In order to successfully register your nickname, you need to type\n"
-     "the following next time you are on IRCDome.\n"
+     "the following next time you are on "+Kine::config().getNetworkName()+".\n"
      "\n"
      "\n"
      "/msg nick AUTH "+authcode+"\n"
