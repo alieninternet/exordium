@@ -85,10 +85,6 @@ public:
    Exordium::Services& getServices(void)
      { return services; };
    
-   // Return our name
-   const LibAIS::String& getName(void) const
-     { return myName; };
-   
    // Parser for incoming stuff
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
