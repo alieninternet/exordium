@@ -34,17 +34,6 @@
 #include <exordium/conf.h>
 
 
-#ifdef HAVE_MYSQL
-# include <exordium/database/mysql/dbmysql.h>
-#endif
-
-#ifdef HAVE_PGSQL
-# include <exordium/database/postgresql/dbpgsql.h>
-#endif
-
-
-
-
 namespace Exordium {
 
   struct db_supported_engines_t

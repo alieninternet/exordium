@@ -30,6 +30,14 @@
 
 #include "exordium/database/database.h"
 
+#ifdef HAVE_MYSQL
+# include <exordium/database/mysql/dbmysql.h>
+#endif
+
+#ifdef HAVE_PGSQL
+# include <exordium/database/postgresql/dbpgsql.h>
+#endif
+
 using namespace Exordium;
 using AISutil::String;
 
