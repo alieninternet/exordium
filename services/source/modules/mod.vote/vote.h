@@ -33,17 +33,20 @@
 
 #include <kineircd/str.h>
 
-# define VOTE_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)
+# define VOTE_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
 #include <exordium/service.h>
 #include <exordium/services.h>
 
 
-class Vote : public Service
+class Vote : public Exordium::Service
 {
 private:
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
+   
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
    
   struct functionTableStruct
   {
@@ -52,30 +55,31 @@ private:
   };
   static struct functionTableStruct const functionTable[];
    
-public:
-   Vote(Exordium::Services& s, const AISutil::String& mn)
-     : Service(s, mn)
-	{
-#ifdef DEBUG
-	   std::cout << "Vote New()" << std::endl;
-#endif
-	};
-	~Vote(void)
-	{
-#ifdef DEBUG
-	   std::cout << "Vote Deadeded" << std::endl;
-#endif
-	};
-   // Start the module
-   void start(void);
+ public:
+   Vote(void)
+     : configData(moduleInfo.fullName, "somewhere.org", "Vote")
+     {};
    
-   void parseLine (AISutil::String const &, AISutil::String const &);
-   void parseLine (AISutil::String const &, AISutil::String const &, AISutil::String const &);
+   ~Vote(void)
+     {};
+   
+   // Start the module
+   void start(Exordium::Services& s);
+   
+   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+		  const AISutil::String& channel);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
    
+   // Return an appropriate instance of a configuration data class
+   const Exordium::Service::ConfigData& getConfigData(void) const
+      { return configData; };
+   Exordium::Service::ConfigData& getConfigData(void)
+      { return configData; };
+ 
 private:
 void VOTE_FUNC (parseHELP);
 

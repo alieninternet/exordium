@@ -30,10 +30,8 @@
 
 #include "stats.h"
 #include <exordium/services.h>
-#include <exordium/nickname.h>
 #include <exordium/channel.h>
 #include <kineircd/str.h>
-#include <exordium/sql.h> // <=- is this correct?
 #ifdef HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
@@ -50,27 +48,25 @@ using namespace Exordium;
 	  {0, 0}
      };
    void
-     Stats::parseLine (String const &line, String const &requestor, String const &ch)
+     Stats::parseLine (StringTokens& line, User& origin, const String& channel)
        {
 	  return;
        }
 
    void
-     Stats::parseLine (String const &line, String const &requestor)
+     Stats::parseLine (StringTokens& line, User& origin)
        {
-	  StringTokens st (line);
-	  String origin = requestor;
-	  String command = st.nextToken ().toLower ();
+	  String command = line.nextToken ().toLower ();
 	  for (int i = 0; functionTable[i].command != 0; i++)
 	    {
 	       // Does this match?
 	       if (command == functionTable[i].command)
 		 {
-		    (this->*(functionTable[i].function))(origin, st);
+		    (this->*(functionTable[i].function))(origin, line);
 		    return;
 		 }
 	    }
-	  services.serviceNotice ("Unrecognized Command", "Stats", requestor);
+	  origin.sendMessage("Unrecognized Command", getName());
        }
    
    void
@@ -78,27 +74,32 @@ using namespace Exordium;
        {
 	  String word = tokens.nextToken();
 	  String parm = tokens.nextToken();
-	  services.doHelp(origin,"Stats",word,parm);
+	  services->doHelp(origin,getName(),word,parm);
 	  String tolog = "Did HELP on word " + word + " parm " + parm;
-	  services.log(origin,"Stats",String(tolog));
+	  services->log(origin,getName(),String(tolog));
        }
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	return new Stats(services);
+	return new Stats();
      }
 
    // Module information structure
    const Stats::moduleInfo_type Stats::moduleInfo = {
       "Statistics Service",
-	0, 0
+	0, 0,
+	Exordium::Service::moduleInfo_type::Events::NONE
    };
 
 
 // Start the service
-void Stats::start(void)
+void Stats::start(Exordium::Services& s)
 {
-   services.registerService(name,name,"ircdome.org","+z",
-			    "Statistics Collection Service");
-   services.serviceJoin(name,"#Debug");
+   // Set the services field appropriately
+   services = &s;
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(), "+dz",
+			     getConfigData().getDescription());
 }
