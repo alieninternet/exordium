@@ -207,7 +207,11 @@ Services::Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c)
  : daemon(d),
    logger(l),
    database(db),
-   config(c)
+   config(c),
+   parser(*this),
+   nickname(*this),
+   channel(*this),
+   ircdome(*this)
 {
    logger.logLine("Setting up signal handlers");
    getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
@@ -259,7 +263,7 @@ bool Services::handleInput (void)
   {
   std::getline(bufferin,line);
   logger.logLine("RX: "+line);
-  Parser::parseLine(line);	
+  parser.parseLine(line);	
   }
 
   return true;
@@ -418,7 +422,7 @@ while (( row = res.fetch_row()))
 		String id = ((std::string) row[0]).c_str();
 		String chan = ((std::string) row[1]).c_str();
 		String mask = ((std::string) row[2]).c_str();
-		Channel::RemoveBan(id,chan,mask);
+		channel.RemoveBan(id,chan,mask);
 	}
 
 //Lastly commit any outstanding db changes.
@@ -430,9 +434,9 @@ database.query(aquery);
 
 void Services::expireRun(void)
 {
-String nc = Nickname::getRegNickCount();
-String cc = Channel::getChanCount();
-String oc = Nickname::getOnlineCount();
+String nc = nickname.getRegNickCount();
+String cc = channel.getChanCount();
+String oc = nickname.getOnlineCount();
 String lc = getLogCount();
 String gc = getGlineCount();
 String noc = getNoteCount();
@@ -471,7 +475,7 @@ void
 Services::doHelp(String const &nick, String const &service,
 		String const &topic, String const &parm)
 {
-String lang = Nickname::getLanguage(nick);
+String lang = nickname.getLanguage(nick);
 if(topic == "")
 	{
 		//No topic, no parm.
@@ -549,21 +553,21 @@ return retstr;
 }
 
 void
-Services::log (String const &nickname, String const &service, String const &text, String const &cname)
+Services::log (String const &nick, String const &service, String const &text, String const &cname)
 {
-	String nicks = Nickname::getIDList(nickname);
-	String ident = Nickname::getIdent(nickname);
-	String host = Nickname::getHost(nickname);
+	String nicks = nickname.getIDList(nick);
+	String ident = nickname.getIdent(nick);
+	String host = nickname.getHost(nick);
 	String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"')";
 	database.query(query);
 }
 
 void
-Services::log (String const &nickname, String const &service, String const &text)
+Services::log (String const &nick, String const &service, String const &text)
 {
-	String nicks = Nickname::getIDList(nickname);
-	String ident = Nickname::getIdent(nickname);
-	String host = Nickname::getHost(nickname);
+	String nicks = nickname.getIDList(nick);
+	String ident = nickname.getIdent(nick);
+	String host = nickname.getHost(nick);
 	String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','')";
 	database.query(query);
 }
@@ -616,7 +620,7 @@ Services::servicePart(String const &service, String const &target)
 bool
 Services::usePrivmsg (String const &nick)
 {
-	if(!Nickname::isNickRegistered(nick))
+	if(!nickname.isNickRegistered(nick))
 	{
 		return false;
 	}
@@ -667,16 +671,16 @@ return true;
 }
 
 void
-Services::serviceKick(String const &channel, String const &nick, String const &reason)
+Services::serviceKick(String const &chan, String const &nick, String const &reason)
 {
-	queueAdd (String (":Chan KICK ")+channel+" "+nick+" :"+reason);
+	queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
 }
 
 bool
-Services::isOp(String const &nickname, String const &channel)
+Services::isOp(String const &nick, String const &chan)
 {
-	int chanid = Channel::getOnlineChanID(channel);
-	int nickid = Nickname::getOnlineNickID(nickname);
+	int chanid = channel.getOnlineChanID(chan);
+	int nickid = nickname.getOnlineNickID(nick);
 	String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
 	MysqlRes res = database.query(query);
 	MysqlRow row;
@@ -694,10 +698,10 @@ return false;
 }
 
 bool
-Services::isVoice(String const &nickname, String const &channel)
+Services::isVoice(String const &nick, String const &chan)
 {
-	int chanid = Channel::getOnlineChanID(channel);
-	int nickid = Nickname::getOnlineNickID(nickname);
+	int chanid = channel.getOnlineChanID(chan);
+	int nickid = nickname.getOnlineNickID(nick);
 	String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
 	MysqlRes res = database.query(query);
 	MysqlRow row;
@@ -738,11 +742,11 @@ Services::sendNote(String const &from, String const &to, String const &text)
 {
 	String query = String("insert into notes values('','")+from+"','"+to+"',NOW(),'"+text+"')";
 	database.query(query);
-	int foo = Nickname::getOnlineNickID(to);
+	int foo = nickname.getOnlineNickID(to);
 	if(foo>0)
 	{
 		//Client is online.. But are they identified HUHUHUH?!!?
-		if(Nickname::isIdentified(to,to))
+		if(nickname.isIdentified(to,to))
 		{
 		String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
 		serviceNotice(togo,"Note",to);
@@ -775,9 +779,9 @@ while ((row = res.fetch_row()))
 		{
 		foo++;
 		newnick = tomod+String::convert(foo);
-			if(!Nickname::isNickRegistered(newnick))
+			if(!nickname.isNickRegistered(newnick))
 			{
-				if(Nickname::getOnlineNickID(newnick)==0)
+				if(nickname.getOnlineNickID(newnick)==0)
 				{
 				//Oke we can use this one :)
 				running = false;

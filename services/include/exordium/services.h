@@ -17,13 +17,9 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
-#include "exordium/log.h"
 #include <kineircd/utils.h>
 #include <kineircd/password.h>
 #include <kineircd/daemon.h>
-#include "exordium/service.h"
-#include "exordium/conf.h"
-#include "exordium/sql.h"
 #include <csignal>
 
 extern "C" {
@@ -39,6 +35,15 @@ extern "C" {
 # include "dmalloc.h"
 #endif
 
+#include "exordium/log.h"
+#include "exordium/service.h"
+#include "exordium/conf.h"
+#include "exordium/sql.h"
+#include "exordium/parser.h"
+#include "exordium/nickname.h"
+#include "exordium/channel.h"
+#include "exordium/ircdome.h"
+
 // Maybe this is in the wrong place
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
 	extern "C" Module *service_init(String const &name) 
@@ -53,6 +58,11 @@ namespace Exordium {
 	Log& logger;
 	Sql& database;
 	const Config& config;
+
+	Parser parser;
+	Nickname nickname;
+	Channel channel;
+	IRCDome ircdome;
 	
 	int sock;
 	int maxSock;
@@ -78,10 +88,11 @@ namespace Exordium {
 	std::queue < String > outputQueue;
 	std::queue < String > ModeoutputQueue;
 	Kine::SocketIPv4TCP socky;
+	
+      public:
 	static const Kine::Utils::base_type PasswordStrBase = 85;
 	static const Kine::String::size_type PasswordStrBaseLongPad = 5;
 	
-      public:
 	// dunno where you want these fellow james
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c);
@@ -101,6 +112,18 @@ namespace Exordium {
 	// Grab the configuration reference
 	const Config& getConfig(void) const
 	  { return config; };
+
+	// Return the nickname thingy
+	Nickname& getNickname(void)
+	  { return nickname; };
+	
+	// Return the channel thingy
+	Channel& getChannel(void)
+	  { return channel; };
+
+	// Return the IRCDome thingy
+	IRCDome& getIRCDome(void)
+	  { return ircdome; };
 	
 	time_t currentTime;
 //	bool load_config();
