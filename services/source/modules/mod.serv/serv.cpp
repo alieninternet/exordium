@@ -1004,7 +1004,7 @@ bool Module::start(Exordium::Services& s)
    // Register our language map.
    //
    std::cerr << "REGISTERING THE FUCKING MAP." << std::endl;
-   std::cerr << "ITS AT " << (void)Exordium::ServModule::Language::tagMap << std::endl;
+   std::cerr << "ITS AT " << (void*)Exordium::ServModule::Language::tagMap << std::endl;
    Kine::langs().registerMap(Exordium::ServModule::Language::tagMap);
    std::cerr << "REGISTERED THE CUNT." << std::endl;
    
