@@ -159,10 +159,10 @@ mod_chan_la_SOURCES=\
 		   source/modules/mod.chan/tables.h
 
 source/modules/mod.chan/language.cpp source/modules/mod.chan/language.h: source/modules/mod.chan/language.tpl $(top_builddir)/autogen/language.def
-		      $(AUTOGEN) \
-		      		 -b $(basename $@) \
-				 -T source/modules/mod.chan/language.tpl \
-				 $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.chan/language.tpl \
+		$(top_builddir)/autogen/language.def
 				 
 		    
 # ***************** END of mod_chan *******************
@@ -180,10 +180,10 @@ mod_love_la_SOURCES=\
 		   source/modules/mod.love/tables.h
 
 source/modules/mod.love/language.cpp source/modules/mod.love/language.h: source/modules/mod.love/language.tpl $(top_builddir)/autogen/language.def
-		      $(AUTOGEN) \
-		      		 -b $(basename $@) \
-				 -T source/modules/mod.love/language.tpl \
-				 $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.love/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 # ***************** END of mod_love *******************
 # ***************** START of mod_nick *****************
@@ -220,10 +220,10 @@ mod_note_la_SOURCES=\
 		    source/modules/mod.note/tables.h
 
 source/modules/mod.note/language.cpp source/modules/mod.note/language.h: source/modules/mod.note/language.tpl $(top_builddir)/autogen/language.def
-		      $(AUTOGEN) \
-		      		 -b $(basename $@) \
-				 -T source/modules/mod.note/language.tpl \
-				 $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.note/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 # ***************** END of mod_note *******************
 # ***************** START of mod_oper *****************
@@ -238,10 +238,10 @@ mod_oper_la_SOURCES=\
 		   source/modules/mod.oper/oper.h
 
 source/modules/mod.oper/language.cpp source/modules/mod.oper/language.h: source/modules/mod.oper/language.tpl $(top_builddir)/autogen/language.def
-		      $(AUTOGEN) \
-		      		 -b $(basename $@) \
-				 -T source/modules/mod.oper/language.tpl \
-				 $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.oper/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 # ***************** END of mod_oper *******************
 # ***************** START of mod_serv *****************
@@ -309,10 +309,10 @@ mod_credits_la_LDFLAGS=\
 			-avoid-version -module
 
 source/modules/mod.credits/language.cpp source/modules/mod.credits/language.h: source/modules/mod.credits/language.tpl $(top_builddir)/autogen/language.def
-		      $(AUTOGEN) \
-		      		 -b $(basename $@) \
-				 -T source/modules/mod.credits/language.tpl \
-				 $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.credits/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 # ***************** END of mod_credits ****************
 # ***************** START of mod_game *****************
