@@ -230,7 +230,7 @@ namespace Exordium {
 
       // is equal to operator
       bool operator==(const User &u) const
-	{ return (onlineID == u.onlineID) };
+	{ return (onlineID == u.onlineID); };
    };
 }; // class Exordium
 
