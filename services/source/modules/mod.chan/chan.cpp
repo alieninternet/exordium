@@ -34,7 +34,8 @@
 #include <kineircd/str.h>
 #include <kineircd/config.h>
 #include <exordium/dchan.h>
-
+#include <exordium/database/base.h>
+#include <exordium/database/database.h>
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::ChanModule;
@@ -844,7 +845,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    String tnickid,taccess;
    for(int i=0; i<nbRes; i++)
     {
-       CResult *myRes = services->getDatabase().dbGetResultSet(); 
+//       CResult *myRes = services->getDatabase().dbGetResultSet(); 
     }
    ptr->log(origin,"Chan","Did a channel access",channel);
 }

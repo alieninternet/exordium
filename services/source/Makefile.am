@@ -12,7 +12,8 @@ libexordium_la_LIBADD = ../../kineircd/src/libkineircd.la $(LIBLTDL)
 
 # work out what else needs compiling..
 if EXORDIUM_COMPILE_DB_MYSQL
-  EXORDIUM_TARGET_DB_MYSQL=lib/database/mysql/dbmysql.cpp
+  EXORDIUM_TARGET_DB_MYSQL=lib/database/mysql/dbmysql.cpp \
+  			   lib/database/mysql/dbmysqlres.cpp
 endif
 if EXORDIUM_COMPILE_DB_PGSQL
   EXORDIUM_TARGET_DB_PGSQL=lib/database/postgresql/dbpgsql.cpp

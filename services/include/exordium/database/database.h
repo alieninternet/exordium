@@ -31,6 +31,7 @@
 
 # include <aisutil/string/string.h>
 # include <exordium/database/base.h>
+# include <exordium/database/result.h>
 # include <exordium/database/table.h>
 # include <exordium/config.h>
 

@@ -193,3 +193,9 @@ void CDatabase::dbDelete(String const &table)
   database->dbUnlock();
   database->dbClearRes();
 }
+
+CResult* CDatabase::dbGetResultSet(void)
+{
+return database->dbGetResultSet();   
+}
+

@@ -29,30 +29,18 @@
 # define _SOURCE_LIB_DATABASE_MYSQL_DBMYSQL_H_ 1
 
 #include <exordium/database/base.h>
+#include <exordium/database/result.h>
 
 #include <aisutil/string/string.h>
 
 #include <mysql/mysql.h>
 
+#include "dbmysqlres.h"
+
 
 namespace Exordium {
 
 
-   class CMySQLRes:public CResult
-     {
-      private:
-	MYSQL_RES *mysqlres;
-	MYSQL_ROW mysqlrow;
-      public:
-	CMySQLRes(MYSQL_RES &result);
-	
-	~CMySQLRes();
-	
-	// functions
-	AISutil::String dbResultGetValue(void);
-     };
-   
-	       
    /*
    * CMySQL: Class for MySql server
    *

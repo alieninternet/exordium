@@ -31,21 +31,11 @@
 
 #include <aisutil/string/string.h>
 
+#include "result.h"
 
 namespace Exordium {
 
    class Config;
-   /* Virtual base thingy for results - I wish i had a clue what I was doing :x */
-  class CResult
-     {
-      public:
-	CResult();
-
-	
-	virtual ~CResult(void);
-        virtual AISutil::String dbResultGetValue(void)=0;
-     };
-   
 	
   /*
    * Base class for all SQL servers

@@ -37,6 +37,8 @@
 #endif
 
 #include "dbmysql.h"
+#include "dbmysqlres.h"
+
 #include <exordium/services.h>
 
 using namespace Exordium;
@@ -183,32 +185,7 @@ void CMySQL::dbUnlock(void)
 
 CResult* CMySQL::dbGetResultSet(void)
 {
-#ifdef HAVE_MYSQL
    MYSQL_RES rres = *mysqlres;
    return new CMySQLRes(rres);
-#else
-#error "Sorry PSQL result thingy needs doing!!"
-#endif
-   
-   
-}
-
-
-/* Result stuff here */
-
-/* Constructor thingy ma bob */
-CMySQLRes::CMySQLRes(MYSQL_RES &result)
-{
-   mysqlres = &result;
-   mysqlrow = mysql_fetch_row(mysqlres);
-}
-
-
-String CMySQLRes::dbResultGetValue(void)
-{
-if(!mysqlrow==NULL)
-     return mysqlrow[0];
-   
-   
 }
 
