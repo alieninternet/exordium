@@ -185,48 +185,41 @@ NICK_FUNC (Module::parseAUTH)
 	origin.sendMessage("Error: That nickname is not registered",getName());
 	return;
      }
+   origin.sendMessage("Nickname Information for \002"+who,getName());
+   origin.sendMessage("Last identified : \002"+ptr->getLastID(),getName());
+   origin.sendMessage("Registered : \002"+ptr->getRegDate(),getName());
+   origin.sendMessage("ICQ : \002"+ptr->getICQ(),getName());
+   origin.sendMessage("MSN : \002"+ptr->getMSN(),getName());
+   origin.sendMessage("AIM : \002"+ptr->getAIM(),getName());
+   origin.sendMessage("URL : \002"+ptr->getURL(),getName());
+   origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
+   origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
+   std::ostringstream tol;
+                tol << "Options : ";
+                if(ptr->deopAway())
+     {
+	
+	                  tol << "{Deop on Away}";
+     }
+   
+                if(ptr->modNick())
+     {
+	
+	                  tol << "{Nickname Enforcement}";
+     }
+             origin.sendMessage(tol.str(),getName());
+   
+   
    if(origin.getAccess("Serv")>0 || origin.getAccess("Oper")>0)
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     std::ostringstream tol;
-	     tol << "Options : ";
-	     if(ptr->deopAway())
-	       {
-		  tol << "{Deop on Away}";
-	       }
-	     if(ptr->modNick())
-	       {
-		  tol << "{Nickname Enforcement}";
-	       }
-
-	     origin.sendMessage("Nickname Information for \002"+who,getName());
+	     origin.sendMessage("Extra Infortmation for Staff",getName());
 	     origin.sendMessage("Last host : \002"+ptr->getLastHost(),getName());
-	     origin.sendMessage("Last identified : \002"+ptr->getLastID(),getName());
-	     origin.sendMessage("Registered : \002"+ptr->getRegDate(),getName());
 	     origin.sendMessage("Email : \002"+ptr->getEmail(),getName());
-	     origin.sendMessage("ICQ : \002"+ptr->getICQ(),getName());
-	     origin.sendMessage("MSN : \002"+ptr->getMSN(),getName());
-	     origin.sendMessage("AIM : \002"+ptr->getAIM(),getName());
-	     origin.sendMessage("URL : \002"+ptr->getURL(),getName());
-	     origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
-	     origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
-	     origin.sendMessage(tol.str(),getName());
-	     return;
+ 	     return;
 	  }
      }
-	     origin.sendMessage("Nickname Information for \002"+who,getName());
-	     origin.sendMessage("Last host : \002"+ptr->getLastHost(),getName());
-	     origin.sendMessage("Last identified : \002"+ptr->getLastID(),getName());
-	     origin.sendMessage("Registered : \002"+ptr->getRegDate(),getName());
-	     origin.sendMessage("Email : \002"+ptr->getEmail(),getName());
-	     origin.sendMessage("ICQ : \002"+ptr->getICQ(),getName());
-	     origin.sendMessage("MSN : \002"+ptr->getMSN(),getName());
-	     origin.sendMessage("AIM : \002"+ptr->getAIM(),getName());
-	     origin.sendMessage("URL : \002"+ptr->getURL(),getName());
-	     origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
-	     origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
-/* Tidy this up, send one set of info, and then send staff output after */
 }
 
 

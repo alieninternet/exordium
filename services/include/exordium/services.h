@@ -196,8 +196,6 @@ namespace Exordium {
       virtual AISutil::String getNick(int const &) = 0;
       virtual AISutil::String getOnlineNick(int const &) = 0;
       virtual int getOnlineChanID(AISutil::String const &) = 0;
-      virtual AISutil::String genAuth(AISutil::String const &) = 0;
-      
       virtual void addOper(AISutil::String const &, int access) = 0;
       virtual void delOper(AISutil::String const &) = 0;
       virtual bool isOper(AISutil::String const &) = 0;

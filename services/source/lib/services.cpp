@@ -1250,22 +1250,6 @@ int ServicesInternal::getOnlineChanID(String const &id)
    else
      return database.dbGetValue().toInt();
 }
-/* genAuth(String)
- *
- * Generate a new auth code the given nickname (and return it!)
- *
- */
-String ServicesInternal::genAuth(String const &nickname)
-{
-   String authcode = Utils::generateRegcode(nickname,
-					     "VIVA LA FRANCE :)");
-   database.dbInsert("nickspending", "'','"+nickname+"','"+authcode+"'");
-#ifdef DEBUG
-   logLine("New registration: "+nickname, Log::Debug);
-#endif
-   return authcode;
-}
-
 
 void ServicesInternal::addOper(String const &nick, int access)
 {

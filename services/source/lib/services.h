@@ -260,8 +260,6 @@ namespace Exordium {
       AISutil::String getpendingCode(AISutil::String const &);
       void registerNick(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &);
-      AISutil::String genAuth(AISutil::String const &);
-      
       void addOper(AISutil::String const &, int access);
       void delOper(AISutil::String const &);
       bool isOper(AISutil::String const &);
