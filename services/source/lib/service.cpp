@@ -30,19 +30,19 @@
 const LibAIS::ConfigParser::defTable_type
   Exordium::Service::ConfigData::defaultDefinitions = {
        {
-	  "DESCRIPTION",
+	  "DESCRIPTION", 4,
 	    (void *)&ConfigData::defDescription, &varHandleString,
 	    0, 0
        },
        {
-	  "HOSTNAME",
+	  "HOSTNAME", 4,
 	    (void *)&ConfigData::defHostname, &varHandleHostName,
 	    0, 0
        },
        {
-	  "NAME",
+	  "NAME", 4,
 	    (void *)&ConfigData::defName, &varHandleStringOneWord,
 	    0, 0
        },
-       { 0, 0, 0, 0, 0 }
+       { 0, 0, 0, 0, 0, 0 }
   };

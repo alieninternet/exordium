@@ -30,24 +30,24 @@
 // Game module configuration table
 const LibAIS::ConfigParser::defTable_type Game::ConfigData::defTable = {
      {
-	"DESCRIPTION",
+	"DESCRIPTION", 4,
 	  (void *)&ConfigData::defDescription, &varHandleString,
 	  0, 0
      },
      {
-	"EXAMPLE",
+	"EXAMPLE", 7,
 	  (void *)&ConfigData::defExample, &varHandleString,
 	  0, 0
      },
      {
-	"HOSTNAME",
+	"HOSTNAME", 4,
 	  (void *)&ConfigData::defHostname, &varHandleHostName,
 	  0, 0
      },
      {
-	"NAME",
+	"NAME", 4,
 	  (void *)&ConfigData::defName, &varHandleStringOneWord,
 	  0, 0
      },
-     { 0, 0, 0, 0, 0 }
+     { 0, 0, 0, 0, 0, 0 }
 };

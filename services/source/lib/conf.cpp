@@ -36,46 +36,46 @@ using namespace Exordium;
 const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 {
      {
-	"CONSOLE",
+	"CONSOLE", 7,
 	  0, 0,
 	  &defClassConsole, 0
      },
      {
-	"LOGFILE",
+	"LOGFILE", 3,
 	  (void *)&Config::defLogfile, &varHandleString,
 	  0, 0
      },
      {
-	"MODULE",
+	"MODULE", 3,
 	  (void *)&Config::defModules, &varHandleModule,
 	  0, &classHandleModule
      },
      { // This should be temporary, being a server is Kine's job
-        "SERVICESDESCRIPTION",
+        "SERVICESDESCRIPTION", 12,
           (void *)&Config::defServicesDescription, &varHandleString,
           0, 0
      },
      { // This should be temporary, being a server is Kine's job
-        "SERVICESHOSTNAME",
+        "SERVICESHOSTNAME", 12,
           (void *)&Config::defServicesHostname, &varHandleHostName,
           0, 0
      },
      {
-	"SQL",
+	"SQL", 3,
 	  0, 0,
 	  &defClassSql, 0
      },
      { // This should be temporary, being a server is Kine's job
-	"UPLINKHOST",
+	"UPLINKHOST", 10,
 	  (void *)&Config::defUplinkHost, &varHandleHostName,
 	  0, 0
      },
      { // This should be temporary, being a server is Kine's job
-        "UPLINKPORT",
+        "UPLINKPORT", 10,
           (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
           0, 0
      },
-     { 0, 0, 0, 0, 0 }
+     { 0, 0, 0, 0, 0, 0 }
 };
 
 
@@ -83,26 +83,26 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
 {
      {
-        "DESCRIPTION",
+        "DESCRIPTION", 4,
           (void *)&Config::defConsoleDescription, &varHandleString,
           0, 0
      },
      {
-        "ENABLED",
+        "ENABLED", 6,
           (void *)&Config::defConsoleEnabled, &varHandleBoolean,
           0, 0
      },
      {
-        "HOSTNAME",
+        "HOSTNAME", 4,
           (void *)&Config::defConsoleHostname, &varHandleHostName,
           0, 0
      },
      {
-        "NAME",
+        "NAME", 4,
           (void *)&Config::defConsoleName, &varHandleStringOneWord,
           0, 0
      },
-     { 0, 0, 0, 0, 0 }
+     { 0, 0, 0, 0, 0, 0 }
 };
 
 
@@ -110,36 +110,36 @@ const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
 const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 {
      {
-        "DATABASE",
+        "DATABASE", 8,
           (void *)&Config::defSqlDatabase, &varHandleStringOneWord,
           0, 0
      },
      {
-        "ENGINE",
+        "ENGINE", 6,
           (void *)&Config::defSqlEngine, &varHandleString,
           0, 0
      },
      {
-        "HOSTNAME",
+        "HOSTNAME", 4,
           (void *)&Config::defSqlHostname, &varHandleHostName,
           0, 0
      },
      {
-        "PASSWORD",
+        "PASSWORD", 4,
           (void *)&Config::defSqlPassword, &varHandleString,
           0, 0
      },
      {
-        "PORT",
+        "PORT", 4,
           (void *)&Config::defSqlPort, &varHandleUnsignedShortNoZero,
           0, 0
      },
      {
-        "USERNAME",
+        "USERNAME", 4,
           (void *)&Config::defSqlUsername, &varHandleStringOneWord,
           0, 0
      },
-     { 0, 0, 0, 0, 0 }
+     { 0, 0, 0, 0, 0, 0 }
 };
 
 
