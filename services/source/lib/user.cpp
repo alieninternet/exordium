@@ -581,7 +581,7 @@ services.getDatabase().dbDelete("nickspending","nickname='"+nickname+"'");
 const void User::registerNick(String const &password,String const &email)
 {
 if(!isRegistered())
-   services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'english','0','None','None','0','None Set','None Set','None recorded',1");
+   services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'en','0','None','None','0','None Set','None Set','None recorded',1");
 }
 
 /*
