@@ -1,5 +1,0 @@
-This is the 'Game' module. Each channel game spans out from ChannelGame::
-into its own (inherited) class.
-
-More specific information about each game is contained in each game's README
-file (eg. README.Exordi8)
