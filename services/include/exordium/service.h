@@ -7,19 +7,25 @@
 
 #ifndef SERVICE_H
 #define SERVICE_H
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include <map>
+
+extern "C" {
 #include <dlfcn.h>
+};
 
 namespace Exordium {
-
+   
 class Service
 	{
 	public:
 		Service() {};
 		virtual ~Service() {};
-		virtual void parseLine(String const &, String const &) =0;
-		virtual void parseLine(String const &, String const &, String const &) =0;
+		virtual void parseLine(Kine::String const &, 
+				       Kine::String const &) =0;
+		virtual void parseLine(Kine::String const &, 
+				       Kine::String const &, 
+				       Kine::String const &) =0;
 	};
 
 
@@ -33,7 +39,7 @@ class Core {
         : service(s), handle(h)
           {};
    };
-   typedef std::map <String, ServiceModule *> modules_type;
+   typedef std::map <Kine::String, ServiceModule *> modules_type;
    modules_type serviceModules;
 
  public:
@@ -42,12 +48,12 @@ class Core {
       serviceModules.clear();
    };
 
-   void addModule(String const &name, Service &s, void *h) {
+   void addModule(Kine::String const &name, Service &s, void *h) {
       // Just add it - this will overwrite anything already there
       serviceModules[name.IRCtoLower()] = new ServiceModule(&s,h);
    };
 
-   void delModule(String const &name) {
+   void delModule(Kine::String const &name) {
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
       if (sm != 0) {
          dlclose(sm->handle);
@@ -59,7 +65,7 @@ class Core {
       std::cout << "Umm... i couldn't find " << name << std::endl;
    };
 
-   bool exists(String const &name)
+   bool exists(Kine::String const &name)
 	{
 		ServiceModule *sm = serviceModules[name.IRCtoLower()];
 		if ( sm == 0 )
@@ -70,7 +76,8 @@ class Core {
 		return true;
 	}
    // Throw a line at the appropriate service
-   void throwLine(String const &name, String const &line, String const &req) {
+   void throwLine(Kine::String const &name, Kine::String const &line, 
+		  Kine::String const &req) {
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
       if (sm == 0) {
          // Give up.. delete what we just made and go bye byes
@@ -82,7 +89,8 @@ class Core {
       return;
    };
 
-   void throwLine(String const &name, String const &line, String const &req, String const &ch) {
+   void throwLine(Kine::String const &name, Kine::String const &line, 
+		  Kine::String const &req, Kine::String const &ch) {
       // Find it...
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
 
@@ -100,14 +108,14 @@ class Core {
 
 
    // Dump a list of modules
-   String dumpModules(void) {
+   Kine::String dumpModules(void) {
       std::cout << "Modules loaded: ";
-      String tmp = "";
+      Kine::String tmp = "";
       for (modules_type::iterator it = serviceModules.begin();
            it != serviceModules.end(); it++) {
          // Output the key..
          std::cout << (*it).first << ' ';
-	 tmp = String(tmp)+" "+(*it).first;
+	 tmp = Kine::String(tmp)+" "+(*it).first;
       }
       std::cout << std::endl;
       return tmp;
