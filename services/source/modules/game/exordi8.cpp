@@ -220,6 +220,11 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
 	 sendMessage((*currentPlayer).first, 
 		     "You can put down any card you like, since the last "
 		     "card discarded was the Queen of Spades");
+      } else if (lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) {
+	 sendMessage((*currentPlayer).first, 
+		     Kine::String("To discard, you need to match the colour "
+				  "of the last card discarded (") +
+		     lastDiscardedCard.getColourName() + ")");
       } else {
 	 sendMessage((*currentPlayer).first, 
 		     Kine::String("To discard, you need to match the ") +

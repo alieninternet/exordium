@@ -137,6 +137,10 @@ namespace Cards {
       const char* getName(void) const
 	{ return (isJoker() ? "Joker" : namesList[suit - 1][index - 1]); };
       
+      // Return the colour name of this card
+      const char* getColourName(void) const
+	{ return (getColour() == Colour::Red ? "Red" : "Black"); };
+      
       // Check if a card ranks higher than another card (for sorting mainly)
       bool operator<(const Card& rhs) const;
       
