@@ -428,38 +428,19 @@ NICK_FUNC (Module::parseAUTH)
   NICK_FUNC (Module::parseACCESS)
 {
    String nickname = tokens.nextToken();
-   if(nickname!="")
+   if(nickname=="")
      {
-        int nbRes = services->getDatabase().dbSelect("idas", "nicksidentified", "nick='"+origin.getOnlineIDString()+"'");
-
-	int i=0;
-        for (int j=0; j<nbRes; j++)
-	  {
-	     i++;
-	     String id = services->getDatabase().dbGetValue();;
-	     String idnick = services->getNick(id.toInt());
-	     String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
-	     origin.sendMessage(tosend,getName());
-             services->getDatabase().dbGetRow();
-	  }
+	origin.sendMessage("Usage: access nickname",getName());
 	return;
      }
-   int onlineID = origin.getOnlineID();
-   
-   int nbRes = services->getDatabase().dbSelect("idas", "nicksidentified", "nick='"+String::convert(onlineID)+"'");
-
-   int i=0;
-   for(int j=0; j<nbRes; j++)
+   User *ptr = services->findUser(nickname);
+   if(ptr==0)
      {
-	i++;
-	String id =  services->getDatabase().dbGetValue();
-	String idnick = services->getNick(id.toInt());
-	String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
-	origin.sendMessage(tosend,getName());
-        services->getDatabase().dbGetRow();
+	origin.sendMessage("Error: That user is not online",getName());
 	return;
      }
-
+   origin.sendMessage("Access list for "+nickname,getName());
+   origin.sendMessage(ptr->getIDList(),getName());
 }
 
 
@@ -534,8 +515,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.sendMessage("Error: That nickname is not registered!",getName());
 	     return;
 	  }
-	String nickpass = ptr->getPass();
-	if(nickpass == password)
+	if(ptr->getPass() == password)
 	  {
 	     services->killnick(tokill,getName(),"Kill requested by "+origin.getNickname());
 	     origin.log(getName(),"Requested a kill on "+tokill);
@@ -543,11 +523,8 @@ NICK_FUNC (Module::parseAUTH)
 	  }
 	origin.sendMessage("Error: Incorrect password",getName());
 	int access = origin.getAccess("Serv");
-	if(access>0)
+	if(ptr->getAccess("Serv")>0 || ptr->getAccess("Oper")>0)
 	  {
-	     String temp1 = origin.getHost();
-	     String temp2 = origin.getIdent();
-	     String thehost = String(temp2)+"@"+String(temp1);
 	     services->sendHelpme(getName(),String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
 	  }
      }
@@ -555,60 +532,41 @@ NICK_FUNC (Module::parseAUTH)
 
 
 /* Do help... */
-     NICK_FUNC (Module::parseHELP)
-       {
-	  String word = tokens.nextToken();
-	  String parm = tokens.nextToken();
-	  services->doHelp(origin,getName(), word, parm);
-       }
+NICK_FUNC (Module::parseHELP)
+{
+ String word = tokens.nextToken();
+ String parm = tokens.nextToken();
+ services->doHelp(origin,getName(), word, parm);
+}
 
 
 /* Ghost... */
-     NICK_FUNC (Module::parseGHOST)
-       {
-	  String toghost = tokens.nextToken();
-	  String password = tokens.nextToken();
-	  if(toghost=="" | password=="")
-	   {
-		origin.sendMessage("Usage: ghost nickname password",getName());
-		return;
-	   }
-	  if (!services->isNickRegistered( toghost))
-	    {
-	       String tosend = String("Error: Target nickname is not registered");
-	       origin.sendMessage(tosend,getName());
-	       return;
-	    }
-	  String nickpass = Utils::generatePassword(toghost, password);
-	  
-	  User *ptr = services->findUser(toghost);
-
-	  if (ptr == 0) {
-	     /* ?? */
-	     return;
-	  }
-	  
-	  String givepass = ptr->getPass();
-	  if(nickpass == givepass)
-	    {
-	       /* Okay, well, this is not really a service. This is a user..
-		* so technically this is utterly the wrong call.. this will
-		* change, I suspect, when kine grows up a little more..
-		* The mode, btw, was +id
-		*/
-
-services->registerService(toghost,"ghost","ghosts.peoplechat.org",
+NICK_FUNC (Module::parseGHOST)
+{
+  String toghost = tokens.nextToken();
+  String password = tokens.nextToken();
+  if(toghost=="" | password=="")
+   {
+	origin.sendMessage("Usage: ghost nickname password",getName());
+	return;
+   }
+  if (!services->isNickRegistered( toghost))
+    {
+       origin.sendMessage("Error: Target nickname is not registered",getName());
+       return;
+    }
+   if(Utils::generatePassword(toghost,password) == password)
+    {
+       services->registerService(toghost,"ghost","ghosts.peoplechat.org",
 					"Ghosted by "+origin.getNickname());
-	       String tosend = String("Ghost successful for ")+toghost;
-	       origin.sendMessage(tosend,getName());
-	       services->log(origin,getName(),String("Successfully ghosted ")+toghost);
-	       return;
-	    }
-	  String tosend = String("\002Incorrect\002 Password");
-	  services->log(origin,getName(),String("Failed ghost"));
-	  origin.sendMessage(tosend,getName());
-	  return;
-       }
+       origin.sendMessage("Ghost successfull for "+toghost,getName());
+       origin.log(getName(),String("Successfully ghosted ")+toghost);
+       return;
+    }
+  origin.log(getName(),String("Failed ghost for "+toghost));
+  origin.sendMessage("Error: Incorrect Password",getName());
+  return;
+}
 
 
 /* Parse an identification request */
