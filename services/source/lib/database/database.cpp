@@ -24,11 +24,10 @@
  *
  */
 
-#include "exordium/config.h"
-#include "exordium/database/database.h"
+
+#include <exordium/database/database.h>
 
 using namespace Exordium;
-using AISutil::String;
 
 CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
 {
@@ -49,12 +48,10 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
       {
          std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
          exit(1); // YUK, gotta find a way to exit more nicely
-      }      
+      }
 
-     #ifdef HAVE_MYSQL
-      database =(CBase*) new CMySQL(config, logger);
-     #endif
-
+     CMySQL *newdb=new CMySQL(config, logger);
+     database =(CBase*) newdb;
      db_engines = db_mysql;
    }
 
@@ -68,19 +65,9 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
          exit(1); // YUK, gotta find a way to exit more nicely
       }
 
-     #ifdef HAVE_PGSQL
-       database =(CBase*) new CPgSQL(config,logger);
-     #endif
-
+     database =(CBase*) new CPgSQL(config,logger);
      db_engines = db_pgsql;
-   }
 
-  else 
-   
-   {
-     std::cout << "No Database engine selected! Please add engine=<myengine> to ircd.conf!" << std::endl;
-     exit(1);
-   
    }
 
 }
@@ -122,7 +109,7 @@ int CDatabase::dbCount(String const &table, String const &whereargs)
   return database->dbGetValue().toInt();
 }
 
-int CDatabase::dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
+int CDatabase::dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs,LibAIS::String const &orderargs)
 {
   database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
   return database->dbGetValue().toInt();

@@ -24,25 +24,41 @@
  *
  */
 
-#include "exordium/service.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+#include "tables.h"
+
+using namespace Exordium;
+
+
+// The 'lovers' table fields
+static const Exordium::DatabaseTable::fields_type loversFields = {
+     {
+	"nick",
+	  DatabaseTable::Field::Type::UnsignedInteger32,
+	  11,
+	  "0",
+	  DatabaseTable::Field::Flags::PrimaryKey |
+	  DatabaseTable::Field::Flags::NotNull
+     },
+     { 0, DatabaseTable::Field::Type::Void, 0, 0, 0 } // <=- Terminator
+};
+
+// The 'lovers' table itself
+static const Exordium::DatabaseTable loversTable = {
+   // The name of the table
+   "lovers",
+   
+   // The table's fields..
+   loversFields
+};
+
+
+
+// The tables
+const Exordium::DatabaseTable* const Exordium::LoveModule::Tables::tables[] = {
+   &loversTable,
+   0
+};

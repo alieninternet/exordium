@@ -24,25 +24,18 @@
  *
  */
 
-#include "exordium/service.h"
+#ifndef _SOURCE_MODULES_STATS_TABLES_H_
+# define _SOURCE_MODULES_STATS_TABLES_H_ 1
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+# include <exordium/database/table.h>
+
+
+namespace Exordium {
+   namespace StatsModule {
+      namespace Tables {
+	 extern const Exordium::DatabaseTable statsTable;
+      }; // namespace Tables
+   }; // namespace StatsModule
+}; // namespace Exordium
+
+#endif // _SOURCE_MODULES_STATS_TABLES_H_

@@ -24,25 +24,23 @@
  *
  */
 
-#include "exordium/service.h"
+#ifndef _SOURCE_MODULES_NICK_TABLES_H_
+# define _SOURCE_MODULES_NICK_TABLES_H_ 1
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+# ifdef HAVE_CONFIG_H
+#  include "autoconf.h"
+# endif
+
+# include <exordium/database/table.h>
+
+
+namespace Exordium {
+   namespace NickModule {
+      namespace Tables {
+	 // A list of tables, since we have many for this module
+	 extern const Exordium::DatabaseTable* const tables[];
+      }; // namespace Tables
+   }; // namespace NickModule
+}; // namespace Exordium
+
+#endif // _SOURCE_MODULES_NICK_TABLES_H_

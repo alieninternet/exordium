@@ -1,5 +1,5 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
  *
@@ -21,28 +21,9 @@
  *
  * For contact details for the IRCDome Development Team please see the
  * enclosed README file.
- *
  */
+autogen definitions fieldtypes;
 
-#include "exordium/service.h"
-
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+fieldtypes = {
+   name			= "Integer";
+};

@@ -2,6 +2,7 @@
  * 
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (c) 2002 Simon Butcher <pickle@alien.net.au>
  *
  * This file is a part of Exordium.
  * 
@@ -24,25 +25,31 @@
  *
  */
 
-#include "exordium/service.h"
+#ifndef __BANK_H__
+# define __BANK_H__
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
+# include <set>
+# include <kineircd/str.h>
+
+# include <exordium/services.h>
+# include <exordium/user.h>
+
+namespace Exordium {
+  // The credits class
+  class Bank {
+    private:
+      Exordium::Services& services;
+
+    public:
+      Bank(Exordium::Services& s) : services(s)
+        { };
+
+      ~Bank(void)
+        { };
+
+      const int getBalance(const Exordium::User& origin);
+      bool alterBalance(const Exordium::User& origin, const int amount);
   };
+};
+   
+#endif // __BANK_H__

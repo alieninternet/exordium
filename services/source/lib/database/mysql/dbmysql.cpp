@@ -28,13 +28,13 @@
  * Normally, only supported DBs should be compiled in, but I dont know
  * of a way to change libservices_la_SOURCES that much, CPPFLAGS etc are easy but..
  */
-#include "exordium/config.h"
+
 #ifdef HAVE_MYSQL
+
 #include "exordium/database/mysql/dbmysql.h"
 
 
 using namespace Exordium;
-using AISutil::String;
 
 CMySQL::~CMySQL()
 {
@@ -90,8 +90,8 @@ int CMySQL::dbQuery(String const &query)
   std::cout << "DEBUG: Query=" << query << std::endl;
   logger.logLine("DEBUG: Query=" + query);
 
-  // If mysql_real_query returns 0 it means it succeeded
-  if(mysql_real_query(mysql, query.data(), query.length()) == 0)
+  // If mysql_query returns 0 it means it succeeded
+  if(mysql_query(mysql, query.c_str()) == 0)
    {
      mysqlres = mysql_store_result(mysql);
      
@@ -114,26 +114,19 @@ int CMySQL::dbQuery(String const &query)
 
 String CMySQL::dbGetValue(void)
 {
-  if( mysqlres != NULL )
-    return mysqlrow[0];
-  else
-    return "";
+  return mysqlrow[0];
 }
 
 
 String CMySQL::dbGetValue(int field)
 {
-  if( mysqlres != NULL )
-    return mysqlrow[field];
-  else
-    return "";
+  return mysqlrow[field];
 }
 
 
 void CMySQL::dbGetRow(void)
 {
-  if( mysqlres != NULL )
-    mysqlrow = mysql_fetch_row(mysqlres);
+  mysqlrow = mysql_fetch_row(mysqlres);
 }
 
 
@@ -150,7 +143,7 @@ void CMySQL::dbSelectDB(String const &dbName)
 }
 
 
-void CMySQL::dbLock(AISutil::String const &table)
+void CMySQL::dbLock(LibAIS::String const &table)
 {
   dbQuery("LOCK TABLES " + table + " WRITE");
 }

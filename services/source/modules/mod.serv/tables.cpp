@@ -24,25 +24,47 @@
  *
  */
 
-#include "exordium/service.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+#include "tables.h"
+
+using namespace Exordium;
+
+
+// The 'serverlist' table fields
+static const Exordium::DatabaseTable::fields_type serverlistFields = {
+     {
+	"id",
+	  DatabaseTable::Field::Type::UniqueSequence32,
+	  11,
+	  0,
+	  DatabaseTable::Field::Flags::PrimaryKey |
+	  DatabaseTable::Field::Flags::NotNull
+     },
+     {
+	"name",
+	  DatabaseTable::Field::Type::VariableLengthString8,
+	  128,
+	  "",
+	  DatabaseTable::Field::Flags::NotNull
+     },
+     {
+	"hub",
+	  DatabaseTable::Field::Type::Boolean,
+	  1,
+	  "0",
+	  DatabaseTable::Field::Flags::NotNull
+     },
+     { 0, DatabaseTable::Field::Type::Void, 0, 0, 0 } // <=- Terminator
+};
+
+// The 'serverlist' table itself
+const Exordium::DatabaseTable Exordium::ServModule::Tables::serverlistTable = {
+   // The name of the table
+   "serverlist",
+   
+   // The table's fields..
+   serverlistFields
+};

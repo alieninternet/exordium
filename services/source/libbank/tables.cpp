@@ -24,25 +24,40 @@
  *
  */
 
-#include "exordium/service.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+#include "tables.h"
+
+using namespace Exordium;
+
+
+// The 'bank' table fields
+static const Exordium::DatabaseTable::fields_type bankFields = {
+     {
+	"nickid",
+	  DatabaseTable::Field::Type::UnsignedInteger32,
+	  11,
+	  "0",
+	  DatabaseTable::Field::Flags::PrimaryKey |
+	  DatabaseTable::Field::Flags::NotNull
+     },
+     {
+	"balance",
+	  DatabaseTable::Field::Type::UnsignedInteger64,
+	  21,
+	  "0",
+	  0
+     },
+     { 0, DatabaseTable::Field::Type::Void, 0, 0, 0 } // <=- Terminator
+};
+
+// The 'bank' table itself
+const Exordium::DatabaseTable Exordium::BankTables::bankTable = {
+   // The name of the table
+   "bank",
+   
+   // The table's fields..
+   bankFields
+};

@@ -24,7 +24,7 @@
  *
  */
 
-#include "exordium/config.h"
+// Ugly ifdef..
 #ifdef HAVE_PGSQL
 
 #include "exordium/database/postgresql/dbpgsql.h"
@@ -76,39 +76,19 @@ void CPgSQL::dbDisconnect()
 
 int CPgSQL::dbQuery(String const &query)
 {
-  logger.logLine("Before clear!!!");
   // clear results of previous query
-  if(clearres) 
-   {
-     clearres=false;
-     PQclear(pgres);
-   }
-
-  logger.logLine("After clear!!!!");
+  if(pgres != NULL) 
+    PQclear(pgres);
 
   std::cout << "DEBUG: Query=" << query << std::endl;
   logger.logLine("DEBUG: Query=" + query);
 
-  pgres = PQexec(pgconn, query.data());
-
-  logger.logLine("After EXEC!!!");
+  pgres = PQexec(pgconn, query.c_str());
 
   currow=0;
 
-  if(pgres != NULL)
-  {
-    if(PQresultStatus(pgres)==PGRES_COMMAND_OK)
-    {
-      clearres=false;
-      PQclear(pgres);
-      return 0;
-    }
-    else if(PQresultStatus(pgres)==PGRES_TUPLES_OK)
-    {
-      clearres=true;
-      return PQntuples(pgres);
-    }
-  }
+  if( pgres != NULL )
+     return PQntuples(pgres);
   else
      return 0;
 }
@@ -118,19 +98,13 @@ int CPgSQL::dbQuery(String const &query)
 
 String CPgSQL::dbGetValue(void)
 {
-  if(PQntuples(pgres)>0)
-     return PQgetvalue(pgres, currow, 0);
-  else
-     return "";
+  return PQgetvalue(pgres, currow, 0);
 }
 
 
 String CPgSQL::dbGetValue(int field)
 {
-  if(PQntuples(pgres)>0)
-     return PQgetvalue(pgres, currow, field);
-  else
-     return "";
+  return PQgetvalue(pgres, currow, field);
 }
 
 void CPgSQL::dbGetRow(void)

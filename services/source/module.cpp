@@ -1,129 +1,80 @@
-/* $Id$
- * 
- * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
- *
- * This file is a part of Exordium.
- * 
- * Exordium is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * Exordium is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with Exordium; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * For contact details for the IRCDome Development Team please see the
- * enclosed README file.
- *
- */
+/*   
+ This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+ $Author$
+ $Date$
+ $Id$
+*/
 
 #include <iostream>
-#include <exordium/log.h>
-#include <exordium/conf.h>
 #include <exordium/services.h>
-#include <kineircd/module.h>
-#include <exordium/database/database.h>
+#include <exordium/log.h>
+#include <exordium/sql.h>
+#include <kineircd/module-service.h>
+
 
 using namespace Exordium;
 
-namespace
+// called just before the module is actually going to be used
+KINE_MODULE_START(moduleStart)
 {
-   // Our special little classes, we need these so we can delete them later
-   static Config *config = 0;
-   static Log *logger = 0;
-   static Services *services = 0;
-   static CDatabase *db = 0;
+   cout << "moduleStart()" << endl;
 
-   // called just before the module is actually going to be used
-   static KINE_MODULE_START(moduleStart)
-     {
-	// Dump some copyright info.
-	std::cout << std::endl << "Exordium Network Services, Copyright
-				    (C) 2002 IRCDome Development Team" << std::endl;
-	std::cout << "Exordium comes with ABSOLUTELY NO WARRANTY; for details see" << std::endl;
-	std::cout << "The enclosed LICENSE file.  This is free software"<<std::endl;
-	std::cout << "And you are welcome to redistribute it under certain" << std::endl;
-	std::cout << "conditions; please see the enclosed LICENSE file" << std::endl;
-	std::cout << "mod_exordium::moduleStart()" << std::endl;
+   // My, it looks an awful lot like main.cpp from here on... :) This is
+   // temporary, naturally.
+        Sql db;
+	Services me;
+	Log::init();
+	Log::logLine("Services started, beginning initalisation");
+	me.load_config();
+	db.init(me.mysqlHost,me.mysqlUser,me.mysqlPass,me.mysqlDb);
+	me.init();
+	me.run();
+	Log::logLine("Services terminated - Normal exit");
+   exit(0); // we are naughty using this here..
+}
 
-	// New Logger (the config file will have been created by now)
-	logger = new Log(*config);
 
-	// Create new database Instance
-        db = new CDatabase(*config, *logger); 
+// called just before unloading the module
+KINE_MODULE_STOP(moduleStop)
+{
+   cout << "moduleStop()" << endl;
+}
 
-	// Create the new services instance - Passing sql + logger YAY :|
-	services = new Services(daemon, *logger, *config, *db);
 
-	logger->logLine("Services started, beginning initalisation");
-	services->run();
-	logger->logLine("Services terminated - Normal exit");
-	exit(0); // we are naughty using this here..... very naughty.. :(
+// information about ourselves
+static const Kine::Module::basicInfo_type moduleInfo = {
+   // List our version/copyright information (fill this in with defines James)
+   "exordium", // short name of the module, usually one word
+   "Exordium IRCDome Network Services", // long name of the module
+   "Copyright (c) 2002 IRCDome Development Team", // Copyright information
+   0, // Major version number
+   1, // Minor version number
+   2, // Patch-level (may be set to 0 if none)
+   ".beta", // extra information (may be set to null or 0 if none)
 
-	// Tell Kine that we started happily
-	return true;
-     }
+   /* Note that I set up the version numbers above on purpose to illustrate
+    * how the version fields come together. The above comes out as follows:
+    *     exordium-0.1.2.beta
+    * If ".beta" was replaced with 0, it would look like this:
+    *     exordium-0.1.2
+    * If then you replaced the patch-level with 0, it would look like this:
+    *     exordium-0.1
+    * The other fields are always visible. The full name is used in other
+    * places.. same with the copyright.. probably on module loading or 
+    * something similar *shrugs*
+    */ 
+     
+   // Flags.. ignore this for now
+   Kine::Module::basicInfo_type::FLAG_NONE,
+     
+   // Our start and stop functions
+   &moduleStart,
+   &moduleStop
+};
 
-   // called just before unloading the module
-   static KINE_MODULE_STOP(moduleStop)
-     {
-	std::cout << "mod_exordium::moduleStop()" << std::endl;
-	delete services;
-	delete config;
-        delete db;
-     }
-
-   // information about ourselves
-   static const Kine::Module::basicInfo_type moduleInfo =
-     {
-	// List our version/copyright information (fill this in James)
-	"exordium", // short name of the module, usually one word
-	  "Exordium IRC Network Services", // long name of the module
-	  "Copyright (c) 2002 IRCDome Development Team", // Copyright information
-	  0, // Major version number
-	  0, // Minor version number
-	  0, // Patch-level (may be set to 0 if none)
-	  ".pre-alpha", // extra information (may be set to null or 0 if none)
-
-      /* Note that I set up the version numbers above on purpose to
-       * illustrate how the version fields come together. The above comes
-       * out as follows:
-       *     exordium-0.1.2.beta
-       * If ".beta" was replaced with 0, it would look like this:
-       *     exordium-0.1.2
-       * If then you replaced the patch-level with 0, it would look like
-       * this:
-       *     exordium-0.1
-       * The other fields are always visible. The full name is used in other
-       * places.. same with the copyright.. probably on module loading or
-       * something similar *shrugs*
-       */
-
-	  // Flags.. ignore this for now
-	  Kine::Module::basicInfo_type::FLAG_UNIQUE_INSTANCE,
-
-	  // Configuration information (optional, but we will use it later)
-	  &Config::definitionTable,
-
-	  // Our start and stop functions
-	  &moduleStart,
-	  &moduleStop
-     };
-}; // namespace
 
 // called when the module is initially loaded
 KINE_MODULE_INIT
 {
-   // Make a new config class, where our configuration data will be stored
-   config = new Config();
-
-   // Make a new module for Kine
-   return new Kine::Module(moduleInfo, config);
+   return new Kine::ModuleService(moduleInfo);
 }

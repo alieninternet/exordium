@@ -24,25 +24,44 @@
  *
  */
 
-#include "exordium/service.h"
+#ifndef __CONSOLE_H_
+#define __CONSOLE_H_
 
-// Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION",
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "HOSTNAME",
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
-	    0, 0
-       },
-       { 0, 0, 0, 0, 0 }
-  };
+
+/* This should be in source/lib/. - nothing outside of the core uses it.. */
+
+#include <kineircd/str.h>
+
+# define CONSOLE_FUNC(x) \
+     x(AISutil::String &origin, AISutil::StringTokens &tokens)
+
+namespace Exordium {
+   class Services;
+   
+   class Console {
+    private:
+      Services& services;
+      
+      struct functionTableStruct {
+	 const char* command;
+	 void CONSOLE_FUNC((Console::* const function));
+      } static const functionTable[];
+      
+      void CONSOLE_FUNC(parseMODULE);
+      
+    public:
+      Console(Services& s)
+	: services(s)
+	{};
+
+      ~Console(void)
+	{};
+      
+      void parseLine(const AISutil::String &, const AISutil::String &);
+   };
+};
+
+// Complete the forwarded definition
+# include <exordium/services.h>
+
+#endif
