@@ -150,6 +150,7 @@ namespace Exordium {
 	bool SecurePrivmsg;
 
 	// Function Declrations below here.
+	int getAccess(LibAIS::String &, LibAIS::String &);
 	void shutdown(const LibAIS::String &);
 	void SynchTime(void);
 	void expireRun(void);

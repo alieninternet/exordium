@@ -64,7 +64,6 @@ using LibAIS::StringMask;
 using Kine::Signals;
 using namespace Exordium;
 
-
 KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
    String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal";
@@ -156,8 +155,8 @@ namespace Exordium
 				   disconnect ();
 				}
 			   }
-			
-			if(stopping)
+
+			 if(stopping)
 			   {
 			      if(stopTime < currentTime)
 				{
@@ -320,11 +319,10 @@ namespace Exordium
 	     sock = -1;
 	  }
 
-        
 	socky.setRemoteAddress(config.getUplinkHost());
 
         // Note: Maybe add an option for port?
-
+	//
 	socky.setRemotePort(config.getUplinkPort());
 
 	if(!socky.connect())
@@ -343,7 +341,6 @@ namespace Exordium
 	logger.logLine ("Beginning handshake with uplink");
 	maxSock = socky.getFD() + 1;
 
-
 /* *Whistles* Config option */
 	queueAdd ("PASS pass :TS");
 	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
@@ -356,7 +353,7 @@ namespace Exordium
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
 	queueAdd (":" + config.getServicesHostname()  + " EOB");
 	queueAdd ("BURST");
-//	queueFlush();
+	//	queueFlush();
 	doBurst ();
 	queueAdd ("BURST 0");
 	return true;
@@ -726,8 +723,8 @@ namespace Exordium
    void
      Services::log (User& origin, String const &service, String const &text, String const &cname)
        {
-//	  String thenick = origin.IRCtoLower();
-//	  User *ptr = findUser(thenick);
+	  //	  String thenick = origin.IRCtoLower();
+	  //	  User *ptr = findUser(thenick);
 	  String nicks = origin.getIDList();
 	  String ident = origin.getIdent();
 	  String host = origin.getHost();
@@ -738,8 +735,8 @@ namespace Exordium
    void
      Services::log (User& origin, String const &service, String const &text)
        {
-//	  String thenick = nick.IRCtoLower();
-//	  User *ptr = findUser(thenick);
+	  //	  String thenick = nick.IRCtoLower();
+	  //	  User *ptr = findUser(thenick);
 	  String nicks = origin.getIDList();
 	  String ident = origin.getIdent();
 	  String host = origin.getHost();
@@ -799,10 +796,10 @@ namespace Exordium
 			      LibAIS::String const &target)
      {
 	queueAdd(":" + config.getServicesHostname() + " SJOIN " +
-		      LibAIS::String::convert(currentTime) + " " + target +
+		 LibAIS::String::convert(currentTime) + " " + target +
 		 " + :" + service);
      };
-   
+
    /* usePrivmsg(nick)
     *
     * Figure out whether we should use the privmsg or
@@ -956,13 +953,13 @@ namespace Exordium
 			 std::cout << "I could not find the users record.. hence i can't change their nick " << tomod << std::endl;
 			 return;
 		      }
-		    
+
 		    String msg = "Non-Identification: Your nickname is now being changed";
 		    serviceNotice(msg,"Nick",tomod);
 		    String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
 		    queueAdd(String(togo));
-//		    setNick(*ptr,newnick);
-//		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
+		    //		    setNick(*ptr,newnick);
+		    //		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 		 }
 	       if((killt.toInt()-nowt)<60)
 		 {
@@ -1048,7 +1045,7 @@ User*
 	std::cout << "findUser() - I could not find the user named :" << name << std::endl;
 	return 0;
      }
-   
+
    return ptr;
 }
 
@@ -1146,12 +1143,11 @@ bool
      }
    /* Should never get here.. but neryh :( */
 
-
    /****
       If the query's result is empty it'll never enter the while, so new server is never valid.
       Changed: return false to return true
       Why: If the query returns no result then the server is valid
-      -- PLV 
+      -- PLV
    ****/
    return true;
 };
@@ -1191,7 +1187,6 @@ int
 
    // Saftey Check - Remove any special chars.
    String newnick = nick.IRCtoLower();
-
 
    String query = "select id from onlineclients where nickname='" + newnick + "'";
    MysqlRes res = database.query(query);
@@ -1476,7 +1471,7 @@ String
      {
 	return row[0];
      }
-   
+
    // uhh?
    return "";
 }
@@ -1520,11 +1515,10 @@ String
    return "";
 };
 
-
 /* getICQ()
- * 
+ *
  * Return the ICQ for a nick.
- * 
+ *
  */
 
 String
@@ -1539,11 +1533,10 @@ String
    return "";
 }
 
-
 /* getLanguage(String)
- * 
+ *
  * return the language setting for a nick.
- * 
+ *
  */
 
 /*
@@ -1564,11 +1557,10 @@ String
 }
 */
 
-
 /* getEmail
- * 
+ *
  * Retrieve the nicknames email
- * 
+ *
  */
 
 String
@@ -1582,7 +1574,6 @@ String
      }
    return "";
 }
-
 
 /* getRegDate - return the registration date for a client.
  */
@@ -1599,7 +1590,6 @@ String
    return "";
 }
 
-
 /* getLastID - return the date a client last identified */
 
 String
@@ -1614,7 +1604,6 @@ String
    return "";
 }
 
-
 /* getLastHost - get last host */
 String
   Services::getLastHost(String const &nick)
@@ -1628,88 +1617,83 @@ String
    return "";
 }
 
-
 void
   Services::addOper(String const &nick, int access)
 {
-  String query="INSERT into onlineopers values(''," + String::convert(getRegisteredNickID(nick)) + "," +  
-                String::convert(access) + ")";
+   String query="INSERT into onlineopers values(''," + String::convert(getRegisteredNickID(nick)) + "," +
+     String::convert(access) + ")";
 
-  database.query(query);
+   database.query(query);
 }
-
 
 void
   Services::delOper(String const &nick)
 {
-  String query="DELETE from onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
-  database.query(query);
+   String query="DELETE from onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
+   database.query(query);
 }
-
 
 bool
   Services::isOper(String const &nick)
 {
-  String query="SELECT id FROM onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
+   String query="SELECT id FROM onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
 
-  MysqlRes res = database.query(query);
-  MysqlRow row;
+   MysqlRes res = database.query(query);
+   MysqlRow row;
 
-  while ((row = res.fetch_row()))
-  {
-    return true;
-  }
+   while ((row = res.fetch_row()))
+     {
+	return true;
+     }
 
-  return false;
+   return false;
 }
-
 
 void
   Services::validateOper(String &origin)
 {
-  //Active Oper? (hah :-)
-  User *ptr = findUser(origin);
-  int axs = ptr->getAccess("Oper");
+   //Active Oper? (hah :-)
+   User *ptr = findUser(origin);
+   int axs = ptr->getAccess("Oper");
 
-  if(axs==0)
-  {
-    //Non-Authorised.
-    String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
-    globop(tosend,"Oper");
-    String reason = "You have no permission to become an IRC Operator";
-    killnick(origin, "Oper", reason);
-    return;
-  }
-  if(axs==-1)
-  {
-    String tosend = origin+" just tried to become an IRC Operator - \002Suspended\002";
-    globop(tosend,"Oper");
-    String reason = "You are suspended - Do not try to become an Operator";
-    killnick(origin, "Oper", reason);
-    return;
-  }
-  if(axs>0)
-  {
-    String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
-    globop(tosend,"Oper");
+   if(axs==0)
+     {
+	//Non-Authorised.
+	String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
+	globop(tosend,"Oper");
+	String reason = "You have no permission to become an IRC Operator";
+	killnick(origin, "Oper", reason);
+	return;
+     }
+   if(axs==-1)
+     {
+	String tosend = origin+" just tried to become an IRC Operator - \002Suspended\002";
+	globop(tosend,"Oper");
+	String reason = "You are suspended - Do not try to become an Operator";
+	killnick(origin, "Oper", reason);
+	return;
+     }
+   if(axs>0)
+     {
+	String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
+	globop(tosend,"Oper");
 
-    if (!isOper(origin))
-       addOper(origin, axs);
-    else
-    {
-      std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << std::endl;
-    }
+	if (!isOper(origin))
+	  addOper(origin, axs);
+	else
+	  {
+	     std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << std::endl;
+	  }
 
-    return;
-  }
+	return;
+     }
 
 }
 
-
 /* Debug
- * 
+ *
  * Decide if/where to send our debug messages
- * 
+ *
  */
 
 void
@@ -1717,5 +1701,19 @@ void
 {
    String debugline = line;
    queueAdd(":IRCDome PRIVMSG #Exordium :"+debugline);
-   
+
+}
+
+int
+  Services::getAccess(String &service, String &nickname)
+{
+   String query = "SELECT access from access where nickname='"+nickname
+     +"' AND service='"+service+"'";
+   MysqlRes res = database.query(query);
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return (int)row[0];
+     }
+   return 0;
 }
