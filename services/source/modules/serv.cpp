@@ -575,7 +575,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 const Serv::moduleInfo_type Serv::moduleInfo =
 {
    "Service Service",
-     0, 0
+     0, 0,
+     MASK_USER_SIGNON
 };
 
 // Start the service

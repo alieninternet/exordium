@@ -835,7 +835,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Chan::moduleInfo_type Chan::moduleInfo = {
    "Channel Service",
-     0, 0
+     0, 0,
+     MASK_USER_SIGNON
 };
 
 

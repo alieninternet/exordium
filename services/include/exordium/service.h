@@ -43,11 +43,18 @@ namespace Exordium {
    
    class Service {
     public:
+      enum mask_type 
+	{
+	     MASK_NONE = 0x00000000,
+	     MASK_USER_SIGNON = 0x00000001
+	};
+      
       struct moduleInfo_type {
 	 // Version information about the module
 	 const char* const fullName;
 	 const unsigned short versionMajor;
 	 const unsigned short versionMinor;
+	 const mask_type mask;
       };
       
       class ConfigData : public AISutil::ConfigData {
@@ -113,6 +120,8 @@ namespace Exordium {
       
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
 			     const AISutil::String& channel) = 0;
+      //Do i Know what I'm doing? NO :-)
+      virtual void parse_USER_SIGNON(User& origin);
       
       // Grab the information structure of a module
       virtual const moduleInfo_type& getModuleInfo(void) const = 0;

@@ -101,7 +101,10 @@ Service* const Modules::loadModule(const String& fileName,
    std::cout << "Loaded module '" << 
      service->getModuleInfo().fullName << "' version " <<
      service->getModuleInfo().versionMajor << '.' <<
-     service->getModuleInfo().versionMinor << std::endl;
+     service->getModuleInfo().versionMinor << 
+     service->getModuleInfo().mask <<
+     
+     std::endl;
 
    // Fix up the name, since we use it twice (may as well convert it once)
    String moduleName = service->getName().IRCtoLower();

@@ -102,7 +102,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Oper::moduleInfo_type Oper::moduleInfo = {
    "Operator Service",
-     0, 0
+     0, 0,
+     MASK_USER_SIGNON
 };
 
 

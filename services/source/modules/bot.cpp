@@ -99,7 +99,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Bot::moduleInfo_type Bot::moduleInfo = {
    "Bot Assistance Service",
-     0, 0
+     0, 0,
+     MASK_USER_SIGNON
 };
 
 
