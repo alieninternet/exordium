@@ -46,6 +46,7 @@
 #include <kineircd/daemon.h>
 #include <csignal>
 #include <vector>
+#include <string>
 
 extern "C" {
 #include <unistd.h>
@@ -191,7 +192,7 @@ namespace Exordium {
 	bool SecurePrivmsg;
 
 	// Log a line of text..
-	void logLine(const AISutil::String& line,
+	void logLine(const std::string& line,
 		     const Log::mask_type mask = Log::Informative)
 	  { daemon.log(line, (Kine::Logger::Mask::type)mask); };
 
