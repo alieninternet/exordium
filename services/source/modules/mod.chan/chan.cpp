@@ -1059,7 +1059,9 @@ bool Module::start(Exordium::Services& s)
 	// Next table..
 	i++;
      }
+
    Kine::langs().registerMap(Language::tagMap);
+
    // Register ourself to the network
    services->registerService(getName(), getIdent(),
 			     getConfigData().getHostname(),
@@ -1075,6 +1077,8 @@ bool Module::start(Exordium::Services& s)
 // Stop the service - bye bye!
 void Module::stop(const String& reason)
 {
+   Kine::langs().deregisterMap(Language::tagMap);
+
    // Quit :(
    services->serviceQuit(getName(), reason);
 }
