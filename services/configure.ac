@@ -84,24 +84,28 @@ AC_ARG_ENABLE(language,
 AC_MSG_RESULT([English (default)])
 AC_SUBST(LANGUAGE)
 
-AC_ARG_ENABLE(mysql_dir,
+AC_ARG_ENABLE(mysql-path,
 [
 	--enable-mysql-path=<path> 	Path where mysql_config resides.],
 [
         if test "$enableval"; then
-                mysql_config_prog="$enableval/mysql_config"
+#                mysql_config_prog="$enableval/mysql_config"
+                mysql_config_path=$enableval
                 AC_MSG_RESULT([$enableval])
         fi
-],[mysql_config_prog="mysql_config"])
+],[])
 
-AC_CHECK_PROG(mysql_config, $mysql_config_prog, [yes])
-if test "$mysql_config" ; then
-        CPPFLAGS="$CPPFLAGS `$mysql_config_prog --cflags`"
-        LDFLAGS="$LDFLAGS `$mysql_config_prog --libs`"
+AC_PATH_PROG([MYSQL_CONFIG], [mysql_config], [no], [$PATH:$mysql_config_path])
+if test "$MYSQL_CONFIG" != "no" ; then
+        MYSQL_INCDIR=`$MYSQL_CONFIG --cflags`
+        MYSQL_LDFLAGS=`$MYSQL_CONFIG --libs`
         AC_CHECK_LIB([mysqlclient], [main], [
         AC_DEFINE(HAVE_MYSQL, 1, [Define if you want MySQL support compiled])
 	exordium_test_compile_db_mysql=yes
-        AC_MSG_RESULT(Building with MySQL support)], [AC_MSG_RESULT([Building without MySQL support])])
+        AC_SUBST(MYSQL_INCDIR)
+        AC_SUBST(MYSQL_LDFLAGS)
+        AC_MSG_RESULT(Building with MySQL support)], 
+                      [AC_MSG_RESULT([Building without MySQL support])])
 fi
 AM_CONDITIONAL(EXORDIUM_COMPILE_DB_MYSQL,
                [test x$exordium_test_compile_db_mysql = xyes])

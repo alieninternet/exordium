@@ -1,7 +1,11 @@
-INCLUDES=-I../include -I../../kineircd/include -Imodules/include @PGSQL_INCDIR@
+INCLUDES=-I../include -I../../kineircd/include -Imodules/include \
+         @PGSQL_INCDIR@ \
+         @MYSQL_INCDIR@
 lib_LTLIBRARIES = mod_exordium.la libexordium.la
 mod_exordium_la_SOURCES = module.cpp
-mod_exordium_la_LDFLAGS = -module -avoid-version @PGSQL_LDFLAGS@
+mod_exordium_la_LDFLAGS = -module -avoid-version \
+                          @PGSQL_LDFLAGS@ \
+                          @MYSQL_LDFLAGS@
 mod_exordium_la_LIBADD = libexordium.la
 libexordium_la_LIBADD = ../../kineircd/src/lib/libkineircd.la
 
