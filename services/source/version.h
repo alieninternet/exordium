@@ -34,7 +34,7 @@
 # define EXORDIUM_NAME_LONG	"Exordium IRC Network Services"
 
 // Breif copyright information (one line)
-# define EXORDIUM_COPYRIGHT	"Copyright (c) 2002 IRCDome Development Team"
+# define EXORDIUM_COPYRIGHT	"Copyright (c) 2002 Exordium Development Team"
 
 // Version numbers (major.minor.patch). Patchlevel is used if it is > 0
 # define EXORDIUM_VER_MAJOR	0
