@@ -69,7 +69,7 @@ namespace Exordium {
 	int sock;
 	int maxSock;
 	char *inputBuffer;
-	unsigned int inputBufferSize;
+	static const unsigned int inputBufferSize = 512;
 	unsigned int inputBufferPosition;
 	struct sockaddr_in addr;
 	time_t startTime;
@@ -155,6 +155,7 @@ namespace Exordium {
 	void doBurst(void);	
 	void AddOnlineServer(String const &, String const &, String const &);
 	void doPong(String const &);
+	bool queueFlush(void);
 	void mode (String const &, String const &, String const &,
 		   String const &);
 	String parseHelp(String const &);
@@ -251,51 +252,6 @@ namespace Exordium {
 	  {		
 	     return !ModeoutputQueue.empty();
 	  };
-
-	// James, this should be in the .cpp file!
-	bool queueFlush (void)
-	  {
-//	     signal(SIGPIPE, SIG_IGN);
-	     
-	     if(connected)
-	       {
-		  if (socky.isOkay())
-		    {
-		       if (socky.write (outputQueue.front ()))
-			 {	
-			    outputQueue.pop ();
-			    return true;
-			 }
-			else
-			{
-				if(!stopping)
-				{
-				std::cout << "Socky write fubared... disconnecting :(" << std::endl;
-				connected = false;
-				return false;
-				}
-				//Ignore if we're stopping.. YES I KNOW ITS BAD :(
-				else
-				{
-				exit(0);
-				}
-			}
-			}
-			else
-			{
-				std::cout << "Socky is dead" << std::endl;
-				connected = false;
-				return false;
-			}
-			return false;
-			
-		}
-		else
-		{
-		std::cout << "Trying to queueflush when disconnected ?!" << std::endl;
-    		return false;
-		}
-  	};
 
 	// .. and this!
   	 bool ModequeueFlush (void)

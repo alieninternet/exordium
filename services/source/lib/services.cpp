@@ -105,6 +105,8 @@ Services::run(void)
 {
   fd_set inputSet, outputSet;
   struct timeval timer;
+  disconnectTime = 0;
+  connected = false;
   logger.logLine ("Entering main loop...");
   for (;;)
     {
@@ -127,7 +129,7 @@ Services::run(void)
         }
 	else
 	{
-		//cout << "not connected..." << endl;
+		std::cout << "not connected..." << std::endl;
 	}
 
       switch (select (maxSock, &inputSet, &outputSet, NULL, &timer))
@@ -195,8 +197,13 @@ Services::run(void)
 			ModequeueFlush();
 		}
 	}
+	if(!connected)
+	{
+		std::cout << "Not connected" << std::endl;
+	}	
       if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
         {
+	  std::cout << "Beginning Connect Attempt" << std::endl;
           connect ();
         }
     }
@@ -292,10 +299,11 @@ bool Services::connect (void)
     socky.setRemotePort(6667);
     if(!socky.connect())
 	{
-		//cout << "Socky.connect() returned an error" << endl;
+		std::cout << "Socky.connect() returned an error" << std::endl;
 		
 	}
     connected = true;
+std::cout << "CONNECTED. CONNECTED" << std::endl;
   logger.logLine ("Beginning handshake with uplink");
   maxSock = socky.getFD() + 1;
   queueAdd ("PASS pass :TS");
@@ -816,3 +824,52 @@ unsigned long Services::random(unsigned long max)
 {
 	return (unsigned long)(((max+1.0) * rand()) / RAND_MAX);
 }
+
+bool
+Services::queueFlush(void)
+{
+             if(connected)
+               {
+                  if (socky.isOkay())
+                    {
+                       if (socky.write (outputQueue.front ()))
+                         {
+                            outputQueue.pop ();
+                            return true;
+                         }
+                        else
+                        { 
+                                if(!stopping)
+                                {
+                                connected = false;
+                                return false;
+				}
+				else
+				{
+				exit(0);
+				}
+			}
+			}
+                        else
+                        { 
+                                std::cout << "Socky is dead" << std::endl;
+                                connected = false;
+                                return false;
+                        }
+                        return false;
+                                
+                }
+                else
+                {
+                std::cout << "Trying to queueflush when disconnected ?!" << std::endl;
+                return false;
+                }
+        };
+			
+
+
+
+
+
+
+
