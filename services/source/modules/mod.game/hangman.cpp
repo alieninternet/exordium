@@ -29,6 +29,8 @@
 #include <sstream>
 #include <algorithm>
 
+#include "exordium/services.h"
+
 #include "hangman.h"
 
 using AISutil::String;
@@ -37,14 +39,7 @@ using AISutil::StringTokens;
 // This is needed for translate since it doesn't like tolower gcc 3.x
 //inline char tolower_wrapper (char ch) { return tolower(ch); }
 
-const char* hangman[11][7] = {{"",
-                               "",
-                               "",
-                               "",
-                               "",
-                               "",
-                               ""}, 
-                              {"",
+const char* hangman[10][7] = {{"",
                                "",
                                "",
                                "",
@@ -262,37 +257,6 @@ void Hangman::nextPlayer(const String& why, bool withMatchNotify)
    
    // Tell the channel what is happening
    sendMessage(out.str());
-   
-   /* Show the new player their hand, since it's more than likely that they
-    * need refreshing - especially in games with large numbers of players.
-    */
-   /*
-   showHand(*currentPlayer);
-
-   if (withMatchNotify) {
-      // Tell the player what they need to get..
-      if ((lastDiscardedCard.getIndex() == 8) && (nextSuit != 0)) {
-	 sendMessage(*((*currentPlayer).first), 
-		     String("To discard, you need to put down a card of "
-				  "the ") + Cards::Card::nameSuit(nextSuit) + 
-				  " suit");
-      } else if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
-		 (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen)) {
-	 sendMessage(*((*currentPlayer).first),
-		     "You can put down any card you like, since the last "
-		     "card discarded was the Queen of Spades");
-      } else if (lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) {
-	 sendMessage(*((*currentPlayer).first), 
-		     String("To discard, you need to match the colour "
-				  "of the last card discarded (") +
-		     lastDiscardedCard.getColourName() + ")");
-      } else {
-	 sendMessage(*((*currentPlayer).first),
-		     String("To discard, you need to match the ") +
-		     lastDiscardedCard.getName());
-      }
-   }
-   */
 }
 
 /* getLevelData - reads in a random word depending on the level
@@ -321,19 +285,16 @@ bool Hangman::getLevelData(unsigned int numChars)
          continue;
 
       wordList.push_back(str);
-      break;
    }
 
-   int id = 1+(int)(wordList.size() * rand() / (RAND_MAX+1.0));
+   int id = (int)(((float)wordList.size()+1.0) * rand() / RAND_MAX);
+
+   std::cerr << "ID = " << id << std::endl;
+   std::cerr << "SIZE = " << wordList.size() << std::endl;
    word = wordList[id];
 
    word.toLower();
-   //std::transform(word.begin(), word.end(), word.begin(), tolower_wrapper);
 
-//   for(int i = 0; i < tmpWord.length(); i++)
-//   {
-//      letterMap.insert(LetterMap::value_type(word[i], false)).second;
-//   }
    return true;
 }
 
@@ -568,7 +529,7 @@ void Hangman::showHangman(const Exordium::User& player)
    std::cout << "Wrong guesses" << wrongGuesses.length() << std::endl;
    if(wrongGuesses.length() > 0)
    {
-      for(int i = 0; i < 9; i++)
+      for(int i = 0; i < 7; i++)
       {
          sendMessage(hangman[wrongGuesses.length() - 1][i]);
       }
