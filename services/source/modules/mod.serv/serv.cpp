@@ -98,7 +98,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	     return;
 	  }
      }
-   origin.sendMessage (GETLANG(ERROR_UNKNOWN_COMMAND), getNickname());
+   origin.sendMessage (GETLANG(ERROR_UNKNOWN_COMMAND,command), getNickname());
 }
 
 SERV_FUNC (Module::parseSTATUS)
