@@ -71,6 +71,44 @@ namespace Exordium {
       // is equal to operator
       bool operator==(const dChan &c) const
 	{ return (onlineID == c.onlineID); };
+
+
+      AISutil::String getChanCount(void);
+      void setChanLog(AISutil::String const &,bool const &);
+      bool ChanLog(AISutil::String const &);
+      void internalDeVoice(AISutil::String const &, AISutil::String const &);
+      void internalDeOp(AISutil::String const &, AISutil::String const &);
+      void internalVoice(AISutil::String const &, AISutil::String const &);
+      void internalOp(AISutil::String const &, AISutil::String const &);
+      void internalAdd(AISutil::String const &, AISutil::String const &);
+      void internalDel(AISutil::String const &, AISutil::String const &);
+      int getChanID(AISutil::String const &);
+      int getOnlineChanID(AISutil::String const &);
+      bool isChanRegistered(AISutil::String const &);
+      int getChanAccess(AISutil::String const &, AISutil::String const &);
+      bool ifChanExists(AISutil::String const &);
+      int maxChannels(void);
+      int maxChannelsUser(AISutil::String const &);
+      int maxChannelsAccess(void);
+      AISutil::String getChanName(int const &);
+      AISutil::String getChanIDName(int const &);
+      void setTopic(AISutil::String const &,AISutil::String const &);
+      void updateTopic(AISutil::String const &, AISutil::String const &);
+      AISutil::String getChanOwner(int const &);
+      void chanAddAccess(AISutil::String const &,AISutil::String const &,AISutil::String const &);
+      void chanDelAccess(AISutil::String const &, AISutil::String const &);
+      void deregisterChannel(AISutil::String const &, AISutil::String const &reason);
+      void synchChannels(void);
+      void synchChannel(AISutil::String const &, AISutil::String const &, AISutil::String const &);
+      void registerChannel(AISutil::String const &, AISutil::String const &);
+      int ownedChannels(AISutil::String const &);
+      void addChanBan(int const &,AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &);
+      void banChan(AISutil::String const &, AISutil::String const &, AISutil::String const &);
+      void RemoveBan(AISutil::String const &, AISutil::String const &, AISutil::String const &);
+      AISutil::String getModes(void);
+      int getNbUsers(AISutil::String const &);
+
+
    };
 }; // class Exordium
 

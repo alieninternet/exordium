@@ -25,7 +25,7 @@
  */
 
 #include "exordium/services.h"
-#include "exordium/channel.h"
+#include "exordium/dchan.h"
 #include "exordium/user.h"
 #include <queue>
 #include <map>
@@ -215,7 +215,6 @@ namespace Exordium
    database(db),
    config(c),
    parser(*this),
-   channel(*this),
    ircdome(*this)
      {
 	sock = -1;
@@ -520,7 +519,7 @@ Services::~Services()
    void Services::expireRun(void)
      {
 	String nc = getRegNickCount();
-	String cc = channel.getChanCount();
+	String cc = chans.size();
 	String oc = getOnlineCount();
 	String lc = getLogCount();
 	String gc = getGlineCount();
@@ -813,7 +812,7 @@ Services::~Services()
    bool
      Services::isOp(String const &nick, String const &chan)
        {
-	  int chanid = channel.getOnlineChanID(chan);
+	  int chanid = chans[chan].getOnlineID();
 	  int nickid = locateID(nick);
           if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1)
             return false;
@@ -827,7 +826,7 @@ Services::~Services()
    bool
      Services::isVoice(String const &nick, String const &chan)
        {
-          int chanid = channel.getOnlineChanID(chan);
+          int chanid = chans[chan].getOnlineID();
           int nickid = locateID(nick);
           if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1 )
             return false;

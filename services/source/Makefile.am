@@ -5,8 +5,7 @@ mod_exordium_la_LDFLAGS = -module -avoid-version
 mod_exordium_la_LIBADD = libexordium.la
 libexordium_la_LIBADD = ../../kineircd/src/lib/libkineircd.la
 
-libexordium_la_SOURCES = lib/channel.cpp \
-		         lib/conf.cpp \
+libexordium_la_SOURCES = lib/conf.cpp \
 			 lib/dchan.cpp \
 			 lib/ircdome.cpp \
 			 lib/log.cpp \

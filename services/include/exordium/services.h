@@ -59,7 +59,7 @@ extern "C" {
 #include "exordium/service.h"
 #include "exordium/conf.h"
 #include "exordium/parser.h"
-#include "exordium/channel.h"
+#include "exordium/dchan.h"
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
 #include "exordium/dchan.h"
@@ -80,7 +80,6 @@ namespace Exordium {
 	Config& config;
 
 	Parser parser;
-	Channel channel;
 	IRCDome ircdome;
 	
 	
@@ -145,10 +144,6 @@ namespace Exordium {
 	// Grab the configuration reference
 	Config& getConfig(void)
 	  { return config; };
-
-	// Return the channel thingy
-	Channel& getChannel(void)
-	  { return channel; };
 
 	// Return the IRCDome thingy
 	IRCDome& getIRCDome(void)
