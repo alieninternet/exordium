@@ -26,6 +26,8 @@ libexordium_la_SOURCES = \
 			 lib/console.cpp \
 		       	 lib/channel.cpp \
 			 lib/dchan.cpp \
+			 lib/logger.cpp \
+			 lib/logger.h \
 			 lib/modules.cpp \
 			 lib/parser.cpp \
 			 lib/service.cpp \

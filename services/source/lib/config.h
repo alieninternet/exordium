@@ -30,6 +30,7 @@
 # include "exordium/config.h"
 # include "exordium/database/database.h"
 # include "modules.h"
+# include "logger.h"
 
 namespace Exordium {
    class ConfigInternal : public Exordium::Config {
@@ -39,6 +40,7 @@ namespace Exordium {
 
     private:
       // Variables (top class from the definition table above)
+      Kine::Logger::Mask::lazy_type defLogMask;	// Database logging mask
       AISutil::String defUnderlingDescription;	// Underling server description
       AISutil::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
@@ -83,7 +85,9 @@ namespace Exordium {
         { return defUplinkPort; };
       const AISutil::String& getUplinkPass(void) const
 	{ return defUplinkPass; };
-
+      const Kine::Logger::Mask::lazy_type getLogMask(void) const
+	{ return defLogMask; };
+      
       // 'CONSOLE' class
       const AISutil::String& getConsoleDescription(void) const
 	{ return defConsoleDescription; };

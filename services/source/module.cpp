@@ -89,6 +89,7 @@ namespace {
    class mod_exordium : public Kine::Module {
     private:
       ConfigInternal config;
+      Logger* logger;
       ServicesInternal* services;
 
       // this shouldn't be here.. the ConfigInternal:: one should replace it
@@ -97,14 +98,25 @@ namespace {
     public:
       // Constructor
       mod_exordium(void)
-	: services(0),
+	: logger(0),
+          services(0),
           db(0)
 	{};
       
       // Destructor
       ~mod_exordium(void) {
-	 delete services;
-	 delete db;
+	 if (services != 0) {
+	    delete services;
+	 }
+	 
+	 if (logger != 0) {
+	    Kine::daemon().deregisterLogger(*logger);
+	    delete logger;
+	 }
+	 
+	 if (db != 0) {
+	    delete db;
+	 }
       };
 
       // Return the information about ourselves
@@ -130,6 +142,17 @@ namespace {
 #ifdef DEBUG
 	 assert(db != 0);
 #endif
+
+	 // If the database logging mask is not nothing, fire up the db logger
+	 if (config.getLogMask() != Kine::Logger::Mask::Nothing) {
+	    // Make a new logger and register it
+	    logger = new Logger(config.getLogMask());
+#ifdef DEBUG
+	    assert(logger != 0);
+#endif
+	    // Should check for a 'true' here, really..
+	    (void)Kine::daemon().registerLogger(*logger);
+	 }
 	 
 	 // Create the new services instance - Passing sql YAY :|
 	 services = new ServicesInternal(config, *db);

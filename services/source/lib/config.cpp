@@ -51,6 +51,11 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
 	  0, &classHandleDatabase
      },
      {
+	"LOGMASK", 3,
+	  (void *)&ConfigInternal::defLogMask, 0,
+	  0, 0
+     },
+     {
 	"MODULE", 3,
 	  (void *)&ConfigInternal::defModules, &varHandleModule,
 	  0, &classHandleModule
@@ -177,7 +182,8 @@ Config::Config(void)
  * Original 25/07/2002 pickle
  */
 ConfigInternal::ConfigInternal(void)
-  : defUnderlingDescription(/* intentionally empty */),
+  : defLogMask(Kine::Logger::Mask::Nothing),
+    defUnderlingDescription(/* intentionally empty */),
     defUplinkHost("irc.somenetwork.somewhere"), // temporary
     defUplinkPort(6667), // temporary
 
