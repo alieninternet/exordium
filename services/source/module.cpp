@@ -15,7 +15,7 @@
 using namespace Exordium;
 
 // called just before the module is actually going to be used
-KINE_MODULE_START(moduleStart)
+static KINE_MODULE_START(moduleStart)
 {
    cout << "moduleStart().. btw the daemon is located at " << &daemon <<
      "\nFrom kine config:"
@@ -44,7 +44,7 @@ KINE_MODULE_START(moduleStart)
 
 
 // called just before unloading the module
-KINE_MODULE_STOP(moduleStop)
+static KINE_MODULE_STOP(moduleStop)
 {
    cout << "moduleStop()" << endl;
 }
