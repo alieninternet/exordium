@@ -133,7 +133,6 @@ void
 	services.queueAdd (String (tosend));
 	return;
      }
-   cout << "Server: " << serverName << endl;
    services.AddOnlineServer (serverName, hops, description);
 }
 
