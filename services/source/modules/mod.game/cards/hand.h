@@ -73,7 +73,7 @@ namespace Cards {
 
                i++;
              }
-           return NULL;
+           return 0;
         };
 
       // Remove a card from this hand

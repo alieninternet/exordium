@@ -30,8 +30,6 @@
 
 # include <vector>
 
-# include "card.h"
-
 namespace Cards {
    // The populator functor
    template < class T > class _populator {

@@ -31,11 +31,12 @@
 # include <kineircd/str.h>
 # include <utility>
 # include <list>
-# include <stack>
+//# include <stack>
 
 # include "channelgame.h"
 # include "cards/hand.h"
 # include "cards/card.h"
+# include "cards/stock.h"
 
 # define EXORDI8_FUNC(x) \
      bool x(Exordium::User& origin, AISutil::StringTokens& line)
@@ -75,9 +76,9 @@ class Exordi8 : public ChannelGame {
    typedef std::list <player_type> players_type;
    players_type players;
 
-   // The stock of cards
-   typedef std::stack <Cards::Card> stock_type;
-   stock_type stock;
+   // The stock and discard piles 
+   Cards::Stock< Cards::Card > stock;
+   Cards::Stock< Cards::Card > discard;
 
    // The current player
    players_type::iterator currentPlayer;

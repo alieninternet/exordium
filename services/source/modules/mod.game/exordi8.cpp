@@ -29,7 +29,6 @@
 #include <sstream>
 
 #include "exordi8.h"
-#include "cards/pack.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -317,14 +316,16 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 	numPlayers -= 6;
      };
 
-   // Obtain our packs, shuffling each deck.
-   std::vector < Cards::Pack < Cards::Card > > packs;
+   // Obtain our packs
+   stock = Cards::Stock< Cards::Card >(numPacks);
+/*   std::vector < Cards::Pack < Cards::Card > > packs;
    while (numPacks > 0)
      {
 	packs.push_back(Cards::Pack<Cards::Card>());
 	packs.back().shuffle();
 	numPacks--;
      }
+*/
 
    // Deal five cards to each person, doing it like a real dealer (hehehe)
    for (int c = 0; c != 5; c++)
@@ -333,13 +334,8 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 	     p != players.end(); p++)
 	  {
 	     // Add a card to this player's hand direct from the pack
-	     (*p).second.addCard(packs.back().removeCard());
-
-	     // If this pack is now empty, ditch it and move onto the next one
-	     if (packs.back().isEmpty())
-	       {
-		  packs.pop_back();
-	       }
+	     //(*p).second.addCard(packs.back().removeCard());
+	     (*p).second.addCard(stock.removeCard());
 	  }
      }
 
@@ -352,6 +348,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
      }
 
    // The balance of the cards left in the shuffled pack(s) turn into the stock
+   /*
    while (!packs.empty())
      {
 	while (!packs.back().isEmpty())
@@ -362,6 +359,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 	// Turf the empty pack
 	packs.pop_back();
      }
+     */
 
    // Set the first player and note that we have begun play
    currentPlayer = players.begin();
@@ -369,7 +367,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 
    // Start assembling a string to tell the channel what is happening
    std::ostringstream out;
-   out << "There are " << stock.size() << " cards left in the stock. It is "
+   out << "There are " << stock.total() << " cards left in the stock. It is "
      <<
      (*(*currentPlayer).first).getNickname();
 
@@ -482,7 +480,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	    /* Check the suits match. Note, if the stock is empty, they can
 	     * drop any card they like.
 	     */
-		  if ((nextSuit != cardToDiscard.getSuit()) && !stock.empty())
+		  if ((nextSuit != cardToDiscard.getSuit()) && stock.total())
 		    {
 		       sendMessage(origin,
 				   String("You must discard a card that matches "
@@ -512,7 +510,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 					  "the rank of the last discarded "
 					  "card (") +
 				   lastDiscardedCard.getName() +
-				   (stock.empty() ?
+				   (!stock.total() ?
 				    ") or drop a card" : ") or take a card."));
 		       return true; // Keep the game alive
 		    }
@@ -554,16 +552,18 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 		  sendMessage(origin.getNickname() + " has broken the sequent!");
 
 		  // Make them pick up two cards
-		  if (!stock.empty())
-		    {
-		       (*currentPlayer).second.addCard(stock.top());
-		       stock.pop();
-		       if (!stock.empty())
-			 {
-			    (*currentPlayer).second.addCard(stock.top());
-			    stock.pop();
-			 }
-		    }
+                  (*currentPlayer).second.addCard(stock.removeCard());
+                  (*currentPlayer).second.addCard(stock.removeCard());
+		  //if (!stock.total())
+		  //  {
+		  //     (*currentPlayer).second.addCard(stock.top());
+		  //     stock.pop();
+		  //     if (!stock.total())
+		//	 {
+		//	    (*currentPlayer).second.addCard(stock.top());
+		//	    stock.pop();
+		//	 }
+		 //   }
 
 		  // Show them their hand..
 		  showHand(*currentPlayer);
@@ -673,7 +673,7 @@ EXORDI8_FUNC(Exordi8::parsePASS)
      }
 
    // Make sure the stock isn't empty
-   if (!stock.empty())
+   if (stock.total())
      {
 	sendMessage(origin,
 		    "You cannot pass a play while the stock is not empty. If "
@@ -710,7 +710,7 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
      }
 
    // Make sure the stock isn't empty
-   if (stock.empty())
+   if (!stock.total())
      {
 	sendMessage(origin,
 		    "The stock is empty, you can't pick up a card. If you "
@@ -719,12 +719,12 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
      }
 
    // Okay, it must be the current player.. Pick up a card for them
-   sendMessage(origin, String("You picked up ") + stock.top().getName());
-   (*currentPlayer).second.addCard(stock.top());
-   stock.pop();
+   Cards::Card card = stock.removeCard();
+   sendMessage(origin, String("You picked up ") + card.getName());
+   (*currentPlayer).second.addCard(card);
 
    // Move to the next player
-   if (stock.empty())
+   if (!stock.total())
      {
 	nextPlayer("picks up a card. The stock is now empty");
      }
@@ -881,13 +881,13 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
 	out += "'s turn. ";
      }
 
-   if (stock.empty())
+   if (!stock.total())
      {
 	out += "The stock is empty.";
      }
    else
      {
-	out += "There are " + String::convert(stock.size()) +
+	out += "There are " + String::convert(stock.total()) +
 	  " cards left in the stock.";
      }
 
