@@ -111,7 +111,9 @@ mod_serv_la_LDFLAGS= \
 	-avoid-version -module
 mod_serv_la_SOURCES= \
 	mod.serv/serv.cpp \
-	mod.serv/serv.h
+	mod.serv/serv.h \
+	mod.serv/tables.cpp \
+	mod.serv/tables.h
 
 mod_stats_la_LIBADD= \
 	../libexordium.la

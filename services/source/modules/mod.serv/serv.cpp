@@ -29,42 +29,35 @@
 #endif
 
 #include "serv.h"
+#include "tables.h"
 #include <exordium/services.h>
 #include <exordium/channel.h>
 #include <kineircd/str.h>
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::ServModule;
 
-struct Serv::functionTableStruct const
-  Serv::functionTable[] =
-{
-     {"clist", &Serv::parseCLIST},
-     {"delnick", &Serv::parseDELNICK},
-     {"elist", &Serv::parseELIST},
-     {"nlist", &Serv::parseNLIST},
-     {"helpon", &Serv::parseHELPON},
-     {"help", &Serv::parseHELP},
-     {"user", &Serv::parseUSER},
-     {"raw", &Serv::parseRAW},
-     {"chan", &Serv::parseCHAN},
-     {"die", &Serv::parseDIE},
-     {"news", &Serv::parseNEWS},
-     {"setpass", &Serv::parseSETPASS},
-     {0, 0}
+
+const Module::functionTableStruct Module::functionTable[] = {
+     { "clist",		&Module::parseCLIST },
+     { "delnick",	&Module::parseDELNICK },
+     { "elist",		&Module::parseELIST },
+     { "nlist",		&Module::parseNLIST },
+     { "helpon",	&Module::parseHELPON },
+     { "help",		&Module::parseHELP },
+     { "user",		&Module::parseUSER },
+     { "raw",		&Module::parseRAW },
+     { "chan",		&Module::parseCHAN },
+     { "die",		&Module::parseDIE },
+     { "news",		&Module::parseNEWS },
+     { "setpass",	&Module::parseSETPASS },
+     { 0, 0}
 };
-void
-  Serv::parseLine (StringTokens& line, User& origin, String const &ch)
-{
-   return;
-}
+
 
 void
-  Serv::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -89,8 +82,9 @@ void
      }
    origin.sendMessage ("Unrecognised Command", getName());
 }
-void
-  SERV_FUNC (Serv::parseDIE)
+
+
+  SERV_FUNC (Module::parseDIE)
 {
    String reason = tokens.rest();
    if(reason=="")
@@ -103,8 +97,8 @@ void
    services->shutdown(togo);
 }
 
-void
-  SERV_FUNC (Serv::parseSETPASS)
+
+  SERV_FUNC (Module::parseSETPASS)
 {
    String who = tokens.nextToken();
    String newpass = tokens.nextToken();
@@ -126,16 +120,17 @@ void
    services->logLine(togo);
 }
 
-void
-  SERV_FUNC (Serv::parseRAW)
+
+  SERV_FUNC (Module::parseRAW)
 {
    std::string c = tokens.rest();
    services->queueAdd(c);
    String togo = origin.getNickname()+" did \002RAW\002 - "+c;
    services->logLine(String(togo), Log::Warning);
 }
-void
-  SERV_FUNC (Serv::parseNEWS)
+
+
+  SERV_FUNC (Module::parseNEWS)
 {
    String command = tokens.nextToken();
    if(command=="")
@@ -193,8 +188,9 @@ void
      }
 
 }
-void
-  SERV_FUNC (Serv::parseCHAN)
+
+
+  SERV_FUNC (Module::parseCHAN)
 {
    String command = tokens.nextToken();
    String channel = tokens.nextToken();
@@ -268,8 +264,9 @@ void
 	return;
      }
 }
-void
-  SERV_FUNC (Serv::parseHELP)
+
+
+  SERV_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
@@ -278,8 +275,8 @@ void
    services->log(origin,getName(),String(tolog));
 }
 
-void
-  SERV_FUNC (Serv::parseUSER)
+
+  SERV_FUNC (Module::parseUSER)
 {
    String command = tokens.nextToken();
    String toadd = tokens.nextToken();
@@ -415,8 +412,9 @@ void
    origin.sendMessage("Uncognised sub-command",getName());
    return;
 }
-void
-  SERV_FUNC (Serv::parseHELPON)
+
+
+  SERV_FUNC (Module::parseHELPON)
 {
    int access = origin.getAccess(getName());
    if(access>50)
@@ -431,8 +429,9 @@ void
    String tosend = origin.getNickname()+" failed to become a helper - Not enough access";
    services->logLine(tosend, Log::Warning);
 }
-void
-  SERV_FUNC (Serv::parseNLIST)
+
+
+  SERV_FUNC (Module::parseNLIST)
 {
    String tomatch = tokens.nextToken();
    String dest = tokens.nextToken();
@@ -464,8 +463,9 @@ void
    String togo = origin.getNickname()+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
    services->logLine(togo);
 }
-void
-  SERV_FUNC (Serv::parseELIST)
+
+
+  SERV_FUNC (Module::parseELIST)
 {
    String tomatch = tokens.nextToken();
    String dest = tokens.nextToken();
@@ -510,8 +510,9 @@ void
    services->logLine(togo);
 
 }
-void
-  SERV_FUNC (Serv::parseDELNICK)
+
+
+  SERV_FUNC (Module::parseDELNICK)
 {
    String who  = tokens.nextToken();
    String reason = tokens.rest();
@@ -532,8 +533,8 @@ void
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
 
-void
-  SERV_FUNC (Serv::parseCLIST)
+
+  SERV_FUNC (Module::parseCLIST)
 {
    String who = tokens.nextToken();
    String send = tokens.nextToken();
@@ -572,24 +573,36 @@ void
      }
 }
 
+
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Serv();
-}
+{ return new Module(); }
+
 
 // Module information structure
-const Serv::moduleInfo_type Serv::moduleInfo =
+const Module::moduleInfo_type Module::moduleInfo =
 {
    "Service Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::NONE
 };
 
+
 // Start the service
-void Serv::start(Exordium::Services& s)
+void Module::start(Exordium::Services& s)
 {
+   // Set the services field appropriately
    services = &s;
-   services->registerService(getName(),getName(),"ircdome.org","+dz",
-			    "\037Serv\037ice :)");
-   services->serviceJoin(getName(),"#Debug");
+   
+   // Attempt to affirm our database table..
+   if (!services->getDatabase().affirmTable(Tables::serverlistTable)) {
+      services->logLine("Unable to affirm mod_serv database table "
+			"'serverlist'",
+			Log::Fatality);
+      return; // How do we tell services we did not start happily?!
+   }
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(), "+dz",
+			     getConfigData().getDescription());
 }
