@@ -350,17 +350,20 @@ void PARSER_FUNC (Parser::parseN)
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
-
-        User *origin = services.findUser(OLDorigin);
-
-        String newnick=tokens.nextToken();
-
+	String tempString = OLDorigin.trim().IRCtoLower();	
+        User *origin = services.findUser(tempString);
+	if(origin==0)
+	  {
+	     std::cout << "ParseN:  could not find the user named " << OLDorigin << std::endl;
+	     std::cout << "ParseN:  this is a fatal error - bailing ;-)" << std::endl;
+	     exit(1);
+	  }
+	
+        String newnick=tokens.nextToken().trim();
+	std::cout << "ParseN:" << newnick << std::endl;
         services.setNick(*origin, newnick); 
-
 	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
-
-
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
 	     std::cout << "Nick is registered" << std::endl;
@@ -422,8 +425,6 @@ void PARSER_FUNC (Parser::parseN)
      modes=modes.substr(1, modes.length()-1);
 
    
-//   services.getNickname().addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realname);
-   
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
 				      vwhost, server, modes, realname);
 
@@ -464,7 +465,7 @@ void PARSER_FUNC (Parser::parseN)
    while ((row = res.fetch_row()))
      {
 	String foo = ((std::string) row[0]).c_str();
-	services.serviceNotice("\002[\002IRCDome Global News\002]\002 "+foo,"IRCDome",nick);
+	newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+foo,"IRCDome");
      }
    services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
    if(num>2)

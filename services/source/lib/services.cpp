@@ -950,11 +950,19 @@ namespace Exordium
 			   }
 
 		      }
+		    User *ptr = findUser(tomod);
+		    if(ptr==0)
+		      {
+			 std::cout << "I could not find the users record.. hence i can't change their nick " << tomod << std::endl;
+			 return;
+		      }
+		    
 		    String msg = "Non-Identification: Your nickname is now being changed";
 		    serviceNotice(msg,"Nick",tomod);
 		    String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
 		    queueAdd(String(togo));
-		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
+		    setNick(*ptr,newnick);
+//		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 		 }
 	       if((killt.toInt()-nowt)<60)
 		 {
@@ -1033,10 +1041,12 @@ User* const Services::addUser(const String& name, const int oid)
 User*
   Services::findUser(String &name)
 {
-   User *ptr = users[name.IRCtoLower()];
+   std::cout << "findUser() - Looking for " << name.IRCtoLower().trim() << std::endl;
+   User *ptr = users[name.IRCtoLower().trim()];
    if(ptr == 0)
      {
-	std::cout << "I could not find the user named :" << name << std::endl;
+	std::cout << "findUser() - I could not find the user named :" << name << std::endl;
+	return 0;
      }
    
    return ptr;
@@ -1067,6 +1077,7 @@ bool
 void
   Services::setNick(User &who, String &newnick)
 {
+   std::cout << "setNick: " << newnick << std::endl;
    user_map::iterator user = users.find(who.getNickname().IRCtoLower());
    users.erase(user);
    users[newnick] = &who;

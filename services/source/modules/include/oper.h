@@ -31,7 +31,7 @@
 #include "exordium/services.h"
 #include <kineircd/str.h>
 
-# define OPER_FUNC(x)           x(LibAIS::String &origin, LibAIS::StringTokens &tokens, LibAIS::String &chan)
+#define OPER_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens)
 
 
 class Oper : public Exordium::Service

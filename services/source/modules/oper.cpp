@@ -26,8 +26,6 @@
 
 #include "include/oper.h"
 
-#include "exordium/channel.h"
-#include "exordium/nickname.h"
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include <kineircd/str.h>
