@@ -234,7 +234,7 @@ String
 int
   User::getAccess(String const &service)
 {
-   if( services.getDatabase().dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
+   if( services.getDatabase().dbSelect("access", "access", "nickname='"+String::convert(getRegisteredNickID())+"' AND service='"+service+"'") < 1 )
      return 0;
    else
      return services.getDatabase().dbGetValue().toInt();

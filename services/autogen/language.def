@@ -561,7 +561,7 @@ langtag = {
 langtag = {
    name = "serv_USER_LIST_MATCH";
    component = "mod_serv";
-   data_en = "\b%p0\b has level \b%p1\b";
+   data_en = "\\b%p0\\b has level \\b%p1\\b";
 };
 
 langtag = {

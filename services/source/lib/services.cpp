@@ -1418,7 +1418,8 @@ void ServicesInternal::validateOper(Kine::Name &origin)
 int
   ServicesInternal::getAccess(String const &service, String const &nickname)
 {
-   if( database.dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
+
+   if( database.dbSelect("access", "access", "nickname='"+String::convert(getRegisteredNickID(nickname))+"' AND service='"+service+"'") < 1 )
      return 0;
    else
      {

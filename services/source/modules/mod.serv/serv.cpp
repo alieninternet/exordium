@@ -623,7 +623,7 @@ SERV_FUNC (Module::parseUSER)
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+String::convert(ilevel);
 	services->logLine(togo);
 	services->sendGOper(getNickname(),togo);
-	services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+toadd+"'");
+	services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+String::convert(services->getRegisteredNickID(toadd))+"'");
 	services->log(origin,getNickname(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+String::convert(level));
 	origin.sendMessage(GETLANG(serv_USER_MOD_SUCCESS,toadd,String::convert(level)),getNickname());
 	return;
@@ -640,7 +640,7 @@ SERV_FUNC (Module::parseUSER)
 	
 	for(int i=0; i<nbRes; i++)
 	  {
-	     String nickname = myRes->getValue(i,1);
+	     String nickname = services->getNick(myRes->getValue(i,1).toInt());
 	     String access = myRes->getValue(i,3);
 	     origin.sendMessage(GETLANG(serv_USER_LIST_MATCH,nickname,access),getNickname());
 	  }
@@ -668,7 +668,7 @@ SERV_FUNC (Module::parseUSER)
 	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
-	services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
+	services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + String::convert(services->getRegisteredNickID(toadd))+"'");
 	origin.sendMessage(GETLANG(serv_USER_DEL_SUCCESS,toadd),getNickname());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
 	services->logLine(String(togo), Log::Warning);
@@ -705,7 +705,7 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage(GETLANG(serv_USER_ADD_LEVEL_ERROR),getNickname());
 	     return;
 	  }
-	services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
+	services->getDatabase().dbInsert("access", "'','" + String::convert(services->getRegisteredNickID(toadd)) + "','serv','" + level + "'");
 	origin.sendMessage(GETLANG(serv_USER_ADD_SUCCESS,toadd,level),getNickname());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
 	services->logLine(String(togo), Log::Warning);
