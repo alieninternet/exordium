@@ -218,8 +218,8 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
       if ((lastDiscardedCard.getIndex() == 8) && (nextSuit != 0)) {
 	 sendMessage((*currentPlayer).first, 
 		     Kine::String("To discard, you need to put down a card of "
-				  "the " + Cards::Card::nameSuit(nextSuit) + 
-				  " suit"));
+				  "the ") + Cards::Card::nameSuit(nextSuit) + 
+				  " suit");
       } else if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
 		 (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen)) {
 	 sendMessage((*currentPlayer).first, 
@@ -714,7 +714,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
    // Grab the player's info
    const player_type* player = checkPlayerStatus(origin.IRCtoLower(), true);
    
-   std::ostringstream out;
+   Kine::String out;
    
    // Run through the list of players and give them vague information..
    for (players_type::iterator p = players.begin();
@@ -722,24 +722,25 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
       // Make sure this is not the current player
       if (&(*p) != player) {
 	 // Do we need to add a formatting (for between players)
-	 if (!out.str().empty()) {
-	    out << "; ";
+	 if (!out.empty()) {
+	    out += "; ";
 	 }
 	 
 	 // Add the info
-	 out << (*p).first << ": " << (*p).second.getCardCount() << " cards";
+	 out += (*p).first + ": " + 
+	   Kine::String::convert((*p).second.getCardCount()) + " cards";
 	 
 	 // If the line is too long, send what we have and clear it
-	 if (out.str().length() > 300) {
-	    sendMessage(origin, out.str());
-	    out.str() = ""; // this will not work!
+	 if (out.length() > 300) {
+	    sendMessage(origin, out);
+	    out.clear();
 	 }
       }
    }
    
    // If there is anything left to send, send it
-   if (!out.str().empty()) {
-      sendMessage(origin, out.str());
+   if (!out.empty()) {
+      sendMessage(origin, out);
    }
    
    // If this person is a player, show their current hand as well
@@ -748,22 +749,22 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
    }
    
    // Tell them a bit more information
-   std::ostringstream out2;
-   out2 << "It's " << (*currentPlayer).first;
+   out = "It's " + (*currentPlayer).first;
    if ((*currentPlayer).first[(*currentPlayer).first.length() - 1] == 's') {
-      out2 << "' turn. ";
+      out += "' turn. ";
    } else {
-      out2 << "'s turn. ";
+      out += "'s turn. ";
    }
    
    if (stock.empty()) {
-      out2 << "The stock is empty.";
+      out += "The stock is empty.";
    } else {
-      out2 << "There are " << stock.size() << " cards left in the stock.";
+      out += "There are " + Kine::String::convert(stock.size()) + 
+	" cards left in the stock.";
    }
 
    // Send the last bit of information..
-   sendMessage(origin, out2.str());
+   sendMessage(origin, out);
    
    return true;
 }
