@@ -33,7 +33,6 @@
 #include <exordium/services.h>
 #include <exordium/channel.h>
 #include <exordium/utils.h>
-#include <kineircd/str.h>
 
 #include <sys/time.h>
 #include <sys/resource.h>

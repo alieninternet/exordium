@@ -31,7 +31,6 @@
 #include "chan.h"
 #include "tables.h"
 #include <exordium/channel.h>
-#include <kineircd/str.h>
 #include <kineircd/config.h>
 #include <exordium/dchan.h>
 #include <exordium/database/base.h>

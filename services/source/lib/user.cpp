@@ -31,7 +31,7 @@
 #include "exordium/services.h"
 #include "exordium/user.h"
 #include "exordium/utils.h"
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 #include <kineircd/config.h>
 
 #include "core_language.h"

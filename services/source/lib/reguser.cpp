@@ -29,7 +29,7 @@
 #endif
 
 #include "exordium/reguser.h"
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 #include <exordium/database/database.h>
 
 using AISutil::String;

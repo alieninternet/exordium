@@ -29,7 +29,7 @@
 
 # include <exordium/service.h>
 # include <exordium/services.h>
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 
 # define LOVE_FUNC(x) \

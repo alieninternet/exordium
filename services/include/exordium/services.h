@@ -28,8 +28,7 @@
 # define _INCLUDE_EXORDIUM_SERVICES_H_ 1
 
 # include <ctime>
-# include <kineircd/str.h>
-# include <kineircd/utils.h>
+# include <aisutil/string.h>
 # include <kineircd/password.h>
 # include <kineircd/daemon.h>
 

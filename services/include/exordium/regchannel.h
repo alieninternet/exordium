@@ -27,11 +27,11 @@
 #ifndef _INCLUDE_EXORDIUM_REGCHANNEL_H_
 # define _INCLUDE_EXORDIUM_REGCHANNEL_H_ 1
 
-# include <kineircd/str.h>
-#include <exordium/singleton.h>
-#include <map>
-#include <vector>
-#include <ctime>
+# include <aisutil/string.h>
+# include <exordium/singleton.h>
+# include <map>
+# include <vector>
+# include <ctime>
 
 using namespace std;
 

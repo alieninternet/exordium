@@ -33,7 +33,6 @@
 #include <exordium/channel.h>
 #include <exordium/database/database.h>
 #include <exordium/database/base.h>
-#include <kineircd/str.h>
 
 #include "language.h"
 

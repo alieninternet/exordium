@@ -28,8 +28,7 @@
 # include "autoconf.h"
 #endif
 
-#include <kineircd/str.h>
-#include <kineircd/utils.h>
+#include <aisutil/string.h>
 #include "console.h"
 #include "core_language.h"
 

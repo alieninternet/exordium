@@ -33,7 +33,7 @@
 # include <exordium/dchan.h>
 # include <exordium/database/database.h>
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # define CHAN_FUNC(x) \
      void x(Exordium::User& origin, AISutil::StringTokens& tokens, \

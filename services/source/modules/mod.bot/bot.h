@@ -35,7 +35,7 @@
 #include <exordium/services.h>
 #include <exordium/user.h>
 
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 
 
 #define BOT_FUNC(x) \

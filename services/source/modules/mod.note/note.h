@@ -31,7 +31,8 @@
 #  include "autoconf.h"
 # endif
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
+
 # define NOTE_FUNC(x) \
      void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 

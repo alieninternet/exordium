@@ -29,7 +29,7 @@
 # define _SOURCE_LIBBANK_BANK_H_ 1
 
 # include <set>
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # include <exordium/services.h>
 # include <exordium/user.h>

@@ -31,7 +31,6 @@
 #include "help.h"
 #include <exordium/service.h>
 #include <exordium/services.h>
-#include <kineircd/str.h>
 
 
 using AISutil::String;

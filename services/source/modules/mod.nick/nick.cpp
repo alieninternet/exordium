@@ -31,7 +31,6 @@
 #include "nick.h"
 #include "tables.h"
 #include "language.h"
-#include <kineircd/str.h>
 #include <kineircd/utils.h>
 #include <kineircd/config.h>
 #include <exordium/utils.h>

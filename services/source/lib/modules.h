@@ -28,7 +28,7 @@
 # define _INCLUDE_EXORDIUM_MODULES_H_ 1
 
 # include <map>
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 extern "C" {
 # include <ltdl.h>

@@ -42,7 +42,7 @@
 #include "parser.h"
 //#include "exordium/dchan.h"
 #include "exordium/channel.h"
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 #include <kineircd/config.h>
 
 using AISutil::String;

@@ -27,7 +27,7 @@
 #ifndef _SOURCE_MODULES_SERV_SERV_H_
 # define _SOURCE_MODULES_SERV_SERV_H_ 1
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # define SERV_FUNC(x) \
      void x(Exordium::User& origin, AISutil::StringTokens& tokens)

@@ -31,7 +31,6 @@
 #include "vote.h"
 #include <exordium/services.h>
 #include <exordium/channel.h>
-#include <kineircd/str.h>
 
 
 using AISutil::String;

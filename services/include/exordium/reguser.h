@@ -27,10 +27,10 @@
 #ifndef _INCLUDE_EXORDIUM_REGUSER_H_
 # define _INCLUDE_EXORDIUM_REGUSER_H_ 1
 
-# include <kineircd/str.h>
-#include <map>
-#include <list>
-#include <exordium/singleton.h>
+# include <aisutil/string.h>
+# include <map>
+# include <list>
+# include <exordium/singleton.h>
 
 using namespace std;
 

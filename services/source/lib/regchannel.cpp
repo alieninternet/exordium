@@ -29,7 +29,7 @@
 #endif
 
 #include "exordium/regchannel.h"
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 #include <exordium/reguser.h>
 #include <exordium/database/database.h>
 

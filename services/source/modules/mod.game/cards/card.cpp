@@ -29,7 +29,7 @@
 # include "autoconf.h"
 #endif
 
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 
 #include "card.h"
 

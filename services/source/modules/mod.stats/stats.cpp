@@ -31,7 +31,6 @@
 #include "stats.h"
 #include "tables.h"
 #include <exordium/channel.h>
-#include <kineircd/str.h>
 
 using AISutil::String;
 using AISutil::StringTokens;

@@ -27,7 +27,7 @@
 #ifndef _SOURCE_LIB_PARSER_H_
 # define _SOURCE_LIB_PARSER_H_ 1
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # define PARSER_FUNC(x) \
      x(AISutil::String& OLDorigin, AISutil::StringTokens& tokens)

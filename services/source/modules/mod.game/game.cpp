@@ -32,7 +32,7 @@
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <exordium/utils.h>
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 
 #include "game.h"
 #include "factory.h"

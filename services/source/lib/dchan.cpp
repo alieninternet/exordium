@@ -1,5 +1,5 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
  *
@@ -30,7 +30,7 @@
 
 #include "exordium/services.h"
 #include "exordium/dchan.h"
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 
 using AISutil::String;
 using AISutil::StringTokens;

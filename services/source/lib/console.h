@@ -30,7 +30,7 @@
 
 /* This should be in source/lib/. - nothing outside of the core uses it.. */
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # define CONSOLE_FUNC(x) \
      x(AISutil::String &origin, AISutil::StringTokens &tokens)

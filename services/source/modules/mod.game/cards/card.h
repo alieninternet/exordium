@@ -28,7 +28,7 @@
 #ifndef _SOURCE_MODULES_GAME_CARDS_CARD_H_
 # define _SOURCE_MODULES_GAME_CARDS_CARD_H_ 1
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 # include <vector>
 
 namespace Cards {

@@ -27,7 +27,7 @@
 #ifndef _INCLUDE_EXORDIUM_DCHAN_H_
 # define _INCLUDE_EXORDIUM_DCHAN_H_ 1
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 # include <map>
 # include <exordium/services.h>
 # include <exordium/user.h>

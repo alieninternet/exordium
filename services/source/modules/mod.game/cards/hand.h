@@ -29,7 +29,7 @@
 # define _SOURCE_MODULES_GAME_CARDS_HAND_H_ 1
 
 # include <set>
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # include "card.h"
 

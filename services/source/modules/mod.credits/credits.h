@@ -31,7 +31,7 @@
 # include <exordium/services.h>
 # include <exordium/user.h>
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # include <libbank/bank.h>
 

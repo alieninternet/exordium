@@ -27,7 +27,7 @@
 #ifndef _INCLUDE_EXORDIUM_SERVICE_H_
 # define _INCLUDE_EXORDIUM_SERVICE_H_ 1
 
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 # include <aisutil/config/parser.h>
 
 

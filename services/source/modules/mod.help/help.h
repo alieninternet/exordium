@@ -29,7 +29,7 @@
 
 #include <exordium/service.h>
 #include <exordium/services.h>
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 
 #define HELP_FUNC(x) \
      void x(Exordium::User& origin, AISutil::StringTokens& tokens)

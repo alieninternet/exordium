@@ -29,7 +29,7 @@
 
 # include <exordium/services.h>
 # include <exordium/service.h>
-# include <kineircd/str.h>
+# include <aisutil/string.h>
 
 # define NICK_FUNC(x) \
      void x(Exordium::User& origin, AISutil::StringTokens& tokens, \

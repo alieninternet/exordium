@@ -29,7 +29,7 @@
 #endif
 
 #include "exordium/channel.h"
-#include <kineircd/str.h>
+#include <aisutil/string.h>
 #include <kineircd/config.h>
 #include "exordium/services.h"
 
