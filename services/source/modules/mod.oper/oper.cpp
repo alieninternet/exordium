@@ -48,6 +48,7 @@ const Module::functionTableStruct Module::functionTable[] =
      { "qline",		&Module::parseQLINE },
      { "mdeop",		&Module::parseMDEOP },
      { "global",	&Module::parseGLOBAL },
+     { "kill",		&Module::parseKILL },
      { 0, 0 }
 };
 
@@ -65,8 +66,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
              if(required>access)
                {
 		  origin.sendMessage(GETLANG(oper_NOT_ENOUGH_ACCESS),getNickname());
-		  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
-                  services->logLine(togo, Log::Warning);
+                  services->logLine(origin.getNickname()+" tried to use \002"+command+"\002", Log::Warning);
                   return;
                }
 
@@ -100,7 +100,7 @@ OPER_FUNC(Module::parseGLOBAL)
 	services->queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
      }
 
-   services->sendGOper("Oper",origin.getNickname()+" sent a \002global\002 message ("+txt+")");
+   services->sendGOper(getNickname(),origin.getNickname()+" sent a \002global\002 message ("+txt+")");
 
 }
 
@@ -154,8 +154,7 @@ OPER_FUNC(Module::parseQLINE)
 	     origin.sendMessage(GETLANG(oper_QLINE_DEL_USAGE),getNickname());
 	     return;
 	  }
-	String togo = origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002";
-	services->sendGOper("Oper",togo);
+	services->sendGOper(getNickname(),origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002");
 	services->queueAdd("UNSQLINE 0 "+mask);
 	origin.sendMessage(GETLANG(oper_QLINE_DEL_SUCCESS,mask),getNickname());
      }
@@ -169,8 +168,7 @@ OPER_FUNC(Module::parseQLINE)
 	     origin.sendMessage(GETLANG(oper_QLINE_ADD_USAGE),getNickname());
 	     return;
 	  }
-	String togo = origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)";
-	services->sendGOper("Oper",togo);
+	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)");
 	services->queueAdd("SQLINE "+mask+" :"+reason);
 	origin.sendMessage(GETLANG(oper_QLINE_ADD_SUCCESS,mask,reason),getNickname());
 	return;
@@ -195,7 +193,7 @@ OPER_FUNC(Module::parseZLINE)
 	     return;
 	  }
 	String togo = origin.getNickname() + " removed a net wide \002zline\002 on \002"+ip;
-	services->sendGOper("Oper",togo);
+	services->sendGOper(getNickname(),togo);
 	services->queueAdd("UNSZLINE " + ip);
 	origin.sendMessage(GETLANG(oper_ZLINE_DEL_SUCCESS,ip),getNickname());
      }
@@ -212,7 +210,7 @@ OPER_FUNC(Module::parseZLINE)
 	  }
 
 	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
-	services->sendGOper("Oper",togo);
+	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";);
 	services->queueAdd("SZLINE " + ip +" :"+reason);
 	origin.sendMessage(GETLANG(oper_ZLINE_ADD_SUCCESS,ip,reason),getNickname());
 	return;
@@ -260,9 +258,30 @@ OPER_FUNC(Module::parsePART)
      {
 	services->servicePart(getNickname(), chan);
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" part \002"+chan+"\002");
-	origin.sendMessage(GETLANG(oper_PART_SUCCESS),getNickname());
+	origin.sendMessage(GETLANG(oper_PART_SUCCESS,chan),getNickname());
      }
 }
+
+OPER_FUNC (Module::parseKILL)
+   String tokill = tokens.nextToken;
+   String reason = tokens.rest();
+   if(nickname == "" | reason == "")
+     {
+	origin.sendMessage(GETLANG(oper_KILL_USAGE),getNickname());
+	return;
+     }
+   User *ptr = services->findUser(tokill);
+   if(ptr==0)
+     {
+	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
+	return;
+     }
+   else
+     {
+	services->kill(tokill,getNickname(),reason);
+	origin.sendMessage(GETLANG(oper_KILL_SUCCESS,tokill),getNickname());
+	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
+     }
 
 OPER_FUNC (Module::parseCOMMANDS)
 {
