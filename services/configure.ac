@@ -99,13 +99,18 @@ AC_PATH_PROG([MYSQL_CONFIG], [mysql_config], [no], [$PATH:$mysql_config_path])
 if test "$MYSQL_CONFIG" != "no" ; then
         MYSQL_INCDIR=`$MYSQL_CONFIG --cflags`
         MYSQL_LDFLAGS=`$MYSQL_CONFIG --libs`
+	
         AC_CHECK_LIB([mysqlclient], [main], [
-        AC_DEFINE(HAVE_MYSQL, 1, [Define if you want MySQL support compiled])
-	exordium_test_compile_db_mysql=yes
-        AC_SUBST(MYSQL_INCDIR)
-        AC_SUBST(MYSQL_LDFLAGS)
-        AC_MSG_RESULT(Building with MySQL support)], 
-                      [AC_MSG_RESULT([Building without MySQL support])])
+         AC_DEFINE(HAVE_MYSQL, 1, [Define if you want MySQL support compiled])
+ 	 exordium_test_compile_db_mysql=yes
+         AC_SUBST(MYSQL_INCDIR)
+         AC_SUBST(MYSQL_LDFLAGS)
+         AC_MSG_RESULT(Building with MySQL support)], 
+                       [AC_MSG_RESULT([Building without MySQL support])],
+	[$MYSQL_LDFLAGS])
+		      
+        dnl -- Do the right thing and restore LIBS..
+	LIBS=$LIBS_TMP
 fi
 AM_CONDITIONAL(EXORDIUM_COMPILE_DB_MYSQL,
                [test x$exordium_test_compile_db_mysql = xyes])
