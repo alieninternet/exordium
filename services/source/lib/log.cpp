@@ -1,4 +1,4 @@
-/*   
+/*
  This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
  $Author$
  $Date$
@@ -15,14 +15,12 @@
 using Kine::String;
 using namespace Exordium;
 
-
 Log::Log(const Config& c)
   : config(c)
 {
    logFile.open(config.getLogfile().c_str(),
 		std::ios::out | std::ios::ate | std::ios::app);
 }
-
 
 void Log::logLine (const String& line)
 {

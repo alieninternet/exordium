@@ -1,4 +1,4 @@
-/*   
+/*
  This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
  $Author$
  $Date$
@@ -10,9 +10,9 @@
 
 using namespace Exordium;
 
-
 // Information used by the configuration parser
-const Kine::ConfigParser::defTable_type Config::definitionTable = {
+const Kine::ConfigParser::defTable_type Config::definitionTable =
+{
      {
 	"LOGFILE",
 	  (void *)&Config::defLogfile, &varHandleString,
@@ -31,9 +31,9 @@ const Kine::ConfigParser::defTable_type Config::definitionTable = {
      { 0, 0, 0, 0, 0 }
 };
 
-
 // 'SQL' class definition table
-const Kine::ConfigParser::defTable_type Config::defClassSql = {
+const Kine::ConfigParser::defTable_type Config::defClassSql =
+{
      {
 	"DATABASE",
 	  (void *)&Config::defSqlDatabase, &varHandleString,
@@ -62,17 +62,16 @@ const Kine::ConfigParser::defTable_type Config::defClassSql = {
      { 0, 0, 0, 0, 0 }
 };
 
-
 // Constructor to set up defaults, mainly. These defaults are dopey :(
 Config::Config(void)
   : defLogfile("services.log"),
 
-    // 'SQL' class
-    defSqlDatabase("services"),
-    defSqlHostname("localhost"),
-    defSqlPassword(""),
-    defSqlPort(3306), // mysql port, as assigned by the iana
-    defSqlUsername("root")
+// 'SQL' class
+defSqlDatabase("services"),
+defSqlHostname("localhost"),
+defSqlPassword(""),
+defSqlPort(3306), // mysql port, as assigned by the iana
+defSqlUsername("root")
 {
    // nothing here!
 };
