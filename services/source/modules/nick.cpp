@@ -539,7 +539,7 @@ void
 	       services.serviceNotice (tosend, "Nick", origin);
 	       return;
 	    }
-	  String nickpass = String::convert(services.getNickname().generatePassword(origin,password));
+	  String nickpass = services.getNickname().generatePassword(origin,password);
 	  String givepass = services.getNickname().getPass(origin);
 	  if(nickpass == givepass)
 	    {

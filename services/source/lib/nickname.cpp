@@ -131,7 +131,7 @@ namespace Exordium
    String
      Nickname::generatePassword(String const &nickname, String const &password)
        {
-	  std::string bob(Kine::Password::makePassword(nickname,password).s_char,20);
+	  String bob((char *)Kine::Password::makePassword(nickname,password).s_char,(String::size_type)20);
 	  std::cout << "Pass length is " << bob.length() << std::endl;
 	  std::cout << "Its: " << bob << std::endl;
 	  return bob;
