@@ -100,9 +100,9 @@ digraph intranet_map {
 
      // Linkage map..
      "mod_exordium" -> "libaisutil";
-     "mod_exordium" -> "libdl";
      "mod_exordium" -> "libexordium";
      "libexordium" -> "libaisutil";
+     "libexordium" -> "libdl";
      "libexordium" -> "libkineircd";
      "libexordium" -> "libmysqlclient" [style=dashed];
      "libexordium" -> "libpq" [style=dashed];
@@ -117,7 +117,6 @@ digraph intranet_map {
      "libexordium" -> "mod_serv.so" [color=blue,dir=both];
      "libexordium" -> "mod_stats.so" [color=blue,dir=both];
      "libexordium" -> "mod_vote.so" [color=blue,dir=both];
-     "libexordium_bank" -> "libaisutil";
      "libexordium_bank" -> "libexordium";
      "libexordium_game" -> "libaisutil";
      "libexordium_game" -> "libdl";
