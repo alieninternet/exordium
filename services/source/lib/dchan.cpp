@@ -361,3 +361,72 @@ void const dChan::setPartMsg( const String &partmsg )
                                    +"'", "id='"+String::convert(getRegisteredID())+"'");
 }
 
+
+
+
+
+bool const dChan::getPrivate()
+{
+   if( services.getDatabase().dbSelect("private", "chanopts", "name='"+name.toLower()+"'") > 0 )
+   {
+      if( services.getDatabase().dbGetValue().toInt() == 1 )
+         return true;
+      else
+         return false;
+   }
+   else
+      return false;
+}
+
+
+
+void const dChan::setPrivate( bool Value )
+{
+   services.getDatabase().dbUpdate("chanopts","private='"+String::convert(Value)
+                                   +"'", "name='"+name.toLower()+"'");
+}
+
+
+
+
+
+String const dChan::getChanDescription()
+{
+   if( services.getDatabase().dbSelect("cdesc", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}
+
+
+void const dChan::setChanDescription( const String &chandesc )
+{
+      services.getDatabase().dbUpdate("chans","cdesc='"+chandesc
+                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+}
+
+
+
+String const dChan::getUrl()
+{
+   if( services.getDatabase().dbSelect("url", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}
+
+
+void const dChan::setUrl( const String &url )
+{
+      services.getDatabase().dbUpdate("chans","url='"+url
+                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+}
+
+
+String const dChan::getRegistrationDate()
+{
+   if( services.getDatabase().dbSelect("regdate", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}

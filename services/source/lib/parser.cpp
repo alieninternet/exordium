@@ -163,7 +163,7 @@ void
 	String modes = tokens.nextColonToken();
 	dChan *dptr = services.findChan(dest);
 
-        services.getConfigInternal().getModules().handleChannelMode( *dptr, modes, tokens.nextToken(), OLDorigin );
+        services.getConfigInternal().getModules().handleChannelMode( *dptr, modes, tokens.rest(), OLDorigin );
 
 	return;
      }

@@ -287,14 +287,14 @@ void
 {
    services.getDatabase().dbInsert("chans", 
        "'','"+name.IRCtoLower()+"','"+owner+
-       "','This is a new channel','+nt','A new channel','www.peoplechat.org', '','', 0"); 
+       "',NOW(),'This is a new channel','+nt','A new channel','www.peoplechat.org', '','', 0"); 
    chanAddAccess(name,owner,"500");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
                      name + " +r");
 
    setTopic(name, String("This channel has just been registered by ")+owner);
    services.getDatabase().dbInsert("chanopts",
-				   "'','"+name.IRCtoLower()+"',1,1,0,0,0");
+				   "'','"+name.IRCtoLower()+"',1,1,0,0,0,0");
 }
 
 /* Return how many channels a nickname owns */

@@ -108,6 +108,17 @@ namespace Exordium {
       const AISutil::String getPartMsg( void );
       const void setPartMsg( const AISutil::String& partmsg );
 
+      const bool getPrivate( void );
+      const void setPrivate( bool Value );
+
+      const AISutil::String getChanDescription( void );
+      const void setChanDescription( const AISutil::String& chandesc );
+
+      const AISutil::String getUrl( void );
+      const void setUrl( const AISutil::String& url );
+
+      const AISutil::String dChan::getRegistrationDate();
+
       dChan(AISutil::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..
