@@ -51,6 +51,7 @@ using namespace Exordium;
 
 const struct Parser::functionTableStruct Parser::functionTable[] =
 {
+     { "301", &Parser::parseUSERAWAY },
      { "PART", &Parser::parsePART },
      { "MODE", &Parser::parseM },
      { "PASS", &Parser::parsePASS },
@@ -129,6 +130,15 @@ void
 	return;
      }
    services.AddOnlineServer (serverName, hops, description);
+}
+
+void
+  PARSER_FUNC (Parser::parseUSERAWAY)
+{
+   
+/* THIS DOESNT DO ANYTHING, BUT NEEDED TO STOP MY CONSOLE FILLING UP WITH 
+   ANNOYING AWAY MESSAGES FROM CLIENTS *STARES AT PRAETORIAN*  
+ */
 }
 
 void
