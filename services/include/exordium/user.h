@@ -30,7 +30,6 @@
 # include <kineircd/str.h>
 # include <map>
 # include "exordium/services.h"
-# include "exordium/sql.h"
 
 namespace Exordium {
    class Services;

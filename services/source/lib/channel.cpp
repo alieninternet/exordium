@@ -27,7 +27,6 @@
 #include "exordium/channel.h"
 #include <kineircd/str.h>
 #include "exordium/services.h"
-#include "exordium/sql.h"
 
 using namespace Exordium;
 using LibAIS::String;
@@ -44,7 +43,7 @@ namespace Exordium
 	  String channel = getChanName(cid);
 	  services.Debug("\002[\002Unban\002]\002 " + mask + " / " + channel);
 	  services.serverMode(channel,"-b",mask);
-	  services.getDatabase().query("DELETE from chanbans where id='"+id+"'");
+	  services.getDatabase().dbDelete("chanbans", "id='" + id + "'");
 	  return;
        }
 
@@ -52,14 +51,8 @@ namespace Exordium
    String
      Channel::getChanCount(void)
        {
-	  MysqlRes res = services.getDatabase().query("SELECT count(*) from chans");
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-          {
-	  return row[0];
-          }
-   return "0";
-}
+          return String::convert(services.getDatabase().dbCount("chans"));
+       }
 
 /* Update our tables as showing the given user as 'opped'
    in the given chan */
@@ -68,8 +61,8 @@ void
 {
    int cid = getOnlineChanID(channel);
    int nid = services.locateID(nickname);
-   services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid));
-   services.getDatabase().query("INSERT into chanstatus values ('"+String::convert(cid)+"','"+String::convert(nid)+"','2')");
+   services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid)); 
+   services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','2'");
    services.Debug("Have marked "+nickname+" as being opped in "+channel);
    return;
 }
@@ -81,8 +74,8 @@ void
 {
    int cid = getOnlineChanID(channel);
    int nid = services.locateID(nickname);
-   services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid));
-   services.getDatabase().query("INSERT into chanstatus values ('"+String::convert(cid)+"','"+String::convert(nid)+"','1')");
+   services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid));
+   services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','1'");
    services.Debug("Have marked "+nickname+" as being voiced in "+channel);
    return;
 }
@@ -94,28 +87,20 @@ void
 {
    int cid = getOnlineChanID(channel);
    int nid = services.locateID(nickname);
-   services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid));
-   services.getDatabase().query("INSERT into chanstatus values ('"+String::convert(cid)+"','"+String::convert(nid)+"','0')");
+   services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid));
+   services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','0'");
    services.Debug("Have marked "+nickname+" as being NORMAL in "+channel);
    return;
 }
 bool
   Channel::ChanLog(String const &channel)
 {
-   MysqlRes res = services.getDatabase().query("SELECT clog from chanopts where name='"+channel.toLower()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	if(row[0]=="1")
-	  {
-	     return true;
-	  }
-	else
-	  {
-	     return false;
-	  }
-     }
-   return false;
+   services.getDatabase().dbSelect("clog", "chanopts", "'" + channel.toLower() + "'");
+
+   if(services.getDatabase().dbGetValue() == "1")
+      return true;
+   else
+      return false;
 }
 
 void
@@ -123,13 +108,13 @@ void
 {
    if(value)
      {
-	services.getDatabase().query("DELETE from chanopts where name='"+channel.toLower()+"' AND clog=1");
-	services.getDatabase().query("INSERT into chanopts values ('','"+channel.toLower()+"',1)");
+        services.getDatabase().dbDelete("chanopts", "'"+channel.toLower()+"' AND clog=1");
+        services.getDatabase().dbInsert("chanopts", "'', '" + channel.toLower()+"',1");
 	return;
      }
    else
      {
-	services.getDatabase().query("DELETE from chanopts where name='"+channel.toLower()+"' AND clog=1");
+        services.getDatabase().dbDelete("chanopts", "'"+channel.toLower()+"' AND clog=1");
 	return;
      }
 }
@@ -139,7 +124,7 @@ void
 void
   Channel::internalDel(String const &nickname, String const &channel)
 {
-   services.getDatabase().query("DELETE from chanstatus where chanid='"+String::convert(getOnlineChanID(channel))+"' AND nickid='"+String::convert(services.locateID(nickname))+"'");
+   services.getDatabase().dbDelete("chanstatus", "chanid='" + String::convert(getOnlineChanID(channel))+"' AND nickid='"+String::convert(services.locateID(nickname))+"'");
    return;
 }
 
@@ -149,8 +134,8 @@ void
 {
    int chanid = getOnlineChanID(channel);
    int nickid = services.locateID(nickname);
-   services.getDatabase().query("DELETE from chanstatus where chanid="+String::convert(chanid)+" AND nickid="+String::convert(nickid));
-   services.getDatabase().query("INSERT into chanstatus values('','"+String::convert(chanid)+"','"+String::convert(nickid)+"')");
+   services.getDatabase().dbDelete("chanstatus", "chanid="+String::convert(chanid)+" AND nickid="+String::convert(nickid));
+   services.getDatabase().dbInsert("chanstatus", "'','"+String::convert(chanid)+"','"+String::convert(nickid)+"'");
 }
 
 /* Update our tables to show the given user as being 'devoiced' */
@@ -160,56 +145,41 @@ void
 {
    int chanid = getOnlineChanID(channel);
    int nickid = services.locateID(nickname);
-   services.getDatabase().query("DELETE from chanstatus where chanid='"
-     +String::convert(chanid)+"' AND nickid='"
-     + String::convert(nickid) + "' AND status='1'");
+   services.getDatabase().dbDelete("chanstatus", 
+       "chanid='"+String::convert(chanid)+"' AND nickid='"+String::convert(nickid)+ "' AND status='1'");
 }
 
 /* Return the numercial (unique) id of a registered channel */
 int
   Channel::getChanID(String const &name)
 {
-   MysqlRes res = services.getDatabase().query("SELECT id from chans where name='"+name.toLower()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String foo = row[0];
-	return foo.toInt();
-     }
-   res.free_result();
-   return 0;
+   if( services.getDatabase().dbSelect("id", "chans", "name='"+name.toLower()+"'") < 1 )
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
 }
 
 /* Return the (non-persistant) id of any channel */
 int
   Channel::getOnlineChanID(String const &name)
 {
-   MysqlRes res = services.getDatabase().query("SELECT id from onlinechan where name='"+name.toLower()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String foo = row[0];
-	return foo.toInt();
-     }
-   res.free_result();
-   return 0;
+   if ( services.getDatabase().dbSelect("id", "onlinechan", "name='"+name.toLower()+"'") < 1 )
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
 }
 
 /* Checks to see if a channel is registered */
 bool
   Channel::isChanRegistered(String const &name)
 {
-   MysqlRes res = services.getDatabase().query("select id from chans where name='" + name + "'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String foo  = row[0];
-	if(foo.toInt() > 0)
-	  {
-	     return true;
-	  }
-     }
-   return false;
+   if( services.getDatabase().dbSelect("id", "chans", "name='"+name.toLower()+"'") < 1 )
+     return false;
+   
+   if( services.getDatabase().dbGetValue().toInt() > 0 )
+     return true;
+   else
+     return false;
 }
 /* Return the access (if any) the given nickname has in the given channel */
 int
@@ -217,106 +187,67 @@ int
 {
    int nickid = services.getRegisteredNickID(nick);
    int chanid = getChanID(name);
-   String query = "SELECT access from chanaccess where chanid='"
-     + String::convert(chanid)+"' AND nickid='"
-     + String::convert(nickid) + "'";
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String foo = row[0];
-	return foo.toInt();
-     }
-   return 0;
+
+   if( services.getDatabase().dbSelect("access", "chanaccess", 
+              "chanid='"+String::convert(chanid)+"' AND nickid='"+String::convert(nickid)+"'") < 1 )
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
 }
 
 /* Check to see if the channel is 'made' - i.e someone is on it on the network */
 bool
   Channel::ifChanExists (String const &name)
 {
-   MysqlRes res = services.getDatabase().query("SELECT id from onlinechan where name='"+name+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	if((int) row[0]>0)
-	  {
-	     return true;
-	  }
-     }
-   return false;
+   if( services.getDatabase().dbSelect("id", "onlinechan", "name='"+name+"'") < 1 )
+      return false;
+   else
+   {
+     if( services.getDatabase().dbGetValue().toInt() > 0 )
+       return true;
+     else
+       return false;
+   }
 }
 
 /* Return the number of registered channels */
 int
   Channel::maxChannels(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT count(*) from chans");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String max = row[0];
-	return max.toInt();
-     }
-   return 0;
+   return services.getDatabase().dbCount("chans");
 }
 
 /* Return the number of access entries across the whole database */
 int
   Channel::maxChannelsAccess(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT count(*) from chanaccess");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String max = row[0];
-	return max.toInt();
-     }
-   return 0;
+  return services.getDatabase().dbCount("chanaccess");
 }
 
 /* Return the number of access entries for the given nickname */
 int
   Channel::maxChannelsUser(String const &nick)
 {
-   int id = services.getRegisteredNickID(nick);
-   MysqlRes res = services.getDatabase().query("SELECT count(*) from chanaccess where nickid='"
-     + String::convert(id)+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String max = row[0];
-	return max.toInt();
-     }
-   return 0;
+  return services.getDatabase().dbCount("chanaccess", "nickid='"+String::convert(nick)+"'");
 }
 
 /* Return the given name for the id given */
 String
   Channel::getChanName(int const &number)
 {
-   MysqlRes res = services.getDatabase().query("SELECT name from chans where id="
-     + String::convert(number));
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String name = row[0];
-	return name;
-     }
-   return String("");
+   if( services.getDatabase().dbSelect("name", "chans", "id="+String::convert(number)) < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 }
 
 String
   Channel::getChanIDName(int const &number)
 {
-   MysqlRes res = services.getDatabase().query("SELECT name from onlinechan where id="
-     + String::convert(number));
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String name = row[0];
-	return name;
-     }
-   return String("");
+   if( services.getDatabase().dbSelect("name", "onlinechan", "id="+String::convert(number)) < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 }
 
 /* Set the topic in the given channel, to the given text */
@@ -335,27 +266,18 @@ void
   Channel::updateTopic(String const &name, String const &topic)
 {
    int id = getChanID(name);
-   String query = "UPDATE chans set topic='"+topic
-     +"' where id='"+String::convert(id)+"'";
-   services.getDatabase().query(query);
+
+   services.getDatabase().dbUpdate("chans", "topic='"+topic+"'", "id='"+String::convert(id)+"'");
 }
 
 /* Get the channel owner for the given numerical registered chan id */
 String
   Channel::getChanOwner(int const &number)
 {
-   String query = "SELECT owner from chans where id='"
-     + String::convert(number)+ "'";
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String name = ((std::string) row[0]);
-	res.free_result();
-	return name;
-     }
-   res.free_result();
-   return "";
+   if( services.getDatabase().dbSelect("owner", "chans", "id='"+String::convert(number)+"'") < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 }
 
 /* Add a user to the given channel */
@@ -364,10 +286,9 @@ void
 {
    int nickid = services.getRegisteredNickID(nick);
    int chanid = getChanID(name);
-   String query = "INSERT into chanaccess values ('"
-     + String::convert(chanid)+"','"+String::convert(nickid)
-       +"','"+String::convert(level)+"')";
-   services.getDatabase().query(query);
+
+   services.getDatabase().dbInsert("chanaccess", 
+         "'"+String::convert(chanid)+"',',"+String::convert(nickid)+"','"+String::convert(level)+"'");
 }
 /* Delete access from the given channel */
 void
@@ -375,10 +296,8 @@ void
 {
    int nickid = services.getRegisteredNickID(nick);
    int chanid = getChanID(name);
-   String query = "DELETE from chanaccess where chanid='"
-     + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)
-       + "'";
-   services.getDatabase().query(query);
+   services.getDatabase().dbDelete("chanaccess", 
+          "chanid='"+String::convert(chanid)+"' AND nickid='"+String::convert(nickid)+"'");
 }
 
 /* Deregister a channel, and remove all pertaining channel access entries */
@@ -386,11 +305,10 @@ void
   Channel::deregisterChannel(String const &name, String const &reason)
 {
    int foo = getChanID(name);
-   String query = "DELETE from chans where name='"+name+"'";
-   services.getDatabase().query(query);
-   query = "DELETE from chanaccess where chanid='"
-     + String::convert(foo)+ "'";
-   services.getDatabase().query(query);
+
+   services.getDatabase().dbDelete("chans", "name='"+name+"'");
+   services.getDatabase().dbDelete("chanaccess", "chanid='"+String::convert(foo)+"'");
+
    String togo = "This channel has been deregistered \002"+reason;
    services.serviceNotice(String(togo),"Chan",name);
    services.servicePart("Chan",name);
@@ -400,17 +318,15 @@ void
 void
   Channel::synchChannels(void)
 {
-   String query = "SELECT name,topic,modes from chans";
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String name = ((std::string) row[0]);
-	String topic = ((std::string) row[1]);
-	String modes = ((std::string) row[2]);
-	synchChannel(name,topic,modes);
-     }
-   res.free_result();
+   int nbRes = services.getDatabase().dbSelect("name,topic,modes", "chans");
+
+
+   for(int i=0; i<nbRes; i++)
+   {
+     synchChannel(services.getDatabase().dbGetValue(0), services.getDatabase().dbGetValue(1), 
+                  services.getDatabase().dbGetValue(2));
+     services.getDatabase().dbGetRow();
+   }
 }
 
 /* Synch a single channel :) */
@@ -430,8 +346,8 @@ void
 void
   Channel::registerChannel(String const &name, String const &owner)
 {
-   String query = "INSERT into chans values ('','" + name + "','" + owner + "','This is a new channel','+nt','A new channel', 'www.ircdome.org',0)";
-   services.getDatabase().query(query);
+   services.getDatabase().dbInsert("chans", 
+       "'','"+name+"','"+owner+"','This is a new channel','+nt','A new channel','www.ircdome.irg', 0"); 
    chanAddAccess(name,owner,"500");
    services.serviceJoin("Chan",name);
    services.serverMode(name,"+o","Chan");
@@ -442,62 +358,33 @@ void
 int
   Channel::ownedChannels(String const &nickname)
 {
-   String query = "SELECT count(*) from chans where owner='"
-     + nickname + "'";
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String number = ((std::string) row[0]);
-	res.free_result();
-	return number.toInt();
-     }
-   res.free_result();
-   return 0;
+   return services.getDatabase().dbCount("chans", "owner='"+nickname+"'");
 }
 /* Add a ban to a channel db ban list */
 void
   Channel::addChanBan(int const &chan, String const &mask, String const &setby, int const &expireon, String const &reason)
 {
-   String query = "INSERT into chanbans values ('','"+String::convert(chan)+"','"+mask+"','"+setby+"',NOW(),'"+String::convert(expireon)+"','"+reason+"')";
-   services.getDatabase().query(query);
+   services.getDatabase().dbInsert("chanbans", 
+           "'','"+String::convert(chan)+"','"+mask+"','"+setby+"',NOW(),'"+String::convert(expireon)+"','"+reason+"'");
 }
 
-
-// NOTE: Fix this after Channel is completed
+// TODO
 /* Get channel's mode */
 String
   Channel::getModes(void)
 {
-   String query;
-   //query="SELECT modes FROM chans WHERE id=" + String::convert(getChanID());
-
-   MysqlRes res=services.getDatabase().query(query);
-   MysqlRow row;
-
-   while((row = res.fetch_row()))
-   {
-      return row[0];
-   }
-
-   return "";
+/*
+   if( services.getDatabase().dbSelect("modes", "chans", "id="+String::convert(getChanID()) < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
+*/
 }
 
 int
   Channel::getNbUsers(String const &chan)
 {
-  String query="SELECT count(*) FROM chanstatus WHERE chanid=" + String::convert(getOnlineChanID(chan));
-
-  MysqlRes res = services.getDatabase().query(query);
-  MysqlRow row;
-
-  while ((row = res.fetch_row()))
-  {
-    return (int)row[0];
-  }
-
-  return -1; // NOTREACHED
-
+  return services.getDatabase().dbCount("chanstatus", "chanid="+ String::convert(getOnlineChanID(chan)));
 }
 
 
@@ -508,20 +395,20 @@ void
   Channel::banChan(String const &chan, String const &mask, String const &reason)
 {
    int chanid = getOnlineChanID(chan);
-   String query = "SELECT nickid from chanstatus where chanid='"
-     + String::convert(chanid) + "'";
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
+
+   int nbRes = services.getDatabase().dbSelect("nickid", "chanstatus", "chanid='"+String::convert(chanid)+"'");
+
+ 
+   for(int i=0; i<nbRes; i++)
      {
-	String nid = ((std::string) row[0]);
+	String nid = services.getDatabase().dbGetValue();
 	int foo = nid.toInt();
 	String tnick = services.getOnlineNick(foo);
 	User *ptr = services.findUser(tnick);
+
 	String ident = ptr->getIdent();
 	String host = ptr->getHost();
 	String full = String(tnick)+"!"+ident+"@"+host;
-	res.free_result();
 	StringMask bar(mask);
 	bool hi = false;
 	hi = bar.matches(full);
@@ -535,6 +422,8 @@ void
 	if(hi==true)
 	  {
 	  }
+
+        services.getDatabase().dbGetRow();
      }
 }
 

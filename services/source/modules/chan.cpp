@@ -30,7 +30,6 @@
 #include "exordium/services.h"
 #include <kineircd/str.h>
 #include <map>
-#include "exordium/sql.h"
 
 using LibAIS::String;
 using LibAIS::StringTokens;
@@ -217,21 +216,23 @@ void
      }
    int tid = services->getChannel().getChanID(channel);
    origin.sendMessage("\002[\002Ban List\002]\002 for \002"+channel,getName());
-   String tquery = "SELECT * from chanbans where chan='" + String::convert(tid) + "'";
-   MysqlRes res = services->getDatabase().query(tquery);
-   MysqlRow row;
+
+   int nbRes = services->getDatabase().dbSelect("*", "chanbans", "chan='"+String::convert(tid)+"'");
+
    int j=0;
-   while ((row = res.fetch_row()))
+   for (int i=0; i<nbRes; i++)
      {
 	j++;
-	String mask = ((std::string) row[2]);
-	String setby = ((std::string) row[3]);
-	String seton = ((std::string) row[4]);
-	String expireon = ((std::string) row[5]);
-	String reason = ((std::string) row[6]);
+	String mask = services->getDatabase().dbGetValue(2);
+	String setby = services->getDatabase().dbGetValue(3);
+	String seton = services->getDatabase().dbGetValue(4);
+	String expireon = services->getDatabase().dbGetValue(5);
+	String reason = services->getDatabase().dbGetValue(6);
 	String tosend = "\002[\002"+String::convert(j)+"\002]\002 Mask \002"+mask+"\002 SetBy \002"+setby+"\002 Date \002"+seton+"\002 Expires \002"+expireon+"\002 Reason \002"+reason+"\002";
 	origin.sendMessage(tosend,getName());
+        services->getDatabase().dbGetRow();
      }
+
    origin.sendMessage("\002[\002Ban List\002]\002 Finished",getName());
 }
 void
@@ -810,18 +811,17 @@ void
      }
    origin.sendMessage("Channel access list for "+channel,getName());
    int chanid = services->getChannel().getChanID(channel);
-   String query = "SELECT nickid,access from chanaccess where chanid=" + String::convert(chanid);
-   MysqlRes res = services->getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String tnickid = ((std::string) row[0]).c_str();
-	String taccess = ((std::string) row[1]).c_str();
+   int nbRes = services->getDatabase().dbSelect("nickid,access", "chanaccess", "chanid="+String::convert(chanid));
+
+   for(int i=0; i<nbRes; i++)
+    {
+	String tnickid = services->getDatabase().dbGetValue(0);
+	String taccess = services->getDatabase().dbGetValue(1);
 	String tosend = "Nickname \002"+services->getNick(tnickid.toInt())+"\002 Access \002"+taccess+"\002";
 	origin.sendMessage(tosend,getName());
-     }
+        services->getDatabase().dbGetRow();
+    }
    services->log(origin,"Chan","Did a channel access",channel);
-   res.free_result();
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION

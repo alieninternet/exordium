@@ -28,7 +28,6 @@
 #include "exordium/services.h"
 #include "exordium/channel.h"
 #include <kineircd/str.h>
-#include "exordium/sql.h"
 #include <sys/time.h>
 
 using LibAIS::String;
@@ -116,8 +115,7 @@ void
 	return;
      }
    String epass =  String::convert(services->generatePassword(who,newpass));
-   String query = "UPDATE nicks set password='" + epass + "' where nickname='"+who+"'";
-   services->getDatabase().query(query);
+   services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
    services->helpme(togo,getName());
 }
@@ -141,17 +139,17 @@ void
      }
    if(command=="list")
      {
-	String query = "SELECT * from news";
-	MysqlRes res = services->getDatabase().query(query);
-	MysqlRow row;
-	while ((row = res.fetch_row()))
+        int nbRes = services->getDatabase().dbSelect("news");
+
+	for(int i=0; i<nbRes; i++)
 	  {
-	     String id = row[0];
-	     String level = row[1];
-	     String expires = row[2];
-	     String txt = row[3];
+	     String id = services->getDatabase().dbGetValue(0);
+	     String level = services->getDatabase().dbGetValue(1);
+	     String expires = services->getDatabase().dbGetValue(2);
+	     String txt = services->getDatabase().dbGetValue(3);
 	     String togo = "ID \002[\002"+id+"\002]\002 Level \002[\002"+level+"\002]\002 Expires \002[\002"+expires+"\002]\002 Text \002[\002"+txt+"\002]\002";
 	     origin.sendMessage(togo,getName());
+             services->getDatabase().dbGetRow();
 	  }
 
      }
@@ -163,8 +161,7 @@ void
 	     origin.sendMessage("\002[\002Fatal Error\002]\002 Usage: del ID",getName());
 	     return;
 	  }
-	String query = "DELETE FROM news where id="+id;
-	services->getDatabase().query(query);
+        services->getDatabase().dbDelete("news", "id="+id);
 	origin.sendMessage("News has been deleted",getName());
 	return;
      }
@@ -185,8 +182,7 @@ void
 	     origin.sendMessage("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past",getName());
 	     return;
 	  }
-	String query = "INSERT into news values ('','"+type+"','"+String::convert(nexpires)+"','"+text+"');";
-	services->getDatabase().query(query);
+        services->getDatabase().dbInsert("news", "'','"+type+"','"+String::convert(nexpires)+"','"+text+"'");
 	origin.sendMessage("New news item added successfully",getName());
      }
 
@@ -223,8 +219,7 @@ void
 	services->helpme(String(togo),getName());
 	services->getChannel().chanDelAccess(channel,oldowner);
 	services->getChannel().chanAddAccess(channel,newowner,"500");
-	String query = "UPDATE chans set owner='" + newowner + "' where name='"+channel+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
 	services->log(origin,getName(),String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
 	return;
      }
@@ -322,24 +317,22 @@ void
 	  }
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+level;
 	services->helpme(togo,getName());
-	String query = "UPDATE access set access='" + level + "' WHERE nickname='" + toadd + "'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("access", "access='"+level+"'", "nickname='"+toadd+"'");
 	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
 	return;
      }
    if(command=="list")
      {
-	String query = "SELECT * from access where service='serv' order by id";
-	MysqlRes res = services->getDatabase().query(query);
-	MysqlRow row;
-	while (( row  = res.fetch_row()))
+        int nbRes = services->getDatabase().dbSelect("*", "access", "service='serv'", "id");
+
+	for(int i=0; i<nbRes; i++)
 	  {
-	     String nickname = row[1];
-	     String access = row[3];
+	     String nickname = services->getDatabase().dbGetValue(1);
+	     String access = services->getDatabase().dbGetValue(3);
 	     String togo = "\002"+nickname+"\002 has level \002"+access;
 	     origin.sendMessage(String(togo),getName());
+             services->getDatabase().dbGetRow();
 	  }
-	res.free_result();
 	return;
      }
    if(command=="del")
@@ -364,8 +357,7 @@ void
 	     services->helpme(String(togo),getName());
 	     return;
 	  }
-	String query = "DELETE from access where service='serv' and nickname='" + toadd + "'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
 	origin.sendMessage("Command complete",getName());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
 	services->helpme(String(togo),getName());
@@ -406,8 +398,7 @@ void
 	     origin.sendMessage("Error: You cannot add someone with higher than 499 access",getName());
 	     return;
 	  }
-	String query = "INSERT into access values ('','" + toadd + "','serv','" + level + "')";
-	services->getDatabase().query(query);
+        services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
 	origin.sendMessage("Command completed",getName());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
 	services->helpme(String(togo),getName());
@@ -444,17 +435,16 @@ void
 	origin.sendMessage("Usage: nlist <match> <optinal destination>",getName());
 	return;
      }
-   String query = "SELECT nickname,lasthost,email from nicks WHERE lasthost like '"+tomatch+"'";
-   MysqlRes res = services->getDatabase().query(query);
-   MysqlRow row;
+   int nbRes = services->getDatabase().dbSelect("nickname,lasthost,email", "nicks", "lasthost like '"+tomatch+"'");
    int f=0;
-   while ((row = res.fetch_row()))
+   for(int i=0; i<nbRes; i++)
      {
 	f++;
-	String tnick = row[0];
-	String thost = row[1];
-	String temail = row[2];
+	String tnick = services->getDatabase().dbGetValue(0);
+	String thost = services->getDatabase().dbGetValue(1);
+	String temail = services->getDatabase().dbGetValue(2);
 	String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002 "+temail+"\002";
+        services->getDatabase().dbGetRow();
 	if(dest=="")
 	  {
 	     origin.sendMessage(String(tosend),getName());
@@ -467,7 +457,6 @@ void
    services->log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
    String togo = origin.getNickname()+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
    services->helpme(togo,"Serv");
-   res.free_result();
 }
 void
   SERV_FUNC (Serv::parseELIST)
@@ -482,41 +471,37 @@ void
    if(dest=="")
      {
 	//Return to origin.
-	String query = "SELECT nickname,lasthost,email from nicks where email like '" + tomatch + "'";
-	MysqlRes res = services->getDatabase().query(query);
-	MysqlRow row;
-	while ((row = res.fetch_row()))
+        int nbRes = services->getDatabase().dbSelect("nickname, lasthost, email", "nicks", "email like '"+tomatch+"'");
+	for(int i=0; i<nbRes; i++)
 	  {
-	     String nickname = row[0];
-	     String lasthost = row[1];
-	     String email = row[2];
+	     String nickname = services->getDatabase().dbGetValue(0);
+	     String lasthost = services->getDatabase().dbGetValue(1);
+	     String email = services->getDatabase().dbGetValue(2);
 	     String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
 	     origin.sendMessage(tosend,getName());
+             services->getDatabase().dbGetRow();
 	  }
 	services->log(origin,"Serv","Did an elist on "+tomatch);
 	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch;
 	services->helpme(togo,"Serv");
-	res.free_result();
 	return;
      }
    //Else send to given client
    /* This should proberly be wrapped up into one function, just checking
     * for the correct place to send .. like above *points up* */
-   String query = "SELECT nickname,lasthost,email from nicks where email like '" + tomatch + "'";
-   MysqlRes res = services->getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
+   int nbRes = services->getDatabase().dbSelect("nickname, lasthost, email", "nicks", "email like '"+tomatch+"'");
+
+   for(int i=0; i<nbRes; i++)
      {
-	String nickname = row[0];
-	String lasthost = row[1];
-	String email = row[2];
+        String nickname = services->getDatabase().dbGetValue(0);
+        String lasthost = services->getDatabase().dbGetValue(1);
+        String email = services->getDatabase().dbGetValue(2);
 	String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
 	services->serviceNotice(tosend,getName(),dest);
      }
    services->log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
    String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
    services->helpme(togo,"Serv");
-   res.free_result();
 
 }
 void
@@ -537,8 +522,7 @@ void
 
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
    services->helpme(togo,"Serv");
-   String query = "DELETE from nicks where nickname='" + who + "'";
-   services->getDatabase().query(query);
+   services->getDatabase().dbDelete("nicks", "nickname='"+who+"'");
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
 
@@ -566,19 +550,18 @@ void
 	String togo = origin.getNickname() + " did a \002clist\002 on "+who+", "+String::convert(userc)+" matches found from "+String::convert(totalc)+" channels and "+String::convert(totala)+" access entries";
 	services->helpme(togo,"Serv");
 	int theid = services->getRegisteredNickID(who);
-	String query = "SELECT chanid,access from chanaccess where nickid='" + String::convert(theid) + "'";
-	MysqlRes res = services->getDatabase().query(query);
-	MysqlRow row;
-	while ((row = res.fetch_row()))
+        int nbRes = services->getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");
+
+	for(int i=0; i<nbRes; i++)
 	  {
-	     String cname = row[0];
-	     String caxs = row[1];
+	     String cname = services->getDatabase().dbGetValue(0);
+	     String caxs = services->getDatabase().dbGetValue(1);
 	     String ccname = services->getChannel().getChanName(cname.toInt());
 	     String tosend = ccname+" with "+caxs;
 	     origin.sendMessage(tosend,getName());
+             services->getDatabase().dbGetRow();
 	  }
 	services->log(origin,"Serv","Did a clist on "+who);
-	res.free_result();
 	return;
      }
 }

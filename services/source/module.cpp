@@ -26,10 +26,10 @@
 
 #include <iostream>
 #include <exordium/log.h>
-#include <exordium/sql.h>
 #include <exordium/conf.h>
 #include <exordium/services.h>
 #include <kineircd/module.h>
+#include <exordium/database/database.h>
 
 using namespace Exordium;
 
@@ -39,7 +39,7 @@ namespace
    static Config *config = 0;
    static Log *logger = 0;
    static Services *services = 0;
-   static Sql *db = 0;
+   static CDatabase *db = 0;
 
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
@@ -56,11 +56,11 @@ namespace
 	// New Logger (the config file will have been created by now)
 	logger = new Log(*config);
 
-	// Create new SQL Instance
-	db = new Sql(*logger, *config);
+	// Create new database Instance
+        db = new CDatabase(*config, *logger); 
 
 	// Create the new services instance - Passing sql + logger YAY :|
-	services = new Services(daemon, *logger, *db, *config);
+	services = new Services(daemon, *logger, *config, *db);
 
 	logger->logLine("Services started, beginning initalisation");
 	services->run();
@@ -77,6 +77,7 @@ namespace
 	std::cout << "mod_exordium::moduleStop()" << std::endl;
 	delete services;
 	delete config;
+        delete db;
      }
 
    // information about ourselves

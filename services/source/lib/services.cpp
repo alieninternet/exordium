@@ -36,7 +36,6 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
-#include "exordium/sql.h"
 #include "exordium/log.h"
 #include "exordium/parser.h"
 #include "exordium/service.h"
@@ -73,8 +72,9 @@ KINE_SIGNAL_HANDLER_FUNC(Rehash)
 KINE_SIGNAL_HANDLER_FUNC(Death)
 {
    String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Initiating shutdown";
-   ((Services *)foo)->helpme(reason, "Serv");
+   //((Services *)foo)->helpme(reason, "Serv");
    ((Services *)foo)->shutdown(reason);
+   exit(1);
 }
 
 namespace Exordium
@@ -200,7 +200,7 @@ namespace Exordium
 	    }
        }
 
-   Services::Services(Kine::Daemon& d, Log& l, Sql& db, Config& c)
+   Services::Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db)
      : daemon(d),
    logger(l),
    database(db),
@@ -208,9 +208,7 @@ namespace Exordium
    parser(*this),
    channel(*this),
    ircdome(*this)
-
      {
-
 	sock = -1;
 	maxSock = -1;
 	inputBufferPosition = 0;
@@ -226,6 +224,9 @@ namespace Exordium
 	getDaemon().getSignals().addHandler(&Death,
 					    Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
 					    (void *)this);
+
+
+        database.dbConnect();
 
 	struct hostent *host;
 	queueKill ();
@@ -263,6 +264,11 @@ namespace Exordium
 	  }
 	return true;
      }
+
+Services::~Services()
+{
+  database.dbDisconnect();
+}
 
 /* HandleInput()
  *
@@ -380,6 +386,7 @@ namespace Exordium
 	     serviceJoin (config.getConsoleName(), "#debug");
 	     serviceJoin (config.getConsoleName(), "#Exordium");
 	  }
+
 	  connected = true;
 	  // this is dodgey.
 	  config.getModules().dumpModules();
@@ -395,14 +402,10 @@ namespace Exordium
 
    String Services::getQuote(int const &number)
      {
-	MysqlRes res = database.query("SELECT body from fortunes where id='" + String::convert(number) + "'");
-	MysqlRow row;
-	while ((row = res.fetch_row()))
-	  {
-	     String foo = row[0];
-	     return foo;
-	  }
-	return String("");
+        if( database.dbSelect("body", "fortunes", "id='"+String::convert(number)+"'") < 1 )
+           return "";
+        else
+           return database.dbGetValue();
      }
 
 /* getLogCount()
@@ -413,17 +416,7 @@ namespace Exordium
 
    String Services::getLogCount(void)
      {
-	String query = "SELECT count(*) from log";
-	MysqlRes res = database.query(query);
-	MysqlRow row;
-	while ((row = res.fetch_row()))
-	  {
-	     String foo = ((std::string) row[0]);
-	     res.free_result();
-	     return foo;
-	  }
-	res.free_result();
-	return String("0");
+        return String::convert(database.dbCount("log"));
      }
 
 /* getNoteCount()
@@ -434,17 +427,7 @@ namespace Exordium
 
    String Services::getNoteCount(void)
      {
-	String query = "SELECT count(*) from notes";
-	MysqlRes res = database.query(query);
-	MysqlRow row;
-	while ((row = res.fetch_row()))
-	  {
-	     String foo = ((std::string) row[0]);
-	     res.free_result();
-	     return foo;
-	  }
-	res.free_result();
-	return String("0");
+        return String::convert(database.dbCount("notes"));
      }
 /* getGlineCount()
  *
@@ -454,17 +437,7 @@ namespace Exordium
 
    String Services::getGlineCount(void)
      {
-	String query = "SELECT count(*) from glines";
-	MysqlRes res = database.query(query);
-	MysqlRow row;
-	while ((row = res.fetch_row()))
-	  {
-	     String foo = ((std::string) row[0]);
-	     res.free_result();
-	     return foo;
-	  }
-	res.free_result();
-	return String("0");
+        return String::convert(database.dbCount("glines"));
      }
 
 /* shutdown(String)
@@ -491,14 +464,13 @@ namespace Exordium
 	stopTime = currentTime + 5;
 
         // Clean up before we die
-        database.query("DELETE from onlineclients");
-        database.query("DELETE from chanstatus");
-        database.query("DELETE from identified");
-        database.query("DELETE from kills");
-        database.query("DELETE from onlineservers");
-        database.query("DELETE from onlinechan");
-        database.query("DELETE from onlineopers");
-
+        database.dbDelete("onlineclients");
+        database.dbDelete("chanstatus");
+        database.dbDelete("identified");
+        database.dbDelete("kills");
+        database.dbDelete("onlineservers");
+        database.dbDelete("onlinechan");
+        database.dbDelete("onlineopers");
      }
 
 /* SynchTime()
@@ -515,15 +487,13 @@ namespace Exordium
 
 	//Undo any expired channel bans
 	String ctime = String::convert(currentTime);
-	String query = "SELECT id,chan,mask from chanbans where expireon<" + ctime;
-	MysqlRes res = database.query(query);
-	MysqlRow row;
-	while (( row = res.fetch_row()))
+
+        int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
+
+        for(int i=0; i<nbRes; i++)
 	  {
-	     String id = row[0];
-	     String chan = row[1];
-	     String mask = row[2];
-	     channel.RemoveBan(id,chan,mask);
+	     channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
+             database.dbGetRow();
 	  }
 
 	//Lastly commit any outstanding db changes.
@@ -561,9 +531,7 @@ namespace Exordium
    void
      Services::AddOnlineServer (String const &servername, String const &hops, String const &description)
        {
-	  String query = "INSERT into onlineservers values ('','" +
-	    servername + "','" + hops + "','" + description + "')";
-	  database.query(query);
+          database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
        }
 
    /* DelOnlineServer(ServerName)
@@ -576,8 +544,7 @@ namespace Exordium
    void
      Services::DelOnlineServer (String const &name)
        {
-          String query = "DELETE from onlineservers WHERE servername='" + name + "'";
-          database.query(query);
+          database.dbDelete("onlineservers", "servername='" + name + "'");
        }
 
 /* doPong(line)
@@ -616,14 +583,16 @@ namespace Exordium
 	  if(topic == "")
 	    {
 	       //No topic, no parm.
-	       String query = "SELECT txt from help where service='"+service+"' AND word='' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id";
-	       MysqlRes res = database.query(query);
-	       MysqlRow row;
-	       while ((row = res.fetch_row()))
-		 {
-		    String line = row[0];
-		    line = parseHelp(line);
+               int nbRes = database.dbSelect("txt", "help", 
+                    "service='"+service+"' AND word='' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id");
+
+               String line="";
+
+               for(int i=0; i<nbRes; i++)
+		 {    
+		    line = parseHelp(database.dbGetValue());
 		    serviceNotice(line,service,origin.getNickname());
+                    database.dbGetRow();
 		 }
 	       return;
 	    }
@@ -631,28 +600,36 @@ namespace Exordium
 	  if(parm == "")
 	    {
 	       //No topic, no parm.
-	       String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id";
-	       MysqlRes res = database.query(query);
-	       MysqlRow row;
-	       while ((row = res.fetch_row()))
-		 {
-		    String line = row[0];
-		    line = parseHelp(line);
-		    serviceNotice(line,service,origin.getNickname());
-		 }
+               
+               int nbRes = database.dbSelect("txt", "help",
+                    "service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id");
+
+               String line="";
+
+               for(int i=0; i<nbRes; i++)
+                 {
+                    line = parseHelp(database.dbGetValue());
+                    serviceNotice(line,service,origin.getNickname());
+                    database.dbGetRow();
+                 }
+
 	       return;
 	    }
 	  // End
-	  String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+origin.getLanguage()+"' ORDER by id";
-	  MysqlRes res = database.query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-	    {
-	       String line = row[0];
-	       line = parseHelp(line);
-	       serviceNotice(line,service,origin.getNickname());
-	    }
-	  return;
+
+               int nbRes = database.dbSelect("txt", "help",
+                    "service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+origin.getLanguage()+"' ORDER by id");
+
+               String line="";
+
+               for(int i=0; i<nbRes; i++)
+                 {
+                    line = parseHelp(database.dbGetValue());
+                    serviceNotice(line,service,origin.getNickname());
+                    database.dbGetRow();
+                 }
+               return;
+            }
 
        }
 /* sendEmail(String,String,String)
@@ -665,8 +642,7 @@ namespace Exordium
    void
      Services::sendEmail (String const &to, String const &subject, String const &text)
        {
-	  String query = "INSERT into emails values ('','"+to+"','"+subject+"','"+text+"')";
-	  database.query(query);
+          database.dbInsert("emails", "'','"+to+"','"+subject+"','"+text+"'");
        }
 
 /* parseHelp(In)
@@ -725,8 +701,7 @@ namespace Exordium
 	  String nicks = origin.getIDList();
 	  String ident = origin.getIdent();
 	  String host = origin.getHost();
-	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"')";
-	  database.query(query);
+          database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"'");
        }
 
    void
@@ -737,8 +712,7 @@ namespace Exordium
 	  String nicks = origin.getIDList();
 	  String ident = origin.getIdent();
 	  String host = origin.getHost();
-	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','')";
-	  database.query(query);
+          database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"',''");
        }
 
 /* Overload kine's trim to add some stuff of our own! :-) */
@@ -811,17 +785,12 @@ namespace Exordium
 	    {
 	       return false;
 	    }
-	  String query = String("SELECT privmsg from nicks where nickname='") + nick + "'";
-	  MysqlRes res = database.query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-	    {
-	       String foo = ((std::string) row[0]);
-	       res.free_result();
-	       if(foo=="1")
-		 return true;
-	    }
-	  return false;
+          database.dbSelect("privmsg", "nicks", "nickname='"+nick+"'");
+
+          if( database.dbGetValue() == "1")
+            return true;
+          else
+            return false;
        }
 
    void
@@ -835,67 +804,38 @@ namespace Exordium
        {
 	  int chanid = channel.getOnlineChanID(chan);
 	  int nickid = locateID(nick);
-	  String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
-	  MysqlRes res = database.query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-	    {
-	       String status = ((std::string) row[0]);
-	       res.free_result();
-	       if(status.toInt() == 2)
-		 {
-		    return true;
+          database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'");
 
-		 }
-	    }
-	  return false;
+          if( database.dbGetValue().toInt() == 2 )
+            return true;
+          else
+            return false;
        }
 
    bool
      Services::isVoice(String const &nick, String const &chan)
        {
-	  int chanid = channel.getOnlineChanID(chan);
-	  int nickid = locateID(nick);
-	  String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
-	  MysqlRes res = database.query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-	    {
-	       String status = ((std::string) row[0]);
-	       res.free_result();
-	       if(status.toInt() == 1)
-		 {
-		    return true;
+          int chanid = channel.getOnlineChanID(chan);
+          int nickid = locateID(nick);
+          database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'");
 
-		 }
-	    }
-	  return false;
+          if( database.dbGetValue().toInt() == 1 )
+            return true;
+          else
+            return false;
        }
 
    int
      Services::countNotes(String const &who)
        {
-	  String query = "select count(*) from notes where nto='" + who + "'";
-	  MysqlRes res = database.query(query);
-	  MysqlRow row;
-	  int j = 0;
-	  while (( row = res.fetch_row()))
-	    {
-	       j++;
-	       String foo = ((std::string) row[0]);
-	       res.free_result();
-	       return foo.toInt();
-	    }
-	  //No notes.
-	  return 0;
+          return database.dbCount("notes", "nto='"+who+"'");
        }
 
    void
      Services::sendNote(String const &from, String const &to, String const &text)
        {
 	  String thenick = to.IRCtoLower();
-	  String query = String("insert into notes values('','")+from+"','"+to+"',NOW(),'"+text+"')";
-	  database.query(query);
+          database.dbInsert("notes", "'','"+from+"','"+to+"',NOW(),'"+text+"'");
 	  int foo = locateID(thenick);
 	  if(foo>0)
 	    {
@@ -910,23 +850,25 @@ namespace Exordium
 
        }
 
+// TODO: check why the 2 lines are commented
    void
-     Services::checkpoint(void)
-       {
+Services::checkpoint(void)
+{
 	  //Any nick mods to be done? :-)
-	  String query = "SELECT * from kills";
-	  MysqlRes res = database.query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
+
+          int nbRes = database.dbSelect("kills");
+
+          for(int i=0; i<nbRes; i++)
 	    {
-	       String id = ((std::string) row[0]);
-	       String killt = ((std::string) row[2]);
+	       String id = database.dbGetValue(0);
+	       String killt = database.dbGetValue(2);
 	       int nowt = currentTime;
-	       String tomod = ((std::string) row[1]);
-	       res.free_result();
+	       String tomod = database.dbGetValue(1);
+               database.dbGetRow();
+
 	       if(killt.toInt() < nowt)
 		 {
-		    String query = "DELETE from kills where id='" + id + "'";
+                    database.dbDelete("kills", "id='"+id+"'");
 		    int foo = 0;
 		    bool running = true;
 		    String newnick = "";
@@ -968,8 +910,8 @@ namespace Exordium
 		 }
 	    }
 
-       }
 }
+
 
 unsigned long Services::random(unsigned long max)
 {
@@ -1056,8 +998,7 @@ bool
 {
    users.erase(name.IRCtoLower());
 
-   String querydel="DELETE from onlineclients WHERE nickname='" + name + "'";
-   getDatabase().query(querydel);
+   database.dbDelete("onlineclients", "nickname='"+name+"'");
 
    return true;
 };
@@ -1078,9 +1019,7 @@ void
    who.setNick(newnick);
 
    // Update nickname in table onlineclients
-   String queryupd="UPDATE onlineclients SET nickname='" + newnick + "' WHERE id=" + who.getOnlineIDString();
-   std::cout << "setNick() - " << queryupd << std::endl;
-   getDatabase().query(queryupd);
+   database.dbUpdate("onlineclients", "nickname='"+newnick+"'", "id="+who.getOnlineIDString());
 };
 
 /* getRegNickCount()
@@ -1092,14 +1031,7 @@ void
 String
   Services::getRegNickCount(void)
 {
-
-   MysqlRes res = database.query("SELECT count(*) from nicks");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return String("0");
+   return String::convert(database.dbCount("nicks"));
 };
 
 /* generatePassword(String,String)
@@ -1122,31 +1054,22 @@ String
  *
  */
 
+// TEMP commenting!
 bool
   Services::isAuthorised(String const &server)
 {
-   MysqlRes res = database.query("SELECT id from serverlist where name='"+server+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	if((int)row[0]>0)
-	  {
-	     return true;
-	  }
-	else
-	  {
-	     return false;
-	  }
-     }
-   /* Should never get here.. but neryh :( */
-
-   /****
-      If the query's result is empty it'll never enter the while, so new server is never valid.
-      Changed: return false to return true
-      Why: If the query returns no result then the server is valid
-      -- PLV
-   ****/
-   return true;
+/*
+   if( database.dbSelect("id", "serverlist", "name='"+server+"'") < 1 )
+      return false;
+   else
+   {
+     if( database.dbGetValue().toInt() > 0 )
+       return true;
+     else
+       return false;
+   }
+*/
+return true;
 };
 
 /* addClient(...)
@@ -1162,10 +1085,11 @@ User*
 		      String const &server, String const &modes,
 		      String const &realname)
 {
-   database.query("INSERT into onlineclients values ('','"+nick.toLower()+"','"
-		  +hops + "','" + timestamp + "','" + username + "','"
-		  +host + "','" + vwhost + "','" + server + "','"
-		  +modes+ "','" + Sql::makeSafe(realname) + "')");
+   database.dbInsert("onlineclients", "'','"+nick.toLower()+"','"
+                  +hops + "','" + timestamp + "','" + username + "','"
+                  +host + "','" + vwhost + "','" + server + "','"
+                  +modes+ "','" + realname + "'");
+
    std::cout << "Just insert an entry for the user " << nick.toLower() << std::endl;
    int foo = locateID(nick);
    String client = nick.IRCtoLower();
@@ -1185,18 +1109,13 @@ int
    // Saftey Check - Remove any special chars.
    String newnick = nick.IRCtoLower();
 
-   String query = "select id from onlineclients where nickname='" + newnick + "'";
-   MysqlRes res = database.query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String id = ((std::string) row[0]);
-	res.free_result();
-	return id.toInt();
-     }
-   res.free_result();
-   Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID");
-   return 0;
+   if( database.dbSelect("id", "onlineclients", "nickname='"+newnick+"'") < 1 )
+   {
+     Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID");
+     return 0;
+   }
+   else
+     return database.dbGetValue().toInt();
 }
 
 /* getRequiredAccess(String,String)
@@ -1209,16 +1128,14 @@ int
 int
   Services::getRequiredAccess(String const &service, String const &command)
 {
-   MysqlRes res = database.query("SELECT access from commands where service='"+service+"' AND command='"+command+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String access = row[0];
-	return access.toInt();
-     }
-   /* If no match return 999 - to ensure no-one can use the command
-    * since its obvious a command entry hasn't been set up for it */
-   return 999;
+   if( database.dbSelect("access", "commands", "service='"+service+"' AND command='"+command+"'") < 1 )
+
+     /* If no match return 999 - to ensure no-one can use the command
+      * since its obvious a command entry hasn't been set up for it */
+      return 999;
+
+   else
+      return database.dbGetValue().toInt();
 };
 
 /* isNickRegistered(String)
@@ -1230,20 +1147,15 @@ int
 bool
   Services::isNickRegistered(String const &nick)
 {
-   MysqlRes res = database.query("SELECT id from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	if((int)row[0]>0)
-	  {
-	     return true;
-	  }
-	else
-	  {
-	     return false;
-	  }
-     }
-   return false;
+   if( database.dbSelect("id", "nicks", "nickname='"+nick+"'") < 1 )
+     return false;
+   else
+   {
+     if( database.dbGetValue().toInt() > 0 )
+        return true;
+     else
+        return false;
+   }
 }
 
 /*
@@ -1256,14 +1168,15 @@ bool
 String
   Services::getPass(String const &nick)
 {
-   MysqlRes res = database.query("SELECT password from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String password((char *)row[0],(String::size_type)20);
-	return password;
-     }
-   return "";
+   if( database.dbSelect("password", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+   {
+     String ret(database.dbGetValue(),(String::size_type)20);
+     return ret;
+   }
+
+//	String password((char *)row[0],(String::size_type)20);
 }
 
 /*
@@ -1310,14 +1223,10 @@ String
 int
   Services::getRegisteredNickID(String const &nick)
 {
-   MysqlRes res = database.query("SELECT id from nicks where nickname='" + nick + "'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String id = row[0];
-	return id.toInt();
-     }
-   return 0;
+   if( database.dbSelect("id", "nicks", "nickname='"+nick+"'") < 1 )
+     return 0;
+   else
+     return database.dbGetValue().toInt();
 }
 
 /* modeIdentify(String)
@@ -1347,8 +1256,7 @@ void
 void
   Services::updateLastID(String const &nick)
 {
-   database.query("UPDATE nicks set lastid=NOW() where nickname='"+nick+"'");
-   return;
+   database.dbUpdate("nicks", "lastid=NOW()", "nickname='"+nick+"'");
 }
 
 /*
@@ -1360,13 +1268,10 @@ void
 String
   Services::getNick(int const &id)
 {
-   MysqlRes res = database.query("SELECT nickname from nicks where id='"+String::convert(id)+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("nickname", "nicks", "id='"+String::convert(id)+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /*
@@ -1378,13 +1283,10 @@ String
 String
   Services::getOnlineNick(int const &id)
 {
-   MysqlRes res = database.query("SELECT nickname from onlineclients where id='"+String::convert(id)+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("nickname", "onlineclients", "id='"+String::convert(id)+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /*
@@ -1397,13 +1299,10 @@ String
 String
   Services::getpendingCode(String const &nick)
 {
-   MysqlRes res = database.query("SELECT auth from pendingnicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("auth", "pendingnicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 };
 
 /*
@@ -1417,7 +1316,7 @@ void
   Services::registerNick(String const &nick, String const &password, String const &email)
 {
    String gpass = generatePassword(nick.IRCtoLower(),password);
-   database.query("INSERT into nicks values ('','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
+   database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
 }
 
 /* genAuth(String)
@@ -1430,7 +1329,7 @@ String
   Services::genAuth(String const &nickname)
 {
    String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword("VIVA LA FRANCE :)",nickname),PasswordStrBase,PasswordStrBaseLongPad);
-   database.query("INSERT into pendingnicks values ('','"+nickname+"','"+authcode+"')");
+   database.dbInsert("pendingnicks", "'','"+nickname+"','"+authcode+"'");
    Debug("New registration: "+nickname);
    return authcode;
 }
@@ -1444,13 +1343,10 @@ String
 String
   Services::getURL(String const &nick)
 {
-   MysqlRes res = database.query("SELECT url from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("url", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 };
 
 /* getMSN(String)
@@ -1462,15 +1358,10 @@ String
 String
   Services::getMSN(String const &nick)
 {
-   MysqlRes res = database.query("SELECT msn from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-
-   // uhh?
-   return "";
+   if( database.dbSelect("msn", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /* getYAHOO(String)
@@ -1482,13 +1373,10 @@ String
 String
   Services::getYAHOO(String const &nick)
 {
-   MysqlRes res = database.query("SELECT yahoo from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("yahoo", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 };
 
 /* getAIM(String)
@@ -1500,16 +1388,10 @@ String
 String
   Services::getAIM(String const &nick)
 {
-
-   MysqlRes res = database.query("SELECT yahoo from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-
-	return row[0];
-     }
-
-   return "";
+   if( database.dbSelect("aim", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 };
 
 /* getICQ()
@@ -1521,13 +1403,10 @@ String
 String
   Services::getICQ(String const &nick)
 {
-   MysqlRes res = database.query("SELECT icq from nicks where nickname='" + nick + "'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("icq", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /* getLanguage(String)
@@ -1544,13 +1423,11 @@ String
      {
 	return "english";
      }
-   MysqlRes res = database.query("SELECT lang from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "english";
+
+   if( database.dbSelect("lang", "nicks", "nickname='"+nick+"'") < 1 )
+     return ""english;
+   else
+     return database.dbGetValue();
 }
 */
 
@@ -1563,13 +1440,10 @@ String
 String
   Services::getEmail(String const &nick)
 {
-   MysqlRes res = database.query("SELECT email from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("email", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /* getRegDate - return the registration date for a client.
@@ -1578,13 +1452,10 @@ String
 String
   Services::getRegDate(String const &nick)
 {
-   MysqlRes res = database.query("SELECT registered from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("registered", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /* getLastID - return the date a client last identified */
@@ -1592,58 +1463,41 @@ String
 String
   Services::getLastID(String const &nick)
 {
-   MysqlRes res = database.query("SELECT lastid from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("lastid", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 /* getLastHost - get last host */
 String
   Services::getLastHost(String const &nick)
 {
-   MysqlRes res = database.query("SELECT lasthost from nicks where nickname='"+nick+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   if( database.dbSelect("lasthost", "nicks", "nickname='"+nick+"'") < 1 )
+     return "";
+   else
+     return database.dbGetValue();
 }
 
 void
   Services::addOper(String const &nick, int access)
 {
-   String query="INSERT into onlineopers values(''," + String::convert(getRegisteredNickID(nick)) + "," +
-     String::convert(access) + ")";
-
-   database.query(query);
+   database.dbInsert("onlineopers", "''," + String::convert(getRegisteredNickID(nick)) + "," +String::convert(access));
 }
 
 void
   Services::delOper(String const &nick)
 {
-   String query="DELETE from onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
-   database.query(query);
+   database.dbDelete("onlineopers", "nickid="+String::convert(getRegisteredNickID(nick)));
 }
 
 bool
   Services::isOper(String const &nick)
 {
-   String query="SELECT id FROM onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
-
-   MysqlRes res = database.query(query);
-   MysqlRow row;
-
-   while ((row = res.fetch_row()))
-     {
-	return true;
-     }
-
-   return false;
+   if( database.dbSelect("id", "onlineopers", "nickid="+ String::convert(getRegisteredNickID(nick))) < 1 )
+     return false;
+   else
+     return true;
 }
 
 void
@@ -1715,13 +1569,11 @@ void
 int
   Services::getAccess(String &service, String &nickname)
 {
-   String query = "SELECT access from access where nickname='"+nickname
-     +"' AND service='"+service+"'";
-   MysqlRes res = database.query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return (int)row[0];
-     }
-   return 0;
+   if( database.dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
+     return 0;
+   else
+   {
+     std::cout << "AXS:" << database.dbGetValue() << std::endl;
+     return database.dbGetValue().toInt();
+   }
 }

@@ -64,6 +64,7 @@ namespace Exordium {
       LibAIS::String defSqlPassword;		// MySql server password
       unsigned short defSqlPort;		// MySql server port
       LibAIS::String defSqlUsername;		// MySql server username
+      LibAIS::String defSqlEngine;              // Database engine
       
     public:
       // Constructor (sets up defaults mainly)
@@ -106,6 +107,8 @@ namespace Exordium {
 	{ return defSqlPort; };
       const LibAIS::String& getSqlUsername(void) const
 	{ return defSqlUsername; };
+      const LibAIS::String& getSqlEngine(void) const
+        { return defSqlEngine; };
    };
 }; // namespace Exordium
 

@@ -27,7 +27,6 @@
 #include <exordium/channel.h>
 #include <exordium/service.h>
 #include <exordium/services.h>
-#include <exordium/sql.h>
 #include <kineircd/str.h>
 #include <map>
 
@@ -38,7 +37,6 @@ using LibAIS::String;
 using LibAIS::StringTokens;
 using Exordium::Channel;
 using Exordium::User;
-using Exordium::Sql;
 
 
 /* service_init - Register ourselves to the core
@@ -199,17 +197,12 @@ GAME_FUNC(Module::handleQUOTE)
       return;
    }
    
-   String query = "SELECT count(*) from fortunes";
-   MysqlRes res = services->getDatabase().query(query);
-   MysqlRow row;
-   int j;
    
-   while ((row = res.fetch_row())) {
-      String numb = ((std::string) row[0]).c_str();
-      j = services->random(numb.toInt());
-   }
+   int j;   
+  
+   String numb = String::convert(services->getDatabase().dbCount("fortunes"));
+   j = services->random(numb.toInt());
    
-   res.free_result();
    String thequote = services->getQuote(j);
    StringTokens st (thequote);
    bool more = false;
@@ -217,7 +210,7 @@ GAME_FUNC(Module::handleQUOTE)
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services->servicePrivmsg(Sql::makeSafe(tq), getName(), chan);
+      services->servicePrivmsg(tq, getName(), chan);
       more = st.hasMoreTokens();
    }
    

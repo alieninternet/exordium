@@ -29,7 +29,6 @@
 #include "exordium/channel.h"
 #include "exordium/log.h"
 #include <kineircd/str.h>
-#include "exordium/sql.h"
 #include "exordium/ircdome.h"
 
 using LibAIS::String;
@@ -106,19 +105,14 @@ void PARSER_FUNC (Parser::parseAWAY)
 	  }
 	else
 	  {
-	     String query = "SELECT chanid from chanstatus where nickid="+origin->getOnlineIDString()+" AND status=2";
-	     MysqlRes res = services.getDatabase().query(query);
-	     MysqlRow row;
-	     while ((row = res.fetch_row()))
-	       {
-		  String foo = ((std::string) row[0]).c_str();
-		  String cname = services.getChannel().getChanIDName(foo.toInt());
-		  String cstr = OLDorigin+" "+OLDorigin;
-		  services.serverMode(cname,"-o+v",cstr);
-		  services.getChannel().internalVoice(OLDorigin,cname);
-		  services.getChannel().internalDeOp(OLDorigin,cname);
-	       }
+             services.getDatabase().dbSelect("chanid", "chanstatus", "nickid="+origin->getOnlineIDString()+" AND status=2");
 
+             String foo = services.getDatabase().dbGetValue();
+	     String cname = services.getChannel().getChanIDName(foo.toInt());
+	     String cstr = OLDorigin+" "+OLDorigin;
+	     services.serverMode(cname,"-o+v",cstr);
+	     services.getChannel().internalVoice(OLDorigin,cname);
+	     services.getChannel().internalDeOp(OLDorigin,cname);
 	  }
      }
 }
@@ -248,9 +242,7 @@ void
 	  }
        
         // Update modes in table chans
-        //String query;
-        //query="UPDATE chans SET modes='" + currentmodes + "' WHERE id=" + channel.getChanIDString(dest);
-        //services.getDatabase().query(query);
+        //services.getDatabase().dbUpdate("chans", "modes='"+currentmodes+"'", "id="+channel.getChanIDString(dest));
 
 	return;
      }
@@ -319,9 +311,7 @@ void
 
 
    // Update modes in table onlineusers
-   String query;
-   query="UPDATE onlineclients SET modes='" + currentmodes + "' WHERE id=" + origin->getOnlineIDString();
-   services.getDatabase().query(query);
+   services.getDatabase().dbUpdate("onlineclients", "modes='"+currentmodes+"'", "id="+origin->getOnlineIDString());
 }
 /* Incoming Pass - Denotes we have traversed the ident check etc*/
 void
@@ -340,8 +330,7 @@ void
    String channel = tokens.nextToken();
    services.getChannel().internalDel(OLDorigin,channel);
 
-   String query="DELETE from onlinechan WHERE name='" + channel + "'";
-   services.getDatabase().query(query);
+   services.getDatabase().dbDelete("onlinechan", "name='"+channel+"'");
 }
 
 void PARSER_FUNC (Parser::parseN)
@@ -362,8 +351,7 @@ void PARSER_FUNC (Parser::parseN)
         String newnick=tokens.nextToken().trim();
 	std::cout << "ParseN:" << newnick << std::endl;
         services.setNick(*origin, newnick); 
-	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
-	services.getDatabase().query(query);
+        services.getDatabase().dbDelete("kills", "nick='"+OLDorigin+"'");
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
 	     std::cout << "Nick is registered" << std::endl;
@@ -421,8 +409,8 @@ void PARSER_FUNC (Parser::parseN)
    String realname = tokens.rest();
 
    // Strip the heading +
-   if(modes[0]=='+')
-     modes=modes.substr(1, modes.length()-1);
+   //if(modes[0]=='+')
+   //  modes=modes.substr(1, modes.length()-1);
 
    
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
@@ -459,15 +447,16 @@ void PARSER_FUNC (Parser::parseN)
 
    
    int num = newNick->countHost();
-   String query = "SELECT txt from news where level=0 AND expires<"+String::convert(services.currentTime);
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String foo = ((std::string) row[0]).c_str();
-	newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+foo,
-			     services.getConfig().getConsoleName());
-     }
+
+   int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
+
+   // NOTE: hardcoded bot nick?
+   for (int i=0; i<nbRes; i++)
+   {
+      newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfig().getConsoleName());
+      services.getDatabase().dbGetRow();
+   }
+
    services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
    if(num>2)
      {
@@ -583,19 +572,9 @@ void
   PARSER_FUNC (Parser::parseSQUIT)
 {
    String server = tokens.nextToken();
-   String query = "SELECT id from onlineclients where server='"+server+"'";
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String idt = ((std::string) row[0]).c_str();
-	res.free_result();
-	int foo = idt.toInt();
-	String qt = "DELETE from identified where nick='"+String::convert(foo)+"'";
-	services.getDatabase().query(qt);
-     }
-   query = "DELETE from onlineclients where server='"+server+"'";
-   services.getDatabase().query(query);
+ 
+   services.getDatabase().dbDelete("identified", "identified.nick=onlineclients.id AND onlineclients.server='"+server+"'");
+   services.getDatabase().dbDelete("onlineclients", "server='"+server+"'");
 
    services.DelOnlineServer(server);
 }
@@ -611,12 +590,11 @@ void
 
    services.delUser(OLDorigin); 
  
-   String query;
-   query = "DELETE from identified where nick='"+String::convert(oid)+"'";
-   services.getDatabase().query(query);
+   
+   services.getDatabase().dbDelete("identified", "nick='"+String::convert(oid)+"'");
+
    //Store the quit reason here
-   query = "UPDATE nicks set quitmsg='" + reason + "' where nickname='"+OLDorigin+"'";
-   services.getDatabase().query(query);
+   services.getDatabase().dbUpdate("nicks", "quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
 
 }
 
@@ -636,9 +614,7 @@ void
    if(!services.getChannel().ifChanExists(chan.toLower()))
      {
 		/* Doesn't exist.. add it to the table so it has an ID :-) */
-	String query = "INSERT into onlinechan values ('','"+chan+"')";
-	services.getDatabase().query(query);
-
+        services.getDatabase().dbInsert("onlinechan", "'','"+chan+"'");
      }
    while(more)
      {

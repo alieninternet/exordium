@@ -5,6 +5,8 @@ lib_LTLIBRARIES = mod_bot.la \
 		  mod_note.la \
 		  mod_oper.la \
 		  mod_serv.la
+CPPFLAGS=
+LDFLAGS=
 mod_bot_la_SOURCES = bot.cpp
 mod_bot_la_LIBADD = ../libservices.la
 mod_bot_la_LDFLAGS = -avoid-version -module

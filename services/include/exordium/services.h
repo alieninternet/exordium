@@ -61,19 +61,20 @@ extern "C" {
 #include "exordium/channel.h"
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
-//#include "exordium/userbase.h"
 
 
 namespace Exordium {
-   class Sql;
-   
+   class CDatabase;  
+ 
    class Services
      {
       private:
 	const LibAIS::String buffer;
 	Kine::Daemon& daemon;
 	Log& logger;
-	Sql& database;
+
+        CDatabase& database;
+        
 	Config& config;
 
 	Parser parser;
@@ -118,8 +119,11 @@ namespace Exordium {
 	LibAIS::String getRegNickCount(void);
 	// dunno where you want these fellow james
 	// Mr. Constructor
-	Services(Kine::Daemon& d, Log& l, Sql& db, Config& c);
-	
+	Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db);
+
+        // Mr. Destructor
+        ~Services(void);	
+
 	// Grab the daemon reference
 	Kine::Daemon &getDaemon(void) const
 	  { return daemon; };
@@ -129,7 +133,7 @@ namespace Exordium {
 	  { return logger; };
 	
 	// Grab the database reference
-	Sql& getDatabase(void)
+	CDatabase& getDatabase(void)
 	  { return database; };
 
 	// Grab the configuration reference
@@ -399,6 +403,6 @@ namespace Exordium {
      };
 }; // namespace Exordium
 
-#include "exordium/sql.h"
+#include "exordium/database/database.h"
 
 #endif

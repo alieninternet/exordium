@@ -28,7 +28,6 @@
 #include "exordium/services.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
-#include "exordium/sql.h"
 #include <map>
 #include <sstream>
 
@@ -95,8 +94,7 @@ void
      {
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
 	origin.sendMessage("You may now identify your nickname as normal",getName());
-	String query = "DELETE from pendingnicks where nickname='" + origin.getNickname() + "'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbDelete("pendingnicks", "nickname='"+origin.getNickname()+"'");
      }
 }
 
@@ -231,8 +229,7 @@ void
 	     return;
 	  }
 	String newhash = services->generatePassword(origin.getNickname(),value);
-	String query = "UPDATE nicks set password='" + newhash + "' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "password='"+newhash+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "Password has been successfully changed to "+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),String("Changed nickname password"));
@@ -317,8 +314,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String query = "UPDATE nicks set email='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "email='"+value+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "Email has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),"Changed email address to "+value);
@@ -333,8 +329,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "msn='"+value+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "MSN has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),"Changed MSN address to "+value);
@@ -349,8 +344,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String query = "UPDATE nicks set aim='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "aim='"+value+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "AIM has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),"Changed AIM address to "+value);
@@ -365,8 +359,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String query = "UPDATE nicks set yahoo='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "yahoo='"+value+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "Yahoo! has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),"Changed Yahoo! address to "+value);
@@ -381,8 +374,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String query = "UPDATE nicks set icq='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "icq='"+value+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "ICQ has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),"Changed ICQ address to "+value);
@@ -397,8 +389,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String query = "UPDATE nicks set url='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services->getDatabase().query(query);
+        services->getDatabase().dbUpdate("nicks", "url='"+value+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "URL has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
 	services->log(origin,getName(),"Changed URL address to "+value);
@@ -408,15 +399,13 @@ void
      {
 	if(value=="on")
 	  {
-	     String query = "UPDATE nicks set privmsg=1 where nickname='"+origin.getNickname()+"'";
-	     services->getDatabase().query(query);
+             services->getDatabase().dbUpdate("nicks", "privmsg=1", "nickname='"+origin.getNickname()+"'");
 	     origin.sendMessage("I will now use the private message interface",getName());
 	     return;
 	  }
 	if(value=="off")
 	  {
-	     String query = "UPDATE nicks set privmsg=0 where nickname='"+origin.getNickname()+"'";
-	     services->getDatabase().query(query);
+             services->getDatabase().dbUpdate("nicks", "privmsg=0", "nickname='"+origin.getNickname()+"'");
 	     origin.sendMessage("I will now use the private message interface",getName());
 	     return;
 	  }
@@ -433,34 +422,33 @@ void
    String nickname = tokens.nextToken();
    if(nickname!="")
      {
-	String query = "SELECT idas from identified where nick='" + origin.getOnlineIDString()+"'";
-	MysqlRes res = services->getDatabase().query(query);
-	MysqlRow row;
+        int nbRes = services->getDatabase().dbSelect("idas", "identified", "nick='"+origin.getOnlineIDString()+"'");
+
 	int i=0;
-	while ((row = res.fetch_row()))
+        for (int j=0; j<nbRes; j++)
 	  {
 	     i++;
-	     String id = ((std::string) row[0]).c_str();
+	     String id = services->getDatabase().dbGetValue();;
 	     String idnick = services->getNick(id.toInt());
 	     String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
 	     origin.sendMessage(tosend,getName());
+             services->getDatabase().dbGetRow();
 	  }
-	res.free_result();
 	return;
      }
    int onlineID = origin.getOnlineID();
-   String query = "SELECT idas from identified where nick='" + String::convert(onlineID)+"'";
-   MysqlRes res = services->getDatabase().query(query);
-   MysqlRow row;
+   
+   int nbRes = services->getDatabase().dbSelect("idas", "identified", "nick='"+String::convert(onlineID)+"'");
+
    int i=0;
-   while ((row = res.fetch_row()))
+   for(int j=0; j<nbRes; j++)
      {
 	i++;
-	String id = ((std::string) row[0]).c_str();
+	String id =  services->getDatabase().dbGetValue();
 	String idnick = services->getNick(id.toInt());
 	String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
 	origin.sendMessage(tosend,getName());
-	res.free_result();
+        services->getDatabase().dbGetRow();
 	return;
      }
 
@@ -624,12 +612,10 @@ void
 	    {
 	       int oid = origin.getOnlineID();
 	       int nid = services->getRegisteredNickID(origin.getNickname());
-	       String query = String("INSERT into identified values('','") +
-		 String::convert(oid) + "','" + String::convert(nid) + "')";
-	       services->getDatabase().query(query);
-	       query = String("DELETE from kills where nick='") +
-		 origin.getNickname() + "'";
-	       services->getDatabase().query(String(query));
+
+               services->getDatabase().dbInsert("identified", "'','"+String::convert(oid) + "','" + String::convert(nid) + "'");
+               services->getDatabase().dbDelete("kills", "nick='"+origin.getNickname()+"'");
+
 	       services->modeIdentify(origin.getNickname());
 	       services->updateLastID(origin.getNickname());
 	       String temp1 = origin.getHost();

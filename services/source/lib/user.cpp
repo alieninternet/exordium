@@ -80,14 +80,12 @@ void
    String query;
    if(val)
      {
-	query = "UPDATE nicks set modnick=1 where nickname='"+nickname+"'";
+        services.getDatabase().dbUpdate("nicks", "modnick=1", "nickname='"+nickname+"'");
      }
    else
      {
-	query = "UPDATE nicks set modnick=0 where nickname='"+nickname+"'";
+       services.getDatabase().dbUpdate("nicks", "modnick=0", "nickname='"+nickname+"'");
      }
-   services.getDatabase().query(query);
-
 };
 
 /* setDeopAway(bool)
@@ -105,13 +103,12 @@ void
    String query;
    if(val)
      {
-	query = "UPDATE nicks set deopaway=1 where nickname='"+nickname+"'";
+        services.getDatabase().dbUpdate("nicks", "deopaway=1", "nickname='"+nickname+"'");
      }
    else
      {
-	query = "UPDATE nicks set deopaway=0 where nickname='"+nickname+"'";
+        services.getDatabase().dbUpdate("nicks", "deopaway=0", "nickname='"+nickname+"'");
      }
-   services.getDatabase().query(query);
 };
 
 /* modNick()
@@ -124,42 +121,22 @@ bool
   User::modNick(void)
 {
    std::cout << "MY NICKNAME IS" << nickname << std::endl;
-   String query = "SELECT modnick from nicks where nickname='"+nickname+"'";
-   std::cout << query << std::endl;
-   MysqlRes res = services.getDatabase().query(query);
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String foo = row[0];
-	std::cout << "modnick thing is " << foo << std::endl;
-	if(foo=="1")
-	  {
-	     return true;
-	  }
-	else
-	  {
-	     return false;
-	  }
-     }
-   return false;
+
+   services.getDatabase().dbSelect("modnick", "nicks", "nickname='"+nickname+"'");
+
+   if (services.getDatabase().dbGetValue() == "1")
+      return true;
+   else
+      return false;
 };
 
 
 String
   User::getModes(void)
 {
-   String query;
-   query="SELECT modes FROM onlineclients WHERE id=" + getOnlineIDString();
+   services.getDatabase().dbSelect("modes", "onlineclients", "id="+getOnlineIDString());
 
-   MysqlRes res=services.getDatabase().query(query);
-   MysqlRow row;
-
-   while ((row = res.fetch_row()))
-   {
-      return row[0];
-   }
-
-   return "";
+   return services.getDatabase().dbGetValue();
 }
 
 
@@ -173,22 +150,13 @@ String
 bool
   User::deopAway(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT deopaway from nicks where nickname='"+nickname+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	if(row[0]=="1")
-	  {
-	     return true;
-	  }
-	else
-	  {
-	     return false;
-	  }
-     }
-   return false;
-};
+   services.getDatabase().dbSelect("deopaway", "nicks", "nickname='"+nickname+"'");
 
+   if( services.getDatabase().dbGetValue() == "1" )
+      return true;
+   else
+      return false;
+};
 /* updateHost(String)
  *
  * Update the database to show the users new host.
@@ -198,7 +166,7 @@ bool
 void
   User::updateHost(String const &host)
 {
-   services.getDatabase().query("UPDATE nicks set lasthost='"+host+"' WHERE nickname='"+nickname+"'");
+   services.getDatabase().dbUpdate("nicks", "lasthost='"+host+"'", "nickname='"+nickname+"'");
 };
 
 /* getQuitMessage()
@@ -210,13 +178,8 @@ void
 String
   User::getQuitMessage(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT quitmsg from nicks where nickname='" + nickname + "'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   services.getDatabase().dbSelect("quitmsg", "nicks", "nickname='"+nickname+"'");
+   return services.getDatabase().dbGetValue();
 };
 
 /* getAccess(String)
@@ -228,13 +191,10 @@ String
 int
   User::getAccess(String const &service)
 {
-   MysqlRes res = services.getDatabase().query("SELECT access from access where nickname='"+nickname+"' AND service='"+service+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return (int)row[0];
-     }
-   return 0;
+   if( services.getDatabase().dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
 }
 /* addCheckIdentify()
  *
@@ -248,7 +208,7 @@ void
   User::addCheckIdentify(void)
 {
    sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick");
-   services.getDatabase().query("INSERT into kills values('','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"')");
+   services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"'");
 };
 
 /* countHost()
@@ -260,9 +220,7 @@ void
 int
   User::countHost(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT id from onlineclients where hostname='"+getHost()+"'");
-   int num = res.num_fields();
-   return num;
+   return services.getDatabase().dbSelect("id", "onlineclients", "hostname='"+getHost()+"'");
 };
 
 /* getHost(void)
@@ -274,13 +232,8 @@ int
 String
   User::getHost(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT hostname from onlineclients where id='"+getOnlineIDString()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return String("");
+   services.getDatabase().dbSelect("hostname", "onlineclients", "id='"+getOnlineIDString()+"'");
+   return services.getDatabase().dbGetValue();
 };
 
 /*
@@ -293,13 +246,8 @@ String
 String
   User::getIdent(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT username from onlineclients where id='"+getOnlineIDString()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	return row[0];
-     }
-   return "";
+   services.getDatabase().dbSelect("username", "onlineclients", "id='"+getOnlineIDString()+"'");
+   return services.getDatabase().dbGetValue();
 }
 
 /*
@@ -311,15 +259,13 @@ String
 bool
   User::isIdentified(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT idas from identified where nick='"+getOnlineIDString()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String temp = row[0];
-	if(temp.toInt() > 0)
-	  return true;
-     }
-   return false;
+   if( services.getDatabase().dbSelect("idas", "identified", "nick='"+getOnlineIDString()+"'") < 1 )
+     return false;
+
+   if( services.getDatabase().dbGetValue().toInt() > 0 )
+      return true;
+   else
+      return false;
 }
 
 /* isIdentified(String)
@@ -331,18 +277,16 @@ bool
 bool
   User::isIdentified(String const &as)
 {
-   MysqlRes res = services.getDatabase().query("SELECT idas from identified where nick='"+getOnlineIDString()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String temp = row[0];
-	String idnick = services.getNick(temp.toInt());
-	if(idnick.IRCtoLower()==as.IRCtoLower())
-	  {
-	     return true;
-	  }
-     }
-   return false;
+   if( services.getDatabase().dbSelect("idas", "identified", "nick='"+getOnlineIDString()+"'") < 1 )
+     return false;
+
+   String temp = services.getDatabase().dbGetValue();
+   String idnick = services.getNick(temp.toInt());
+
+   if( idnick.IRCtoLower() == as.IRCtoLower() )
+     return true;
+   else
+     return false;
 }
 
 					      
@@ -356,15 +300,17 @@ String
   User::getIDList(void)
 {
    String thelist = "";
-   MysqlRes res = services.getDatabase().query("SELECT idas from identified where nick='"+getOnlineIDString()+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String rval = row[0];
-	String idnick = services.getNick(rval.toInt());
-	thelist = String(thelist)+" "+String(idnick);
-     }
-   return thelist;
+   String idnick;
+
+   int nbRes = services.getDatabase().dbSelect("idas", "identified", "nick='"+getOnlineIDString()+"'");
+
+   for(int i=0; i<nbRes; i++)
+   {
+     idnick = services.getNick(services.getDatabase().dbGetValue().toInt());
+     thelist += " ";
+     thelist += idnick;
+     services.getDatabase().dbGetRow();
+   }
 }
 
 
@@ -377,16 +323,12 @@ String
 bool
   User::isPending(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT id from pendingnicks where nickname='"+nickname+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	if((int)row[0]>0)
-	  {
-	     return true;
-	  }
-     }
-   return false;
+   services.getDatabase().dbSelect("id", "pendingnick", "nickname='"+nickname+"'");
+
+   if ( services.getDatabase().dbGetValue().toInt() > 0 )
+     return true;
+   else
+     return false;
 }
 
 /* setLanguage(String)
@@ -398,7 +340,7 @@ bool
 void
   User::setLanguage(String const &lang)
 {
-   services.getDatabase().query("UPDATE  nicks set lang='"+lang+"' WHERE nickname='"+nickname+"'");
+   services.getDatabase().dbUpdate("nicks", "lang='"+lang+"'", "nickname='"+nickname+"'");
 }
 
 /* getLanguage()
@@ -409,11 +351,8 @@ void
 String
   User::getLanguage()
 {
-   MysqlRes res = services.getDatabase().query("SELECT lang FROM nicks WHERE nickname='"+nickname+"'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-        return row[0];
-     }
-   return "english";
+   if ( services.getDatabase().dbSelect("lang", "nicks", "nickname='"+nickname+"'") > 0 )
+     return services.getDatabase().dbGetValue();
+   else
+     return "english";
 }

@@ -100,7 +100,6 @@ namespace Exordium {
 
 # include <exordium/service.h>
 # include <exordium/user.h>
-# include <exordium/service.h>
 
 #endif // _MODULELIST_H_
 

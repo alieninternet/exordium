@@ -29,7 +29,6 @@
 #include "exordium/services.h"
 #include "exordium/channel.h"
 #include <kineircd/str.h>
-#include "exordium/sql.h"
 #include <map>
 
 using LibAIS::String;
@@ -56,31 +55,27 @@ namespace Exordium
 	  String num = tokens.nextToken();
 	  if(num=="all")
 	    {
-	       String query = "DELETE from notes where nto='" + origin.getNickname() + "'";
-	       services->getDatabase().query(query);
+               services->getDatabase().dbDelete("notes", "nto='"+origin.getNickname()+"'");
 	       origin.sendMessage("All notes erased.",getName());
 	       services->log(origin,getName(),"Erased all notes");
 	       return;
 	    }
-	  String query = "SELECT id from notes where nto='" + origin.getNickname() + "'";
-	  MysqlRes res = services->getDatabase().query(query);
-	  MysqlRow row;
+          int nbRes = services->getDatabase().dbSelect("id", "notes", "nto='"+origin.getNickname()+"'");
 	  int j = 0;
-	  while ((row = res.fetch_row()))
+
+	  for(int i=0; i<nbRes; i++)
 	    {
 	       j++;
 	       if(j==num.toInt())
 		 {
 		    String togo = String("Note #\002")+num+"\002 deleted";
 		    origin.sendMessage(togo,getName());
-		    String ntext = ((std::string) row[0]).c_str();
-		    String query = "DELETE from notes where id='" + ntext + "'";
-		    services->getDatabase().query(query);
+		    String ntext = services->getDatabase().dbGetValue();
+                    services->getDatabase().dbDelete("notes", "id='"+ntext+"'");
 		    services->log(origin,"Note","Deleted a single note");
-		    res.free_result();
 		    return;
 		 }
-
+               services->getDatabase().dbGetRow();
 	    }
        }
    void
@@ -89,65 +84,62 @@ namespace Exordium
 	  String num = tokens.nextToken();
 	  if(num.toLower()=="all")
 	    {
-	       String query = "SELECT nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
-	       MysqlRes res = services->getDatabase().query(query);
-	       MysqlRow row;
+               int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
 	       int j = 0;
-	       while ((row = res.fetch_row()))
+	       for(int i=0; i<nbRes; i++)
 		 {
 		    j++;
-		    String nfrom = ((std::string) row[0]).c_str();
-		    String nsent = ((std::string) row[1]).c_str();
-		    String ntext = ((std::string) row[2]).c_str();
+		    String nfrom = services->getDatabase().dbGetValue(0);
+		    String nsent = services->getDatabase().dbGetValue(1);
+		    String ntext = services->getDatabase().dbGetValue(2);
 		    String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
 		    origin.sendMessage(togo,getName());
 		    String tofo = ntext;
 		    origin.sendMessage(tofo,getName());
+                    services->getDatabase().dbGetRow();
 		 }
 	       services->log(origin,"Note","Read all notes");
-	       res.free_result();
 	       return;
 	    }
-	  String query = "SELECT nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
-	  MysqlRes res = services->getDatabase().query(query);
-	  MysqlRow row;
+
+          int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
+
 	  int j = 0;
-	  while ((row = res.fetch_row()))
+	  for(int i=0; i<nbRes; i++)
 	    {
 	       j++;
 	       if(j==num.toInt())
 		 {
-		    String nfrom = ((std::string) row[0]).c_str();
-		    String nsent = ((std::string) row[1]).c_str();
-		    String ntext = ((std::string) row[2]).c_str();
+                    String nfrom = services->getDatabase().dbGetValue(0);
+                    String nsent = services->getDatabase().dbGetValue(1);
+                    String ntext = services->getDatabase().dbGetValue(2);
 		    String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
 		    origin.sendMessage(togo,getName());
 		    String tofo = ntext;
 		    origin.sendMessage(tofo,getName());
 		    services->log(origin,"Note","Read a single note");
-		    res.free_result();
 		    return;
 		 }
+                 services->getDatabase().dbGetRow();
 	    }
-	  res.free_result();
 	  origin.sendMessage("No such note!",getName());
 	  return;
        }
    void
      NOTE_FUNC (Note::parseLIST)
        {
-	  String query = "select nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
-	  MysqlRes res = services->getDatabase().query(query);
-	  MysqlRow row;
+          int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
+
 	  int j = 0;
-	  while ((row = res.fetch_row()))
+	  for(int i=0; i<nbRes; i++)
 	    {
 	       j++;
-	       String nfrom = ((std::string) row[0]).c_str();
-	       String nsent = ((std::string) row[1]).c_str();
-	       String ntext = ((std::string) row[2]).c_str();
+               String nfrom = services->getDatabase().dbGetValue(0);
+               String nsent = services->getDatabase().dbGetValue(1);
+               String ntext = services->getDatabase().dbGetValue(2);
 	       String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
 	       origin.sendMessage(togo,getName());
+               services->getDatabase().dbGetRow();
 	    }
 	  if(j==0)
 	    {
@@ -157,7 +149,6 @@ namespace Exordium
 	  String tofo = String("To read a note, type /msg Note read Number");
 	  origin.sendMessage(tofo,getName());
 	  services->log(origin, "Note", "Listed their notes");
-	  res.free_result();
        }
    void
      NOTE_FUNC (Note::parseSEND)
@@ -187,13 +178,12 @@ namespace Exordium
 		    return;
 		 }
 	       int chanid = services->getChannel().getChanID(nto);
-	       String query = "SELECT nickid from chanaccess where chanid='" + String::convert(chanid) + "'";
-	       MysqlRes res = services->getDatabase().query(query);
-	       MysqlRow row;
+
+               int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", "chanid='"+String::convert(chanid) + "'");
 	       int j = 0;
-	       while ((row = res.fetch_row()))
+	       for(int i=0; i<nbRes; i++)
 		 {
-		    String nnid = ((std::string) row[0]).c_str();
+		    String nnid = services->getDatabase().dbGetValue();
 		    int nid = nnid.toInt();
 		    String nick = services->getNick(nid);
 		    if(nick.toLower()!=origin.getNickname().toLower())
@@ -202,11 +192,11 @@ namespace Exordium
 			 String txt = String("\002")+nto+"\002: "+note;
 			 services->sendNote(origin.getNickname(),nick,txt);
 		      }
+                    services->getDatabase().dbGetRow();
 		 }
 	       String toao = String("Your note was successfully sent to \002")+String::convert(j)+"\002 people on "+nto;
 	       origin.sendMessage(String(toao),getName());
 	       services->log(origin,"Note","Sent a channel note to "+nto);
-	       res.free_result();
 	       return;
 	    }
 

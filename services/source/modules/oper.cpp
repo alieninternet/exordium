@@ -29,7 +29,6 @@
 #include "exordium/services.h"
 #include <kineircd/str.h>
 #include <map>
-#include "exordium/sql.h"
 
 using LibAIS::String;
 using LibAIS::StringTokens;
