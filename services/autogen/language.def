@@ -212,43 +212,43 @@ langtag = {
 langtag = {
    name = "nick_INFO_AIM";
    component = "mod_nick";
-   data_en = "AIM : \b%p0\b";
+   data_en = "AIM : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_EMAIL";
    component = "mod_nick";
-   data_en = "Email : \b%p0\b";
+   data_en = "Email : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_ICQ";
    component = "mod_nick";
-   data_en = "ICQ : \b%p0\b";
+   data_en = "ICQ : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_IDENTIFIED";
    component = "mod_nick";
-   data_en = "Last identified : \b%p0\b";
+   data_en = "Last identified : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_LAST_HOST";
    component = "mod_nick";
-   data_en = "Last host : \b%p0\b";
+   data_en = "Last host : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_LAST_QUIT_REASON";
    component = "mod_nick";
-   data_en = "Last Quit Message : \b%p0\b";
+   data_en = "Last Quit Message : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_MSN";
    component = "mod_nick";
-   data_en = "MSN : \b%p0\b";
+   data_en = "MSN : \\b%p0\\b";
 };
 
 langtag = {
@@ -272,7 +272,7 @@ langtag = {
 langtag = {
    name = "nick_INFO_REGISTERED";
    component = "mod_nick";
-   data_en = "Registered : \b%p0\b";
+   data_en = "Registered : \\b%p0\\b";
 };
 
 langtag = {
@@ -284,19 +284,19 @@ langtag = {
 langtag = {
    name = "nick_INFO_START";
    component = "mod_nick";
-   data_en = "Nickname information for \b%p0\b";
+   data_en = "Nickname information for \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_URL";
    component = "mod_nick";
-   data_en = "URL : \b%p0\b";
+   data_en = "URL : \\b%p0\\b";
 };
 
 langtag = {
    name = "nick_INFO_YAHOO";
    component = "mod_nick";
-   data_en = "Yahoo! : \b%p0\b";
+   data_en = "Yahoo! : \\b%p0\\b";
 };
 
 langtag = {
@@ -383,7 +383,7 @@ langtag = {
 langtag = {
    name = "nick_REGISTRATION_EMAIL_NOTICE_4";
    component = "mod_nick";
-   data_en = "This will be delivered to the account :\b%p0\b";
+   data_en = "This will be delivered to the account :\\b%p0\\b";
 };
 
 langtag = {
