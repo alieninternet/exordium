@@ -283,7 +283,7 @@ void Modules::handleAway(User& origin, const AISutil::String &message) {
  * to the appropiate modules who are listening for this event type.
  *
  */
-void Modules::handleTopic(const AISutil::String &origin, dChan& channel) {
+void Modules::handleTopic(const AISutil::String &origin, dChan& channel, const AISutil::String &newTopic) {
 
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {
@@ -294,7 +294,7 @@ void Modules::handleTopic(const AISutil::String &origin, dChan& channel) {
 #ifdef DEBUG
          std::cout << tmp << " would like to know when a TOPIC is received" << std::endl;
 #endif
-         (*it).second->service->handleTopic(origin,channel);
+         (*it).second->service->handleTopic(origin,channel, newTopic);
       }
 
    }

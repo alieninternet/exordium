@@ -163,7 +163,7 @@ namespace Exordium {
       
       virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
       virtual void handleClientSignon(User& origin) {};
-      virtual void handleTopic(const AISutil::String &, dChan&) {};
+      virtual void handleTopic(const AISutil::String &, dChan&, const AISutil::String &) {};
       
       
       // Grab the information structure of a module

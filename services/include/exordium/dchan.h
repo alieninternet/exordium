@@ -89,6 +89,11 @@ namespace Exordium {
       const bool isVoice(AISutil::String const &);
       const void kick(AISutil::String const &,AISutil::String const &,AISutil::String const &);
       const void ban(User& origin,AISutil::String const &,AISutil::String const &,AISutil::String const &);
+      const void setEnforceBans( bool Value );
+      const void setTrackTopics( bool Value );
+      const bool getEnforceBans( void );
+      const bool getTrackTopics( void );
+
       dChan(AISutil::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..

@@ -245,3 +245,45 @@ services.serviceKick(name,user.getNickname(),reason);
 
    
 }
+
+
+bool const dChan::getTrackTopics()
+{
+   if( services.getDatabase().dbSelect("tracktopics", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+   {
+      if( services.getDatabase().dbGetValue().toInt() == 1 )
+         return true;
+      else
+         return false;
+   }
+   else
+      return false;
+}
+
+
+void const dChan::setTrackTopics( bool Value )
+{
+   services.getDatabase().dbUpdate("chans","tracktopics='"+String::convert(Value)
+                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+}
+
+
+bool const dChan::getEnforceBans()
+{
+   if( services.getDatabase().dbSelect("enforcebans", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+   {
+      if( services.getDatabase().dbGetValue().toInt() == 1 )
+         return true;
+      else
+         return false;
+   }
+   else
+      return false;
+}
+
+
+void const dChan::setEnforceBans( bool Value )
+{
+   services.getDatabase().dbUpdate("chans","enforcebans='"+String::convert(Value)
+                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+}
