@@ -53,13 +53,33 @@ namespace Exordium {
 	 // Information about which events we want to receive
 	 struct Events { // Should be namespace, but g++ is dumb
 	    enum {
-	       NONE		= 0x00000000,
-	       SIGNON_CLIENT	= 0x00000001,
-	       SIGNOFF_CLIENT	= 0x00000002,
-	       SIGNON_SERVER	= 0x00000004,
-	       SIGNOFF_SERVER	= 0x00000008,
-	       CLIENT_AWAY      = 0x00000010,
-	       ALL		= 0xFFFFFFFF
+	         NONE		    = 0x00000000,
+	         SERVER_NEW	    = 0x00000001,
+	         SERVER_QUIT	    = 0x00000002,
+	         SERVER_BURST	    = 0x00000004,
+	         SERVER_PASS        = 0x00000008,
+	         SERVER_SVINFO      = 0x00000010,
+		 CLIENT_SIGNON      = 0x00000020,
+		 CLIENT_SIGNOFF     = 0x00000040,
+		 CLIENT_MODE        = 0x00000080,
+		 CLIENT_AWAY        = 0x00000100,
+		 CLIENT_NICKCHANGE  = 0x00000200,
+		 CHANNEL_CREATE     = 0x00000400,
+		 CHANNEL_JOIN       = 0x00000800,
+		 CHANNEL_DESTROY    = 0x00001000,
+		 CHANNEL_TOPIC      = 0x00002000,
+		 CHANNEL_KICK       = 0x00004000,
+		 CHANNEL_OP         = 0x00008000,
+		 CHANNEL_DEOP       = 0x00010000,
+		 CHANNEL_VOICE      = 0x00020000,
+		 CHANNEL_DEVOICE    = 0x00040000,
+		 CHANNEL_HALFOP     = 0x00080000,
+		 CHANNEL_HALFDEOP   = 0x00100000,
+		 CHANNEL_BAN        = 0x00200000,
+		 CHANNEL_EXEMPT     = 0x00400000,
+		 CHANNEL_MODE       = 0x00800000,
+		 SERVER_MODE        = 0x01000000,
+	         ALL	            = 0xFFFFFFFF /* Psycho :-) */
 	    };
 	 };
 	 const unsigned int eventsMask; // values OR'd from above

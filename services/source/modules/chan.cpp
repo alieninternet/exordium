@@ -831,12 +831,41 @@ EXORDIUM_SERVICE_INIT_FUNCTION
    return new Chan();
 }
 
+void
+  Chan::handleAway(Exordium::User& origin, const String &reason)
+{
+
+   if(reason=="")
+     {
+	/* User is coming back - do nothing */
+	return;
+     }
+   if(origin.deopAway())
+     {
+	if(services->getDatabase().dbSelect("chanid","chanstatus",
+					   "nickid="+origin.getOnlineIDString()+
+					   " AND status=2") > 0)
+	  {
+	     String foo = services->getDatabase().dbGetValue();
+	     String cname = services->getChannel().getChanIDName(foo.toInt());
+	     String cstr = origin.getNickname()+" "+origin.getNickname();
+	     services->serverMode(cname,"-o+v",cstr);
+	     services->getChannel().internalVoice(origin.getNickname(),cname);
+	     services->getChannel().internalDeOp(origin.getNickname(),cname);
+	     
+	     
+	  }
+	
+     }
+   
+}
+
 
 // Module information structure
 const Chan::moduleInfo_type Chan::moduleInfo = {
    "Channel Service",
      0, 0,
-     Exordium::Service::moduleInfo_type::Events::NONE
+     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY /* AWAY's */
 };
 
 

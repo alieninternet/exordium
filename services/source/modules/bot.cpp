@@ -84,13 +84,6 @@ void
 }
 
 void
-  Bot::handleAway(User& origin, const String &reason)
-{
-origin.sendMessage("Bye Bye and have fun doing "+reason,getName());   
-   
-}
-
-void
   BOT_FUNC (Bot::parseHELP)
 {
    services->doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
@@ -106,8 +99,7 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 const Bot::moduleInfo_type Bot::moduleInfo = {
    "Bot Assistance Service",
      0, 0,
-     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY |
-     Exordium::Service::moduleInfo_type::Events::SIGNON_CLIENT
+     Exordium::Service::moduleInfo_type::Events::NONE
 };
 
 

@@ -243,10 +243,6 @@ void
 	it != modules.end(); it++)
      {
 	String tmp =  (*it).first;
-	std::cout << "Module Name: " << tmp << std::endl;
-	std::cout << "Events Wanted: ";
-	std::cout << setbase(16) <<
-	  (*it).second->service->getModuleInfo().eventsMask << std::endl;
 	if((*it).second->service->getModuleInfo().eventsMask & 
 	   Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY)
 	  {
@@ -254,12 +250,6 @@ void
 	     std::cout << tmp << " would like to know when someone goes away" << std::endl;
 	     (*it).second->service->handleAway(origin,message);
 	  }
-	else
-	  {
-	     std::cout << tmp << " doesnt care about AWAY's :-(" << std::endl;
-	  }
-	
-						  
 	
      }
    
