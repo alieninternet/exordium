@@ -24,6 +24,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_CHECK_PROG(RM, rm, rm -f, del)
 AC_CHECK_PROG(LD, ld, ld)
+AC_CHECK_PROG(AUTOGEN, autogen, autogen, :)
 
 # Checks for libraries+functions
 AC_CHECK_LIB(resolv, res_init)
