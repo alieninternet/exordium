@@ -81,6 +81,9 @@ namespace Exordium {
 	 OPER_FUNC(parseHELP);
 	 OPER_FUNC(parseQUOTE);
 	 OPER_FUNC(parseJUPE);
+         OPER_FUNC(parseJOIN);
+         OPER_FUNC(parsePART);
+         OPER_FUNC(parseCOMMANDS);
       }; // class Module
    }; // namespace OperModule
 }; // namespace Exordium

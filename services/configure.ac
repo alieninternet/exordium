@@ -35,7 +35,8 @@ AC_FUNC_VPRINTF
 dnl AC_FUNC_GETLOADAVG
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([gethostbyname gettimeofday memset select socket strchr])
-AC_CHECK_LIB([dl], [dlopen], [], [AC_MSG_ERROR([I cannot find a working dlopen! :(])])
+#AC_CHECK_LIB([dl], [dlopen], [], [AC_MSG_ERROR([I cannot find a working 
+#dlopen! :(])])
 
 # Checks for header files.
 AC_HEADER_STDC

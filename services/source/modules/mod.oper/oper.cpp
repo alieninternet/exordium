@@ -43,6 +43,9 @@ const Module::functionTableStruct Module::functionTable[] =
 {
      { "help",		&Module::parseHELP },
      { "jupe",		&Module::parseJUPE },
+     { "join",		&Module::parseJOIN },
+     { "part",		&Module::parsePART },
+     { "commands",	&Module::parseCOMMANDS },
      { 0, 0 }
 };
 
@@ -92,6 +95,77 @@ OPER_FUNC(Module::parseJUPE)
      }
 }
 
+OPER_FUNC(Module::parseJOIN)
+{
+   String chan = tokens.nextToken().IRCtoLower();
+   if(chan=="")
+     {
+	origin.sendMessage("\002[\002Incorrect Usage\002]\002 join #channel",getName());
+	return;
+     }
+   if(chan[0] != '#')
+     {
+        origin.sendMessage("Error: Channel names must begin with the '#' symbol",getName());
+        return;
+     }
+   else
+     {
+       services->serviceJoin(getName(), chan);
+       services->serverMode(chan, "+o", getName());
+       services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" join \002"+chan+"\002");
+     }
+}
+
+OPER_FUNC(Module::parsePART)
+{
+   String chan = tokens.nextToken().IRCtoLower();
+   if(chan=="")
+     {
+	origin.sendMessage("\002[\002Incorrect Usage\002]\002 part #channel",getName());
+	return;
+     }
+   if(chan[0] != '#')
+     {
+        origin.sendMessage("Error: Channel names must begin with the '#' symbol",getName());
+        return;
+     }
+   else
+     {
+       services->servicePart(getName(), chan);
+       services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" part \002"+chan+"\002");
+     }
+}
+
+  OPER_FUNC (Module::parseCOMMANDS)
+{
+  // Work out the line length, we subtract 20 to be safe :)
+   String::size_type lineLength = 200;
+
+   // Send the banner (this shouldn't be hard-coded)
+   // sendMessage(origin, "Command list for " + getName() + ":");
+   origin.sendMessage("Command list for " + getName() + ":",getName());
+   // Start formulating the data..
+   std::ostringstream list(" -=>");
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Add the command to the list
+      list << " " << functionTable[i].command;
+
+   // How are we for size?
+      if (list.str().length() >= lineLength) {
+         // Dump it and reset the string stream thingy
+         origin.sendMessage(list.str(),getName());
+         list.str() = " -=>";
+      }
+   }
+
+   // Anything left to send still?
+   if (list.str().length() > 4) {
+      origin.sendMessage(list.str(),getName());
+   }
+
+   // Send the footer (this shouldn't be hard-coded)
+   origin.sendMessage("End of command list",getName());
+}
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 { return new Module(); }
