@@ -94,6 +94,9 @@ namespace Exordium {
       // Insert into <table> values <values>
       void dbInsert(AISutil::String const &table,  AISutil::String const &values);
 
+     // (Delayed - Not important) Insert into <table> values <values>
+      void dbDelayedInsert(AISutil::String const &table, AISutil::String const &values);
+     
       void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
 
 

@@ -138,6 +138,15 @@ int CDatabase::dbSelect(AISutil::String const &fields, AISutil::String const &ta
    database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
    return database->dbGetValue().toInt();
 }
+void CDatabase::dbDelayedInsert(String const &table, String const &values)
+{
+   database->dbLock(table);
+   database->dbBeginTrans();
+   database->dbQuery("INSERT DELAYD into " + table + " VALUES ("+values+")");
+   database->dbCommit();
+   database->dbUnlock();
+   database->dbClearRes();
+}
 
 // Insert into <table> values <values>
 void CDatabase::dbInsert(String const &table,  String const &values)

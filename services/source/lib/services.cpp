@@ -702,7 +702,7 @@ void
    String nicks = origin.getIDList();
    String ident = origin.getIdent();
    String host = origin.getHost();
-   database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"'");
+   database.dbDelayedInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"'");
 }
 
 void
@@ -713,7 +713,7 @@ void
    String nicks = origin.getIDList();
    String ident = origin.getIdent();
    String host = origin.getHost();
-   database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"',''");
+   database.dbDelayedInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"',''");
 }
 
 /* Overload kine's trim to add some stuff of our own! :-) */
