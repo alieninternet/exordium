@@ -28,6 +28,7 @@ namespace Exordium
 	  {"quote", &Game::parseQUOTE},
 	  {".quote", &Game::parseQUOTE},
 	  {"help", &Game::parseHELP},
+	  {"start", &Game::parseSTART},
 	  {0, 0}
      };
 
@@ -120,6 +121,23 @@ namespace Exordium
 	       more = st.hasMoreTokens();
 	    }
 
+       }
+
+   /* parseSTART - Parse a 'start' command, to trigger the start of game
+    * Original 29/08/2002 - simonb
+    */
+   void
+     GAME_FUNC (Game::parseSTART)
+       {
+	  String channel = tokens.nextToken();
+	  String game = tokens.nextToken();
+	  
+	  // checking?! ;)
+	  
+	  services.serviceJoin("game", channel);
+	  services.serviceNotice("Hello " + channel + " (wanted to do " + 
+				 game + ")", "Game", channel);
+	  
        }
 
    EXORDIUM_SERVICE_INIT_FUNCTION

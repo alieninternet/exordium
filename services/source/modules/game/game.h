@@ -48,6 +48,7 @@ public:
 private:
    void GAME_FUNC (parseHELP);
    void GAME_FUNC (parseQUOTE);
+   void GAME_FUNC (parseSTART);
 };
 
 

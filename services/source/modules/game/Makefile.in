@@ -13,13 +13,24 @@ INCDIRS=-I../../../include -I../../../../kineircd/include \
 	-I../../../../kineircd/src/lib -I/usr/local/ssl/include -I.
 
 OBJECTS=$(SOURCES:.cpp=.o)
+ROBJECTS=cards/cards.o
 
 TARGET=game.so
 
+SUB_DIRS=\
+	cards
+
+.PHONY: all subdirs $(SUB_DIRS)
+
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJECTS) -o $@ \
+subdirs: $(SUB_DIRS)
+
+$(SUB_DIRS):
+	$(MAKE) -C $@
+
+$(TARGET): subdirs $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJECTS) $(ROBJECTS) -o $@ \
 		-lservices -L../../lib
 
 %.o: %.cpp
