@@ -436,7 +436,8 @@ void
 	StringTokens dodgeydodgeydodgey(message);
 	services.serviceM.throwLine("chan", dodgeydodgeydodgey, *origin,
 				    target);
-	services.serviceM.throwLine("game", dodgeydodgeydodgey, *origin,
+	StringTokens dodgeydodgeydodgeyAGAIN(message);
+	services.serviceM.throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
 				    target);
 
      }
