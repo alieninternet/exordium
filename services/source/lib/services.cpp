@@ -513,7 +513,6 @@ namespace Exordium
         database.query("DELETE from onlinechan");
         database.query("DELETE from onlineopers");
 
-        exit(1);
      }
 
 /* SynchTime()

@@ -1,20 +1,20 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
  *
  * This file is a part of Exordium.
- * 
+ *
  * Exordium is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Exordium is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -111,7 +111,7 @@ void
 	origin.sendMessage("Error: Could not locate that user (possible bug)",myName);
 	return;
      }
-   
+
    if(who=="")
      {
 	origin.sendMessage("Usage: /msg nick info nickname",myName);
@@ -155,13 +155,15 @@ void
 	     String tok = "Last Quit Message : \002"+lqui;
 	     std::ostringstream tol;
 	     tol << "Options : ";
-	     if(deopAway) {
-	       tol << " Deop on Away";
-	     }
-	     if(modNick) {
-	       tol << ", Nickname Enforcement";
-	     }
-						 
+	     if(deopAway)
+	       {
+		  tol << " Deop on Away";
+	       }
+	     if(modNick)
+	       {
+		  tol << ", Nickname Enforcement";
+	       }
+
 	     origin.sendMessage(toa,myName);
 	     origin.sendMessage(tob,myName);
 	     origin.sendMessage(toc,myName);
@@ -243,7 +245,7 @@ void
 	     String togo = "Usage is set modnick true/false";
 	     origin.sendMessage(togo,myName);
 	  }
-	
+
 	if(value=="true")
 	  {
 	     origin.setModNick(true);
@@ -251,7 +253,7 @@ void
 	     origin.sendMessage(togo,myName);
 	     return;
 	  }
-	
+
 	if(value=="false")
 	  {
 	     origin.setModNick(false);
@@ -261,9 +263,9 @@ void
 	  }
 	origin.sendMessage("Error: Value must be true or false",myName);
 	return;
-	
+
      }
-   
+
    if(command=="deopaway")
      {
 	if(value=="")
@@ -288,271 +290,273 @@ void
 	origin.sendMessage("Error: Value must be true or false",myName);
 	return;
      }
-   
-	if(command=="language")
-	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set language LANGUAGE";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     if(value=="english")
-	       {
-		  origin.setLanguage("english");
-		  origin.sendMessage("Helpfiles interface has been changed to english",myName);
-		  return;
-	       }
-	     origin.sendMessage("Error: Unsupported Language!",myName);
-	     return;
 
-	  }
-	if(command=="email")
+   if(command=="language")
+     {
+	if(value=="")
 	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set email email@Address";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     String query = "UPDATE nicks set email='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
-	     String togo = "Email has been changed to \002"+value;
+	     String togo = "Usage is /msg Nick set language LANGUAGE";
 	     origin.sendMessage(togo,myName);
-	     services.log(origin,myName,"Changed email address to "+value);
 	     return;
 	  }
+	if(value=="english")
+	  {
+	     origin.setLanguage("english");
+	     origin.sendMessage("Helpfiles interface has been changed to english",myName);
+	     return;
+	  }
+	origin.sendMessage("Error: Unsupported Language!",myName);
+	return;
 
-	if(command=="msn")
+     }
+   if(command=="email")
+     {
+	if(value=="")
 	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set msn MSN handle";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
-	     String togo = "MSN has been changed to \002"+value;
+	     String togo = "Usage is /msg Nick set email email@Address";
 	     origin.sendMessage(togo,myName);
-	     services.log(origin,myName,"Changed MSN address to "+value);
 	     return;
 	  }
+	String query = "UPDATE nicks set email='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
+	services.getDatabase().query(query);
+	String togo = "Email has been changed to \002"+value;
+	origin.sendMessage(togo,myName);
+	services.log(origin,myName,"Changed email address to "+value);
+	return;
+     }
 
-	if(command=="aim")
+   if(command=="msn")
+     {
+	if(value=="")
 	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set aim handle";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     String query = "UPDATE nicks set aim='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
-	     String togo = "AIM has been changed to \002"+value;
+	     String togo = "Usage is /msg Nick set msn MSN handle";
 	     origin.sendMessage(togo,myName);
-	     services.log(origin,myName,"Changed AIM address to "+value);
 	     return;
 	  }
+	String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
+	services.getDatabase().query(query);
+	String togo = "MSN has been changed to \002"+value;
+	origin.sendMessage(togo,myName);
+	services.log(origin,myName,"Changed MSN address to "+value);
+	return;
+     }
 
-	if(command=="yahoo")
+   if(command=="aim")
+     {
+	if(value=="")
 	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set yahoo! handle";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     String query = "UPDATE nicks set yahoo='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
-	     String togo = "Yahoo! has been changed to \002"+value;
+	     String togo = "Usage is /msg Nick set aim handle";
 	     origin.sendMessage(togo,myName);
-	     services.log(origin,myName,"Changed Yahoo! address to "+value);
 	     return;
 	  }
+	String query = "UPDATE nicks set aim='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
+	services.getDatabase().query(query);
+	String togo = "AIM has been changed to \002"+value;
+	origin.sendMessage(togo,myName);
+	services.log(origin,myName,"Changed AIM address to "+value);
+	return;
+     }
 
-	if(command=="icq")
+   if(command=="yahoo")
+     {
+	if(value=="")
 	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set icq ICQNUMBER";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     String query = "UPDATE nicks set icq='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
-	     String togo = "ICQ has been changed to \002"+value;
+	     String togo = "Usage is /msg Nick set yahoo! handle";
 	     origin.sendMessage(togo,myName);
-	     services.log(origin,myName,"Changed ICQ address to "+value);
 	     return;
 	  }
+	String query = "UPDATE nicks set yahoo='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
+	services.getDatabase().query(query);
+	String togo = "Yahoo! has been changed to \002"+value;
+	origin.sendMessage(togo,myName);
+	services.log(origin,myName,"Changed Yahoo! address to "+value);
+	return;
+     }
 
-	if(command=="url")
+   if(command=="icq")
+     {
+	if(value=="")
 	  {
-	     if(value=="")
-	       {
-		  String togo = "Usage is /msg Nick set url www.ircdome.org";
-		  origin.sendMessage(togo,myName);
-		  return;
-	       }
-	     String query = "UPDATE nicks set url='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
-	     String togo = "URL has been changed to \002"+value;
+	     String togo = "Usage is /msg Nick set icq ICQNUMBER";
 	     origin.sendMessage(togo,myName);
-	     services.log(origin,myName,"Changed URL address to "+value);
 	     return;
 	  }
-	if(command=="privmsg")
+	String query = "UPDATE nicks set icq='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
+	services.getDatabase().query(query);
+	String togo = "ICQ has been changed to \002"+value;
+	origin.sendMessage(togo,myName);
+	services.log(origin,myName,"Changed ICQ address to "+value);
+	return;
+     }
+
+   if(command=="url")
+     {
+	if(value=="")
 	  {
-	     if(value=="on")
-	       {
-		  String query = "UPDATE nicks set privmsg=1 where nickname='"+origin.getNickname()+"'";
-		  services.getDatabase().query(query);
-		  origin.sendMessage("I will now use the private message interface",myName);
-		  return;
-	       }
-	     if(value=="off")
-	       {
-		  String query = "UPDATE nicks set privmsg=0 where nickname='"+origin.getNickname()+"'";
-		  services.getDatabase().query(query);
-		  origin.sendMessage("I will now use the private message interface",myName);
-		  return;
-	       }
-	     origin.sendMessage("Error: Value must be on or off",myName);
+	     String togo = "Usage is /msg Nick set url www.ircdome.org";
+	     origin.sendMessage(togo,myName);
 	     return;
 	  }
+	String query = "UPDATE nicks set url='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
+	services.getDatabase().query(query);
+	String togo = "URL has been changed to \002"+value;
+	origin.sendMessage(togo,myName);
+	services.log(origin,myName,"Changed URL address to "+value);
+	return;
+     }
+   if(command=="privmsg")
+     {
+	if(value=="on")
+	  {
+	     String query = "UPDATE nicks set privmsg=1 where nickname='"+origin.getNickname()+"'";
+	     services.getDatabase().query(query);
+	     origin.sendMessage("I will now use the private message interface",myName);
+	     return;
+	  }
+	if(value=="off")
+	  {
+	     String query = "UPDATE nicks set privmsg=0 where nickname='"+origin.getNickname()+"'";
+	     services.getDatabase().query(query);
+	     origin.sendMessage("I will now use the private message interface",myName);
+	     return;
+	  }
+	origin.sendMessage("Error: Value must be on or off",myName);
+	return;
+     }
    origin.sendMessage("Error: Unsupported command",myName);
    return;
-     }
+}
 /* Access */
-   void
-     NICK_FUNC (Nick::parseACCESS)
-       {
-	  String nickname = tokens.nextToken();
-	  if(nickname!="")
-	    {
-	       String query = "SELECT idas from identified where nick='" + origin.getOnlineIDString()+"'";
-	       MysqlRes res = services.getDatabase().query(query);
-	       MysqlRow row;
-	       int i=0;
-	       while ((row = res.fetch_row()))
-		 {
-		    i++;
-		    String id = ((std::string) row[0]).c_str();
-		    String idnick = services.getNick(id.toInt());
-		    String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
-		    origin.sendMessage(tosend,myName);
-		 }
-	       res.free_result();
-	       return;
-	    }
-	  int onlineID = origin.getOnlineNickID();
-	  String query = "SELECT idas from identified where nick='" + String::convert(onlineID)+"'";
-	  MysqlRes res = services.getDatabase().query(query);
-	  MysqlRow row;
-	  int i=0;
-	  while ((row = res.fetch_row()))
-	    {
-	       i++;
-	       String id = ((std::string) row[0]).c_str();
-	       String idnick = services.getNick(id.toInt());
-	       String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
-	       origin.sendMessage(tosend,myName);
-	       res.free_result();
-	       return;
-	    }
+void
+  NICK_FUNC (Nick::parseACCESS)
+{
+   String nickname = tokens.nextToken();
+   if(nickname!="")
+     {
+	String query = "SELECT idas from identified where nick='" + origin.getOnlineIDString()+"'";
+	MysqlRes res = services.getDatabase().query(query);
+	MysqlRow row;
+	int i=0;
+	while ((row = res.fetch_row()))
+	  {
+	     i++;
+	     String id = ((std::string) row[0]).c_str();
+	     String idnick = services.getNick(id.toInt());
+	     String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
+	     origin.sendMessage(tosend,myName);
+	  }
+	res.free_result();
+	return;
+     }
+   int onlineID = origin.getOnlineID();
+   String query = "SELECT idas from identified where nick='" + String::convert(onlineID)+"'";
+   MysqlRes res = services.getDatabase().query(query);
+   MysqlRow row;
+   int i=0;
+   while ((row = res.fetch_row()))
+     {
+	i++;
+	String id = ((std::string) row[0]).c_str();
+	String idnick = services.getNick(id.toInt());
+	String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
+	origin.sendMessage(tosend,myName);
+	res.free_result();
+	return;
+     }
 
-       }
+}
 /* Register */
-   void
-     NICK_FUNC (Nick::parseREGISTER)
-       {
-	  String password = tokens.nextToken();
-	  String email = tokens.nextToken();
-	  if(services.isNickRegistered(origin.getNickname()))
-	    {
-	       String tosend = "Error - This nickname is already registered";
-	       origin.sendMessage (tosend, myName);
-	       return;
-	    }
-	  if(password=="")
-	    {
-	       String tosend = "Error - No password: Usage is /msg nick register password email@Address";
-	       origin.sendMessage (tosend, myName);
-	       return;
-	    }
-	  if(password.length()<4)
-	    {
-	       String tosend = "Error - Small Length: Your password needs to be greater than 4 letters";
-	       origin.sendMessage (tosend, myName);
-	       return;
-	    }
-	  origin.sendMessage("Here on IRCDome we require email validation before allowing our users", myName);
-	  origin.sendMessage("to register nicknames, this is a simple process and only takes a few minutes to complete",myName);
-	  origin.sendMessage("You will shortly receive an email with further instructions",myName);
-	  origin.sendMessage("This will be delivered to the account :\002"+email+"\002",myName);
-	  origin.sendMessage("Thank you for using IRCDome!",myName);
-	  services.registerNick(origin.getNickname(),password,email);
-	  services.log(origin,myName,"Registered nickname with email "+email);
-	  String authcode = services.genAuth(origin.getNickname());
-	  String subject = "Your nickname registration";
-	  String emailtext =
-	    "This is a sample email - Needs replacing with something much better\n"
-	    "\n"
-	    "\n"
-	    "In order to successfully register your nickname, you need to type\n"
-	    "the following next time you are on IRCDome.\n"
-	    "\n"
-	    "\n"
-	    "/msg nick AUTH "+authcode+"\n"
-	    "\n";
-	  services.sendEmail(email,subject,emailtext);
-       }
+void
+  NICK_FUNC (Nick::parseREGISTER)
+{
+   String password = tokens.nextToken();
+   String email = tokens.nextToken();
+   if(services.isNickRegistered(origin.getNickname()))
+     {
+	String tosend = "Error - This nickname is already registered";
+	origin.sendMessage (tosend, myName);
+	return;
+     }
+   if(password=="")
+     {
+	String tosend = "Error - No password: Usage is /msg nick register password email@Address";
+	origin.sendMessage (tosend, myName);
+	return;
+     }
+   if(password.length()<4)
+     {
+	String tosend = "Error - Small Length: Your password needs to be greater than 4 letters";
+	origin.sendMessage (tosend, myName);
+	return;
+     }
+   origin.sendMessage("Here on IRCDome we require email validation before allowing our users", myName);
+   origin.sendMessage("to register nicknames, this is a simple process and only takes a few minutes to complete",myName);
+   origin.sendMessage("You will shortly receive an email with further instructions",myName);
+   origin.sendMessage("This will be delivered to the account :\002"+email+"\002",myName);
+   origin.sendMessage("Thank you for using IRCDome!",myName);
+   services.registerNick(origin.getNickname(),password,email);
+   services.log(origin,myName,"Registered nickname with email "+email);
+   String authcode = services.genAuth(origin.getNickname());
+   String subject = "Your nickname registration";
+   String emailtext =
+     "This is a sample email - Needs replacing with something much better\n"
+     "\n"
+     "\n"
+     "In order to successfully register your nickname, you need to type\n"
+     "the following next time you are on IRCDome.\n"
+     "\n"
+     "\n"
+     "/msg nick AUTH "+authcode+"\n"
+     "\n";
+   services.sendEmail(email,subject,emailtext);
+}
 
 /* Kill */
-   void
-     NICK_FUNC (Nick::parseKILL)
-       {
-	  String tokill = tokens.nextToken();
-	  String password = tokens.nextToken();
-	  User *ptr = services.findUser(tokill);
-	  if(ptr==0)
-	    {
-	       origin.sendMessage("Error - Could not find a pointer for this user - Possible Bug?",myName);
-	  if(ptr->isPending())
-	    {
-	       String tosend = "Error - You cannot kill a nickname which is pending verification";
-	       origin.sendMessage(tosend,myName);
-	       return;
-	    }
-	  if(!services.isNickRegistered(tokill))
-	    {
-	       String tosend = "Error - "+tokill+" is not a registered nickname";
-	       origin.sendMessage(tosend,myName);
-	       return;
-	    }
-	  String nickpass = String::convert(services.generatePassword(tokill,password));
-	  String givepass = services.getPass(tokill);
-	  if(nickpass == givepass)
-	    {
-	       String reason = "Kill requested by "+origin;
-	       services.killnick(tokill,myName,reason);
-	       services.log(origin,myName,"Requested a kill on "+tokill);
-	       return;
-	    }
-	  String tosend = "Error - Incorrect password for nickname "+tokill;
-	  origin.sendMessage(tosend,myName,origin.getNickname());
-	  int access = services.getNickname().getAccess("Serv",origin.getNickname());
-	  if(access>0)
-	    {
-	       String temp1 = services.getNickname().getHost(origin.getNickname());
-	       String temp2 = services.getNickname().getIdent(origin.getNickname());
-	       String thehost = String(temp2)+"@"+String(temp1);
-	       String togo = String("\002Failed\002 kill for nickname ")+origin+" by \002"+origin+"!"+thehost;
-	       services.helpme(String(togo),"Serv");
-	    }
+void
+  NICK_FUNC (Nick::parseKILL)
+{
+   String tokill = tokens.nextToken();
+   String password = tokens.nextToken();
+   User *ptr = services.findUser(tokill);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error - Could not find a pointer for this user - Possible Bug?",myName);
+	if(ptr->isPending())
+	  {
+	     String tosend = "Error - You cannot kill a nickname which is pending verification";
+	     origin.sendMessage(tosend,myName);
+	     return;
+	  }
+	if(!services.isNickRegistered(tokill))
+	  {
+	     String tosend = "Error - "+tokill+" is not a registered nickname";
+	     origin.sendMessage(tosend,myName);
+	     return;
+	  }
+	String nickpass = String::convert(services.generatePassword(tokill,password));
+	String givepass = services.getPass(tokill);
+	if(nickpass == givepass)
+	  {
+	     String reason = "Kill requested by "+origin.getNickname();
+	     services.killnick(tokill,myName,reason);
+	     services.log(origin,myName,"Requested a kill on "+tokill);
+	     return;
+	  }
+	String tosend = "Error - Incorrect password for nickname "+tokill;
+	origin.sendMessage(tosend,myName);
+	int access = origin.getAccess("Serv");
+	if(access>0)
+	  {
+	     String temp1 = origin.getHost();
+	     String temp2 = origin.getIdent();
+	     String thehost = String(temp2)+"@"+String(temp1);
+	     String togo = String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
+	     services.helpme(String(togo),"Serv");
+	  }
 
-       }
+     }
+}
+
 /* Do help... */
    void
      NICK_FUNC (Nick::parseHELP)
@@ -568,26 +572,26 @@ void
        {
 	  String toghost = tokens.nextToken();
 	  String password = tokens.nextToken();
-	  if (!services.getNickname().isNickRegistered( toghost))
+	  if (!services.isNickRegistered( toghost))
 	    {
 	       String tosend = String("Error: Target nickname is not registered");
-	       origin.sendMessage(tosend,myName,origin.getNickname());
+	       origin.sendMessage(tosend,myName);
 	       return;
 	    }
-	  String nickpass = String::convert(services.getNickname().generatePassword(toghost,password));
-	  String givepass = services.getNickname().getPass(toghost);
+	  String nickpass = String::convert(services.generatePassword(toghost,password));
+	  String givepass = services.getPass(toghost);
 	  if(nickpass == givepass)
 	    {
 	       services.registerService(toghost,"ghost","ghosts.ircdome.org",
 					"+id","Ghosted by "+origin.getNickname());
 	       String tosend = String("Ghost successful for ")+toghost;
-	       origin.sendMessage(tosend,myName,origin.getNickname());
+	       origin.sendMessage(tosend,myName);
 	       services.log(origin,myName,String("Successfully ghosted ")+toghost);
 	       return;
 	    }
 	  String tosend = String("\002Incorrect\002 Password");
 	  services.log(origin,myName,String("Failed ghost"));
-	  origin.sendMessage(tosend,myName,origin.getNickname());
+	  origin.sendMessage(tosend,myName);
 	  return;
        }
 /* Parse an identification request */
@@ -596,54 +600,54 @@ void
      NICK_FUNC (Nick::parseIDENTIFY)
        {
 	  String password = tokens.nextToken();
-	  if (services.getNickname().isPending(origin.getNickname()))
+	  if (origin.isPending())
 	    {
 	       String tosend = "Error - You cannot identify a nickname which is pending verification";
-	       origin.sendMessage (tosend, myName, origin.getNickname());
+	       origin.sendMessage (tosend, myName);
 	       return;
 	    }
-	  if (!services.getNickname().isNickRegistered (origin.getNickname()))
+	  if (!services.isNickRegistered (origin.getNickname()))
 	    {
 	       String tosend = String ("Error: That nickname is not registered");
-	       origin.sendMessage (tosend, myName, origin.getNickname());
+	       origin.sendMessage (tosend, myName);
 	       return;
 	    }
 	  if(!services.SecurePrivmsg)
 	    {
 	       String tosend = String ("For security reasons you must use /msg nick@ircdome.org to identify");
-	       origin.sendMessage (tosend, myName, origin.getNickname());
+	       origin.sendMessage (tosend, myName);
 	       return;
 	    }
-	  String nickpass = services.getNickname().generatePassword(origin,password);
-	  String givepass = services.getNickname().getPass(origin.getNickname());
+	  String nickpass = services.generatePassword(origin.getNickname(),password);
+	  String givepass = services.getPass(origin.getNickname());
 	  if(nickpass == givepass)
 	    {
-	       int oid = services.getNickname().getOnlineNickID(origin.getNickname());
-	       int nid = services.getNickname().getRegisteredNickID(origin.getNickname());
+	       int oid = origin.getOnlineID();
+	       int nid = services.getRegisteredNickID(origin.getNickname());
 	       String query = String("INSERT into identified values('','") +
 		 String::convert(oid) + "','" + String::convert(nid) + "')";
 	       services.getDatabase().query(query);
 	       query = String("DELETE from kills where nick='") +
-		 origin + "'";
+		 origin.getNickname() + "'";
 	       services.getDatabase().query(String(query));
-	       services.getNickname().modeIdentify(origin.getNickname());
-	       services.getNickname().updateLastID(origin.getNickname());
-	       String temp1 = services.getNickname().getHost(origin.getNickname());
-	       String temp2 = services.getNickname().getIdent(origin.getNickname());
+	       services.modeIdentify(origin.getNickname());
+	       services.updateLastID(origin.getNickname());
+	       String temp1 = origin.getHost();
+	       String temp2 = origin.getIdent();
 	       String togo = String(temp2)+"@"+String(temp1);
-	       services.getNickname().updateHost(origin,togo);
-	       String tosend = "You have been successfully identified to services as the nickname \002"+origin+"\002(\002"+togo+"\002)";
-	       origin.sendMessage(tosend,myName,origin.getNickname());
+	       origin.updateHost(togo);
+	       String tosend = "You have been successfully identified to services as the nickname \002"+origin.getNickname()+"\002(\002"+togo+"\002)";
+	       origin.sendMessage(tosend,myName);
 	       return;
 	    }
-	  origin.sendMessage(String("\002Incorrect\002 Password"),myName,origin.getNickname());
-	  int access = services.getNickname().getAccess("Serv",origin.getNickname());
+	  origin.sendMessage(String("\002Incorrect\002 Password"),myName);
+	  int access = origin.getAccess("Serv");
 	  if(access>0)
 	    {
-	       String temp1 = services.getNickname().getHost(origin.getNickname());
-	       String temp2 = services.getNickname().getIdent(origin.getNickname());
+	       String temp1 = origin.getHost();
+	       String temp2 = origin.getIdent();
 	       String thehost = String(temp2)+"@"+String(temp1);
-	       String togo = String("\002Failed\002 identify for nickname ")+origin+" by \002"+origin+"!"+thehost;
+	       String togo = String("\002Failed\002 identify for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
 	       services.helpme(String(togo),"Serv");
 	    }
 	  return;
@@ -654,19 +658,17 @@ void
 	return new Nick(services, name);
      }
 
+   // Module information structure
+   const Nick::moduleInfo_type Nick::moduleInfo =
+     {
+	"Nickname Service",
+	  0, 0
+     };
 
-// Module information structure
-const Nick::moduleInfo_type Nick::moduleInfo = {
-   "Nickname Service",
-     0, 0
-};
-
-
-	  
-// Start the service
-void Nick::start(void)
-{
-   services.registerService(name,name,"ircdome.org", "+dz",
-			    "Nickname Registration Services");
-   services.serviceJoin(name,"#Debug");
-}
+   // Start the service
+   void Nick::start(void)
+     {
+	services.registerService(myName,myName,"ircdome.org", "+dz",
+				 "Nickname Registration Services");
+	services.serviceJoin(myName,"#Debug");
+     }
