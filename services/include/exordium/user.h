@@ -37,72 +37,72 @@ namespace Exordium
 {
    class Services;
    
-   class User
-     {
-      private:
-	Kine::String nickname;
-	int onlineID;
-	Services& services;
+   class User {
+    private:
+      Kine::String nickname;
+      int onlineID;
+      Services& services;
+      
+    public:
+      /* Inline functions here */
+      /* getNickname()
+       * 
+       * Return our nickname 
+       * 
+       */
+      
+      const Kine::String& getNickname(void) const
+	  { return nickname; };
+      
+      /* getOnlineID()
+       * 
+       * Return our unique sql identifier
+       * 
+       */
+      const int getOnlineID(void) const
+	{ return onlineID; };
+      
+      /* getOnlineIDString()
+       * 
+       * Return our unique sql identifier 
+       * (as a String)
+       * 
+       * This is redundant imho. - simon
+       */
+      const Kine::String& getOnlineIDString(void) const
+	{ return String::convert(onlineID); };
 
-      public:
-	/* Inline functions here */
-	/* getNickname()
-	 * 
-	 * Return our nickname 
-	 * 
-	 */
-	
-	Kine::String getNickname(void)
-	  {
-	     return nickname;
-	  };
-	
-	/* getOnlineID()
-	 * 
-	 * Return our unique sql identifier
-	 * 
-	 */
-	int getOnlineID(void)
-	  {
-	     return onlineID;
-	  };
-	/* getOnlineIDString()
-	 * 
-	 * Return our unique sql identifier 
-	 * (as a String)
-	 */
-	Kine::String getOnlineIDString(void)
-	  {
-	     return String::convert(onlineID);
-	  };
-	/* setNick(String)
-	 * 
-	 * Update our records to show a new nickname.....
-	 * 
-	 */
-        void setNick(String const &nick)
-	  {
-	     
-	                  nickname = nick;
-	  };
-	/* Take note. Their are two sendMessages, the latter allowing
-	 * you to override services default behaviour of using the 
-	 * nicknames settings of notice/privmsg
-	 */
-	void sendMessage(String const &message,String const &origin);
-	void sendMessage(String const &message,String const &origin, bool const &privmsg);
-	/* setModNick(bool)
-	 * 
-	 * Modify the value of ModNick
-	 * 
-	 */
-	void setModNick(bool const &);
-	/* modNick()
-	 * 
-	 * Return the current value of modNick
-	 * 
-	 */
-	bool modNick(void);
+      /* setNick(String)
+       * 
+       * Update our records to show a new nickname.....
+       * 
+       */
+      void setNick(const String& nick)
+	{ nickname = nick; };
+      
+      /* Take note. Their are two sendMessages, the latter allowing
+       * you to override services default behaviour of using the 
+       * nicknames settings of notice/privmsg
+       */
+      void sendMessage(String const &message,
+		       String const &origin);
+      void sendMessage(String const &message,
+		       String const &origin, bool const &privmsg);
+      
+      /* setModNick(bool)
+       * 
+       * Modify the value of ModNick
+       * 
+       */
+      void setModNick(bool const &);
+
+      /* modNick()
+       * 
+       * Return the current value of modNick
+       * 
+       */
+      bool modNick(void);
+      
 	/* setDeopAway(bool)
 	 * 
 	 * Modify the value of DeopAway
