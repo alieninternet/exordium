@@ -329,6 +329,57 @@ CHAN_FUNC (Module::parseSET)
                   return;
                }
 
+             if(command=="private")
+               {
+                  if(AISutil::Utils::toBool(value)==1)
+                    {
+                       ptr->setPrivate(true);
+                       origin.sendMessage(GETLANG(chan_SET_PRIVATE_TRUE), getNickname());
+                       return;
+                    }
+                  else
+                    {
+                       ptr->setPrivate(false);
+                       origin.sendMessage(GETLANG(chan_SET_PRIVATE_FALSE), getNickname());
+                       return;
+                    }
+                  origin.sendMessage(GETLANG(chan_SET_PRIVATE_USAGE),getNickname());
+                  return;
+
+               }
+
+
+             if(command=="description")
+               {
+                  String line = value + " " +tokens.rest();
+
+                  if( line.length() > 250 )
+                    ptr->setChanDescription(line.substr(0, 250));
+                  else
+                    ptr->setChanDescription(line);
+
+                  origin.sendMessage(GETLANG(chan_SET_DESCRIPTION), getNickname());
+
+                  return;
+               }
+
+
+             if(command=="url")
+               {
+                  String line = value + " " +tokens.rest();
+
+                  if( line.length() > 200 )
+                    ptr->setUrl(line.substr(0, 200));
+                  else
+                    ptr->setUrl(line);
+
+                  origin.sendMessage(GETLANG(chan_SET_URL), getNickname());
+
+                  return;
+               }
+
+
+
 	     origin.sendMessage(GETLANG(chan_SET_UNSUPPORTED_OPTION),getNickname());
 	     return;
 	  }
@@ -397,6 +448,35 @@ CHAN_FUNC (Module::parseINFO)
 
    origin.sendMessage(GETLANG(chan_INFO_START,channel),getNickname());
    origin.sendMessage(GETLANG(chan_INFO_OWNER,ptr->getOwner()),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_REGDATE,ptr->getRegistrationDate()),getNickname());
+
+
+   bool Private = ptr->getPrivate();
+
+   if( Private )
+   {
+       origin.sendMessage(GETLANG(chan_INFO_PRIVATE, ptr->getPrivate() ? "ON" : "OFF"),getNickname());
+
+       // Privacy is on, only IRCops and people with access may see the information.
+       String modes = origin.getModes();
+       int pos = modes.find("o");
+
+       if( ( pos < 0  || pos > modes.length() ) && ptr->getAccess( origin.getNickname() ) < 1 )
+          return;
+   }
+
+   origin.sendMessage(GETLANG(chan_INFO_CDESC, ptr->getChanDescription()),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_URL, ptr->getUrl()),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_TOPIC, ptr->getTopic()),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_MODES, ptr->getChannelModes()),getNickname());
+
+   origin.sendMessage(GETLANG(chan_INFO_SET_OPTIONS_START),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_SET_SECURE, ptr->isChanSecure() ? "ON" : "OFF"),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_SET_TRACKTOPICS, ptr->getTrackTopics() ? "ON" : "OFF"),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_SET_ENFORCEBANS, ptr->getEnforceBans() ? "ON" : "OFF"),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_SET_MLOCK, ptr->getModeLock() ? "ON" : "OFF"),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_SET_OPTIONS_END),getNickname());
+
    origin.sendMessage(GETLANG(chan_INFO_UNIQUEIDS,
 			      String::convert(ptr->getRegisteredID()),
 			      String::convert(ptr->getOnlineID())),getNickname());
@@ -1172,7 +1252,9 @@ void
    bool take=false;
    int i;
    int length = modes.length();
-   String targ=target;
+   String targ;
+
+   StringTokens st(target);
 
    for (i = 0; i!=length; i++)
      {
@@ -1193,12 +1275,16 @@ void
 	  {
 	     if(add)
 	       {
-		  std::cout << "New Channel ban set by : " << source << " on " << target << std::endl;
+                  targ = st.nextToken();
+
+		  std::cout << "New Channel ban set by : " << source << " on " << targ << std::endl;
 
 	       }
 	     if(take)
 	       {
-		  std::cout << "New Channel ban removed by : " << source << " on " << target << std::endl;
+                  targ = st.nextToken();
+
+		  std::cout << "New Channel ban removed by : " << source << " on " << targ << std::endl;
 	       }
 	  }
 
@@ -1206,10 +1292,12 @@ void
 	  {
 	     if(add)
 	       {
-		  if(target.toLower()==getNickname().toLower())
+                  targ = st.nextToken();
+
+		  if(targ.toLower()==getNickname().toLower())
                     return;
 
-		  std::cout << "Checking to see if " << target << " has access in " << channel.getName() << std::endl;
+		  std::cout << "Checking to see if " << targ << " has access in " << channel.getName() << std::endl;
 
 		  User *ptr = services->findUser( targ );
 
@@ -1218,15 +1306,15 @@ void
 		       std::cout << "  ^- SecureOps is enabled" << std::endl;
 
                     /* Channel has SECURE enabled */
-		       int axs = channel.getAccess(target);
-		       std::cout << "  ^- " << target << " has level " << axs << std::endl;
+		       int axs = channel.getAccess(targ);
+		       std::cout << "  ^- " << targ << " has level " << axs << std::endl;
 
 		       if(axs<100)
 			 {
 			    std::cout << " ^- Deop the bitch" << std::endl;
                          /* Hey not allowed to be opped!! */
 
-			    channel.mode(getNickname(), "-o",target);
+			    channel.mode(getNickname(), "-o",targ);
                          /* Tell origin off! */
 
 			 }
@@ -1237,7 +1325,9 @@ void
 
 	     if(take)
 	       {
-		  if(target.toLower()==getNickname().toLower())
+                  targ = st.nextToken();
+
+		  if(targ.toLower()==getNickname().toLower())
 		    return;
 
 		  User *ptr = services->findUser( targ );
@@ -1254,7 +1344,7 @@ void
 			 {
 			    std::cout << " ^- Reop the user who was deopped by non-privileged user" << std::endl;
 
-			    channel.mode(getNickname(), "+o",target);
+			    channel.mode(getNickname(), "+o",targ);
 
 			 }
 		       else
@@ -1271,14 +1361,18 @@ void
 	  {
 	     if(add)
 	       {
-		  if(target.toLower()==getNickname().toLower())
+                  targ = st.nextToken();
+
+		  if(targ.toLower()==getNickname().toLower())
 		    return;
 		  User *ptr = services->findUser( targ );
 		  channel.addUser(*ptr,1);
 	       }
 	     if(take)
 	       {
-		  if(target.toLower()==getNickname().toLower())
+                  targ = st.nextToken();
+
+		  if(targ.toLower()==getNickname().toLower())
 		    return;
 		  User *ptr = services->findUser( targ );
 		  channel.addUser(*ptr,0);
