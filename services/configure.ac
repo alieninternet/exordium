@@ -5,6 +5,8 @@
 
 AC_INIT([Exordium], [0.1-alpha], [http://sf.net/projects/exordium])
 AM_INIT_AUTOMAKE([1.6.1 foreign no-installinfo no-installman subdir-objects])
+AC_LIBTOOL_DLOPEN
+AC_LIBLTDL_INSTALLABLE
 AC_PROG_LIBTOOL
 AC_PREREQ(2.54)
 AC_COPYRIGHT(Exordium Network Services)
@@ -190,4 +192,9 @@ AC_CONFIG_FILES([source/Makefile
 		 source/modules/mod.game/cards/Makefile
 		 Makefile
 		 ])
+
 AC_OUTPUT
+
+dnl until libtool is useful on systems using autoconf versions > 2.13,
+dnl we unfortunately cannot do this. I hate GNU for this crap.
+dnl AC_CONFIG_SUBDIRS(libltdl)
