@@ -1,0 +1,11 @@
+This is the beginnings of an install document, mainly aimed at people
+developing/assisting with exordium.
+
+You need to have the following:
+
+Autoconf 2.57
+Automake 1.73
+Autogen  5.5.2
+LibAISUtil (http://sf.net/projects/libaisutil)
+KineIRCD (http://sf.net/projects/kineircd)
+
