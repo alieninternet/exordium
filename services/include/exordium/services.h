@@ -171,9 +171,9 @@ namespace Exordium {
 	LibAIS::String parseHelp(LibAIS::String const &);
 	void doHelp(User&, LibAIS::String const &,
 		    LibAIS::String const &, LibAIS::String const &);
-	void log (LibAIS::String const &, LibAIS::String const &, 
+	void log (User&, LibAIS::String const &, 
 		  LibAIS::String const &, LibAIS::String const &);
-	void log (LibAIS::String const &, LibAIS::String const &, 
+	void log (User&, LibAIS::String const &, 
 		  LibAIS::String const &);
 	void sendEmail(LibAIS::String const &, LibAIS::String const &, 
 		       LibAIS::String const &);

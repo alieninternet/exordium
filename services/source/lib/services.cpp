@@ -626,8 +626,6 @@ namespace Exordium
      Services::doHelp(User& origin, String const &service,
 		      String const &topic, String const &parm)
        {
-          String lang = origin.getLanguage();
-          std::cout << "Lang = " << lang << std::endl;
 	  if(topic == "")
 	    {
 	       //No topic, no parm.
@@ -733,25 +731,25 @@ namespace Exordium
  */
 
    void
-     Services::log (String const &nick, String const &service, String const &text, String const &cname)
+     Services::log (User& origin, String const &service, String const &text, String const &cname)
        {
-	  String thenick = nick.IRCtoLower();
-	  User *ptr = findUser(thenick);
-	  String nicks = ptr->getIDList();
-	  String ident = ptr->getIdent();
-	  String host = ptr->getHost();
+//	  String thenick = origin.IRCtoLower();
+//	  User *ptr = findUser(thenick);
+	  String nicks = origin.getIDList();
+	  String ident = origin.getIdent();
+	  String host = origin.getHost();
 	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"')";
 	  database.query(query);
        }
 
    void
-     Services::log (String const &nick, String const &service, String const &text)
+     Services::log (User& origin, String const &service, String const &text)
        {
-	  String thenick = nick.IRCtoLower();
-	  User *ptr = findUser(thenick);
-	  String nicks = ptr->getIDList();
-	  String ident = ptr->getIdent();
-	  String host = ptr->getHost();
+//	  String thenick = nick.IRCtoLower();
+//	  User *ptr = findUser(thenick);
+	  String nicks = origin.getIDList();
+	  String ident = origin.getIdent();
+	  String host = origin.getHost();
 	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','')";
 	  database.query(query);
        }
