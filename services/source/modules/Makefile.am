@@ -156,10 +156,19 @@ mod_serv_la_LIBADD= \
 mod_serv_la_LDFLAGS= \
 	-avoid-version -module
 mod_serv_la_SOURCES= \
+	mod.serv/language.cpp \
+	mod.serv/language.h \
 	mod.serv/serv.cpp \
 	mod.serv/serv.h \
 	mod.serv/tables.cpp \
 	mod.serv/tables.h
+
+mod.serv/language.cpp mod.serv/language.h: mod.serv/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T mod.serv/language.tpl \
+		$(top_builddir)/autogen/language.def
+
 
 mod_stats_la_LIBADD= \
 	../libexordium.la

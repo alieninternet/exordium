@@ -212,6 +212,458 @@ langtag = {
    data_en = "Error: That channel is not registered";
 };
 
+/*
+ * Tags for mod_serv
+ */
+ 
+langtag = {
+   name = "serv_NOT_ENOUGH_ACCESS";
+   component = "mod_serv";
+   data_en = "You do not have enough access for that command";
+};
+
+langtag = {
+   name = "serv_STATUS_REPORT_START";
+   component = "mod_serv";
+   data_en = "Exordium Network Services status report";
+};
+
+langtag = {
+   name = "serv_STATUS_CURRENT_BUILD";
+   component = "mod_serv";
+   data_en = "Current build : \b%p0\b";
+};
+
+langtag = {
+   name = "serv_STATUS_TXRX";
+   component = "mod_serv";
+   data_en = "Bytes Transmitted : \b%p0\b Bytes Received : \b%p1\b";
+};
+
+langtag = {
+   name = "serv_STATUS_CURR_TIME";
+   component = "mod_serv";
+   data_en = "Current Time : \b%p0\b";
+};
+
+langtag = {
+   name = "serv_DIE_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: die <reason>";
+};
+
+langtag = {
+   name = "serv_DIE_SUCCESS";
+   component = "mod_serv";
+   data_en = "You bastard! You killed services....";
+};
+
+langtag = {
+   name = "serv_FREEZE_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: freeze add/del/list";
+};
+
+langtag = {
+   name = "serv_FREEZE_ADD_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: freeze add <#channel> <reason>";
+};
+
+langtag = {
+   name = "serv_FREEZE_NOT_REG";
+   component = "mod_serv";
+   data_en = "Error: That channel is not registered with services";
+};
+
+langtag = {
+   name = "serv_FREEZE_MAX_ALREADY";
+   component = "mod_serv";
+   data_en = "Error: That channel has already been frozen six times";
+};
+
+langtag = {
+   name = "serv_FREEZE_DEL_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: freeze del <#channel>";
+};
+
+langtag = {
+   name = "serv_FREEZE_NOT_FREEZED";
+   component = "mod_serv";
+   data_en = "Error: That channel is not frozen";
+};
+
+langtag = {
+   name = "serv_FREEZE_LIST_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: freeze list <#channel>";
+};
+
+langtag = {
+   name = "serv_FREEZE_LIST_NONFOUND";
+   component = "mod_serv";
+   data_en = "No freeze's found for %p0";
+};
+
+langtag = {
+   name = "serv_FREEZE_LIST_HISTORY";
+   component = "mod_serv";
+   data_en = "Freeze history for channel %p0";
+};
+
+langtag = {
+   name = "serv_GETHASH_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: gethash <nickname>";
+};
+
+langtag = {
+   name = "serv_GETHASH_NOT_PENDING";
+   component = "mod_serv";
+   data_en = "Error: That nickname is not in a pending status";
+};
+
+langtag = {
+   name = "serv_GETHASH_IS";
+   component = "mod_serv";
+   data_en = "The authorisation code for the nickname \b%p0\b is %p1";
+};
+
+langtag = {
+   name = "serv_SETPASS_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: setpass <nickname> <password>";
+};
+
+langtag = {
+   name = "serv_NOT_ON_STAFF";
+   component = "mod_serv";
+   data_en = "Error: You may not perform that command on network staff";
+};
+
+langtag = {
+   name = "serv_SETPASS_SUCCESS";
+   component = "mod_serv";
+   data_en = "Password for %p0 has been changed to %p1";
+};
+
+langtag = {
+   name = "serv_RAW_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: raw <raw text here>";
+};
+
+langtag = {
+   name = "serv_RAW_SUCCESS";
+   component = "mod_serv";
+   data_en = "Raw text sent to server";
+};
+
+langtag = {
+   name = "serv_NEWS_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: news add/del/list";
+};
+
+langtag = {
+   name = "serv_NEWS_LIST_NO";
+   component = "mod_serv";
+   data_en = "No news found!";
+};
+
+langtag = {
+   name = "serv_NEWS_DEL_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: news del <id>";
+};
+
+langtag = {
+   name = "serv_NEWS_DEL_SUCCESS";
+   component = "mod_serv";
+   data_en = "News item %p0 has been deleted";
+};
+
+langtag = {
+   name = "serv_NEWS_ADD_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: news add <type> <expires> <text here>";
+};
+
+langtag = {
+   name = "serv_NEWS_ADD_TYPE_USAGE";
+   component = "mod_serv";
+   data_en = "Error: <type> must be either 0 (all users) or 1 (staff)";
+};
+
+langtag = {
+   name = "serv_NEWS_ADD_EXPIRE_IN_PAST";
+   component = "mod_serv";
+   data_en = "Error: <expires> cannot be in the past";
+};
+
+langtag = {
+   name = "serv_NEWS_ADD_EXPIRE_TIME_MACHINE_NEEDED";
+   component = "mod_serv";
+   data_en = "Error: <expires> is too far in the future";
+};
+
+langtag = {
+   name = "serv_NEWS_ADD_SUCCESS";
+   component = "mod_serv";
+   data_en = "New news item has been added successfully";
+};
+
+langtag = {
+   name = "serv_CHAN_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: chan add/del/mod";
+};
+
+langtag = {
+   name = "serv_CHAN_MOD_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: chan mod <#channel> <newowner>";
+};
+
+langtag = {
+   name = "serv_CHAN_MOD_OWNER_NOT_REGGED";
+   component = "mod_serv";
+   data_en = "Error: New owners nickname is not registered with services";
+};
+
+langtag = {
+   name = "serv_CHAN_MOD_NOT_REGGED";
+   component = "mod_serv";
+   data_en = "Error: That channel is not registered";
+};
+
+langtag = {
+   name = "serv_CHAN_MOD_SUCCESS";
+   component = "mod_serv";
+   data_en = "Success! %p0 is now owned by %p1";
+};
+
+langtag = {
+   name = "serv_CHAN_DEL_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: chan del <#channel> <reason>";
+};
+
+langtag = {
+   name = "serv_CHAN_DEL_SUCCESS";
+   component = "mod_serv";
+   data_en = "Channel %p0 has been dropped";
+};
+
+langtag = {
+   name = "serv_CHAN_ADD_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: chan add <#channel> <owner>";
+};
+
+langtag = {
+   name = "serv_CHAN_ADD_ALREADY_REG";
+   component = "mod_serv";
+   data_en = "Error: That channel is already registered with services, perhaps try mod?";
+};
+
+langtag = {
+   name = "serv_CHAN_ADD_SUCCESS";
+   component = "mod_serv";
+   data_en = "Success %p0 has been registered to %p1";
+};
+
+langtag =  {
+   name = "serv_USER_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: user add/del/mod/list";
+};
+
+langtag = {
+   name = "serv_USER_MOD_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: user mod <nickname> <level>";
+};
+
+langtag = {
+   name = "serv_USER_MOD_DUMB_USER";
+   component = "mod_serv";
+   data_en = "Silly Billy! You can't mod yourself";
+};
+
+langtag = {
+   name = "serv_USER_MOD_LEVEL_MISMATCH";
+   component = "mod_serv";
+   data_en = "Error: Level must be between 1 and 499 inclusive";
+};
+
+langtag = {
+   name = "serv_USER_MOD_DUMBER_USER";
+   component = "mod_serv";
+   data_en = "Error: You cannot set someones access higher, or equal to your own";
+};
+
+langtag = {
+   name = "serv_USER_MOD_SHOULD_YOU_BE_STAFF";
+   component = "mod_serv";
+   data_en = "Error: That user has higher access than you. You may not modify them";
+};
+
+langtag = {
+   name = "serv_USER_MOD_SUCCESS";
+   component = "mod_serv";
+   data_en = "Success %p0 has been modified to level %p2";
+};
+
+langtag = {
+   name = "serv_USER_LIST_NO_MATCHES";
+   component = "mod_serv";
+   data_en = "No users found!";
+};
+
+langtag = {
+   name = "serv_USER_LIST_MATCH";
+   component = "mod_serv";
+   data_en = "\b%p0\b has level \b%p1\b";
+};
+
+langtag = {
+   name = "serv_USER_DEL_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: del <nickname>";
+};
+
+langtag = {
+   name = "serv_USER_DEL_NO_ACCESS";
+   component = "mod_serv";
+   data_en = "Error: That person does not have access";
+};
+
+langtag =  {
+   name = "serv_USER_DEL_SUCCESS";
+   component = "mod_serv";
+   data_en = "%p0 has had their access deleted";
+};
+
+langtag = {
+   name = "serv_USER_ADD_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: user add <nickname> <level>";
+};
+
+langtag = {
+   name = "serv_USER_ADD_TWIT";
+   component = "mod_serv";
+   data_en = "Error: You can't add yourself, silly.";
+};
+
+langtag = {
+   name = "serv_USER_ADD_ALREADY_IN";
+   component = "mod_serv";
+   data_en = "Error: That person already has access";
+};
+
+langtag = {
+   name = "serv_USER_ADD_LEVEL_ERROR";
+   component = "mod_serv";
+   data_en = "Error: Level must be between 1 and 499 inclusive";
+};
+
+langtag = {
+   name = "serv_USER_ADD_SUCCESS";
+   component = "mod_serv";
+   data_en = "%p0 has been added with level %p1";
+};
+
+langtag = {
+   name = "serv_HELPON_SUCCESS";
+   component = "mod_serv";
+   data_en = "Success! You are now a member of Peoplechat's services staff - level %p0";
+};
+
+langtag = {
+   name = "serv_HELPON_FAILURE";
+   component = "mod_serv";
+   data_en = "Failed :-( You do not have enough access to helpon (level %p0)";
+};
+
+langtag = {
+   name = "serv_NLIST_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: nlist <match> <optional destination nick>";
+};
+
+langtag = {
+   name = "serv_NLIST_ERROR_NOT_ONLINE";
+   component = "mod_serv";
+   data_en = "Error: That user (%p0) is not online";
+};
+
+
+langtag = {
+   name = "serv_NLIST_TOO_MANY_FOUND";
+   component = "mod_serv";
+   data_en = "Error! More than 30 matches found, please restrict your search";
+};
+
+langtag = {
+   name = "serv_NLIST_NONE_FOUND";
+   component = "mod_serv";
+   data_en = "No matches found for %p0";
+};
+
+langtag = {
+   name = "serv_ELIST_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: elist <match> <optional destination nickname>";
+};
+
+langtag = {
+   name = "serv_DELNICK_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: delnick <nickname> <reason>";
+};
+
+langtag = {
+   name = "serv_DELNICK_SUCCESS";
+   component = "mod_serv";
+   data_en = "%p0 has been deleted with reason %p1";
+};
+
+langtag = {
+   name = "serv_CLIST_USAGE";
+   component = "mod_serv";
+   data_en = "Usage: clist <nickname> <optional destination nickname>";
+};
+
+langtag = {
+   name = "serv_CLIST_START_SELF";
+   component = "mod_serv";
+   data_en = "Channel Access list for %p0";
+};
+
+langtag = {
+   name = "serv_CLIST_START_OTHER";
+   component = "mod_serv";
+   data_en = "Channel access list for %p0 sent by %p1";
+};
+
+langtag = {
+   name = "serv_CLIST_START_DEST";
+   component = "mod_serv";
+   data_en = "Sending channel access list for %p0 to %p1";
+};
+
+langtag = {
+   name = "serv_CLIST_NONE_FOUND";
+   component = "mod_serv";
+   data_en = "No results found!";
+};
+
+
+
+
 /* 
  * Tags for mod_oper
  */
