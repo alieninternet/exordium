@@ -1,3 +1,4 @@
+
 /*
  This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
  $Author$
@@ -409,6 +410,8 @@ void
    query = "DELETE from identified where nick='"+String::convert(oid)+"'";
    services.getDatabase().query(query);
    //Store the quit reason here
+   query = "UPDATE nicks set quitmsg='" + reason + "' where nickname='"+origin+"'";
+   services.getDatabase().query(query);
 }
 
 void

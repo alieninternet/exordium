@@ -64,6 +64,22 @@ namespace Exordium
        }
 
    String
+     Nickname::getQuitMessage(String const &nick)
+       {
+	  String query = "SELECT quitmsg from nicks where nickname='"+nick+"'";
+	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRow row;
+	  while ((row = res.fetch_row()))
+	    {
+	       String foo = ((std::string) row[0]).c_str();
+	       res.free_result();
+	       return foo;
+	    }
+	  return "";
+       }
+   
+	  
+   String
      Nickname::getRegNickCount(void)
        {
 	  String query = "SELECT count(*) from nicks";
@@ -115,12 +131,11 @@ namespace Exordium
    String
      Nickname::generatePassword(String const &nickname, String const &password)
        {
-	  String pw =
-	    Kine::Utils::SHA1::digestToStr(Password::makePassword(nickname,
-								  password),
-					   services.PasswordStrBase,
-					   services.PasswordStrBaseLongPad);
-	  return pw;
+	  std::string bob(Kine::Password::makePassword(nickname,password).s_char,20);
+	  std::cout << "Pass length is " << bob.length() << std::endl;
+	  std::cout << "Its: " << bob << std::endl;
+	  return bob;
+
        }
 
    bool

@@ -33,6 +33,7 @@ namespace Exordium {
 		      Kine::String username, Kine::String host, Kine::String vwhost,
 		      Kine::String server, Kine::String modes, Kine::String realname);
       int countHost(Kine::String const &);
+      Kine::String getQuitMessage(Kine::String const &);
       int getRequiredAccess(Kine::String const &, Kine::String const &);
       bool isNickRegistered (Kine::String const &);
       Kine::String getPass (Kine::String const &);

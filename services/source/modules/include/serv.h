@@ -55,6 +55,7 @@ void SERV_FUNC (parseDIE);
 void SERV_FUNC (parseRAW);
 void SERV_FUNC (parseNEWS);
 void SERV_FUNC (parseSYNCH);
+void SERV_FUNC (parseSETPASS);
 };
 };
 

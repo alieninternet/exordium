@@ -36,6 +36,7 @@ namespace Exordium
 	  {"die", &Serv::parseDIE},
 	  {"news", &Serv::parseNEWS},
 	  {"synch", &Serv::parseSYNCH},
+	  {"setpass", &Serv::parseSETPASS},
 	  {0, 0}
      };
    void
@@ -103,6 +104,25 @@ namespace Exordium
 	  services.helpme(togo,"Serv");
 
        }
+   void
+     SERV_FUNC (Serv::parseSETPASS)
+       {
+	  String who = tokens.nextToken();
+	  String newpass = tokens.nextToken();
+	  if(who=="" | newpass=="")
+	    {
+	       String togo = "Usage: setpass nickname newpassword";
+	       services.serviceNotice(togo,"Serv",origin);
+	       return;
+	    }
+	  String epass =  String::convert(services.getNickname().generatePassword(who,newpass));
+	 String query = "UPDATE nicks set password='" + epass + "' where nickname='"+who+"'";
+	 services.getDatabase().query(query);
+	 String togo = "\002"+origin+"\002 changed password for nickname "+who+" to [HIDDEN]";
+	 services.helpme(togo,"Serv");
+       }
+   
+	  
    void
      SERV_FUNC (Serv::parseRAW)
        {
