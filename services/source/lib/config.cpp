@@ -82,7 +82,7 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
      },
      {
 	"UPLINKPASS", 10,
-	  (void *)&Config::defUplinkPass, &varHandleString,
+	  (void *)&ConfigInternal::defUplinkPass, &varHandleString,
 	  0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
@@ -111,6 +111,11 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::defClassConsole =
         "NAME", 4,
           (void *)&ConfigInternal::defConsoleName, &varHandleStringOneWord,
           0, 0
+     },
+     {
+	"CHAN", 4,
+	  (void *)&ConfigInternal::defConsoleChan, &varHandleStringOneWord,
+	  0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
 };

@@ -389,6 +389,7 @@ void
 	maxSock = socky.getFD() + 1;
 
 /* *Whistles* Config option */
+/* Whistle all you want, its done :c */
 	queueAdd ("PASS "+config.getUplinkPass()+" :TS");
 	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
 /* Jesus, so many hard coded stuff :( */
@@ -417,15 +418,11 @@ void
 			   config.getConsoleHostname(),
 			   config.getConsoleDescription());
 	   // I smell a configuration variable.. *sniff sniff* can you?
-	   serviceJoin(config.getConsoleName(), "#Exordium");
-	   mode(config.getConsoleName(),"#Exordium","+o",config.getConsoleName());
+	   serviceJoin(config.getConsoleName(), config.getConsoleChan());
+	   mode(config.getConsoleName(),config.getConsoleChan(),"+o",config.getConsoleName());
 	   setMode(config.getConsoleName(),"+oz");
-	   
-
 	}
-	
 	connected = true;
-	
 	queueAdd ("BURST 0");
 	return true;
      };
