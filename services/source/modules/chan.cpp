@@ -362,7 +362,7 @@ void
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services.doHelp(origin.getNickname(),myName,word,parm);
+   services.doHelp(origin,myName,word,parm);
 }
 
 void

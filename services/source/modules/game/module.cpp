@@ -54,6 +54,7 @@ const Game::commandTable_type Game::directCommandTable[] =
      { "quote",		&Game::handleQUOTE },
      { "help",		&Game::handleHELP },
      { "start",		&Game::handleSTART },
+     { "list",		&Game::handleLIST },
      { 0, 0 }
 };
 
@@ -140,7 +141,7 @@ void Game::parseLine(StringTokens& line, User& origin)
  */
 GAME_FUNC(Game::handleHELP)
 {
-   services.doHelp(origin.getNickname(), myName, line.nextToken(),
+   services.doHelp(origin, myName, line.nextToken(),
 		   line.nextToken());
 }
 
@@ -220,3 +221,19 @@ GAME_FUNC(Game::handleSTART)
 
    // give them an error???!!
 }
+
+/* handleSTART - Parse a 'list' command, to list all available games
+ * Original 16/09/2002 - josullivan
+ */
+GAME_FUNC(Game::handleLIST)
+{
+   // Check for the game
+   for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
+     std::cout << origin.getNickname() << std::endl;
+     std::cout << ChannelGame::channelGameTable[i].game << std::endl;
+   }
+
+   // give them an error???!!
+}
+
+

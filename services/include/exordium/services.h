@@ -169,7 +169,7 @@ namespace Exordium {
 	void mode (LibAIS::String const &, LibAIS::String const &, 
 		   LibAIS::String const &, LibAIS::String const &);
 	LibAIS::String parseHelp(LibAIS::String const &);
-	void doHelp(LibAIS::String const &, LibAIS::String const &,
+	void doHelp(User&, LibAIS::String const &,
 		    LibAIS::String const &, LibAIS::String const &);
 	void log (LibAIS::String const &, LibAIS::String const &, 
 		  LibAIS::String const &, LibAIS::String const &);
@@ -394,7 +394,7 @@ namespace Exordium {
 	LibAIS::String getYAHOO(LibAIS::String const &);
 	LibAIS::String getAIM(LibAIS::String const &);
 	LibAIS::String getICQ(LibAIS::String const &);
-	LibAIS::String getLanguage(LibAIS::String const &);
+//	LibAIS::String getLanguage(LibAIS::String const &);
 	LibAIS::String getEmail(LibAIS::String const &);
 	LibAIS::String getRegDate(LibAIS::String const &);
 	LibAIS::String getLastID(LibAIS::String const &);

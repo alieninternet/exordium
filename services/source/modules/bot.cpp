@@ -89,7 +89,7 @@ void
 void
   BOT_FUNC (Bot::parseHELP)
 {
-   services.doHelp(origin.getNickname(),"bot",tokens.nextToken(),tokens.nextToken());
+   services.doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION

@@ -399,4 +399,19 @@ void
    services.getDatabase().query("UPDATE  nicks set lang='"+lang+"' WHERE nickname='"+nickname+"'");
 }
 
-												 
+/* getLanguage()
+ *
+ * return users language
+ */
+
+String
+  User::getLanguage()
+{
+   MysqlRes res = services.getDatabase().query("SELECT lang FROM nicks WHERE nickname='"+nickname+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+        return row[0];
+     }
+   return "english";
+}

@@ -310,7 +310,7 @@ void
                    if(services.isOper(OLDorigin))
                      services.delOper(OLDorigin);
                    else
-                     std::cout << "Warning: inconsistency in parsem: oper is not in onlineopers!" << endl;
+                     std::cout << "Warning: inconsistency in parsem: oper is not in onlineopers!" << std::endl;
 
                }
 

@@ -68,6 +68,7 @@ class Game : public Exordium::Service {
    handler_type handleHELP;
    handler_type handleQUOTE;
    handler_type handleSTART;
+   handler_type handleLIST;
    
 public:
    // Our constructor

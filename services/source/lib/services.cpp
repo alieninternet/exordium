@@ -617,27 +617,28 @@ namespace Exordium
        {
 	  queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
        }
-/* doHelp(String,String,String,String)
+/* doHelp(User,String,String,String)
  *
  * Generate a help page from our dynamic help system
  *
  */
    void
-     Services::doHelp(String const &nick, String const &service,
+     Services::doHelp(User& origin, String const &service,
 		      String const &topic, String const &parm)
        {
-	  String lang = getLanguage(nick);
+          String lang = origin.getLanguage();
+          std::cout << "Lang = " << lang << std::endl;
 	  if(topic == "")
 	    {
 	       //No topic, no parm.
-	       String query = "SELECT txt from help where service='"+service+"' AND word='' AND parm='' AND lang='"+lang+"' ORDER by id";
+	       String query = "SELECT txt from help where service='"+service+"' AND word='' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id";
 	       MysqlRes res = database.query(query);
 	       MysqlRow row;
 	       while ((row = res.fetch_row()))
 		 {
 		    String line = row[0];
 		    line = parseHelp(line);
-		    serviceNotice(line,service,nick);
+		    serviceNotice(line,service,origin.getNickname());
 		 }
 	       return;
 	    }
@@ -645,26 +646,26 @@ namespace Exordium
 	  if(parm == "")
 	    {
 	       //No topic, no parm.
-	       String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+lang+"' ORDER by id";
+	       String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id";
 	       MysqlRes res = database.query(query);
 	       MysqlRow row;
 	       while ((row = res.fetch_row()))
 		 {
 		    String line = row[0];
 		    line = parseHelp(line);
-		    serviceNotice(line,service,nick);
+		    serviceNotice(line,service,origin.getNickname());
 		 }
 	       return;
 	    }
 	  // End
-	  String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+lang+"' ORDER by id";
+	  String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+origin.getLanguage()+"' ORDER by id";
 	  MysqlRes res = database.query(query);
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
 	       String line = row[0];
 	       line = parseHelp(line);
-	       serviceNotice(line,service,nick);
+	       serviceNotice(line,service,origin.getNickname());
 	    }
 	  return;
 
@@ -1583,6 +1584,7 @@ String
  * 
  */
 
+/*
 String
   Services::getLanguage(String const &nick)
 {
@@ -1598,6 +1600,7 @@ String
      }
    return "english";
 }
+*/
 
 
 /* getEmail
@@ -1732,7 +1735,7 @@ void
        addOper(origin, axs);
     else
     {
-      std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << endl;
+      std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << std::endl;
     }
 
     return;

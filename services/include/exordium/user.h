@@ -214,6 +214,12 @@ namespace Exordium {
        * changing the language for a nick not in use... )
        */
       void setLanguage(LibAIS::String const &);
+
+      /* getLanguage()
+       *
+       * Retrieve users language
+       */
+      LibAIS::String getLanguage(void);
       
       /* Our constructor definition */
       User(LibAIS::String const &nick, int const &oid, Services &s)
