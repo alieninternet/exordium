@@ -4,6 +4,7 @@ lib_LTLIBRARIES= mod_game.la
 mod_game_la_SOURCES = channelgame.cpp \
 		      config.cpp \
 		      exordi8.cpp \
+                      hangman.cpp \
 		      game.cpp
 mod_game_la_LIBADD = cards/lib_cards.la ../../libservices.la
 mod_game_la_LDFLAGS = -avoid-version -module

@@ -27,6 +27,7 @@
 
 #include "channelgame.h"
 #include "exordi8.h"
+#include "hangman.h"
 
 
 /* The list of channel games. 
@@ -36,6 +37,7 @@
 const ChannelGame::channelGameTable_type ChannelGame::channelGameTable[] =
 {
      { "exordi8",		&Exordi8::createGame },
+     { "hangman",		&Hangman::createGame },
      { 0, 0 }
 };
 
