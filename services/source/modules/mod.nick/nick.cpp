@@ -32,6 +32,7 @@
 #include "tables.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
+#include <exordium/utils.h>
 #include <sstream>
 
 using AISutil::String;
@@ -259,7 +260,7 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String newhash = services->generatePassword(origin.getNickname(),value);
+	String newhash = Utils::generatePassword(origin.getNickname(), value);
         services->getDatabase().dbUpdate("nicks", "password='"+newhash+"'", "nickname='"+origin.getNickname()+"'");
 	String togo = "Password has been successfully changed to "+value;
 	origin.sendMessage(togo,getName());
@@ -554,7 +555,7 @@ void
 	     origin.sendMessage(tosend,getName());
 	     return;
 	  }
-	String nickpass = String::convert(services->generatePassword(tokill,password));
+	String nickpass = Utils::generatePassword(tokill, password);
 	String givepass = ptr->getPass();
 	if(nickpass == givepass)
 	  {
@@ -599,7 +600,7 @@ void
 	       origin.sendMessage(tosend,getName());
 	       return;
 	    }
-	  String nickpass = String::convert(services->generatePassword(toghost,password));	
+	  String nickpass = Utils::generatePassword(toghost, password);
 	  
 	  User *ptr = services->findUser(toghost);
 
@@ -652,7 +653,8 @@ void
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
-	  String nickpass = services->generatePassword(origin.getNickname(),password);
+	  String nickpass = Utils::generatePassword(origin.getNickname(),
+						    password);
 	  String givepass = origin.getPass();
 	  if(nickpass == givepass)
 	    {

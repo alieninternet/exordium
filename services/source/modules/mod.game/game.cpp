@@ -31,6 +31,7 @@
 #include <exordium/channel.h>
 #include <exordium/service.h>
 #include <exordium/services.h>
+#include <exordium/utils.h>
 #include <kineircd/str.h>
 
 #include "game.h"
@@ -211,7 +212,7 @@ GAME_FUNC(Module::handleQUOTE)
    int j;
   
    String numb = String::convert(services->getDatabase().dbCount("fortunes"));
-   j = services->random(numb.toInt());
+   j = Utils::random(numb.toInt());
 
    // Grab the quote
    if (services->getDatabase().dbSelect("body", "fortunes", 

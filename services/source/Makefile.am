@@ -26,6 +26,7 @@ libexordium_la_SOURCES = lib/config.cpp \
 			 lib/service.cpp \
 			 lib/services.cpp \
 			 lib/user.cpp \
+			 lib/utils.cpp \
 			 lib/database/database.cpp \
 			 $(EXORDIUM_TARGET_DB_MYSQL) \
 			 $(EXORDIUM_TARGET_DB_PGSQL)

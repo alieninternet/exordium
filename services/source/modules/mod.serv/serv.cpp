@@ -32,6 +32,7 @@
 #include "tables.h"
 #include <exordium/services.h>
 #include <exordium/channel.h>
+#include <exordium/utils.h>
 #include <kineircd/str.h>
 
 using AISutil::String;
@@ -114,7 +115,7 @@ void
 	origin.sendMessage("Error: Nickname is not registered",getName());
 	return;
      }
-   String epass =  String::convert(services->generatePassword(who,newpass));
+   String epass =  Utils::generatePassword(who, newpass);
    services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
    services->logLine(togo);

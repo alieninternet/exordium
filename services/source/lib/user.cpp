@@ -30,6 +30,7 @@
 
 #include "exordium/services.h"
 #include "exordium/user.h"
+#include "exordium/utils.h"
 #include <kineircd/str.h>
 
 using AISutil::String;
@@ -219,7 +220,7 @@ void
   User::addCheckIdentify(void)
 {
    sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick");
-   services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"'");
+   services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (Utils::random(60)))+"'");
    return;
 };
 

@@ -31,6 +31,7 @@
 #include "services.h"
 #include "exordium/channel.h"
 #include "exordium/user.h"
+#include "exordium/utils.h"
 #include <queue>
 #include <map>
 #include <set>
@@ -858,11 +859,6 @@ void ServicesInternal::checkpoint(void)
 }
 
 
-unsigned long Services::random(unsigned long max)
-{
-   return (unsigned long)(((max+1.0) * rand()) / RAND_MAX);
-}
-
 bool ServicesInternal::queueFlush(void)
 {
    if(connected)
@@ -1025,19 +1021,6 @@ void ServicesInternal::setNick(User &who, String &newnick)
    database.dbUpdate("onlineclients", "nickname='"+fixedNewNick+"'", "id="+who.getOnlineIDString());
 };
 
-
-/* generatePassword(String,String)
- *
- * Generate a new password for the given user.
- *
- */
-
-String
-  Services::generatePassword(String const &nickname, String const &password)
-{
-   String bob((char *)Kine::Password::makePassword(nickname,password).s_char,(String::size_type)20);
-   return bob;
-}
 
 /* isAuthorised(String)
  *
@@ -1245,26 +1228,28 @@ String ServicesInternal::getpendingCode(String const &nick)
 void ServicesInternal::registerNick(String const &nick, String const &password,
 				    String const &email)
 {
-   String gpass = generatePassword(nick.IRCtoLower(),password);
+   String gpass = Utils::generatePassword(nick.IRCtoLower(),password);
    // oh, this is revoltingly hard-coded! :(
    database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
 }
+
 
 /* genAuth(String)
  *
  * Generate a new auth code the given nickname (and return it!)
  *
  */
-
 String ServicesInternal::genAuth(String const &nickname)
 {
-   String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword("VIVA LA FRANCE :)",nickname),PasswordStrBase,PasswordStrBaseLongPad);
+   String authcode = Utils::generatePassword(nickname,
+					     "VIVA LA FRANCE :)");
    database.dbInsert("nickspending", "'','"+nickname+"','"+authcode+"'");
 #ifdef DEBUG
    logLine("New registration: "+nickname, Log::Debug);
 #endif
    return authcode;
 }
+
 
 void ServicesInternal::addOper(String const &nick, int access)
 {

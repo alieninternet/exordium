@@ -58,9 +58,6 @@ namespace Exordium {
 	{};
       
     public:
-      static const Kine::Utils::base_type PasswordStrBase = 85;
-      static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
-      
       time_t currentTime;
       
       // this is dodgey and should be passed to modules, *not* set by Parser::
@@ -86,10 +83,6 @@ namespace Exordium {
 		   const Log::mask_type mask = Log::Informative)
 	{ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); };
 
-      static unsigned long random(unsigned long max);
-      static AISutil::String generatePassword(AISutil::String const &,
-					      AISutil::String const &);
-      
       // Function Declrations below here.
       virtual int getAccess(AISutil::String &, AISutil::String &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;
