@@ -93,7 +93,7 @@ namespace Game {
 	{ return *services; };
       
       // Start the module
-      void start(Exordium::Services& s);
+      bool start(Exordium::Services& s);
       
       // Stop the module (called just before a module is unloaded)
       void stop(const AISutil::String& reason);

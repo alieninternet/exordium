@@ -139,8 +139,8 @@ namespace Exordium {
       virtual ~Service() 
 	{};
 
-      // Start the module
-      virtual void start(Exordium::Services& s) = 0;
+      // Start the module (return false if the module is unable to start)
+      virtual bool start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
       virtual void stop(const AISutil::String& reason) {};

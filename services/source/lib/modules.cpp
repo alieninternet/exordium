@@ -164,7 +164,7 @@ struct startModule
 
    // Operator which performs the starting
    inline void operator()(Modules::modules_type::value_type& modulesData)
-     { modulesData.second->service->start(services); };
+     { (void)modulesData.second->service->start(services); };
 };
 
 /* startAll - Start all modules in the list

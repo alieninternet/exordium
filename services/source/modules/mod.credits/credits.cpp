@@ -75,7 +75,7 @@ const Module::commandTable_type Module::channelCommandTable[] =
 /* start - Start the service
  * Original 17/09/2002 pickle
  */
-void Module::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -85,6 +85,8 @@ void Module::start(Exordium::Services& s)
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
 
+   // We started okay :)
+   return true;
 }
 
 

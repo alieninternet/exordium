@@ -112,10 +112,13 @@ const Oper::moduleInfo_type Oper::moduleInfo = {
 
 
 // Start the service
-void Oper::start(Exordium::Services& s)
+bool Oper::start(Exordium::Services& s)
 {
    services = &s;
    services->registerService(getName(),getName(),"ircdome.org", "+dz",
 			    "IRC Operator Services");
    services->serviceJoin(getName(),"#Debug");
+   
+   // We started okay :)
+   return true;
 }

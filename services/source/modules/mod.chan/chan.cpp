@@ -875,7 +875,7 @@ const Module::moduleInfo_type Module::moduleInfo = {
 
 
 // Start the service
-void Module::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -889,7 +889,7 @@ void Module::start(Exordium::Services& s)
 				  "table '") +
 			   Tables::tables[i]->name + "'",
 			   Log::Fatality); 
-	 return; // How do we tell services we did not start happily?!
+	 return false;
       }
       
       // Next table..
@@ -902,6 +902,9 @@ void Module::start(Exordium::Services& s)
 			    getConfigData().getDescription());
    services->serviceJoin(getName(),"#Debug");
    services->getChannel().synchChannels();
+   
+   // We started okay :)
+   return true;
 }
 
 

@@ -74,7 +74,7 @@ namespace Exordium {
 	   {};
    
 	 // Start the module
-	 void start(Exordium::Services& s);
+	 bool start(Exordium::Services& s);
 	 
 	 // Parser for incoming stuff sent on a channel
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,

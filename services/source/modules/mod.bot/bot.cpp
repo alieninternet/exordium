@@ -108,7 +108,7 @@ const Bot::moduleInfo_type Bot::moduleInfo = {
 
 
 // Start the service
-void Bot::start(Exordium::Services& s)
+bool Bot::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -118,4 +118,7 @@ void Bot::start(Exordium::Services& s)
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
    services->serviceJoin(getName(),"#Debug");
+   
+   // We started okay :)
+   return true;
 }

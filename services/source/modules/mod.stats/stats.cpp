@@ -81,7 +81,7 @@ const Module::moduleInfo_type Module::moduleInfo = {
 
 
 // Start the service
-void Module::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -90,11 +90,14 @@ void Module::start(Exordium::Services& s)
    if (!services->getDatabase().affirmTable(Tables::statsTable)) {
       services->logLine("Unable to affirm mod_stats database table 'stats'",
 			Log::Fatality);
-      return; // How do we tell services we did not start happily?!
+      return false;
    }
    
    // Register ourself to the network
    services->registerService(getName(), getName(),
 			     getConfigData().getHostname(), "+dz",
 			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }

@@ -92,7 +92,7 @@ using namespace Exordium;
 
 
 // Start the service
-void Vote::start(Exordium::Services& s)
+bool Vote::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
@@ -101,4 +101,7 @@ void Vote::start(Exordium::Services& s)
    services->registerService(getName(), getName(),
 			     getConfigData().getHostname(), "+dz",
 			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }

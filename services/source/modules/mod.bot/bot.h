@@ -75,7 +75,7 @@ public:
 	};
    
    // Start the module
-   void start(Exordium::Services& s);
+   bool start(Exordium::Services& s);
    
    void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
    
