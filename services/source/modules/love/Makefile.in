@@ -1,0 +1,37 @@
+
+DEFINES=
+RM=@RM@
+CXX=@CXX@
+CXXFLAGS=@CXXFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+
+SOURCES=\
+	module.cpp
+	
+INCDIRS=-I../../../include -I../../../../kineircd/include \
+	-I../../../../kineircd/src/lib -I/usr/local/ssl/include -I.
+
+OBJECTS=$(SOURCES:.cpp=.o)
+
+TARGET=love.so
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJECTS) -o $@ \
+		-lservices -L../../lib
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -shared -c $<
+
+clean:
+	$(RM) *.o *~ $(TARGET)
+
+distclean:
+	$(RM) *.o *~ $(TARGET) Makefile
+
+pretty:
+	indent *.cpp
+	indent *.h
+	$(RM) *~

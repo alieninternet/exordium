@@ -81,6 +81,7 @@ AC_CONFIG_FILES([source/Makefile
                  source/lib/Makefile 
 		 source/modules/Makefile
 		 source/modules/game/Makefile
+		 source/modules/love/Makefile
 		 Makefile
 		 ])
 AC_OUTPUT

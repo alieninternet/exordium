@@ -13,7 +13,6 @@ INCLUDES=/../include
 SOURCES=\
 	bot.cpp \
 	chan.cpp \
-	love.cpp \
 	nick.cpp \
 	note.cpp \
 	oper.cpp \
@@ -25,7 +24,8 @@ OBJECTS=$(SOURCES:.cpp=.so)
 
 
 SUB_DIRS=\
-	game
+	game \
+	love
 
 .PHONY: all subdirs $(SUB_DIRS)
 

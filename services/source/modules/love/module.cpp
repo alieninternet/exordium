@@ -5,8 +5,6 @@
  $Id$
 */
 
-// Define if we are debugging
-//
 #include <map>
 #include <sstream>
 
@@ -17,7 +15,7 @@
 # include <cassert>
 #endif
 
-#include "include/love.h"
+#include "love.h"
 
 // Use the stuff from the KineIRCd library using lovely short form
 using Kine::String;
