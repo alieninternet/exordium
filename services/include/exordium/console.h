@@ -24,34 +24,37 @@
  *
  */
 
-#ifndef __IRCDOME_H_
-#define __IRCDOME_H_
+#ifndef __CONSOLE_H_
+#define __CONSOLE_H_
+
+
+/* This should be in source/lib/. - nothing outside of the core uses it.. */
 
 #include <kineircd/str.h>
 
-# define IRCDOME_FUNC(x) \
+# define CONSOLE_FUNC(x) \
      x(AISutil::String &origin, AISutil::StringTokens &tokens)
 
 namespace Exordium {
    class Services;
    
-   class IRCDome {
+   class Console {
     private:
       Services& services;
       
       struct functionTableStruct {
 	 const char* command;
-	 void IRCDOME_FUNC((IRCDome::* const function));
+	 void CONSOLE_FUNC((Console::* const function));
       } static const functionTable[];
       
-      void IRCDOME_FUNC(parseMODULE);
+      void CONSOLE_FUNC(parseMODULE);
       
     public:
-      IRCDome(Services& s)
+      Console(Services& s)
 	: services(s)
 	{};
 
-      ~IRCDome(void)
+      ~Console(void)
 	{};
       
       void parseLine(const AISutil::String &, const AISutil::String &);

@@ -232,7 +232,7 @@ namespace Exordium
    config(c),
    parser(*this),
    channel(*this),
-   ircdome(*this)
+   console(*this)
      {
 	sock = -1;
 	maxSock = -1;

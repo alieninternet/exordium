@@ -18,9 +18,9 @@ if EXORDIUM_COMPILE_DB_PGSQL
 endif
 
 libexordium_la_SOURCES = lib/conf.cpp \
+			 lib/console.cpp \
 		       	 lib/channel.cpp \
 			 lib/dchan.cpp \
-			 lib/ircdome.cpp \
 			 lib/modules.cpp \
 			 lib/parser.cpp \
 			 lib/service.cpp \

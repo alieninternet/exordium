@@ -65,15 +65,15 @@ extern "C" {
 #include <exordium/conf.h>
 #include <exordium/parser.h>
 #include <exordium/channel.h>
-#include <exordium/ircdome.h>
 #include <exordium/user.h>
 #include <exordium/dchan.h>
 #include <exordium/log.h>
+#include <exordium/console.h>
 
 
 namespace Exordium {
    class CDatabase;  
- 
+   
    class Services
      {
       private:
@@ -86,8 +86,7 @@ namespace Exordium {
 
 	Parser parser;
 	Channel channel;
-	IRCDome ircdome;
-	
+	Console console;
 	
 	int sock;
 	int maxSock;
@@ -181,9 +180,9 @@ namespace Exordium {
 	Channel& getChannel(void)
 	  { return channel; };
 
-	// Return the IRCDome thingy
-	IRCDome& getIRCDome(void)
-	  { return ircdome; };
+	// *sigh* grab the console object :(
+	Console& getConsole(void)
+	  { return console; };
 	
 	time_t currentTime;
   	void run (void);

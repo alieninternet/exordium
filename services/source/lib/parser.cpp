@@ -44,7 +44,7 @@
 //#include "exordium/dchan.h"
 #include "exordium/channel.h"
 #include <kineircd/str.h>
-#include "exordium/ircdome.h"
+#include "exordium/console.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -501,7 +501,7 @@ void
    if ((target.IRCtoLower ()) == 
        services.getConfig().getConsoleName().IRCtoLower())
      {
-	services.getIRCDome().parseLine(message,OLDoriginl);
+	services.getConsole().parseLine(message,OLDoriginl);
 	return;
      }
 #ifdef DEBUG
