@@ -32,6 +32,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 
 #include <exordium/services.h>
 
