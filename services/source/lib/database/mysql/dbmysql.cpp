@@ -35,6 +35,7 @@
 
 
 using namespace Exordium;
+using AISutil::String;
 
 CMySQL::~CMySQL()
 {

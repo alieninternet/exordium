@@ -118,13 +118,13 @@ namespace Exordium {
 	User* const addUser(const AISutil::String& name, const int oid);
 	dChan* const addChan(const AISutil::String& name, const int oid);
 	bool delUser(AISutil::String &);
+	bool delChan(AISutil::String &);
 	User* findUser(AISutil::String &);
+	dChan* findChan(AISutil::String &);
 	void setNick(User &,AISutil::String &);
 	AISutil::String getRegNickCount(void);
-	// dunno where you want these fellow james
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db);
-
         // Mr. Destructor
         ~Services(void);	
 

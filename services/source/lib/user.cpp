@@ -48,6 +48,7 @@ void
   User::sendMessage(String const &message, String const &service)
 {
    services.serviceNotice(message,service,nickname);
+   return;
 }
 
 void
@@ -61,7 +62,7 @@ void
      {
 	services.serviceNoticeForce(message,service,nickname);
      }
-
+return;
 }
 
 /* setModNick(bool)
@@ -86,6 +87,7 @@ void
      {
        services.getDatabase().dbUpdate("nicks", "modnick=0", "nickname='"+nickname+"'");
      }
+   return;
 };
 
 /* setDeopAway(bool)
@@ -109,6 +111,7 @@ void
      {
         services.getDatabase().dbUpdate("nicks", "deopaway=0", "nickname='"+nickname+"'");
      }
+   return;
 };
 
 /* modNick()
@@ -120,8 +123,6 @@ void
 bool
   User::modNick(void)
 {
-   std::cout << "MY NICKNAME IS" << nickname << std::endl;
-
    if( services.getDatabase().dbSelect("modnick", "nicks", "nickname='"+nickname+"'") < 1 )
       return false;
 
@@ -170,6 +171,7 @@ void
   User::updateHost(String const &host)
 {
    services.getDatabase().dbUpdate("nicks", "lasthost='"+host+"'", "nickname='"+nickname+"'");
+   return;
 };
 
 /* getQuitMessage()
@@ -182,7 +184,7 @@ String
   User::getQuitMessage(void)
 {
    if( services.getDatabase().dbSelect("quitmsg", "nicks", "nickname='"+nickname+"'") < 1)
-     return "";
+     return "None Recorded";
    else
      return services.getDatabase().dbGetValue();
 };
@@ -214,6 +216,7 @@ void
 {
    sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick");
    services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"'");
+   return;
 };
 
 /* countHost()

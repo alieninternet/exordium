@@ -1011,6 +1011,24 @@ User*
    return ptr;
 }
 
+/* findChan(String)
+ * 
+ * Find and return a pointer to that channel.
+ * 
+ */
+dChan*
+  Services::findChan(String &name)
+{
+   std::cout << "findChan() - Looking for " << name.IRCtoLower().trim() << std::endl;
+   dChan *ptr = chans[name.IRCtoLower().trim()];
+   if(ptr==0)
+     {
+	std::cout << "findChan() - I could not find the channel" << std::endl;
+	return 0;
+     }
+   return ptr;
+}
+
 /* delUser(String)
  *
  * Find.. and delete the given user.
@@ -1025,6 +1043,19 @@ bool
 
    return true;
 };
+
+/* delChan(String)
+ * 
+ * Delete the given channel.
+ * 
+ */
+bool
+  Services::delChan(String &name)
+{
+   chans.erase(name.IRCtoLower());
+   database.dbDelete("onlinechan","name='"+name.IRCtoLower()+"'");
+   return true;
+}
 
 /* setNick(User,String)
  *
