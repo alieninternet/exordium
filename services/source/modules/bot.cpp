@@ -84,6 +84,13 @@ void
 }
 
 void
+  Bot::handleAway(User& origin, const String &reason)
+{
+origin.sendMessage("Bye Bye and have fun doing "+reason,getName());   
+   
+}
+
+void
   BOT_FUNC (Bot::parseHELP)
 {
    services->doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());

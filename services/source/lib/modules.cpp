@@ -237,7 +237,7 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
  */
 
 void
-  Modules::handleAway(const User& origin, AISutil::String &message)
+  Modules::handleAway(User& origin, const AISutil::String &message)
 {
     for (modules_type::const_iterator it = modules.begin();
 	it != modules.end(); it++)
@@ -252,6 +252,7 @@ void
 	  {
 	     /* Ok this module wants to know about aways */
 	     std::cout << tmp << " would like to know when someone goes away" << std::endl;
+	     (*it).second->service->handleAway(origin,message);
 	  }
 	else
 	  {

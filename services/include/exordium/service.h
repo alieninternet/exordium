@@ -29,7 +29,7 @@
 
 # include <kineircd/str.h>
 # include <aisutil/config/parser.h>
-# include "exordium/events.h"
+
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -130,6 +130,8 @@ namespace Exordium {
       
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
 			     const AISutil::String& channel) = 0;
+      
+      virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
       
       // Grab the information structure of a module
       virtual const moduleInfo_type& getModuleInfo(void) const = 0;

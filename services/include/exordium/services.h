@@ -63,7 +63,7 @@ extern "C" {
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
 #include "exordium/dchan.h"
-#include "exordium/events.h"
+
 
 namespace Exordium {
    class CDatabase;  
