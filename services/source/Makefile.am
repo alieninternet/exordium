@@ -37,7 +37,7 @@ libexordium_la_SOURCES = \
 			 $(EXORDIUM_TARGET_DB_PGSQL)
 
 
-lib/core_language.cpp lib/core_language.cpp:lib/core_language.tpl $(top_builddir)/autogen/language.def
+lib/core_language.cpp lib/core_language.h: lib/core_language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
 		-b $(basename $@) \
 		-T lib/core_language.tpl \
