@@ -47,12 +47,6 @@ namespace Exordium {
       AISutil::String getChanCount(void);
       void setChanLog(AISutil::String const &,bool const &);
       bool ChanLog(AISutil::String const &);
-      void internalDeVoice(AISutil::String const &, AISutil::String const &);
-      void internalDeOp(AISutil::String const &, AISutil::String const &);
-      void internalVoice(AISutil::String const &, AISutil::String const &);
-      void internalOp(AISutil::String const &, AISutil::String const &);
-      void internalAdd(AISutil::String const &, AISutil::String const &);
-      void internalDel(AISutil::String const &, AISutil::String const &);
       int getChanID(AISutil::String const &);   
       int getOnlineChanID(AISutil::String const &);  
       bool isChanRegistered(AISutil::String const &);

@@ -202,6 +202,11 @@ langtag = {
    data_tr = "Hata: Bu komut işlem dışı bırakılmıştır";
 };
 
+langtag = {
+   name = "ERROR_CHANNEL_FROZEN";
+   data_en = "Error: That channel is currently frozen";
+};
+
 /*
  * Tags for mod_note
  */
@@ -638,6 +643,11 @@ langtag = {
   data_no = "Registrering fullført!";
   data_fr = "Enregistrement effectué avec succès!";
   data_tr = "Kanal başarı ile kayıtlanmışdır";
+};
+langtag = {
+  name = "chan_TOPIC_USAGE";
+  component = "mod_chan";
+  data_en = "Usage: topic #channel Your new topic here";
 };
 
 langtag = {
