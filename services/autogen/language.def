@@ -783,7 +783,7 @@ langtag = {
 };
 
 langtag = {
-   name = "oper_USAGE_KILL";
+   name = "oper_KILL_USAGE";
    component = "mod_oper";
    data_en = "Usage: kill <nickname> <reason>";
 };

@@ -210,7 +210,7 @@ OPER_FUNC(Module::parseZLINE)
 	  }
 
 	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
-	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";);
+	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002");
 	services->queueAdd("SZLINE " + ip +" :"+reason);
 	origin.sendMessage(GETLANG(oper_ZLINE_ADD_SUCCESS,ip,reason),getNickname());
 	return;
@@ -263,9 +263,10 @@ OPER_FUNC(Module::parsePART)
 }
 
 OPER_FUNC (Module::parseKILL)
-   String tokill = tokens.nextToken;
+{
+   String tokill = tokens.nextToken();
    String reason = tokens.rest();
-   if(nickname == "" | reason == "")
+   if(tokill == "" | reason == "")
      {
 	origin.sendMessage(GETLANG(oper_KILL_USAGE),getNickname());
 	return;
@@ -278,10 +279,11 @@ OPER_FUNC (Module::parseKILL)
      }
    else
      {
-	services->kill(tokill,getNickname(),reason);
+	services->killnick(tokill,getNickname(),reason);
 	origin.sendMessage(GETLANG(oper_KILL_SUCCESS,tokill),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
      }
+}
 
 OPER_FUNC (Module::parseCOMMANDS)
 {
@@ -333,6 +335,9 @@ bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
+
+   // Register and process our language tag name -> tag ID map
+   Kine::langs().registerMap(Language::tagMap);
 
    // Register ourself to the network
    services->registerService(getNickname(), getUsername(),
