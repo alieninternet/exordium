@@ -291,9 +291,19 @@ void PARSER_FUNC (Parser::parseN)
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
-	origin->setNick(tokens.nextToken());
+
+        String newnick=tokens.nextToken();
+
+	origin->setNick(newnick);
 	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
+
+        // NOTE: This doesnt belong here, it'll be moved when User is complete
+        String queryupd="UPDATE onlineclients SET nickname='" + newnick + "', timestamp='" + services.toString(time(NULL)) + "' WHERE nickname='" + OLDorigin + "'";
+
+        services.getDatabase().query(queryupd);
+
+
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
 	     if(!origin->isIdentified(origin->getNickname()))
@@ -307,8 +317,8 @@ void PARSER_FUNC (Parser::parseN)
 			*/
 		       if(origin->modNick())
 			 {
-			    
-		       origin->addCheckIdentify();
+			   
+		       	   origin->addCheckIdentify();
 			 }
 		       
 		    }
@@ -534,16 +544,23 @@ void
 	String foo = luser.nextColonToken();
 	String username = foo.trim();
 
-        // Strip leading @ if there is one
-        if (username[0]=='@')
-           username=username.substr(1, username.length()-1);
+
+        // First check if both @ and + are there
+        if ((username[1]=='@') || (username[1]=='+'))
+           username=username.substr(2, username.length()-2);
+        else
+         {
+            // Strip leading @ or + if there is one
+            if ((username[0]=='@') || (username[0]=='+'))
+              username=username.substr(1, username.length()-1);
+         }
 
 
 
         /******* NOTE
-         Bug fixed: leading @ was causing user not found errors.
+         Bug fixed: leading @ or + was causing user not found errors.
          Solution: foo is only used to toggle the booleans, username 
-                   contains the nick without leading # or +.
+                   contains the nick without leading @ or +.
                    Thus when we need to pass the nick we use username.
          -- PLV
         *******/
@@ -584,7 +601,7 @@ void
 		  return;
 	       }
 	     
-	     if(ptr->isIdentified(foo))
+	     if(ptr->isIdentified(username))
 	       {
 		  int access = services.getChannel().getChanAccess(chan,username);
 		  String togo = "Client: \002:"+username+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";

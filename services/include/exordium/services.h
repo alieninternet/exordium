@@ -356,6 +356,8 @@ namespace Exordium {
 	  {
 	     return LibAIS::String::convert(users.size());
 	  };
+        String toString(int i);
+        String toString(long l);
 	bool usePrivmsg(LibAIS::String const &);
 	bool loadModule(const LibAIS::String &, const LibAIS::String &);
 	bool unloadModule(const LibAIS::String &);

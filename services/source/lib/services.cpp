@@ -1624,3 +1624,19 @@ String
      }
    return "";
 }
+
+String
+  Services::toString(int i)
+{
+   std::stringstream ss;
+   ss << i;
+   return ss.str();
+}
+
+String
+  Services::toString(long l)
+{
+   std::stringstream ss;
+   ss << l;
+   return ss.str();
+}
