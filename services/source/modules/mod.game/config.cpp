@@ -29,7 +29,7 @@
 #endif
 
 #include "config.h"
-
+#include "factory.h"
 
 // Game module configuration table
 const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
@@ -38,11 +38,11 @@ const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
 	  (void *)&ConfigData::defDescription, &varHandleString,
 	  0, 0
      },
-     {
-	"DISTRIBUTION", 4,
-	  (void *)&ConfigData::defDistribution, &varHandleStringOneWord,
-	  0, 0
-     },
+//     {
+//	"DISTRIBUTION", 4,
+//	  (void *)&ConfigData::defDistribution, &varHandleStringOneWord,
+//	  0, 0
+ //    },
      {
 	"HOSTNAME", 4,
 	  (void *)&ConfigData::defHostname, &varHandleHostName,
@@ -55,8 +55,8 @@ const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
      },
      {
 	"MODULE", 3,
-	  (void *)&ConfigData::defModule, &varHandleModule,
-	  0, 0
+	  (void *)&ConfigData::defModule, &varHandleModule, 
+          0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
 };
@@ -70,17 +70,7 @@ LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Game::ConfigData::varHandleModule)
       return false;
    }
    
-   std::cerr << "---------> " << values.front() << std::endl;
-   /*
-   void* const handle = dlopen(values.front().c_str(), RTLD_NOW);
-   if(handle == 0)
-   {
-      errString = "Could not load " + values.front() + ": " + dlerror();
-      return 0;
-   }
-
-   Factory::Instance().registerType(values.front(),);
-   */
+   Exordium::GameModule::Factory::Instance().registerModule(values.front());
    
    return true;
 }

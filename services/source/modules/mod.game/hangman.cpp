@@ -115,6 +115,11 @@ const char* hangman[10][7] = {{"",
                                "|      ",
                                "+------"}};
  
+CHANNEL_GAME_CREATOR_FUNCTION
+{
+     return new Hangman(module, channel, caller);
+}
+
 /* Hangman - Constructor for a new Hangman game being played on a channel
  * Original 17/09/2002 josullivan
  */

@@ -111,8 +111,8 @@ class Hangman : public ChannelGame {
 	   const AISutil::String& channel, Exordium::User& caller);
    
    // Handy creation function
-   static CHANNEL_GAME_CREATOR_FUNC(createGame)
-     { return new Hangman(module, channel, caller); }
+   //static CHANNEL_GAME_CREATOR_FUNC(createGame)
+   //  { return new Hangman(module, channel, caller); }
    
    // Parse a line..
    bool parseLine(Exordium::User& origin, AISutil::String& command,

@@ -38,6 +38,11 @@
 using AISutil::String;
 using AISutil::StringTokens;
 
+CHANNEL_GAME_CREATOR_FUNCTION
+{
+  return new Poker(module, channel, caller);
+}
+
 /* Poker - Constructor for a new Poker card game being played on a channel
  * Original 29/08/2002 pickle
  */

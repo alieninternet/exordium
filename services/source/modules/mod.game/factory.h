@@ -28,56 +28,116 @@
 #ifndef _SOURCE_MODULES_GAME_FACTORY_H_
 # define _SOURCE_MODULES_GAME_FACTORY_H_ 1
 
+# include <dlfcn.h>
 # include <map>
+
+# include "channelgame.h"
 
 class ChannelGame;
 
-namespace Game {
-  typedef ChannelGame* (*GameCallback)();
+namespace Exordium {
+  namespace GameModule {
+    typedef ChannelGame* (*GameCallback)(Exordium::GameModule::Module& module,
+        const AISutil::String& channel, Exordium::User& caller);
 
-  class Factory {
-    private:
-      typedef std::map<const AISutil::String, GameCallback> CallbackMap;
-      CallbackMap callbacks;
+    class Factory {
+      private:
+        typedef std::map<const AISutil::String, GameCallback> CallbackMap;
+        CallbackMap callbacks;
+  
+        Factory() { }
+        Factory(const Factory&) { };
+        Factory& operator = (const Factory&) { return *this; }
 
-      Factory() { }
-      Factory(const Factory&) { };
-      Factory& operator = (const Factory&) { return *this; }
-
-    public:
-      static Factory& Instance()
-      {
-        static Factory factory;
-        return factory;
-      }
-      ~Factory() { }
-
-      bool registerType(const AISutil::String& name, GameCallback createFn)
-      {
-        return callbacks.insert(CallbackMap::value_type(name, createFn)).second;
-      };
-
-      bool unregisterType(const AISutil::String& name)
-      {
-        return callbacks.erase(name);
-      };
-
-      ChannelGame* createGame(const AISutil::String& name)
-      {
-        CallbackMap::const_iterator iter = callbacks.find(name);
-        if(iter == callbacks.end())
+      public:
+        static Factory& Instance()
         {
+          static Factory factory;
+          return factory;
+        }
+        ~Factory() { }
+
+        bool registerType(const AISutil::String& name, GameCallback createFn)
+        {
+          return callbacks.insert(CallbackMap::value_type(name, createFn)).second;
+        };
+
+        bool registerModule(const AISutil::String& fileName) 
+        {
+          // Try to load the module
+          void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
+  
+          // Check if that loaded okay
+          if (handle == 0)
+          {
+            // Set the error string appropriately
+            std::cerr << "Could not load " << fileName.c_str() << ": " << dlerror()
+              << std::endl;
+            return false;
+          }
+  
+          CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN((* const initfunc)) = 
+            ((CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN((*)))
+             (dlsym(handle, "game_init")));
+  
+          if(initfunc == 0)
+          {
+            std::cerr << "Could not load " << fileName.c_str() << 
+              ": Module does not contain an initialisation function\n";
+            return false;
+          }
+  
+          // Extract the name of the game from the filename
+          AISutil::String name = fileName.substr(fileName.find("game_",0) + 5, 
+              (fileName.length() - 3));
+
 #ifdef DEBUG
-          std::cerr << "Game " << name << "not found\n";
+          std::cerr << "Game to load is called " << name << " len = " << 
+            (fileName.length() - 3) << std::endl;
 #endif
-          return 0;
+          return registerType(name, initfunc);
         }
 
-        ChannelGame* game = iter->second();
-        return game;
-      };
-  };
-}; // Namespace Game
+        bool unregisterType(const AISutil::String& name)
+        {
+          return callbacks.erase(name);
+        };
+  
+        bool unregisterModule(const AISutil::String& name)
+        {
+        };
+
+        const std::list<AISutil::String> listModules(void)
+        {
+          std::list<AISutil::String> retList;
+          for(CallbackMap::const_iterator iter = callbacks.begin(); 
+              iter != callbacks.end(); iter++)
+          {
+            retList.push_back((*iter).first);
+          }
+
+          return retList;
+        };
+
+        ChannelGame* createGame(const AISutil::String& name, 
+            Exordium::GameModule::Module& module, 
+            const AISutil::String& channel, Exordium::User& caller)
+        {
+          CallbackMap::const_iterator iter = callbacks.find(name);
+          if(iter == callbacks.end())
+          {
+#ifdef DEBUG
+            std::cerr << "Game " << name << " not found\n";
+#endif
+            return 0;
+          }
+  
+          ChannelGame* game = iter->second(module,channel,caller);
+          return game;
+        };
+     };
+  }; // Namespace GameModule
+}; // Namespace Exordium
 
 // Complete the forwarded declaration
 # include "channelgame.h"

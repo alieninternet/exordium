@@ -37,6 +37,11 @@
 using AISutil::String;
 using AISutil::StringTokens;
 
+CHANNEL_GAME_CREATOR_FUNCTION
+{
+  return new Exordi8(module, channel, caller);
+}
+
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel
  * Original 29/08/2002 pickle
  */

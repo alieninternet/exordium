@@ -35,6 +35,7 @@
 #include <kineircd/str.h>
 
 #include "game.h"
+#include "factory.h"
 
 using namespace Exordium::GameModule;
 using AISutil::String;
@@ -90,9 +91,6 @@ bool Module::start(Exordium::Services& s)
 			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
    
-#ifdef DEBUG
-   std::cout << "Module found " << configData.getModule() << std::endl;
-#endif
    // We started okay :)
    return true;
 }
@@ -249,26 +247,15 @@ std::endl;
 #endif
    
    // Check for the game
-   for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
-      // Does this match?
-      if (game == ChannelGame::channelGameTable[i].game) {
-	 // Create a new game..
-	 channelGames[chan] =
-	   ChannelGame::channelGameTable[i].creator(*this, chan, origin);
-	 
-	 // Join the channel and say hello
-	 services->serviceJoin(getName(), chan);
-	 services->serverMode(chan, "+o", getName());
-	 services->serviceNotice("Hello " + chan + " (" + 
-				 origin.getNickname() + " wanted to play " +
-				 game + ')',
-				 "Game", chan);
-	 
-	 // Leave the loop
-	 return;
-      }
-   }
-   
+   channelGames[chan] = 
+     Factory::Instance().createGame(game, *this, chan, origin);
+
+   // Join the channel and say hello
+   services->serviceJoin(getName(), chan);
+   services->serverMode(chan, "+o", getName());
+   services->serviceNotice("Hello " + chan + " (" + origin.getNickname() + 
+       " wanted to play " + game + ')', "Game", chan);
+
    // give them an error???!!
 }
 
@@ -277,12 +264,20 @@ std::endl;
  */
 GAME_FUNC(Module::handleLIST)
 {
+   typedef std::list<AISutil::String> StringList;
+   StringList::const_iterator iter;
+
+   // Get module list
+   StringList list = Factory::Instance().listModules();
+
    // Check for the game
    origin.sendMessage("List of available games:", getName());
-   for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
+   for(iter = list.begin(); iter != list.end(); iter++)
+   {
+   //for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
       String str = "--- ";
-      str += ChannelGame::channelGameTable[i].game;
-      
+      //str += ChannelGame::channelGameTable[i].game;
+      str += (*iter);
       origin.sendMessage(str, getName());
    }
 }

@@ -111,10 +111,6 @@ class Poker : public ChannelGame {
    Poker(Exordium::GameModule::Module& module, const AISutil::String& channel,
 	 Exordium::User& caller);
    
-   // Handy creation function
-   static CHANNEL_GAME_CREATOR_FUNC(createGame)
-     { return new Poker(module, channel, caller); }
-   
    // Parse a line..
    bool parseLine(Exordium::User& origin, AISutil::String& command,
 		  AISutil::StringTokens& tokens);

@@ -34,9 +34,13 @@ class ChannelGame;
 
 # include "game.h"
 
-# define CHANNEL_GAME_CREATOR_FUNC(x) \
+# define CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN(x) \
      ChannelGame* x(Exordium::GameModule::Module& module, \
 		    const AISutil::String& channel, Exordium::User& caller)
+
+# define CHANNEL_GAME_CREATOR_FUNCTION \
+     extern "C" CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN(game_init)
+
 
 class ChannelGame {
  protected:
@@ -48,7 +52,7 @@ class ChannelGame {
    
  public:
    // Our convenient type-definition of a creator function
-   typedef CHANNEL_GAME_CREATOR_FUNC(creator_type);
+   typedef CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN(creator_type);
    
    // Our channel game table structure
    struct channelGameTable_type {
