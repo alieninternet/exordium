@@ -20,8 +20,6 @@ using Kine::StringTokens;
 using namespace Exordium;
 
 
-namespace Exordium {
-
 struct Chan::functionTableStruct const
   Chan::functionTable[] = {
   {"access", parseACCESS},
@@ -685,10 +683,14 @@ CHAN_FUNC (Chan::parseACCESS)
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   return new Module("chan", new Chan());
+	Services::registerService(name,name,"ircdome.org","+dz",
+			"Channel Registration Services");
+	Services::serviceJoin(name,"#Debug");
+	Channel::synchChannels();
+        return new Module("chan", new Chan(name));
 }
 
 
 
-};
+
 
