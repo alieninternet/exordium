@@ -19,12 +19,17 @@
 #include <map>
 #include <sstream>
 
+#ifdef DEBUG
+# include <cassert>
+#endif
+
 // Use the stuff from the KineIRCd library using lovely short form
 using Kine::String;
 using Kine::StringTokens;
 
 /* We are in the exordium namespace, or supposed to be anyway.. I don't know,
- * I'm too busy rebelling from the Wilkins Regime :(
+ * I'm too busy rebelling from the Wilkins Facsist Regime :( 
+ * DOWN WITH THE W.F.R.!!!
  */
 using namespace Exordium;
 
@@ -38,9 +43,17 @@ extern "C" Module *service_init(void) {
 }
 
 
-// Our lovely list of commands in all their glorious ascii beauty
-const Love::functionTableStruct Love::functionTable[] = {
-     { 0 }
+/* Our lovely list of commands in all their glorious ascii beauty. The names
+ * should be in lower-case as it's the most common way people type stuff, and
+ * our case-insensitive searchy thingy looks on the premise that the incoming
+ * command will be converted to lower-case..
+ */
+const Love::commandTableStruct Love::commandTable[] = {
+     { 
+	"test",		0,	0,	&handleTEST,
+	  0 
+     },
+     { 0, 0, 0, 0, 0 }
 };
 
 
@@ -54,7 +67,7 @@ void Love::parseLine(const String &line, const String &origin)
    String command = st.nextToken().toLower();
   
    // Run through the list of commands to find a match
-   for (int i = 0; functionTable[i].command != 0; i++) {
+   for (int i = 0; commandTable[i].command != 0; i++) {
 #ifdef DEBUG
       ostringstream debugLine;
       debugLine << "Love::parseLine() -> '" << line << "' from " << origin;
@@ -62,9 +75,14 @@ void Love::parseLine(const String &line, const String &origin)
 #endif
       
       // Does this match?   
-      if (command == functionTable[i].command) {
+      if (command == commandTable[i].command) {
+#ifdef DEBUG
+	 // Oh "golly gosh", I hope the function really exists
+	 assert(commandTable[i].handler != 0);
+#endif
+	 
 	 // Run the command and leave early
-	 functionTable[i].function(origin, st);
+	 commandTable[i].handler(origin, st);
 	 return;
       }
    }
@@ -73,4 +91,14 @@ void Love::parseLine(const String &line, const String &origin)
    // Bitch and moan.. bitch and moan..
    Services::serviceNotice("Unrecognised Command", "Love", origin);
 #endif
+}
+
+
+/* handleTEST - Test thingy, temporary :)
+ * Original 14/07/2002 simonb
+ */
+LOVE_FUNC(Love::handleTEST)
+{
+   // something here.. other than this.. perhaps...
+   Services::servicePrivmsg("You rang?", "Love", origin);
 }

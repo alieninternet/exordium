@@ -16,25 +16,40 @@
 # include "exordium/service.h"
 
 
+// The class of lurrve
 class Love : public Exordium::Service {
  private:
-   struct functionTableStruct {
-      const char *command;
-      const LOVE_FUNC((*function));
-   } static const functionTable[];
+   /* Each command gets a little descriptor with the following parameters.
+    * Note that in the future the padding field will be used, but for now
+    * it is there to make the structure even (4x4 bytes) as processors like
+    * to chew on nice neat evenly spaces arrays using some magical multiple
+    * of its natural word size (like 4).. Aren't we nice to succumb to its
+    * wishes? Well okay, I thought we were at least.. Stop looking at me like
+    * that.. Stop it! Stop it..... okay, OKAY - fine.. I'll go then. :(
+    */
+   struct commandTableStruct {
+      const char *command;		// Command name
+      const short minParams;		// The minimum number of parameters
+      const short maxParams;		// Maximum parameters (No limit = -1)
+      const LOVE_FUNC((*handler));	// The function (handler) to call
+      const int blahblahblahblahblah;	// For future use.. (padding for now)
+   } static const commandTable[];
    
  public:
    // Our constructor
    Love(void)
      {
 	std::cout << 
-	  "Why hello there, I'm a loving instance :) :)" << std::endl;
+	  "Love::Love() - Why hello there, I'm a loving instance :) :)" << 
+	  std::endl;
      };
 
    // Our destructor
    ~Love(void) 
      { 
-	std::cout << "Share the love, don't trample on it :(" << std::endl; 
+	std::cout << 
+	  "Love::~Love() - Share the love, don't trample on it :(" << 
+	  std::endl;
      };
    
    // Parser for incoming stuff sent on a channel
@@ -44,6 +59,9 @@ class Love : public Exordium::Service {
    
    // Parser for incoming stuff sent directly to us
    void parseLine(const Kine::String &line, const Kine::String &origin);
+   
+   // Our wonderful command handlers
+   static LOVE_FUNC(handleTEST);
 };
 
 #endif // __LOVE_H_
