@@ -114,10 +114,10 @@ namespace {
        * something similar *shrugs*
        */
 
-	  // Flags.. ignore this for now
-	  Kine::Module::basicInfo_type::FLAG_UNIQUE_INSTANCE,
+	  // Flags -- We do not want to be loaded more than once :)
+	  Kine::Module::basicInfo_type::Flags::UNIQUE_INSTANCE,
 
-	  // Configuration information (optional, but we will use it later)
+	  // Configuration information
 	  &Config::definitionTable,
 
 	  // Our start and stop functions
