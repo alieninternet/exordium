@@ -316,7 +316,7 @@ void
 	     return;
 	  }
 	services.getChannel().chanAddAccess(channel,nickname,level);
-	services.log(origin.getNickname(),"Chan","Added "+nickname+" with level "+level,channel);
+	services.log(origin,"Chan","Added "+nickname+" with level "+level,channel);
 	origin.sendMessage("Command completed successfully",myName);
 	return;
      }
@@ -347,7 +347,7 @@ void
 	  {
 	     services.getChannel().updateTopic(channel,topic);
 	     services.getChannel().setTopic(channel,topic);
-	     services.log(origin.getNickname(),"Chan","Set topic to "+topic,channel);
+	     services.log(origin,"Chan","Set topic to "+topic,channel);
 	     return;
 	  }
 	more = st.hasMoreTokens();
@@ -459,7 +459,7 @@ void
      }
    services.getChannel().registerChannel(channel,origin.getNickname());
    origin.sendMessage("Registration Successful",myName);
-   services.log(origin.getNickname(),"Chan","Registered the channel",channel);
+   services.log(origin,"Chan","Registered the channel",channel);
    return;
 }
 
@@ -498,7 +498,7 @@ void
 		    {
 		       services.mode("Chan",channel,"+o",origin.getNickname());
 		       services.getChannel().internalOp(origin.getNickname(),channel);
-		       services.log(origin.getNickname(),"Chan","Opped themselves",channel);
+		       services.log(origin,"Chan","Opped themselves",channel);
 		       return;
 		    }
 		  return;
@@ -507,7 +507,7 @@ void
 	       {
 		  services.mode("Chan",channel,"+o",foo);
 		  services.getChannel().internalOp(foo,channel);
-		  services.log(origin.getNickname(),"Chan","Opped "+foo,channel);
+		  services.log(origin,"Chan","Opped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -518,7 +518,7 @@ void
 		    {
 		       services.mode("Chan",channel,"+o",foo);
 		       services.getChannel().internalOp(foo,channel);
-		       services.log(origin.getNickname(),"Chan","Opped " +foo,channel);
+		       services.log(origin,"Chan","Opped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -566,7 +566,7 @@ void
 		    {
 		       services.mode("Chan",channel,"-o",origin.getNickname());
 		       services.getChannel().internalDeOp(origin.getNickname(),channel);
-		       services.log(origin.getNickname(),"Chan","Deopped themselves",channel);
+		       services.log(origin,"Chan","Deopped themselves",channel);
 		       return;
 		    }
 		  return;
@@ -575,7 +575,7 @@ void
 	       {
 		  services.mode("Chan",channel,"-o",foo);
 		  services.getChannel().internalDeOp(foo,channel);
-		  services.log(origin.getNickname(),"Chan","Deopped "+foo,channel);
+		  services.log(origin,"Chan","Deopped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -586,7 +586,7 @@ void
 		    {
 		       services.mode("Chan",channel,"-o",foo);
 		       services.getChannel().internalDeOp(foo,channel);
-		       services.log(origin.getNickname(),"Chan","Deopped " +foo,channel);
+		       services.log(origin,"Chan","Deopped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -634,7 +634,7 @@ void
 		    {
 		       services.mode("Chan",channel,"+v",origin.getNickname());
 		       services.getChannel().internalVoice(origin.getNickname(),channel);
-		       services.log(origin.getNickname(),"Chan","Voiced themselves",channel);
+		       services.log(origin,"Chan","Voiced themselves",channel);
 		       return;
 		    }
 		  return;
@@ -643,7 +643,7 @@ void
 	       {
 		  services.mode("Chan",channel,"+v",foo);
 		  services.getChannel().internalVoice(foo,channel);
-		  services.log(origin.getNickname(),"Chan","Voiced "+foo,channel);
+		  services.log(origin,"Chan","Voiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -654,7 +654,7 @@ void
 		    {
 		       services.mode("Chan",channel,"+v",foo);
 		       services.getChannel().internalVoice(foo,channel);
-		       services.log(origin.getNickname(),"Chan","Voiced " +foo,channel);
+		       services.log(origin,"Chan","Voiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -702,7 +702,7 @@ void
 		    {
 		       services.mode("Chan",channel,"-v",origin.getNickname());
 		       services.getChannel().internalDeVoice(origin.getNickname(),channel);
-		       services.log(origin.getNickname(),"Chan","DeVoiced themselves",channel);
+		       services.log(origin,"Chan","DeVoiced themselves",channel);
 		       return;
 		    }
 		  return;
@@ -711,7 +711,7 @@ void
 	       {
 		  services.mode("Chan",channel,"-v",foo);
 		  services.getChannel().internalDeVoice(foo,channel);
-		  services.log(origin.getNickname(),"Chan","DeVoiced "+foo,channel);
+		  services.log(origin,"Chan","DeVoiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -722,7 +722,7 @@ void
 		    {
 		       services.mode("Chan",channel,"-v",foo);
 		       services.getChannel().internalDeVoice(foo,channel);
-		       services.log(origin.getNickname(),"Chan","DeVoiced " +foo,channel);
+		       services.log(origin,"Chan","DeVoiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -821,7 +821,7 @@ void
 	String tosend = "Nickname \002"+services.getNick(tnickid.toInt())+"\002 Access \002"+taccess+"\002";
 	origin.sendMessage(tosend,myName);
      }
-   services.log(origin.getNickname(),"Chan","Did a channel access",channel);
+   services.log(origin,"Chan","Did a channel access",channel);
    res.free_result();
 }
 

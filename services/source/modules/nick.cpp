@@ -234,7 +234,7 @@ void
 	services.getDatabase().query(query);
 	String togo = "Password has been successfully changed to "+value;
 	origin.sendMessage(togo,myName);
-	services.log(origin.getNickname(),myName,String("Changed nickname password"));
+	services.log(origin,myName,String("Changed nickname password"));
 	return;
      }
    if(command=="modnick")
@@ -320,7 +320,7 @@ void
 	     services.getDatabase().query(query);
 	     String togo = "Email has been changed to \002"+value;
 	     origin.sendMessage(togo,myName);
-	     services.log(origin.getNickname(),myName,"Changed email address to "+value);
+	     services.log(origin,myName,"Changed email address to "+value);
 	     return;
 	  }
 
@@ -352,7 +352,7 @@ void
 	     services.getDatabase().query(query);
 	     String togo = "AIM has been changed to \002"+value;
 	     origin.sendMessage(togo,myName);
-	     services.log(origin.getNickname(),myName,"Changed AIM address to "+value);
+	     services.log(origin,myName,"Changed AIM address to "+value);
 	     return;
 	  }
 
@@ -368,7 +368,7 @@ void
 	     services.getDatabase().query(query);
 	     String togo = "Yahoo! has been changed to \002"+value;
 	     origin.sendMessage(togo,myName);
-	     services.log(origin.getNickname(),myName,"Changed Yahoo! address to "+value);
+	     services.log(origin,myName,"Changed Yahoo! address to "+value);
 	     return;
 	  }
 
@@ -384,7 +384,7 @@ void
 	     services.getDatabase().query(query);
 	     String togo = "ICQ has been changed to \002"+value;
 	     origin.sendMessage(togo,myName);
-	     services.log(origin.getNickname(),myName,"Changed ICQ address to "+value);
+	     services.log(origin,myName,"Changed ICQ address to "+value);
 	     return;
 	  }
 
@@ -400,7 +400,7 @@ void
 	     services.getDatabase().query(query);
 	     String togo = "URL has been changed to \002"+value;
 	     origin.sendMessage(togo,myName);
-	     services.log(origin.getNickname(),myName,"Changed URL address to "+value);
+	     services.log(origin,myName,"Changed URL address to "+value);
 	     return;
 	  }
 	if(command=="privmsg")
@@ -494,7 +494,7 @@ void
 	  origin.sendMessage("This will be delivered to the account :\002"+email+"\002",myName);
 	  origin.sendMessage("Thank you for using IRCDome!",myName);
 	  services.registerNick(origin.getNickname(),password,email);
-	  services.log(origin.getNickname(),myName,"Registered nickname with email "+email);
+	  services.log(origin,myName,"Registered nickname with email "+email);
 	  String authcode = services.genAuth(origin.getNickname());
 	  String subject = "Your nickname registration";
 	  String emailtext =
