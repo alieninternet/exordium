@@ -39,6 +39,11 @@ const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
 	  0, 0
      },
      {
+	"DISTRIBUTION", 4,
+	  (void *)&ConfigData::defDistribution, &varHandleStringOneWord,
+	  0, 0
+     },
+     {
 	"EXAMPLE", 7,
 	  (void *)&ConfigData::defExample, &varHandleString,
 	  0, 0

@@ -94,6 +94,7 @@ namespace Exordium {
 	 
        protected:
 	 AISutil::String defDescription;		// Our description
+	 AISutil::String defDistribution;		// Our scope mask
 	 AISutil::String defHostname;			// Our hostname
 	 AISutil::String defName;			// Our name
 	 
@@ -102,6 +103,7 @@ namespace Exordium {
 	 ConfigData(const AISutil::String& d, const AISutil::String& h,
 		    const AISutil::String& n)
 	   : defDescription(d),
+	     defDistribution("*"), // <=- network-wide distribution scope
 	     defHostname(h),
 	     defName(n)
 	   {};
@@ -118,6 +120,8 @@ namespace Exordium {
 	 // Return variables..
 	 const AISutil::String& getDescription(void) const
 	   { return defDescription; };
+	 const AISutil::String& getDistribution(void) const
+	   { return defDistribution; };
 	 const AISutil::String& getHostname(void) const
 	   { return defHostname; };
 	 const AISutil::String& getName(void) const

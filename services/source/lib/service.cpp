@@ -39,6 +39,11 @@ const AISutil::ConfigParser::defTable_type
 	    0, 0
        },
        {
+	  "DISTRIBUTION", 4,
+	    (void *)&ConfigData::defDistribution, &varHandleStringOneWord,
+	    0, 0
+       },
+       {
 	  "HOSTNAME", 4,
 	    (void *)&ConfigData::defHostname, &varHandleHostName,
 	    0, 0
