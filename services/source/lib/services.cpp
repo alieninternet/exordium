@@ -60,7 +60,7 @@ static KINE_SIGNAL_HANDLER_FUNC(Rehash)
    Log::logLine(debugOut.str());
 }
 
-//Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH, 0};
+Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH, 0};
 
 static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
@@ -68,7 +68,7 @@ static KINE_SIGNAL_HANDLER_FUNC(Death)
 	exit(0);
 }
 
-//Signals::handlerInfo_type deathSignalHandler = {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
+Signals::handlerInfo_type deathSignalHandler = {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
 
 namespace Exordium {
 
@@ -196,10 +196,10 @@ Services::run(void)
 int
 Services::init(void)
 {
-   //rehashSignalHandler.foo = (void *)this;
-   //getDaemon().getSignals().addHandler(rehashSignalHandler);
-   //deathSignalHandler.foo = (void *)this;
-   //getDaemon().getSignals().addHandler(deathSignalHandler);
+   rehashSignalHandler.foo = (void *)this;
+   getDaemon().getSignals().addHandler(rehashSignalHandler);
+   deathSignalHandler.foo = (void *)this;
+   getDaemon().getSignals().addHandler(deathSignalHandler);
    
 	struct hostent *host;
 	queueKill ();
