@@ -327,7 +327,8 @@ void
 
    services.getDatabase().dbDelete("chans", "name='"+name+"'");
    services.getDatabase().dbDelete("chanaccess", "chanid='"+String::convert(foo)+"'");
-
+   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+        name + " -r");
    String togo = "This channel has been deregistered \002"+reason;
    services.serviceNotice(String(togo),"Chan",name);
    services.servicePart("Chan",name);
