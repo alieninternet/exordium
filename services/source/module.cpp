@@ -31,6 +31,9 @@ KINE_MODULE_START(moduleStart)
 	me.run();
 	Log::logLine("Services terminated - Normal exit");
    exit(0); // we are naughty using this here..
+   
+   // Tell Kine that we started happily
+   return true;
 }
 
 
