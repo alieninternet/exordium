@@ -594,9 +594,12 @@ void
    
    services.getDatabase().dbDelete("nicksidentified", "nick='"+String::convert(oid)+"'");
 
-   //Store the quit reason here
-   services.getDatabase().dbUpdate("nicks", "quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
-
+   //Store the quit reason here...
+   // but only if its registered!
+   if(services.isNickRegistered(OLDorigin))
+   {
+     services.getDatabase().dbUpdate("nicks", "quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
+   }
 }
 
 void
