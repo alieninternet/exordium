@@ -22,19 +22,19 @@ namespace Exordium {
 
 struct Serv::functionTableStruct const
   Serv::functionTable[] = {
-  {"clist", parseCLIST},
-  {"delnick", parseDELNICK},
-  {"elist", parseELIST},
-  {"nlist", parseNLIST},
-  {"helpon", parseHELPON},
-  {"help", parseHELP},
-  {"user", parseUSER},
-  {"raw", parseRAW},
-  {"chan", parseCHAN},
-  {"die", parseDIE},
-  {"news", parseNEWS},
-  {"synch", parseSYNCH},
-  {0}
+  {"clist", &Serv::parseCLIST},
+  {"delnick", &Serv::parseDELNICK},
+  {"elist", &Serv::parseELIST},
+  {"nlist", &Serv::parseNLIST},
+  {"helpon", &Serv::parseHELPON},
+  {"help", &Serv::parseHELP},
+  {"user", &Serv::parseUSER},
+  {"raw", &Serv::parseRAW},
+  {"chan", &Serv::parseCHAN},
+  {"die", &Serv::parseDIE},
+  {"news", &Serv::parseNEWS},
+  {"synch", &Serv::parseSYNCH},
+  {0, 0}
 };
 void
 Serv::parseLine (String const &line, String const &requestor, String const &ch)
@@ -54,22 +54,22 @@ Serv::parseLine (String const &line, String const &requestor)
       if (command == functionTable[i].command)
         {
 	  // Check access :-)
-		int required = Nickname::getRequiredAccess("Serv",command.toLower());
-		int access = Nickname::getAccess("Serv",origin);
+		int required = services.getNickname().getRequiredAccess("Serv",command.toLower());
+		int access = services.getNickname().getAccess("Serv",origin);
 		if(required>access)
 		{
-			Services::serviceNotice("You do not have enough access for that command","Serv",origin);
+			services.serviceNotice("You do not have enough access for that command","Serv",origin);
 			String togo = origin+" tried to use \002"+command+"\002";
-			Services::helpme(togo,"Serv");
+			services.helpme(togo,"Serv");
 			return;
 		}
 
           // Run the command and leave
-          functionTable[i].function (origin, st);
+          (this->*(functionTable[i].function))(origin, st);
           return;
         }
     }
-  Services::serviceNotice ("Unrecognized Command", "Serv", requestor);
+  services.serviceNotice ("Unrecognized Command", "Serv", requestor);
 }
 void
 SERV_FUNC (Serv::parseDIE)
@@ -77,28 +77,28 @@ SERV_FUNC (Serv::parseDIE)
 String reason = tokens.rest();
 if(reason=="")
 	{
-		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: die reason for shutdown here","Serv",origin);
+		services.serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: die reason for shutdown here","Serv",origin);
 		return;
 	}
 
 String togo = "\002"+origin+"\002 - "+reason;
-Services::shutdown(togo);
+services.shutdown(togo);
 }
 void
 SERV_FUNC (Serv::parseSYNCH)
 {
    String tosend = "\002[\002Database Save\002]\002 Started by "+origin;
-   Services::helpme(tosend,"Serv");
+   services.helpme(tosend,"Serv");
    struct timeval start;
    gettimeofday(&start, NULL);
    String query = "COMMIT";
-   Sql::query(query);
+   services.getDatabase().query(query);
    struct timeval finish;
    gettimeofday(&finish,NULL);
    long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec)
         - (((long long)start.tv_sec * 1000000) + start.tv_usec));
    String togo = "Database synch finished - time taken "+String::convert(time)+" microseconds";
-   Services::helpme(togo,"Serv");
+   services.helpme(togo,"Serv");
 
 
 
@@ -107,9 +107,9 @@ void
 SERV_FUNC (Serv::parseRAW)
 {
 std::string c = tokens.rest();
-Services::queueAdd(c);
+services.queueAdd(c);
 String togo = origin+" did \002RAW\002 - "+c;
-Services::helpme(String(togo),"Serv");
+services.helpme(String(togo),"Serv");
 }
 void
 SERV_FUNC (Serv::parseNEWS)
@@ -117,13 +117,13 @@ SERV_FUNC (Serv::parseNEWS)
 	String command = tokens.nextToken();
 	if(command=="")
 	{
-		Services::serviceNotice("Usage: news add/del/list","Serv",origin);
+		services.serviceNotice("Usage: news add/del/list","Serv",origin);
 		return;
 	}
 	if(command=="list")
 	{
 		String query = "SELECT * from news";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
@@ -132,7 +132,7 @@ SERV_FUNC (Serv::parseNEWS)
 			String expires = ((std::string) row[2]).c_str();
 			String txt = ((std::string) row[3]).c_str();
 			String togo = "ID \002[\002"+id+"\002]\002 Level \002[\002"+level+"\002]\002 Expires \002[\002"+expires+"\002]\002 Text \002[\002"+txt+"\002]\002";
-			Services::serviceNotice(togo,"Serv",origin);
+			services.serviceNotice(togo,"Serv",origin);
 		}
 
 	}
@@ -141,12 +141,12 @@ SERV_FUNC (Serv::parseNEWS)
 		String id = tokens.nextToken();
 		if(id.empty())
 		{
-			Services::serviceNotice("\002[\002Fatal Error\002]\002 Usage: del ID","Serv",origin);
+			services.serviceNotice("\002[\002Fatal Error\002]\002 Usage: del ID","Serv",origin);
 			return;
 		}
 		String query = "DELETE FROM NEWS where id="+id;
-		Sql::query(query);
-		Services::serviceNotice("News has been deleted","Serv",origin);
+		services.getDatabase().query(query);
+		services.serviceNotice("News has been deleted","Serv",origin);
 		return;
 	}
 	if(command=="add")
@@ -156,24 +156,24 @@ SERV_FUNC (Serv::parseNEWS)
 	String text = tokens.rest();
 	if(type=="" | expires=="" | text=="")
 	{
-		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here","Serv",origin);
+		services.serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here","Serv",origin);
 		return;
 	}
 	if(type!="0" | type!="1" | type!="2")
 	{
-		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Type must be one of 0,1 or 2 (users, helpers or opers","Serv",origin);
+		services.serviceNotice("\002[\002Incorrect Usage\002]\002 Type must be one of 0,1 or 2 (users, helpers or opers","Serv",origin);
 		return;
 	}
 	int nexpires = expires.toInt();
-	nexpires = Services::currentTime + (nexpires * 3600);
-	if(Services::currentTime>nexpires)
+	nexpires = services.currentTime + (nexpires * 3600);
+	if(services.currentTime>nexpires)
 	{
-		Services::serviceNotice("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past","Serv",origin);
+		services.serviceNotice("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past","Serv",origin);
 		return;
 	}
 	String query = "INSERT into news values ('','"+type+"','"+String::convert(nexpires)+"','"+text+"');";
-	Sql::query(query);
-	Services::serviceNotice("New news item added successfully","Serv",origin);
+	services.getDatabase().query(query);
+	services.serviceNotice("New news item added successfully","Serv",origin);
 	}
 
 }
@@ -184,7 +184,7 @@ SERV_FUNC (Serv::parseCHAN)
 	String channel = tokens.nextToken();
 	if(command=="")
 	{
-		Services::serviceNotice("Usage: chan add/del/mod","Serv",origin);
+		services.serviceNotice("Usage: chan add/del/mod","Serv",origin);
 		return;
 	}
 	if(command=="mod")
@@ -192,26 +192,26 @@ SERV_FUNC (Serv::parseCHAN)
 		String newowner = tokens.nextToken();
 		if(channel=="" || newowner=="")
 		{
-			Services::serviceNotice("Usage: chan mod #channel NewOwner","Serv",origin);
+			services.serviceNotice("Usage: chan mod #channel NewOwner","Serv",origin);
 			return;
 		}
-		if(!Nickname::isNickRegistered(newowner))
+		if(!services.getNickname().isNickRegistered(newowner))
 		{
-			Services::serviceNotice("Error: New owner's nickname is not registered","Serv",origin);
+			services.serviceNotice("Error: New owner's nickname is not registered","Serv",origin);
 			return;
 		}
 		String newtopic = "This channel is now owned by "+newowner;
-		Channel::setTopic(channel,newtopic);
-		Channel::updateTopic(channel,newtopic);
-		int chanid = Channel::getChanID(channel);
-		String oldowner = Channel::getChanOwner(chanid);
+		services.getChannel().setTopic(channel,newtopic);
+		services.getChannel().updateTopic(channel,newtopic);
+		int chanid = services.getChannel().getChanID(channel);
+		String oldowner = services.getChannel().getChanOwner(chanid);
 		String togo = origin+" changed \002ownership\002 of "+channel+" "+oldowner+"->"+newowner;
-		Services::helpme(String(togo),"Serv");
-		Channel::chanDelAccess(channel,oldowner);
-		Channel::chanAddAccess(channel,newowner,"500");
+		services.helpme(String(togo),"Serv");
+		services.getChannel().chanDelAccess(channel,oldowner);
+		services.getChannel().chanAddAccess(channel,newowner,"500");
 		String query = "UPDATE chans set owner='" + newowner + "' where name='"+channel+"'";
-		Sql::query(query);
-		Services::log(origin,"Serv",String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
+		services.getDatabase().query(query);
+		services.log(origin,"Serv",String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
 		return;
 	}
 	if(command=="del")
@@ -219,13 +219,13 @@ SERV_FUNC (Serv::parseCHAN)
 		String reason = tokens.rest();
 		if(channel=="" || reason=="")
 		{
-			Services::serviceNotice("Usage: chan del #channel reason","Serv",origin);
+			services.serviceNotice("Usage: chan del #channel reason","Serv",origin);
 			return;
 		}
 		String togo = origin + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
-		Services::helpme(String(togo),"serv");
-		Channel::deregisterChannel(channel,reason);
-		Services::log(origin,"Serv",String("Deregistered ")+channel+" for "+reason);	
+		services.helpme(String(togo),"serv");
+		services.getChannel().deregisterChannel(channel,reason);
+		services.log(origin,"Serv",String("Deregistered ")+channel+" for "+reason);	
 		return;
 	}
 	if(command=="add")
@@ -233,23 +233,23 @@ SERV_FUNC (Serv::parseCHAN)
 		String thenick = tokens.nextToken();
 		if(channel=="" || thenick=="")
 		{
-			Services::serviceNotice("Usage: chan add #channel owner","Serv",origin);
+			services.serviceNotice("Usage: chan add #channel owner","Serv",origin);
 			return;
 		}
-		if(Channel::isChanRegistered(channel))
+		if(services.getChannel().isChanRegistered(channel))
 		{
-			Services::serviceNotice("That channel is already registered - Try mod","Serv",origin);
+			services.serviceNotice("That channel is already registered - Try mod","Serv",origin);
 			return;
 		}
-		if(!Nickname::isNickRegistered(thenick))
+		if(!services.getNickname().isNickRegistered(thenick))
 		{
-			Services::serviceNotice("Target nickname does not exist","Serv",origin);
+			services.serviceNotice("Target nickname does not exist","Serv",origin);
 			return;
 		}
 		String togo = origin + "\002 registered\002 " + channel + " to "+thenick;
-		Services::helpme(String(togo),"Serv");
-		Channel::registerChannel(channel,thenick);
-		Services::log(origin,"Serv",String("Registered ")+channel+" to "+thenick);
+		services.helpme(String(togo),"Serv");
+		services.getChannel().registerChannel(channel,thenick);
+		services.log(origin,"Serv",String("Registered ")+channel+" to "+thenick);
 		return;
 	}
 }
@@ -258,9 +258,9 @@ SERV_FUNC (Serv::parseHELP)
 {
 String word = tokens.nextToken();
 String parm = tokens.nextToken();
-Services::doHelp(origin,"Serv",word,parm);
+services.doHelp(origin,"Serv",word,parm);
 String tolog = "Did HELP on word " + word + " parm " + parm;
-Services::log(origin,"Serv",String(tolog));
+services.log(origin,"Serv",String(tolog));
 }
 
 void
@@ -269,61 +269,61 @@ SERV_FUNC (Serv::parseUSER)
 	String command = tokens.nextToken();
 	String toadd = tokens.nextToken();
 	String level = tokens.nextToken();
-	int access = Nickname::getAccess("Serv",origin);
+	int access = services.getNickname().getAccess("Serv",origin);
 	if(command=="")
 	{
-		Services::serviceNotice("Commands are : add/del/mod/list","Serv",origin);
+		services.serviceNotice("Commands are : add/del/mod/list","Serv",origin);
 		return;		
 	}
 	if(command=="mod")
 	{
 		if(toadd=="" || level=="")
 		{
-			Services::serviceNotice("Usage: user mod nickname level","Serv",origin);
+			services.serviceNotice("Usage: user mod nickname level","Serv",origin);
 			return;
 		}
 		if(toadd==origin)
 		{
-			Services::serviceNotice("Silly billy... you can't mod yourself!","Serv",origin);
+			services.serviceNotice("Silly billy... you can't mod yourself!","Serv",origin);
 			return;
 		}
 		int ilevel = level.toInt();
 		if(ilevel>access || ilevel==access)
 		{
-			Services::serviceNotice("Error: You cannot set someones access higher than, or equal to your own","Serv",origin);
+			services.serviceNotice("Error: You cannot set someones access higher than, or equal to your own","Serv",origin);
 			return;
 		}
-		int taccess = Nickname::getAccess("Serv",toadd);
+		int taccess = services.getNickname().getAccess("Serv",toadd);
 		if(taccess>access)
 		{
-			Services::serviceNotice("Error: That person has higher access than you","Serv",origin);
+			services.serviceNotice("Error: That person has higher access than you","Serv",origin);
 			String togo = origin+" tried to modify access for a higher user than themselves ("+toadd+")";
-			Services::helpme(String(togo),"Serv");
+			services.helpme(String(togo),"Serv");
 			return;
 		}
 		if(taccess==access)
 		{
-			Services::serviceNotice("Error: That person has the same access as you","Serv",origin);
+			services.serviceNotice("Error: That person has the same access as you","Serv",origin);
 			return;
 		}
 		String togo = origin + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+level;
-		Services::helpme(togo,"Serv"); 
+		services.helpme(togo,"Serv"); 
 		String query = "UPDATE access set access='" + level + "' WHERE nickname='" + toadd + "'";
-		Sql::query(query);
-		Services::log(origin,"Serv",String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
+		services.getDatabase().query(query);
+		services.log(origin,"Serv",String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
 		return;
 	}	
 	if(command=="list")
 	{
 		String query = "SELECT * from access where service='serv' order by id";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		while (( row  = res.fetch_row()))
 		{
 			String nickname = ((std::string) row[1]).c_str();
 			String access = ((std::string) row[3]).c_str();
 			String togo = "\002"+nickname+"\002 has level \002"+access;
-			Services::serviceNotice(String(togo),"Serv",origin);
+			services.serviceNotice(String(togo),"Serv",origin);
 		}
 	res.free_result();
 	return;
@@ -332,89 +332,89 @@ SERV_FUNC (Serv::parseUSER)
 	{
 		if(toadd=="")
 		{
-			Services::serviceNotice("Usage is user del nickname","Serv",origin);
+			services.serviceNotice("Usage is user del nickname","Serv",origin);
 			return;
 		}
-		if((Nickname::getAccess("Serv",toadd))==0)
+		if((services.getNickname().getAccess("Serv",toadd))==0)
 		{
-			Services::serviceNotice("That person does not have access to serv","Serv",origin);
+			services.serviceNotice("That person does not have access to serv","Serv",origin);
 			return;
 		}
-		int faccess = Nickname::getAccess("Serv",toadd);
+		int faccess = services.getNickname().getAccess("Serv",toadd);
 		if(faccess>access)
 		{
-			Services::serviceNotice("You do not have enough access to perform that operation on a staff nickname","Serv",origin);
+			services.serviceNotice("You do not have enough access to perform that operation on a staff nickname","Serv",origin);
 			String togo = origin + " tried to use \002userdel\002 on a \002staff\002 nickname";
-			Services::helpme(String(togo),"Serv");
+			services.helpme(String(togo),"Serv");
 			return;
 		}
 		String query = "DELETE from access where service='serv' and nickname='" + toadd + "'";
-		Sql::query(query);
-		Services::serviceNotice("Command complete","Serv",origin);
+		services.getDatabase().query(query);
+		services.serviceNotice("Command complete","Serv",origin);
 		String togo = origin + " deleted \002 " + toadd + "\002 from Serv";
-		Services::helpme(String(togo),"Serv");
-		Services::log(origin,"Serv","Deleted "+toadd+" from Serv");
+		services.helpme(String(togo),"Serv");
+		services.log(origin,"Serv","Deleted "+toadd+" from Serv");
 		return; 
 	}
 	if(command=="add")
 	{
 		if(toadd=="" || level=="")
 		{
-			Services::serviceNotice("Usage: user add nickname level","Serv",origin);
+			services.serviceNotice("Usage: user add nickname level","Serv",origin);
 			return;
 		}
 		if(origin.toLower()==toadd.toLower())
 		{
-			Services::serviceNotice("You can't adduser yourself, silly.","Serv",origin);
+			services.serviceNotice("You can't adduser yourself, silly.","Serv",origin);
 			return;
 		}
-		if(!Nickname::isNickRegistered(toadd))
+		if(!services.getNickname().isNickRegistered(toadd))
 		{
-			Services::serviceNotice("That nickname is not registered","Serv",origin);
+			services.serviceNotice("That nickname is not registered","Serv",origin);
 			return;
 		}
-		if((Nickname::getAccess("Serv",toadd))>0)
+		if((services.getNickname().getAccess("Serv",toadd))>0)
 		{
-			Services::serviceNotice("That person already has access, try mod","Serv",origin);
+			services.serviceNotice("That person already has access, try mod","Serv",origin);
 			return;
 		}
 		if(level.toInt()<1)
 		{
-			Services::serviceNotice("Error: You cannot add someone with less than 1 access","Serv",origin);
+			services.serviceNotice("Error: You cannot add someone with less than 1 access","Serv",origin);
 			return;
 		}
 		if(level.toInt()>499)
 		{
-			Services::serviceNotice("Error: You cannot add someone with higher than 499 access","Serv",origin);
+			services.serviceNotice("Error: You cannot add someone with higher than 499 access","Serv",origin);
 			return;
 		}
 		String query = "INSERT into access values ('','" + toadd + "','serv','" + level + "')";
-		Sql::query(query);
-		Services::serviceNotice("Command completed","Serv",origin);
+		services.getDatabase().query(query);
+		services.serviceNotice("Command completed","Serv",origin);
 		String togo = origin+" added \002"+toadd+"\002 to Serv with level \002"+level;
-		Services::helpme(String(togo),"Serv");
+		services.helpme(String(togo),"Serv");
 		String tolog = "Added "+toadd+" to Serv with level "+toadd;
-		Services::log(origin,"Serv",String(tolog));
+		services.log(origin,"Serv",String(tolog));
 		return;
 	}
-	Services::serviceNotice("Uncognised sub-command","Serv",origin);
+	services.serviceNotice("Uncognised sub-command","Serv",origin);
 	return;
 }
 void
 SERV_FUNC (Serv::parseHELPON)
 {
-	int access = Nickname::getAccess("Serv",origin);
+	int access = services.getNickname().getAccess("Serv",origin);
 	if(access>50)
 	{
-		Services::serviceNotice("You are now an IRCDome services assistant","Serv",origin);
+		services.serviceNotice("You are now an IRCDome services assistant","Serv",origin);
 		String tosend = ":services.ircdome.org HELPER "+origin+" "+String::convert(access);
-		Services::queueAdd(String(tosend));
-		Services::log(origin,"Serv","Become a services helper at level "+String::convert(access));
+		services.queueAdd(String(tosend));
+		services.log(origin,"Serv","Become a services helper at level "+String::convert(access));
 		return;		
 	}
-Services::log(origin,"Serv","Failed to become a helper (not enough access)");
+services.log(origin,"Serv","Failed to become a helper (not enough access)");
 String tosend = origin+" failed to become a helper - Not enough access";
-Services::helpme(tosend,"Serv");
+services.helpme(tosend,"Serv");
 }
 void
 SERV_FUNC (Serv::parseNLIST)
@@ -423,11 +423,11 @@ SERV_FUNC (Serv::parseNLIST)
 	String dest = tokens.nextToken();
 	if(tomatch=="")
 	{
-		Services::serviceNotice("Usage: nlist <match> <optinal destination>","Serv",origin);
+		services.serviceNotice("Usage: nlist <match> <optinal destination>","Serv",origin);
 		return;
 	}
 	String query = "SELECT nickname,lasthost,email from nicks WHERE lasthost like '"+tomatch+"'";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = services.getDatabase().query(query);
 	MysqlRow row;
 	int f=0;
 	while ((row = res.fetch_row()))
@@ -439,16 +439,16 @@ SERV_FUNC (Serv::parseNLIST)
 		String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002"+temail+"\002";
 		if(dest=="")
 		{
-		Services::serviceNotice(String(tosend),"Serv",origin);
+		services.serviceNotice(String(tosend),"Serv",origin);
 		} 
 		else
 		{
-		Services::serviceNotice(String(tosend),"Serv",dest);
+		services.serviceNotice(String(tosend),"Serv",dest);
 		}
 	}
-	Services::log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
+	services.log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
 	String togo = origin+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
-	Services::helpme(togo,"Serv");
+	services.helpme(togo,"Serv");
 	res.free_result();
 }
 void
@@ -458,14 +458,14 @@ String tomatch = tokens.nextToken();
 String dest = tokens.nextToken();
 if(tomatch=="")
 	{
-		Services::serviceNotice("Usage: elist <match> <optional destination>","Serv",origin);
+		services.serviceNotice("Usage: elist <match> <optional destination>","Serv",origin);
 		return;
 	}
 if(dest=="")
 	{
 		//Return to origin.
 		String query = "SELECT nickname,lasthost,email from nicks where email like '" + tomatch + "'";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
@@ -473,17 +473,17 @@ if(dest=="")
 			String lasthost = ((std::string) row[1]).c_str();
 			String email = ((std::string) row[2]).c_str();
 			String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
-			Services::serviceNotice(tosend,"Serv",origin);
+			services.serviceNotice(tosend,"Serv",origin);
 		}
-		Services::log(origin,"Serv","Did an elist on "+tomatch);
+		services.log(origin,"Serv","Did an elist on "+tomatch);
 		String togo = origin + " did an \002elist\002 on "+tomatch;
-		Services::helpme(togo,"Serv");
+		services.helpme(togo,"Serv");
 		res.free_result();
 		return;
 	}
 //Else send to given client
 		String query = "SELECT nickname,lasthost,email from nicks where email like '" + tomatch + "'";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
@@ -491,11 +491,11 @@ if(dest=="")
 			String lasthost = ((std::string) row[1]).c_str();
 			String email = ((std::string) row[2]).c_str();
 			String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
-			Services::serviceNotice(tosend,"Serv",dest);
+			services.serviceNotice(tosend,"Serv",dest);
 		}
-		Services::log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
+		services.log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
 		String togo = origin + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
-		Services::helpme(togo,"Serv");
+		services.helpme(togo,"Serv");
 		res.free_result();
 
 
@@ -507,15 +507,15 @@ String who  = tokens.nextToken();
 String reason = tokens.rest();
 if(who=="" || reason=="")
 	{
-		Services::serviceNotice("Usage: delnick nickname reason","Serv",origin);
+		services.serviceNotice("Usage: delnick nickname reason","Serv",origin);
 		return;
 	}
 
 String togo = origin+" did \002delnick\002 on "+who+" for \002"+reason;
-Services::helpme(togo,"Serv");
+services.helpme(togo,"Serv");
 String query = "DELETE from nicks where nickname='" + who + "'";
-Sql::query(query);
-Services::log(origin,"Serv","Deleted nickname "+who+" : "+reason);
+services.getDatabase().query(query);
+services.log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
 
 void
@@ -523,41 +523,41 @@ SERV_FUNC (Serv::parseCLIST)
 {
 String who = tokens.nextToken();
 String send = tokens.nextToken();
-if(!Nickname::isNickRegistered(who))
+if(!services.getNickname().isNickRegistered(who))
 	{
-		Services::serviceNotice("That nickname is not registered","Serv",origin);
+		services.serviceNotice("That nickname is not registered","Serv",origin);
 		return;
 	}
 if(send=="")
 	{
-		int totalc = Channel::maxChannels();
-		int userc = Channel::maxChannelsUser(who);
-		int totala = Channel::maxChannelsAccess();
+		int totalc = services.getChannel().maxChannels();
+		int userc = services.getChannel().maxChannelsUser(who);
+		int totala = services.getChannel().maxChannelsAccess();
 		String togo = origin + " did a \002clist\002 on "+who+", "+String::convert(userc)+" matches found from "+String::convert(totalc)+" channels and "+String::convert(totala)+" access entries";
-		Services::helpme(togo,"Serv");
-		int theid = Nickname::getRegisteredNickID(who);
+		services.helpme(togo,"Serv");
+		int theid = services.getNickname().getRegisteredNickID(who);
 		String query = "SELECT chanid,access from chanaccess where nickid='" + String::convert(theid) + "'";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
 			String cname = ((std::string) row[0]).c_str();
 			String caxs = ((std::string) row[1]).c_str();
-			String ccname = Channel::getChanName(cname.toInt());
+			String ccname = services.getChannel().getChanName(cname.toInt());
 			String tosend = ccname+" with "+caxs;
-			Services::serviceNotice(tosend,"Serv",origin);
+			services.serviceNotice(tosend,"Serv",origin);
 		}
-		Services::log(origin,"Serv","Did a clist on "+who);
+		services.log(origin,"Serv","Did a clist on "+who);
 		res.free_result();
 		return;
 	}
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   Services::registerService(name,name,"ircdome.org","+dz",
+   services.registerService(name,name,"ircdome.org","+dz",
 			     "\037Serv\037ice :)");
-   Services::serviceJoin(name,"#Debug");
-   return new Module("serv", new Serv());
+   services.serviceJoin(name,"#Debug");
+   return new Module("serv", new Serv(services));
 }
 
 };
