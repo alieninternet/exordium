@@ -27,14 +27,24 @@
 #ifndef _LOG_H_
 # define _LOG_H_
 
+# include <kineircd/logger.h>
+
 namespace Exordium {
    namespace Log {
+      /* This is sneaky. In order to fake our own interface to a logger, and
+       * to simplify things, we minimise the mask types down to a handful of
+       * potentials, but their values are actually mapped to fixed Kine masks.
+       * When our logging function is called, these masks are type-casted to
+       * the KineIRCd logger's mask type for seamless interaction. Exordium and
+       * Exordium modules should not type-cast to KineIRCd masks, since this
+       * fixed set is here for a reason.
+       */
       enum mask_type {
-	 Debug,
-	 Informative,
-	 Warning,
-	 Error,
-	 Fatality
+	 Debug		= Kine::Logger::Mask::Debug,
+	 Informative	= Kine::Logger::Mask::Housekeeping,
+	 Warning	= Kine::Logger::Mask::Warning,
+	 Error		= Kine::Logger::Mask::Error_Local,
+	 Fatality	= Kine::Logger::Mask::Fatal_Error
       };
    }; // namespace Log
 }; // namespace Exordium

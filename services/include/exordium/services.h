@@ -193,7 +193,7 @@ namespace Exordium {
 	// Log a line of text..
 	void logLine(const AISutil::String& line,
 		     const Log::mask_type mask = Log::Informative)
-	  { std::clog << "Log(" << mask << "): " << line << std::endl; };
+	  { daemon.log(line, (Kine::Logger::Mask::type)mask); };
 
 	// Function Declrations below here.
 	int getAccess(AISutil::String &, AISutil::String &);
