@@ -284,8 +284,9 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
 	String foo = ((std::string) row[0]).c_str();
-	Services::serviceNotice("\002[\002Global News\002]\002"+foo,"IRCDome",nick);
+	Services::serviceNotice("\002[\002IRCDome Global News\002]\002"+foo,"IRCDome",nick);
 }
+Services::queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
 if(num>2)
 {
 	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
@@ -300,7 +301,9 @@ PARSER_FUNC (Parser::parsePRIVMSG)
 {
   String originl = origin.IRCtoLower();
   String target = tokens.nextToken ();
-  String message = tokens.nextColonToken ();
+  String tmes = tokens.nextColonToken();
+  String message = Sql::makeSafe(tmes);
+  
   if ((message[0] == '\001') && (message[message.length () - 1] == '\001'))
     {
       // Break the message down

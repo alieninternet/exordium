@@ -396,6 +396,12 @@ while (( row = res.fetch_row()))
 		String mask = ((std::string) row[2]).c_str();
 		Channel::RemoveBan(id,chan,mask);
 	}
+
+//Lastly commit any outstanding db changes.
+String bquery = "COMMIT";
+Sql::query(bquery);
+String aquery = "SET autocommit=0";
+Sql::query(aquery);
 }
 
 void Services::expireRun(void)
@@ -490,7 +496,7 @@ if(parm == "")
 void
 Services::sendEmail (String const &to, String const &subject, String const &text)
 {
-String query = "INSERT DELAYED into emails values ('','"+to+"','"+subject+"','"+text+"')";
+String query = "INSERT into emails values ('','"+to+"','"+subject+"','"+text+"')";
 Sql::query(query);
 }
 

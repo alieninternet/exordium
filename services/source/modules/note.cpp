@@ -130,6 +130,11 @@ NOTE_FUNC (Note::parseLIST)
 		String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
 		Services::serviceNotice(togo,"Note",origin);
 	}
+	if(j==0)
+	{
+		Services::serviceNotice("You have no notes stored","note",origin);
+		return;
+	}
 	String tofo = String("To read a note, type /msg Note read Number");
 	Services::serviceNotice(tofo,"Note",origin);
 	Services::log(origin, "Note", "Listed their notes");

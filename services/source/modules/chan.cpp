@@ -327,6 +327,8 @@ CHAN_FUNC (Chan::parseBAN)
 			return;
 		}
 	}
+	Services::serviceNotice("\002[\002No Access\002]\002","Chan",origin);
+
 }
 
 void
@@ -731,7 +733,7 @@ CHAN_FUNC (Chan::parseACCESS)
 	}
 	Services::serviceNotice("Channel access list for "+channel,"Chan",origin);
 	int chanid = Channel::getChanID(channel);
-	String query = "SELECT nickid,access from chanaccess where chanid='" + String::convert(chanid) + "'";
+	String query = "SELECT nickid,access from chanaccess where chanid=" + String::convert(chanid);
 	MysqlRes res = Sql::query(query);
 	MysqlRow row;
 	while ((row = res.fetch_row()))

@@ -12,6 +12,7 @@
 #include <kineircd/str.h>
 #include "exordium/sql.h"
 #include "exordium/module.h"
+#include <sys/time.h>
 
 using Kine::String;
 using Kine::StringTokens;
@@ -32,6 +33,7 @@ struct Serv::functionTableStruct const
   {"chan", parseCHAN},
   {"die", parseDIE},
   {"news", parseNEWS},
+  {"synch", parseSYNCH},
   {0}
 };
 void
@@ -75,6 +77,24 @@ SERV_FUNC (Serv::parseDIE)
 exit(0);
 }
 void
+SERV_FUNC (Serv::parseSYNCH)
+{
+   String tosend = "Services database synch started by "+origin;
+   Services::helpme(tosend,"Serv");
+   struct timeval start;
+   gettimeofday(&start, NULL);
+   String query = "COMMIT";
+   Sql::query(query);
+   struct timeval finish;
+   long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec)
+        - (((long long)start.tv_sec * 1000000) + start.tv_usec));
+   String togo = "Database synch finished - time taken "+String::convert(time)+" microseconds";
+   Services::helpme(togo,"Serv");
+
+
+
+}
+void
 SERV_FUNC (Serv::parseRAW)
 {
 std::string c = tokens.rest();
@@ -102,7 +122,19 @@ SERV_FUNC (Serv::parseNEWS)
 		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here","Serv",origin);
 		return;
 	}
-	String query = "INSERT into news values ('','"+type+"','"+expires+"','"+text+"');";
+	if(type!="0" | type!="1" | type!="2")
+	{
+		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Type must be one of 0,1 or 2 (users, helpers or opers","Serv",origin);
+		return;
+	}
+	int nexpires = expires.toInt();
+	nexpires = Services::currentTime + (nexpires * 3600);
+	if(Services::currentTime>nexpires)
+	{
+		Services::serviceNotice("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past","Serv",origin);
+		return;
+	}
+	String query = "INSERT into news values ('','"+type+"','"+String::convert(nexpires)+"','"+text+"');";
 	Sql::query(query);
 	Services::serviceNotice("New news item added successfully","Serv",origin);
 	}
