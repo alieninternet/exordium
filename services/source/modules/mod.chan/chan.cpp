@@ -141,6 +141,7 @@ CHAN_FUNC (Module::parseSEEN)
 CHAN_FUNC (Module::parseSET)
 {
    Kine::Name channel = tokens.nextToken();
+   channel = channel.IRCtoLower();
    if(channel.empty())
      {
 	origin.sendMessage(GETLANG(chan_USAGE_SET),getNickname());

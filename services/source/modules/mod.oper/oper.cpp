@@ -426,9 +426,9 @@ bool Module::start(Exordium::Services& s)
    for (;;)
      {
 
-	std::cout << "TagMap " << foofoo << ": tag '" <<
-	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
-	  Language::tagMap[foofoo].tagID << std::endl;
+//	std::cout << "TagMap " << foofoo << ": tag '" <<
+//	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
+//	  Language::tagMap[foofoo].tagID << std::endl;
 
 	if (Language::tagMap[++foofoo].tagName == 0)
 	  {
