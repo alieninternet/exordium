@@ -332,6 +332,7 @@ String
      thelist += idnick;
      services.getDatabase().dbGetRow();
    }
+   std::cout << "Returning " << thelist << std::endl;
    return thelist;
 }
 

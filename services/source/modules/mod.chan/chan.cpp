@@ -36,11 +36,13 @@
 #include <exordium/dchan.h>
 #include <exordium/database/base.h>
 #include <exordium/database/database.h>
+#include <aisutil/utils.h>
 
 #include "language.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
+using AISutil::Utils;
 using namespace Exordium::ChanModule;
 
 struct Module::functionTableStruct const
@@ -187,13 +189,13 @@ CHAN_FUNC (Module::parseSET)
 	     std::cout << value << std::endl;
 	     if(command=="log")
 	       {
-		  if(value=="true")
+		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanLog(true);
 		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_TRUE),getName());
 		       return;
 		    }
-		  if(value=="false")
+		  if(AISutil::Utils::toBool(value)==0)
 		    {
 		       ptr->setChanLog(false);
 		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
@@ -205,13 +207,13 @@ CHAN_FUNC (Module::parseSET)
 	     if(command=="secure")
 	       {
 
-		  if(value=="true")
+		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanSecure(true);
 		       origin.sendMessage(GETLANG(chan_SET_SECURE_TRUE),getName());
 		       return;
 		    }
-		  if(value=="false")
+		  if(AISutil::Utils::toBool(value)==0)
 		    {
 		       ptr->setChanSecure(false);
 		       origin.sendMessage(GETLANG(chan_SET_SECURE_FALSE),getName());
@@ -223,13 +225,13 @@ CHAN_FUNC (Module::parseSET)
 
              if(command=="enforcebans")
                {
-                  if(value=="true")
+                  if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setEnforceBans(true);
                        origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_TRUE), getName());
                        return;
                     }
-                  if(value=="false")
+                  if(AISutil::Utils::toBool(value)==0)
                     {
                        ptr->setEnforceBans(false);
                        origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_FALSE), getName());
@@ -242,13 +244,13 @@ CHAN_FUNC (Module::parseSET)
 
              if(command=="tracktopics")
                {
-                  if(value=="true")
+                  if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setTrackTopics(true);
                        origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_TRUE), getName());
                        return;
                     }
-                  if(value=="false")
+                  if(AISutil::Utils::toBool(value)==0)
                     {
                        ptr->setTrackTopics(false);
                        origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_FALSE), getName());
@@ -392,6 +394,7 @@ CHAN_FUNC (Module::parseADDUSER)
    
    
    String la = origin.getIDList();
+   std::cout << "the list contains " << la << std::endl;
    StringTokens st (la);
    bool more = false;
    more = st.hasMoreTokens();
@@ -411,11 +414,13 @@ CHAN_FUNC (Module::parseADDUSER)
 	     origin.sendMessage(GETLANG(chan_ADDUSER_ALREADY_ADDED),getName());
 	     return;
 	  }
+	std::cout << "At throwing into user pointer ptr thingy" << std::endl;
 	ptr->addAccess(nickname,level);
 	ptr->log(origin,getName(),"Added "+nickname+" with level "+level,channel);
 	origin.sendMessage(GETLANG(chan_ADDUSER_SUCCESS),getName());
 	return;
      }
+   std::cout << "User doesn't have access to add? Bug? Feature?" << std::endl;
 }
 
 CHAN_FUNC (Module::parseTOPIC)
