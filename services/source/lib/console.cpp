@@ -47,9 +47,21 @@ void Console::parseLine(const String &line, const String &requestor)
    StringTokens st (line);
    String origin = requestor;
    String command = st.nextToken ().toLower ();
+   User *ptr = services.findUser(origin);
+
    for (int i = 0; functionTable[i].command != 0; i++) {
       // Does this match?
       if (command == functionTable[i].command) {
+ int required = services.getRequiredAccess(services.getConfigInternal().getConsoleName(),command.toLower());
+int access = ptr->getAccess(services.getConfigInternal().getConsoleName());
+             if(required>access)
+               {
+  ptr->sendMessage("You do not have enough access for that command",services.getConfigInternal().getConsoleName());
+  String togo = ptr->getNickname()+" tried to use \002"+command+"\002";
+  services.logLine(togo, Log::Warning);
+  return;
+               }
+
 	 // Run the command and leave
 	 (this->*(functionTable[i].function))(origin, st);
 	 return;

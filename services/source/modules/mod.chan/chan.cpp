@@ -569,10 +569,6 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	       }
 	     more = st.hasMoreTokens();
 	  }
-	if(!foundmatch)
-		{
-			origin.sendMessage("Sorry - None of the nicks you are identified as has access in " + channel,getName());
-		}
 
 	return;
      }
