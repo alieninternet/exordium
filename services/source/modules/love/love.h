@@ -53,20 +53,12 @@ class Love : public Exordium::Service {
    
  public:
    // Our constructor
-   Love(void)
-     {
-	std::cout << 
-	  "Love::Love() - Why hello there, I'm a loving instance :) :)" << 
-	  std::endl;
-     };
+   Love(void) 
+     {};
 
    // Our destructor
    ~Love(void) 
-     { 
-	std::cout << 
-	  "Love::~Love() - Share the love, don't trample on it :(" << 
-	  std::endl;
-     };
+     {};
    
    // Parser for incoming stuff sent on a channel
    void parseLine(const Kine::String &line, const Kine::String &origin,
