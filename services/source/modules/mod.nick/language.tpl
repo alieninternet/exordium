@@ -10,7 +10,9 @@
          (string-ci=?
             (get "component")
             "mod_nick")))
-   
+	    
+   ;;; Define our dodgey counting thingy
+   (define counter 0)
 +]
 /* $Id$
  * 
@@ -63,11 +65,25 @@ namespace Exordium {
    namespace NickModule {
       struct Language { // <=- probably should be namespace too
          // Language tag look-up table (for our language map)
-         enum {[+ FOR langtag +][+ IF (useThisTag?) +]
-	    [+name+] = [+(for-index)+][+ IF 
+         enum {[+ FOR langtag +][+ IF (useThisTag?) +][+ IF
+   (and
+      (not
+         (first-for?))
+      (> counter 0))
+ +],[+ ENDIF +]
+	    [+name+] = [+
+   ;; Output the counter..	    
+   (. counter)
+ +][+
+ 
+   ;; counter++
+   (set!
+      counter
+      (+ counter 1))
+ +][+ IF 
    (not
       (last-for?))
- +],[+ ENDIF +][+ ENDIF +][+ ENDFOR +]
+ +][+ ENDIF +][+ ENDIF +][+ ENDFOR +]
 	 };
 	 
 	 // The language map
