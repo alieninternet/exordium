@@ -29,7 +29,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include "exordium/services.h"
+#include <exordium/services.h>
 
 #include "hangman.h"
 
