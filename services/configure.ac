@@ -6,7 +6,7 @@
 AC_INIT([Exordium], [0.1-alpha], [coding@ircdome.org])
 AM_INIT_AUTOMAKE([1.6.1 foreign no-installinfo no-installman])
 AC_PROG_LIBTOOL
-AC_PREREQ(2.52)
+AC_PREREQ(2.54)
 AC_COPYRIGHT(Exordium Network Services are (c) 2002 IRCDome Development Team)
 AC_COPYRIGHT(Please read the LICENSE file for more information)
 AC_CONFIG_SRCDIR([include/exordium/config.h.in])
@@ -115,9 +115,9 @@ AC_MSG_RESULT(Building with PostgreSQL support)], [AC_MSG_RESULT([Building witho
 
 AC_CONFIG_FILES([source/Makefile
 		 source/modules/Makefile
-		 source/modules/game/Makefile
-		 source/modules/game/cards/Makefile
-		 source/modules/love/Makefile
+		 source/modules/mod.game/Makefile
+		 source/modules/mod.game/cards/Makefile
+		 source/modules/mod.love/Makefile
 		 Makefile
 		 ])
 AC_OUTPUT
