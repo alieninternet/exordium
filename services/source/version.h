@@ -58,7 +58,7 @@
       /* Ruler: \
        *          1         2         3         4         5         6 \
        * 123456789012345678901234567890123456789012345678901234567890 */ \
-      "Exordium Network Services, Copyright (C) 2002 Exordium ", \
+      "Exordium Network Services, Copyright (C) 2002,2003 Exordium ", \
       "Development Team", \
       "", \
       "Exordium comes with ABSOLUTELY NO WARRANTY; for details see", \
