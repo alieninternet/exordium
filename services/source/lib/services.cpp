@@ -365,38 +365,10 @@ Services::doBurst (void)
 	loadModule("chan","./modules/chan.so");
 	loadModule("serv","./modules/serv.so");
 	loadModule("note","./modules/note.so");
-	// loadModule("note","./modules/game.so"); */
-	loadModule("note","./modules/bot.so");
-	registerService ("IRCDome", "ircdome", "ircdome.org", "+dz",
-				"Services command console");
-	registerService ("Chan", "chan", "ircdome.org", "+dz",
-				"Channel Registration Services");
-	registerService ("Nick", "nick", "ircdome.org", "+dz",
-				"Nickname Registration Services");
-	registerService ("Note", "note", "ircdome.org", "+dz",
-				"Network Note Services");
-	registerService ("Serv", "serv", "ircdome.org", "+dz",
-				"Services Staff Interface");
-   // NO. I WANT TO DO IT. :( - Simon
-//	registerService ("Love", "love", "ircdome.org", "+dz",
-//				"Love Services");
-	// registerService ("Game", "game", "ircdome.org", "+dz",
-	//			"Network Games"); 
-	registerService ("Bot", "bot", "ircdome.org", "+dz",
-				"Bot Interface to Services");
-	serviceJoin ("Chan", "#Debug");
-	serviceJoin ("Nick", "#Debug");
-	serviceJoin ("Note", "#Debug");
-	serviceJoin ("Serv", "#Debug");
-	// serviceJoin ("Game", "#Debug");
-	serviceJoin ("Love", "#Debug");
-	serviceJoin ("Bot", "#Debug");
+	loadModule("bot","./modules/bot.so");
+	loadModule("game","./modules/game.so");
 	serviceJoin ("IRCDome", "#debug");
 	serviceJoin ("IRCDome", "#Exordium");
-	serverMode ("#debug", "+oooooo", "Chan Nick Note Serv Game Love");
-	serverMode ("#debug", "+oo","IRCDome Bot");
-	serverMode ("#Exordium", "+o","IRCDome");
-        Channel::synchChannels();
 	connected = true;
 	serviceM.dumpModules();
 	return;
