@@ -32,7 +32,7 @@
 # error "Cannot compile PostgreSQL support without PostgreSQL!"
 #endif
 
-#include "exordium/database/postgresql/dbpgsql.h"
+#include "dbpgsql.h"
 
 using namespace Exordium;
 using AISutil::String;

@@ -1,5 +1,5 @@
 
-INCLUDES= -I../../include -I../../../kineircd/include -Iinclude/ @PGSQL_INCDIR@
+INCLUDES= -I../../include -I../../../kineircd/include -Iinclude/
 lib_LTLIBRARIES = mod_bot.la \
 		  mod_chan.la \
 		  mod_nick.la \

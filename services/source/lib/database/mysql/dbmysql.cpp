@@ -36,7 +36,7 @@
 # error "Cannot compile mysql support without mysql!"
 #endif
 
-#include "exordium/database/mysql/dbmysql.h"
+#include "dbmysql.h"
 
 
 using namespace Exordium;

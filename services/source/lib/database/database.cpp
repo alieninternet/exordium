@@ -31,11 +31,11 @@
 #include "exordium/database/database.h"
 
 #ifdef HAVE_MYSQL
-# include <exordium/database/mysql/dbmysql.h>
+# include "mysql/dbmysql.h"
 #endif
 
 #ifdef HAVE_PGSQL
-# include <exordium/database/postgresql/dbpgsql.h>
+# include "postgresql/dbpgsql.h"
 #endif
 
 using namespace Exordium;
