@@ -111,7 +111,6 @@ void
 CHAN_FUNC (Module::parseCOMMANDS)
 
 {
-
    String::size_type lineLength = 200;
    origin.sendMessage(GETLANG(COMMAND_LIST_START,getNickname()),getNickname());
    std::ostringstream list(" -=>");
@@ -129,6 +128,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage(list.str(),getNickname());
      }
    origin.sendMessage(GETLANG(COMMAND_LIST_END),getNickname());
+   origin.log(getNickname(),"Fetched commands list");
 
 }
 
@@ -181,12 +181,14 @@ CHAN_FUNC (Module::parseSET)
 		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanLog(true);
+		       ptr->log(origin,getNickname(),"Enabled channel log email",channel);
 		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_TRUE),getNickname());
                        return;
 		    }
 		  else
 		    {
 		       ptr->setChanLog(false);
+		       ptr->log(origin,getNickname(),"Disabled channel log email",channel);
 		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getNickname());
                        return;
 		    }
@@ -201,12 +203,14 @@ CHAN_FUNC (Module::parseSET)
 		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanSecure(true);
+		       ptr->log(origin,getNickname(),"Enabled secure ops",channel);
 		       origin.sendMessage(GETLANG(chan_SET_SECURE_TRUE),getNickname());
                        return;
 		    }
 		  else
 		    {
 		       ptr->setChanSecure(false);
+		       ptr->log(origin,getNickname(),"Disabled secure ops",channel);
 		       origin.sendMessage(GETLANG(chan_SET_SECURE_FALSE),getNickname());
                        return;
 		    }
@@ -220,12 +224,14 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setEnforceBans(true);
+		       ptr->log(origin,getNickname(),"Enabled ban enforcement",channel);
                        origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setEnforceBans(false);
+		       ptr->log(origin,getNickname(),"Disabled ban enforcement",channel);
                        origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_FALSE), getNickname());
                        return;
                     }
@@ -240,12 +246,14 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setTrackTopics(true);
+		       ptr->log(origin,getNickname(),"Enabled topic tracking",channel);
                        origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setTrackTopics(false);
+		       ptr->log(origin,getNickname(),"Disabled topic tracking",channel);
                        origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_FALSE), getNickname());
                        return;
                     }
@@ -259,12 +267,14 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setModeLock(true);
+		       ptr->log(origin,getNickname(),"Enabled mode lock",channel);
                        origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setModeLock(false);
+		       ptr->log(origin,getNickname(),"Disabled mode lock",channel);
                        origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_FALSE), getNickname());
                        return;
                     }
@@ -281,6 +291,7 @@ CHAN_FUNC (Module::parseSET)
 		       if ( value[0] == '+' || value[0] == '-' )
 			 {
 			    ptr->setChannelModes( value );
+			    ptr->log(origin,getNickname(),"Set modes to "+value,channel);
 			    origin.sendMessage(GETLANG(chan_SET_MODE, value), getNickname());
 			 }
 		       else
@@ -289,6 +300,7 @@ CHAN_FUNC (Module::parseSET)
                   else
 		    {
 		       ptr->setChannelModes( String("") );
+		       ptr->log(origin,getNickname(),"Cleared channel modes",channel);
 		       origin.sendMessage(GETLANG(chan_SET_MODE, ""), getNickname());
 		    }
 
@@ -306,10 +318,18 @@ CHAN_FUNC (Module::parseSET)
 		    ptr->setEntryMsg(line);
 
                   if(value.length()>0)
+		    {
+		    ptr->log(origin,getNickname(),"Set entry message to "+value,channel);   
 		    origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG), getNickname());
+		    }
+		  
                   else
+		    {
+		    ptr->log(origin,getNickname(),"Disabled entry message",channel);   
 		    origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG_OFF), getNickname());
 
+		    }
+		  
                   return;
                }
 
@@ -323,10 +343,16 @@ CHAN_FUNC (Module::parseSET)
 		    ptr->setPartMsg(line);
 
                   if(value.length()>0)
+		    {
+		    ptr->log(origin,getNickname(),"Set part message to "+value,channel);
 		    origin.sendMessage(GETLANG(chan_SET_PART_MSG), getNickname());
+		    }
                   else
+		    {
+		    ptr->log(origin,getNickname(),"Disabled part message",channel);   
 		    origin.sendMessage(GETLANG(chan_SET_PART_MSG_OFF), getNickname());
-
+		    }
+		  
                   return;
                }
 
@@ -335,12 +361,14 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setPrivate(true);
+		       ptr->log(origin,getNickname(),"Enabled Private mode",channel);
                        origin.sendMessage(GETLANG(chan_SET_PRIVATE_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setPrivate(false);
+		       ptr->log(origin,getNickname(),"Disabled Private mode",channel);
                        origin.sendMessage(GETLANG(chan_SET_PRIVATE_FALSE), getNickname());
                        return;
                     }
@@ -358,7 +386,7 @@ CHAN_FUNC (Module::parseSET)
                     ptr->setChanDescription(line.substr(0, 250));
                   else
                     ptr->setChanDescription(line);
-
+		  ptr->log(origin,getNickname(),"Set channel description to "+line,channel);
                   origin.sendMessage(GETLANG(chan_SET_DESCRIPTION), getNickname());
 
                   return;
@@ -373,7 +401,7 @@ CHAN_FUNC (Module::parseSET)
                     ptr->setUrl(line.substr(0, 200));
                   else
                     ptr->setUrl(line);
-
+		  ptr->log(origin,getNickname(),"Set channel url to "+line,channel);
                   origin.sendMessage(GETLANG(chan_SET_URL), getNickname());
 
                   return;
@@ -451,10 +479,7 @@ CHAN_FUNC (Module::parseINFO)
    origin.sendMessage(GETLANG(chan_INFO_OWNER,ptr->getOwner()),getNickname());
    origin.sendMessage(GETLANG(chan_INFO_REGDATE,ptr->getRegistrationDate()),getNickname());
 
-
-   bool Private = ptr->getPrivate();
-
-   if( Private )
+   if( ptr->getPrivate() )
    {
        origin.sendMessage(GETLANG(chan_INFO_PRIVATE, ptr->getPrivate() ? "ON" : "OFF"),getNickname());
 
