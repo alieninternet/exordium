@@ -365,3 +365,17 @@ bool
      }
    return false;
 }
+
+/* setLanguage(String)
+ * 
+ * Update language setting for us.
+ * 
+ */
+
+void
+  User::setLanguage(String const &lang)
+{
+   services.getDatabase().query("UPDATE  nicks set lang='"+lang+"' WHERE nickname='"+nickname+"'");
+}
+
+												 

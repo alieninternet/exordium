@@ -186,6 +186,16 @@ namespace Exordium
 	 * 
 	 */
         bool isPending(void);
+      
+        /* setLanguage(String)
+	 * 
+	 * Update our clients language.......
+	 * 
+	 * This could possibly be broken.. but i'll look at it later
+	 * its not a serious quirk (relating to the possibiltiy of someone
+	 * changing the language for a nick not in use... )
+	 */
+        void setLanguage(String const &);
 	/* Our constructor definition */
 	User(String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh

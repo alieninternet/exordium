@@ -1,20 +1,20 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
  *
  * This file is a part of Exordium.
- * 
+ *
  * Exordium is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Exordium is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -213,7 +213,6 @@ namespace Exordium
    nickname(*this),
    channel(*this),
    ircdome(*this)
-
 
      {
 	sock = -1;
@@ -1017,9 +1016,9 @@ bool
      }
 };
 /* addUser(String,Int)
- * 
+ *
  * Add the user to our users map
- * 
+ *
  */
 User* const Services::addUser(const Kine::String& name, const int oid)
 {
@@ -1027,9 +1026,9 @@ User* const Services::addUser(const Kine::String& name, const int oid)
 }
 
 /* findUser(String)
- * 
+ *
  * Find and return a pointer to a user.
- * 
+ *
  */
 User*
   Services::findUser(Kine::String &name)
@@ -1039,9 +1038,9 @@ User*
 }
 
 /* delUser(String)
- * 
+ *
  * Find.. and delete the given user.
- * 
+ *
  */
 bool
   Services::delUser(Kine::String &name)
@@ -1051,10 +1050,10 @@ bool
 };
 
 /* setNick(User,String)
- * 
- * Find and update the given user record as having 
+ *
+ * Find and update the given user record as having
  * a new nickname.
- * 
+ *
  */
 void
   Services::setNick(User &who, Kine::String &newnick)
@@ -1063,19 +1062,19 @@ void
    users.erase(user);
    users[newnick] = &who;
    who.setNick(newnick);
-   
+
 };
-   
+
 /* getRegNickCount()
- * 
+ *
  * Return the total number of registered nicknames (as a String)
- * 
+ *
  */
 
 String
   Services::getRegNickCount(void)
 {
-   
+
    MysqlRes res = database.query("SELECT count(*) from nicks");
    MysqlRow row;
    while ((row = res.fetch_row()))
@@ -1086,9 +1085,9 @@ String
 };
 
 /* generatePassword(String,String)
- * 
+ *
  * Generate a new password for the given user.
- * 
+ *
  */
 
 String
@@ -1099,10 +1098,10 @@ String
 }
 
 /* isAuthorised(String)
- * 
- * Return true if the specificed server is allowed to connect 
+ *
+ * Return true if the specificed server is allowed to connect
  * to the network ... otherwise false
- * 
+ *
  */
 
 bool
@@ -1126,7 +1125,7 @@ bool
 };
 
 /* addClient(...)
- * 
+ *
  * Add a user and setup a new map entry for them...
  * ..
  */
@@ -1134,7 +1133,7 @@ bool
 User*
   Services::addClient(String const &nick, String const &hops,
 		      String const &timestamp, String const &username,
-		      String const &host, String const &vwhost, 
+		      String const &host, String const &vwhost,
 		      String const &server, String const &modes,
 		      String const &realname)
 {
@@ -1149,40 +1148,37 @@ User*
    return ptr;
 };
 
-
 /* locateID....
- * 
- * shouldn't be here.. really .. just a stop gap for now 
- * 
+ *
+ * shouldn't be here.. really .. just a stop gap for now
+ *
  */
 int
   Services::locateID(String const &nick)
 {
-   
-          // Saftey Check - Remove any special chars.
-	             String newnick = nick.IRCtoLower();
-	   
-	             String query = "select id from onlineclients where nickname='" + newnick + "'";          
-                     MysqlRes res = database.query(query);
-	             MysqlRow row;
-	             while ((row = res.fetch_row()))
-	               {
-	                  String id = ((std::string) row[0]);
-	                  res.free_result();
-	                  return id.toInt();
-	               }
-	             res.free_result();
-	             Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID");
-                     return 0;
-	          }
-	      
 
+   // Saftey Check - Remove any special chars.
+   String newnick = nick.IRCtoLower();
+
+   String query = "select id from onlineclients where nickname='" + newnick + "'";
+   MysqlRes res = database.query(query);
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String id = ((std::string) row[0]);
+	res.free_result();
+	return id.toInt();
+     }
+   res.free_result();
+   Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID");
+   return 0;
+}
 
 /* getRequiredAccess(String,String)
- * 
+ *
  * Find ( and return ) the required access to run a command on
  * with the given service.
- * 
+ *
  */
 
 int
@@ -1201,9 +1197,9 @@ int
 };
 
 /* isNickRegistered(String)
- * 
- * Return TRUE if the given nickname is registered, otherwise false 
- * 
+ *
+ * Return TRUE if the given nickname is registered, otherwise false
+ *
  */
 
 bool
@@ -1219,18 +1215,17 @@ bool
 	  }
 	else
 	  {
-	    return false;
+	     return false;
 	  }
      }
    return false;
 }
 
-
 /*
  * getPass(String)
- * 
+ *
  * Return the password for the given nickname
- * 
+ *
  */
 
 String
@@ -1248,47 +1243,43 @@ String
 
 /*
  * stripModes (String)
- * 
+ *
  * Strip any mode based characters from a nickname @,+ etc.
- * 
+ *
  */
 
 String
   Services::stripModes(String const &nick)
 {
    char *temp = new char[nick.length() + 1];
-             for (register unsigned int i = (nick.length() + 1); i--;)
+   for (register unsigned int i = (nick.length() + 1); i--;)
      {
-	
-	
-	               char ch = nick.c_str()[i];
-	               switch(ch)
+
+	char ch = nick.c_str()[i];
+	switch(ch)
 	  {
-	     
-	     
+
 	   case '@': /* Opped.. */
-	                         temp[i] = ' ';
-	                         continue;
+	     temp[i] = ' ';
+	     continue;
 	   case '+': /* Voiced */
-	                         temp[i] = ' ';
-	                         continue;
+	     temp[i] = ' ';
+	     continue;
 	   default:
-	                         temp[i] = ch;
+	     temp[i] = ch;
 	  }
-	
-	
+
      }
-             String result(temp);
-             delete(temp);
-             return result.trim();
-   
+   String result(temp);
+   delete(temp);
+   return result.trim();
+
 }
 
-
 /* getRegisteredNickID(String)
- * 
+ *
  * Return the unique identifier for a nickname if it is registered
- * 
+ *
  */
 
 int
@@ -1304,13 +1295,12 @@ int
    return 0;
 }
 
-
 /* modeIdentify(String)
- * 
- * Causes services to set a user client +r 
+ *
+ * Causes services to set a user client +r
  * meaning they have identified to the nickname
  * they are currently using.
- * 
+ *
  * as an after thought , maybe this should be an inline function? thoughts?
  */
 
@@ -1323,10 +1313,10 @@ void
 
 /*
  * updateLastID(String)
- * 
- * Updates the last identified time of a client 
+ *
+ * Updates the last identified time of a client
  * to now.
- * 
+ *
  */
 
 void
@@ -1338,9 +1328,9 @@ void
 
 /*
  * getNick(int)
- * 
+ *
  * Return the nickname for the given registered nickname ID
- * 
+ *
  */
 String
   Services::getNick(int const &id)
@@ -1354,13 +1344,11 @@ String
    return "";
 }
 
-     
-
 /*
  * getOnlineNick(int)
- * 
+ *
  * Same as above except for Online ID's
- * 
+ *
  */
 String
   Services::getOnlineNick(int const &id)
@@ -1374,12 +1362,11 @@ String
    return "";
 }
 
-
 /*
  * getpendingCode(String)
- * 
+ *
  * return the pending authorisation code for a nickname.
- * 
+ *
  */
 
 String
@@ -1394,12 +1381,11 @@ String
    return "";
 };
 
-
 /*
  * registerNick(String,String,String)
- * 
+ *
  * register the given nickname :-)
- * 
+ *
  */
 
 void
@@ -1407,4 +1393,199 @@ void
 {
    String gpass = generatePassword(nick.IRCtoLower(),password);
    database.query("INSERT into nicks values ('','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
+}
+
+/* genAuth(String)
+ *
+ * Generate a new auth code the given nickname (and return it!)
+ *
+ */
+
+String
+  Services::genAuth(String const &nickname)
+{
+   String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword("VIVA LA FRANCE :)",nickname),PasswordStrBase,PasswordStrBaseLongPad);
+   database.query("INSERT into pendingnicks values ('','"+nickname+"','"+authcode+"')");
+   Debug("New registration: "+nickname);
+   return authcode;
+}
+
+/* getURL(String)
+ *
+ * Find and return the URL for the given nickname.
+ *
+ */
+
+String
+  Services::getURL(String const &nick)
+{
+   MysqlRes res = database.query("SELECT url from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+};
+
+/* getMSN(String)
+ *
+ * Find and return the MSN for a nick.
+ *
+ */
+
+String
+  Services::getMSN(String const &nick)
+{
+   MysqlRes res = database.query("SELECT msn from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+}
+
+/* getYAHOO(String)
+ *
+ * Find and return the YAHOO! for a nick.
+ *
+ */
+
+String
+  Services::getYAHOO(String const &nick)
+{
+   MysqlRes res = database.query("SELECT yahoo from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+};
+
+/* getAIM(String)
+ *
+ * Return the AIM setting for a nickname.
+ *
+ */
+
+String
+  Services::getAIM(String const &nick)
+{
+
+   MysqlRes res = database.query("SELECT yahoo from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+
+	return row[0];
+     }
+
+   return "";
+};
+
+
+/* getICQ()
+ * 
+ * Return the ICQ for a nick.
+ * 
+ */
+
+String
+  Services::getICQ(String const &nick)
+{
+   MysqlRes res = database.query("SELECT icq from nicks where nickname='" + nick + "'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+
+/* getLanguage(String)
+ * 
+ * return the language setting for a nick.
+ * 
+ */
+
+String
+  Services::getLanguage(String const &nick)
+{
+   if(!isNickRegistered(nick))
+     {
+	return "english";
+     }
+   MysqlRes res = database.query("SELECT lang from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "english";
+}
+
+
+/* getEmail
+ * 
+ * Retrieve the nicknames email
+ * 
+ */
+
+String
+  Services::getEmail(String const &nick)
+{
+   MysqlRes res = database.query("SELECT email from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+
+/* getRegDate - return the registration date for a client.
+ */
+
+String
+  Services::getRegDate(String const &nick)
+{
+   MysqlRes res = database.query("SELECT registered from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+
+/* getLastID - return the date a client last identified */
+
+String
+  Services::getLastID(String const &nick)
+{
+   MysqlRes res = database.query("SELECT lastid from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+
+/* getLastHost - get last host */
+String
+  Services::getLastHost(String const &nick)
+{
+   MysqlRes res = database.query("SELECT lasthost from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
 }

@@ -376,6 +376,18 @@ namespace Exordium {
 	Kine::String getOnlineNick(int const &);
 	Kine::String getpendingCode(String const &);
 	void registerNick(String const &,String const &,String const &);
+	Kine::String genAuth(String const &);
+	Kine::String getURL(String const &);
+	Kine::String getMSN(String const &);
+	Kine::String getYAHOO(String const &);
+	Kine::String getAIM(String const &);
+	Kine::String getICQ(String const &);
+	Kine::String getLanguage(String const &);
+	Kine::String getEmail(String const &);
+	Kine::String getRegDate(String const &);
+	Kine::String getLastID(String const &);
+	Kine::String getLastHost(String const &);
+	
      };
 }; // namespace Exordium
 
