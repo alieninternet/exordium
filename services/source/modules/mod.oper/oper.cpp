@@ -1,4 +1,4 @@
-/* $Id$
+/* oper.cpp,v 1.28 2003/04/05 16:54:46 praetorian100 Exp $
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -282,6 +282,7 @@ OPER_FUNC (Module::parseKILL)
 	services->killnick(tokill,getNickname(),reason);
 	origin.sendMessage(GETLANG(oper_KILL_SUCCESS,tokill),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
+	services->logLine("\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
      }
 }
 
@@ -298,30 +299,33 @@ OPER_FUNC (Module::parseJUPE)
    int isserver = tojupe.find('.');
    if (isserver > 0)
      {
-
-     /* For now we just pray to god the server isn't online ;)
-     if (is the server connected?)
-       {
-	  origin.sendMessage(GETLANG(oper_JUPE_SERVER_ONLINE,tojupe),getNickname());
-       }
-   */
+	if (services->isServerConnected(tojupe))
+	  {
+	     origin.sendMessage(GETLANG(oper_JUPE_SERVER_ONLINE,tojupe),getNickname());
+	  }
 	services->queueAdd("SERVER "+tojupe+" 2 :"+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_SERVER_SUCCESS,tojupe,reason),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
+	services->logLine("\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
      }
    else
      {
 	User *ptr = services->findUser(tojupe);
+	String who = origin.getNickname();
+	User *optr = services->findUser(who);
 	if (ptr != 0)
 	  {
 	     services->killnick(tojupe,getNickname(),reason);
 	  }
-
+/* lets not register it as a service for now until modes can be specified (dont want them looking like opers ;)
 	services->registerService(tojupe,"jupe",
-				  getHostname(),
-				  reason);
+				  "jupes."+services->getConfig().getUnderlingHostname(),
+				  "Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());*/
+	services->queueAdd("NICK "+tojupe+" 2 1 +id jupe jupes."+services->getConfig().getUnderlingHostname()+" "+services->getConfig().getUnderlingHostname()+" 0 0 :Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());
+	services->queueAdd(":"+tojupe+" AWAY : "+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_NICK_SUCCESS,tojupe,reason),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
+	services->logLine("\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
      }
 }
 
