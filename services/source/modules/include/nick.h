@@ -67,9 +67,6 @@ public:
    // Start the module
    void start(Exordium::Services& s);
    
-   // Stop the module (called just before a module is unloaded)
-   void stop(void) {};
-      
    void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
    void parseLine (LibAIS::StringTokens& line, Exordium::User& origin,LibAIS::String const &);
 

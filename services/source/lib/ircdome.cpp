@@ -76,7 +76,9 @@ void
 	String name = tokens.nextToken();
 	services.serviceNotice("Unloading module " + name,
 			       services.getConfig().getConsoleName(), origin);
-	services.getConfig().getModules().unloadModule(name);
+	services.getConfig().getModules().unloadModule(name,
+						       origin +
+						       " unloaded me :(");
      }
    if(command=="load")
      {

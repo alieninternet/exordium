@@ -478,16 +478,13 @@ namespace Exordium
      {
 	helpme("Services is shutting down " + reason, config.getConsoleName());
 
-	// This hard-coded crap is revolting.
-	queueAdd(":Chan QUIT :"+reason);
-	queueAdd(":Nick QUIT :"+reason);
-	queueAdd(":Love QUIT :"+reason);
-	queueAdd(":Note QUIT :"+reason);
-	queueAdd(":Serv QUIT :"+reason);
-	queueAdd(":IRCDome QUIT :"+reason);
-	queueAdd(":Oper QUIT :"+reason);
-	queueAdd(":Game QUIT :"+reason);
-	queueAdd(":Stats QUIT :"+reason);
+	// Stop and unload all the modules..
+	config.getModules().unloadAll(reason);
+	
+	// I do not like this.. oh well..  - pickle
+	if (config.getConsoleEnabled()) {
+	   queueAdd(":IRCDome QUIT :"+reason);
+	}
 	
 	queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
 	stopping = true;

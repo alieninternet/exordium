@@ -73,10 +73,14 @@ namespace Exordium {
 				LibAIS::String& errString);
       
       // Remove a module from the list, and unload it
-      void unloadModule(const LibAIS::String& name);
+      void unloadModule(const LibAIS::String& name, 
+			const LibAIS::String& reason);
 
       // Start all modules in the list
       void startAll(Exordium::Services& services);
+      
+      // Stop and unload all the modules in the list
+      void unloadAll(const LibAIS::String& reason);
       
       // Check if a module exists
       bool exists(const LibAIS::String& name) const;

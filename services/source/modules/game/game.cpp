@@ -94,11 +94,11 @@ void Module::start(Exordium::Services& s)
 /* stop - Stop the service
  * Original 17/09/2002 pickle
  */
-void Module::stop(void)
+void Module::stop(const LibAIS::String& reason)
 {
    // Leave all the channels we're on..
    while (!channelGames.empty()) {
-      // Part the channel...
+      // Part the channel... In the future we should be able to give a reason
       services->servicePart(getName(), 
 			    (*(channelGames.begin())).second->getChannel());
       

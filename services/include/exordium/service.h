@@ -106,8 +106,8 @@ namespace Exordium {
       virtual void start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
-      virtual void stop(void) = 0;
-      
+      virtual void stop(const LibAIS::String& reason) {};
+
       // Parsers
       virtual void parseLine(LibAIS::StringTokens& line, User& origin) = 0;
       

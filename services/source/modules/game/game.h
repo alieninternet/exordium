@@ -96,7 +96,7 @@ namespace Game {
       void start(Exordium::Services& s);
       
       // Stop the module (called just before a module is unloaded)
-      void stop(void);
+      void stop(const LibAIS::String& reason);
       
       // Parser for incoming stuff
       void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);

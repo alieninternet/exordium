@@ -850,3 +850,11 @@ void Chan::start(Exordium::Services& s)
    services->serviceJoin(getName(),"#Debug");
    services->getChannel().synchChannels();
 }
+
+
+// Stop the service - bye bye!
+void Chan::stop(const LibAIS::String& reason)
+{
+   // Yes, we would like to QUIT here properly.. :( This is dodgey  -pickle
+   services->queueAdd(":" + getName() + " QUIT :" + reason);
+}

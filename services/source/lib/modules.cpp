@@ -123,13 +123,13 @@ Service* const Modules::loadModule(const String& fileName,
 /* unloadModule - Remove a module from the list, and unload it
  * Original 07/06/2002 pickle
  */
-void Modules::unloadModule(const String& name) {
+void Modules::unloadModule(const String& name, const String& reason) {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
    
    // If the module exists then stop it, delete it, and erase it - bye bye!
    if (moduleLocation != modules.end()) {
-      (*moduleLocation).second->service->stop();
+      (*moduleLocation).second->service->stop(reason);
       delete (*moduleLocation).second;
       modules.erase(moduleLocation);
       return;
@@ -153,7 +153,7 @@ struct startModule {
      {};
 
    // Operator which performs the starting
-   void operator()(Modules::modules_type::value_type& modulesData)
+   inline void operator()(Modules::modules_type::value_type& modulesData)
      { modulesData.second->service->start(services); };
 };
 
@@ -166,7 +166,21 @@ void Modules::startAll(Services& services)
    (void)std::for_each(modules.begin(), modules.end(), startModule(services));
 }
 
-  
+
+/* unloadAll - Stop all the modules in the list
+ * Original 21/09/2002 pickle
+ */
+void Modules::unloadAll(const LibAIS::String& reason)
+{
+   while (!modules.empty()) {
+      (*modules.begin()).second->service->stop(reason);
+      delete (*modules.begin()).second;
+      modules.erase(modules.begin());
+      return;
+   }
+}
+
+      
 /* exists - Check if a module exists
  * Original 07/06/2002 james
  */

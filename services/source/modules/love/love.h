@@ -84,10 +84,6 @@ class Love : public Exordium::Service {
    
    // Start the module
    void start(Exordium::Services& s);
-   
-   // Stop the module (called just before a module is unloaded)
-   void stop(void) 
-     {};
       
    // Parser for incoming stuff sent on a channel
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
