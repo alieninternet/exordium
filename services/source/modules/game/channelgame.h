@@ -53,10 +53,10 @@ class ChannelGame {
      = 0;
    
    // Send a message to the channel
-//   void sendMessage(const Kine::String& message) const
-//     { game.services.servicePrivmsg(message, game.myName, channel); };
    void sendMessage(const Kine::String& message) const
-     { game.services.serviceNotice(message, game.myName, channel); };
+     { game.services.servicePrivmsg(message, game.myName, channel); };
+//   void sendMessage(const Kine::String& message) const
+//     { game.services.serviceNotice(message, game.myName, channel); };
 
    // Send a message to someone (specified)
    void sendMessage(const Kine::String& nick, 
