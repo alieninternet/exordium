@@ -24,7 +24,11 @@
  */
 autogen definitions commands;
 
+command = {
+   name = "help";
+   data_en = "This is a test";
 
+};
 command = {
    name = "access";
 };

@@ -646,6 +646,14 @@ NICK_FUNC (Module::parseHELP)
 	: origin(o), nick(n)
 	{};
    };
+   if(command.empty())
+     {
+	// Basic help.
+	Callout callout(origin, getNickname());
+	Kine::langs().get(origin.getLanguage(),Language::tagMap[Language::nick_HELP].tagID,callout);
+	return;
+	
+     }
    
    // find the command
    for (int i = 0; Commands::commandTable[i].command != 0; i++) {

@@ -92,6 +92,28 @@ language = {
 };
 
 /*
+ * Core help files
+ *
+ */
+ 
+langtag = {
+ name = "nick_HELP";
+ component = "mod_nick";
+ data_en = "\\b%N's Services Help System \\b \\n"
+           " \\n"
+	   "Nick is the network's nickname registration service, and provides services\\n"
+	   "allowing you to 'register' a nickname and prevent others from using it.\\n"
+	   " \\n"
+	   "To use this service, you use a variety of commands\\n"
+	   "these commands can be accessed as such:\\n"
+	   " \\n"
+	   "To see a list of commands available type: \\b /msg Nick commands \\b \\n"
+	   " \\n"
+	   "To see further help on a command type: \\b /msg Nick help command \\b \\n"
+	   " \\n";
+};
+
+/*
  *
  * Tags for core Console 
  *
@@ -1730,11 +1752,34 @@ langtag = {
 langtag = {
    name = "nick_HELP_ACCESS";
    component = "mod_nick";
+   data_en = "\\b%N's Services Help System \\b \\n"
+   	     " \\n"
+	     "Command: \\bAccess\\b\\n"
+	     " \\n"
+	     "Usage: \\bAccess <nickname>\\b\\n"
+	     " \\n"
+	     "The access command shows you what nicknames someone is identified as.\\n"
+	     " \\n"
+	     "Example: \\b/msg nick access james\\n"
+	     " \\n";
 };
 
 langtag = {
    name = "nick_HELP_AUTH";
    component = "mod_nick";
+   data_en = "\\b%N's Services Help System \\b \\n"
+   	     " \\n"
+   	     "Command: \\bAuth\\b\\n"
+   	     " \\n"
+   	     "Usage: \\bAuth <authcode>\\b\\n"
+   	     " \\n"
+	     "The auth command is used in the last stage of registering a nickname\\n"
+	     "When registering a nickname you will receive an email from services\\n"
+	     "within this email will be an authorisation code, copy and paste this\\n"
+	     "code into an auth command to complete registration of your nickname\\n"
+	     " \\n"
+	     "Example: \\b/msg nick auth SDFSER342SDfFD34r3!!5\\b\\n"
+	     " \\n";
 };
 
 langtag = {
