@@ -320,6 +320,7 @@ String
      thelist += idnick;
      services.getDatabase().dbGetRow();
    }
+   return thelist;
 }
 
 

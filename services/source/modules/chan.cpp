@@ -118,7 +118,7 @@ void
      }
    
    else
-     {
+   {
 	channel = tokens.nextToken();
      }
    if(channel.empty())
@@ -482,7 +482,9 @@ void
 	return;
      }
    String la = origin.getIDList();
+   std::cout << "parseOP(); la is " << la << std::endl;
    StringTokens st (la);
+   std::cout << "ParseOP(); st is " << st << std::endl;
    bool more = false;
    more = st.hasMoreTokens();
    while(more==true)
