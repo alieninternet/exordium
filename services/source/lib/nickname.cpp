@@ -107,7 +107,7 @@ return false;
 void
 Nickname::addCheckidentify(String const &nick)
 {   
-        Services::serviceNotice("The nickname you are using requires identification, Please /msg nick@ircdome.org identify <password>","Nick",nick);
+        Services::serviceNotice("\002[\002Identification Request\002]\002 This nickname is Registered. Please identify","Nick",nick);
 	int rfac = Services::random(60);
         String query = "INSERT into kills values('','"+nick+"','" + String::convert(Services::currentTime + 120 + rfac) + "')";
         Sql::query(query);

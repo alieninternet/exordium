@@ -52,6 +52,7 @@ private:
    static void CHAN_FUNC (parseDEVOICE);
    static void CHAN_FUNC (parseADDUSER);
    static void CHAN_FUNC (parseINFO);
+   static void CHAN_FUNC (parseLISTBAN);
 };
 
 

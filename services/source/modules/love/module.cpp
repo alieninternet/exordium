@@ -77,7 +77,7 @@ void Love::parseLine(const String& line, const String& origin)
    // Run through the list of commands to find a match
    for (int i = 0; commandTable[i].command != 0; i++) {
 #ifdef DEBUG
-      ostringstream debugLine;
+      std::ostringstream debugLine;
       debugLine << "Love::parseLine() -> '" << line << "' from " << origin;
       Services::Debug(debugLine.str());
 #endif

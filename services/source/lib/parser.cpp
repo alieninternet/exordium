@@ -278,6 +278,14 @@ Nickname::addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realna
 int num = Nickname::countHost(host);
 String togo = nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+vwhost+" "+server+" "+modes+" :"+realname;
 Services::Debug(togo);
+String query = "SELECT txt from news where level=0 AND expires<"+String::convert(Services::currentTime);
+MysqlRes res = Sql::query(query);
+MysqlRow row;
+while ((row = res.fetch_row()))
+{
+	String foo = ((std::string) row[0]).c_str();
+	Services::serviceNotice("\002[\002Global News\002]\002"+foo,"IRCDome",nick);
+}
 if(num>2)
 {
 	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
@@ -317,6 +325,7 @@ PARSER_FUNC (Parser::parsePRIVMSG)
 	IRCDome::parseLine(message,originl);
 	return;
     }
+std::cout << target << std::endl;
   if(target[0]=='#')
 	{
 		//Oke channel msg :>

@@ -17,6 +17,23 @@ using Kine::StringMask;
 namespace Exordium
 {
 
+/* Removing a ban */
+void
+Channel::RemoveBan(String const &id, String const &chan, String const &mask)
+{
+
+String tid = id;
+int cid = tid.toInt();
+String channel = Channel::getChanName(cid);
+String todebug = "I am supposed to be removing the ban " + mask + " from this channel :)";
+Services::Debug(todebug);
+Services::Debug(channel);
+Services::servicePrivmsg(todebug,"Chan",channel);
+Services::serverMode(channel,"-b",mask);
+String query = "DELETE from chanbans where id='"+id+"'";
+Sql::query(query);
+
+}
 /* Return total number of channels in database */
 String
 Channel::getChanCount(void)
@@ -259,8 +276,8 @@ return 0;
 String
 Channel::getChanName(int const &number)
 {
-String query = "SELECT name from chans where id='"
-+ String::convert(number)+ "'";
+String query = "SELECT name from chans where id="
++ String::convert(number);
 MysqlRes res = Sql::query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
@@ -345,7 +362,7 @@ Channel::deregisterChannel(String const &name, String const &reason)
         query = "DELETE from chanaccess where chanid='"
         + String::convert(foo)+ "'";
         Sql::query(query);
-        String togo = "Channel DeRegistered -> "+reason;  
+        String togo = "This channel has been deregistered \002"+reason;  
         Services::serviceNotice(String(togo),"Chan",name);
         Services::servicePart("Chan",name);
 }

@@ -44,6 +44,8 @@ struct Chan::functionTableStruct const
   {".adduser", parseADDUSER},
   {"info", parseINFO},
   {".info", parseINFO},
+  {"listban", parseLISTBAN},
+  {".listban", parseLISTBAN},
   {0}
 };
 
@@ -89,9 +91,54 @@ Chan::parseLine (String const &line, String const &requestor)
           return;
         }
     }
-  Services::serviceNotice ("Unrecognized Command", "Chan", requestor);
+  Services::serviceNotice ("\002[\002Unrecognised Command\002]\002", "Chan", requestor);
 }
 
+void
+CHAN_FUNC (Chan::parseLISTBAN)
+{
+	String channel = "";
+	if(chan!="")
+	{
+		channel = chan;
+	}
+	else
+	{
+		channel = tokens.nextToken();
+	}
+
+	if(channel=="")
+	{
+		Services::serviceNotice("\002[\002Incorrect Command Usage\002]\002 Usage: listban #channel","chan",origin);
+		std::cout << "BOO BOO" << std::endl;
+		return;		
+	}
+	if(!Channel::isChanRegistered(channel))
+	{
+		Services::serviceNotice("\002[\002Fatal Error\002]\002 Channel not registered","chan",origin);
+		std::cout << "its not registered!" << std::endl;
+		return;
+	}
+	int tid = Channel::getChanID(channel);
+	Services::serviceNotice("\002[\002Ban List\002]\002 for \002"+channel,"chan",origin);
+	String tquery = "SELECT * from chanbans where chan='" + String::convert(tid) + "'";
+	Services::Debug(tquery);
+	MysqlRes res = Sql::query(tquery);
+	MysqlRow row;
+	int j=0;
+	while ((row = res.fetch_row()))
+	{
+		j++;
+		String mask = ((std::string) row[2]).c_str();
+		String setby = ((std::string) row[3]).c_str();
+		String seton = ((std::string) row[4]).c_str();
+		String expireon = ((std::string) row[5]).c_str();
+		String reason = ((std::string) row[6]).c_str();
+		String tosend = "\002[\002"+String::convert(j)+"\002]\002 Mask \002"+mask+"\002 SetBy \002"+setby+"\002 Date \002"+seton+"\002 Expires \002"+expireon+"\002 Reason \002"+reason+"\002";
+		Services::serviceNotice(tosend,"chan",origin);
+	}
+	Services::serviceNotice("\002[\002Ban List\002]\002 Finished","chan",origin);
+}
 void
 CHAN_FUNC (Chan::parseINFO)
 {
@@ -107,12 +154,12 @@ CHAN_FUNC (Chan::parseINFO)
 
 	if(channel=="")
 	{
-		Services::serviceNotice("Usage: info #channel","Chan",origin);
+		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: info #channel","Chan",origin);
 		return;
 	}
 	if(!Channel::isChanRegistered(channel))
 	{
-		Services::serviceNotice("Error: Target channel is not registered","Chan",origin);
+		Services::serviceNotice("\002[\002Fatal Error\002]\002 Channel not registered","Chan",origin);
 		return;
 	}
 	int cid = Channel::getChanID(channel);
@@ -120,7 +167,7 @@ CHAN_FUNC (Chan::parseINFO)
 	String ntotal = Channel::getChanCount();
 	String nuniq = String::convert(Channel::getChanID(channel));
 	String nnuniq = String::convert(Channel::getOnlineChanID(channel));
-	String toa = "Channel Information for \002"+channel;
+	String toa = "\002[\002Channel Information\002]\002 for \002"+channel;
 	String tob = "Owner : "+nowner;
 	String toc = "Unique IDS: "+nuniq+"/"+nnuniq;
 	Services::serviceNotice(toa,"Chan",origin);
@@ -144,12 +191,12 @@ CHAN_FUNC (Chan::parseADDUSER)
 	String level = tokens.nextToken();
 	if(channel=="" | nickname=="" | level=="")
 	{
-		Services::serviceNotice("Usage: adduser #channel nickname level","Chan",origin);
+		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: adduser #channel nickname level","Chan",origin);
 		return;
 	}
 	if(!Nickname::isNickRegistered(nickname))
 	{
-		Services::serviceNotice("Error: That nickname is not registered","Chan",origin);
+		Services::serviceNotice("\002[\002Fatal Error\002]\002 Nickname not registered","Chan",origin);
 		return;
 	}
 	String la = Nickname::getIDList(origin);
@@ -162,7 +209,7 @@ CHAN_FUNC (Chan::parseADDUSER)
 		int access = Channel::getChanAccess(channel,currnick);
 		int waccess = level.toInt();
 		int taccess = Channel::getChanAccess(channel,nickname);
-		if(waccess==access || waccess>access)
+		if(waccess==access || waccess>access || waccess<1 || waccess>499)
 		{
 			Services::serviceNotice("Error: You cannot add someone with higher, or equal access to your own","Chan",origin);
 			return;
@@ -257,9 +304,24 @@ CHAN_FUNC (Chan::parseBAN)
 		int access = Channel::getChanAccess(channel,currnick);
 		if(access>150)
 		{
+			StringTokens st (who);
+			String temp1 = st.nextToken('@');
+			String temp2 = st.rest();
+			if(temp2.length()<2)
+			{
+				Services::Debug("Only nickname was given - Generating host based ban");
+				String tban = Nickname::getHost(temp1);
+				String toban = "*!*@"+tban;
+				who = toban;
+			}
+			Services::Debug("BEFORE THE AT " +temp1);
+			Services::Debug("AFTER THE AT " + temp2);
 			int cid = Channel::getChanID(channel);
 			Services::serverMode(channel,"+b",who);
-			Channel::addChanBan(cid,who,origin,1,reason);
+			Services::Debug(String::convert(Services::currentTime));
+			long newt = Services::currentTime + 120;
+			Services::Debug(String::convert(newt));
+			Channel::addChanBan(cid,who,origin,newt,reason);
 			String rs = "("+origin+"/"+currnick+") "+reason;
 			Channel::banChan(channel,who,rs);
 			return;

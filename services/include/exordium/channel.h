@@ -41,6 +41,7 @@ namespace Exordium {
 		static int ownedChannels(String const &); 
 		static void addChanBan(int const &,String const &,String const &,int const &,String const &);
 		static void banChan(String const &, String const &, String const &);
+		static void RemoveBan(String const &, String const &, String const &);
 
 
 	};

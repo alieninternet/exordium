@@ -51,6 +51,7 @@ static void SERV_FUNC (parseUSER);
 static void SERV_FUNC (parseCHAN);
 static void SERV_FUNC (parseDIE);
 static void SERV_FUNC (parseRAW);
+static void SERV_FUNC (parseNEWS);
 };
 };
 

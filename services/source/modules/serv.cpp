@@ -31,6 +31,7 @@ struct Serv::functionTableStruct const
   {"raw", parseRAW},
   {"chan", parseCHAN},
   {"die", parseDIE},
+  {"news", parseNEWS},
   {0}
 };
 void
@@ -80,6 +81,32 @@ std::string c = tokens.rest();
 Services::queueAdd(c);
 String togo = origin+" did \002RAW\002 - "+c;
 Services::helpme(String(togo),"Serv");
+}
+void
+SERV_FUNC (Serv::parseNEWS)
+{
+	String command = tokens.nextToken();
+	String channel = tokens.nextToken();
+	if(command=="")
+	{
+		Services::serviceNotice("Usage: news add/del/list","Serv",origin);
+		return;
+	}
+	if(command=="add")
+	{
+	String type = tokens.nextToken();
+	String expires = tokens.nextToken();
+	String text = tokens.rest();
+	if(type=="" | expires=="" | text=="")
+	{
+		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here","Serv",origin);
+		return;
+	}
+	String query = "INSERT into news values ('','"+type+"','"+expires+"','"+text+"');";
+	Sql::query(query);
+	Services::serviceNotice("New news item added successfully","Serv",origin);
+	}
+
 }
 void
 SERV_FUNC (Serv::parseCHAN)

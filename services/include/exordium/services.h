@@ -110,6 +110,7 @@ public:
   static Core serviceM;  
 
 //Function Declrations below here.
+	void SynchTime(void);
 	void expireRun(void);
 	static String getQuote(int const &number);
 	static String getLogCount(void);

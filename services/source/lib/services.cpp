@@ -171,11 +171,11 @@ Services::run(void)
           lastCheckPoint = currentTime;
           checkpoint ();
         }
-      if (currentTime > (time_t) (lastExpireRun + 3600))
+      if (currentTime > (time_t) (lastExpireRun + 120))
         {
           lastExpireRun = currentTime;
           expireRun ();
-//          SynchTime ();
+          SynchTime ();
 
         }
       if (currentTime > (time_t) (lastModeRun + 1))
@@ -196,10 +196,10 @@ Services::run(void)
 int
 Services::init(void)
 {
-//   rehashSignalHandler.foo = (void *)this;
-//   getDaemon().getSignals().addHandler(rehashSignalHandler);
-//   deathSignalHandler.foo = (void *)this;
-//   getDaemon().getSignals().addHandler(deathSignalHandler);
+   //rehashSignalHandler.foo = (void *)this;
+   //getDaemon().getSignals().addHandler(rehashSignalHandler);
+   //deathSignalHandler.foo = (void *)this;
+   //getDaemon().getSignals().addHandler(deathSignalHandler);
    
 	struct hostent *host;
 	queueKill ();
@@ -218,7 +218,7 @@ Services::init(void)
       		exit (1);
         }
         memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
-        addr.sin_port = htons (8888);
+        addr.sin_port = htons (6667);
         return true;
 
 
@@ -275,7 +275,7 @@ bool Services::connect (void)
       socky.close();
       sock = -1;
     }
-    socky.setRemoteAddress("209.124.83.254");
+    socky.setRemoteAddress("209.51.139.254");
     socky.setRemotePort(6667);
     if(!socky.connect())
 	{
@@ -302,12 +302,12 @@ void
 Services::doBurst (void)
 {
 	loadModule("nick","./modules/nick.so");
-	loadModule("love","./modules/love.so");
 	loadModule("chan","./modules/chan.so");
 	loadModule("serv","./modules/serv.so");
 	loadModule("note","./modules/note.so");
 	loadModule("bot","./modules/bot.so");
 	loadModule("game","./modules/game.so");
+	loadModule("love","./modules/love.so");
         registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			"The service James forgot :(");
 	serviceJoin ("IRCDome", "#debug");
@@ -380,6 +380,23 @@ return String("0");
 }
 
 
+void Services::SynchTime(void)
+{
+//Undo any expired glines
+
+//Undo any expired channel bans
+String ctime = String::convert(currentTime);
+String query = "SELECT id,chan,mask from chanbans where expireon<" + ctime;
+MysqlRes res = Sql::query(query);
+MysqlRow row;
+while (( row = res.fetch_row()))
+	{
+		String id = ((std::string) row[0]).c_str();
+		String chan = ((std::string) row[1]).c_str();
+		String mask = ((std::string) row[2]).c_str();
+		Channel::RemoveBan(id,chan,mask);
+	}
+}
 
 void Services::expireRun(void)
 {
@@ -707,7 +724,7 @@ Services::sendNote(String const &from, String const &to, String const &text)
 		//Client is online.. But are they identified HUHUHUH?!!?
 		if(Nickname::isIdentified(to,to))
 		{
-		String togo = String("You have just received a new note from \002")+from+"\002";
+		String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
 		Services::serviceNotice(togo,"Note",to);
 		}
 	}
@@ -748,7 +765,7 @@ while ((row = res.fetch_row()))
 			}
 		
 		}
-		String msg = "This nickname does not belong to you, your nickname will now be changed";
+		String msg = "\002[\002Non-Identification\002]\002 Your nickname is now being changed";
 		Services::serviceNotice(msg,"Nick",tomod);
 		String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
 		Services::queueAdd(String(togo));
@@ -759,7 +776,7 @@ while ((row = res.fetch_row()))
 	{
 		if((killt.toInt()-nowt)>50)
 		{
-			String msg = "You have less than 60 seconds left to identify";
+			String msg = "\002[\002Identification Warning\002]\002 Less than 60 seconds left to identify";
 			Services::serviceNotice(msg,"Nick",tomod);
 		}
 	}
