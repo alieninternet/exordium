@@ -78,7 +78,8 @@ namespace mod_exordium {
        */ 
      
       // Flags.. ignore this for now
-      Kine::Module::basicInfo_type::FLAG_UNIQUE_INSTANCE,
+      Kine::Module::basicInfo_type::FLAG_UNIQUE_INSTANCE |
+	Kine::Module::basicInfo_type::FLAG_CONFIGURE_MANDATORY,
      
       // Our start and stop functions
       &moduleStart,
