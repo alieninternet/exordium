@@ -93,7 +93,7 @@ void
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Bot(services, name);
+   return new Bot(services);
 }
 
 

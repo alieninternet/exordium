@@ -57,9 +57,9 @@ private:
 		services.serviceNotice(message,getName(),to);
 	}
 public:
-   Chan(Exordium::Services& s, const LibAIS::String &mn)
+   Chan(Exordium::Services& s)
      : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", mn)
+       configData(moduleInfo.fullName, "somewhere.org", "Chan")
 	{
 	};
   ~Chan(void)

@@ -74,9 +74,9 @@ class Love : public Exordium::Service {
    
  public:
    // Our constructor
-   Love(Exordium::Services& s, const LibAIS::String& mn)
+   Love(Exordium::Services& s)
      : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", mn)
+       configData(moduleInfo.fullName, "somewhere.org", "Love")
      {};
 
    // Our destructor

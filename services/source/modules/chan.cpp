@@ -826,7 +826,7 @@ void
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Chan(services, name);
+   return new Chan(services);
 }
 
 

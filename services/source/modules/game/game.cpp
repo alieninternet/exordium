@@ -43,7 +43,7 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Game(services, name);
+   return new Game(services); 
 }
 
 

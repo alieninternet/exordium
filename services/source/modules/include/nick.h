@@ -55,9 +55,9 @@ private:
 		services.serviceNotice(message,getName(),to);
 	}
 public:
-   Nick(Exordium::Services& s, const LibAIS::String &mn)
+   Nick(Exordium::Services& s)
      : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", mn)
+       configData(moduleInfo.fullName, "somewhere.org", "Nick")
    {
    };
 

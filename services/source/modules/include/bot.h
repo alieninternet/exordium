@@ -59,9 +59,9 @@ class Bot : public Exordium::Service
 		services.serviceNotice(message,getName(),to);
 	};
 public:
-   Bot(Exordium::Services& s, const LibAIS::String &mn)
+   Bot(Exordium::Services& s)
      : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", mn)
+       configData(moduleInfo.fullName, "somewhere.org", "Bot")
        {};
 
   ~Bot(void)

@@ -52,9 +52,9 @@ private:
   static struct functionTableStruct const functionTable[];
    
 public:
-   Note(Exordium::Services& s, const LibAIS::String& mn)
+   Note(Exordium::Services& s)
    : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", mn)
+       configData(moduleInfo.fullName, "somewhere.org", "Note")
    {
    };
   ~Note(void) 

@@ -373,16 +373,16 @@ namespace Exordium
      Services::doBurst (void)
        {
 	  String goingByeByesSoon;
-	  config.getModules().loadModule("nick","./modules/nick.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("chan","./modules/chan.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("serv","./modules/serv.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("note","./modules/note.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("bot","./modules/bot.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("game","./modules/game.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("love","./modules/love.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("oper","./modules/oper.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("stats","./modules/stats.so",goingByeByesSoon,*this);
-	  config.getModules().loadModule("vote","./modules/vote.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/nick.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/chan.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/serv.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/note.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/bot.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/game.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/love.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/oper.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/stats.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("./modules/vote.so",goingByeByesSoon,*this);
 	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			  "The service James forgot :(");
 	  serviceJoin ("IRCDome", "#debug");

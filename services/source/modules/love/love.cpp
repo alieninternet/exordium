@@ -46,7 +46,7 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Love(services, name);
+   return new Love(services);
 }
 
 

@@ -78,9 +78,9 @@ class Game : public Exordium::Service {
    
 public:
    // Our constructor
-   Game(Exordium::Services& s, const LibAIS::String& mn)
+   Game(Exordium::Services& s)
      : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", mn)
+       configData(moduleInfo.fullName, "somewhere.org", "Game")
      {};
 
    // Our destructor

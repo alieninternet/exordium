@@ -655,7 +655,7 @@ void
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	return new Nick(services, name);
+	return new Nick(services);
      }
 
    // Module information structure

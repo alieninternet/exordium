@@ -252,7 +252,7 @@ namespace Exordium
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	return new Note(services,name);
+	return new Note(services);
      }
 
    // Module information structure

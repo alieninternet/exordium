@@ -62,8 +62,8 @@ Modules::Module::~Module(void)
  * 18/09/2002 simonb - Merged with Services::loadModule()
  * Note: Some of the variables passed here are temporary...
  */
-bool Modules::loadModule(const String& name, const String& fileName,
-			 String& errString, Services& services)
+bool Modules::loadModule(const String& fileName, String& errString,
+			 Services& services)
 {
    // Try to load the module
    void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
@@ -88,7 +88,7 @@ bool Modules::loadModule(const String& name, const String& fileName,
    }
 
    // Pull out the service data, this class contains all the other info we need
-   Service* const service = (*initfunc)(services, name);
+   Service* const service = (*initfunc)(services);
    
    // Make sure the service was returned appropriately...
    if (service == 0) {

@@ -76,11 +76,12 @@ void
      }
    if(command=="load")
      {
-	String name = tokens.nextToken();
+//	String name = tokens.nextToken();
+	(void)tokens.nextToken();
 	String filename = tokens.nextToken();
 	services.serviceNotice("Attempting to load module","IRCDome",origin);
 	String errString;
-	if(!services.getConfig().getModules().loadModule(name, filename,
+	if(!services.getConfig().getModules().loadModule(filename,
 							 errString, services))
 	  {
 	     services.serviceNotice("Error loading module: " + errString,

@@ -32,7 +32,7 @@
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
-   Service* x(Exordium::Services& services, const LibAIS::String& name)
+   Service* x(Exordium::Services& services)
 
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
