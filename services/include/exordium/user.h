@@ -69,7 +69,10 @@ namespace Exordium
 	void setDeopAway(bool const &);
         bool deopAway(void);
 	void updateHost(String const &);
-	void setNick(String const &);
+	void setNick(String const &nick)
+	  {
+	     nickname = nick;
+	  };
 	User(String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh
 	    onlineID(oid), //as dictated by the sql server..

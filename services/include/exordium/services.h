@@ -113,7 +113,7 @@ namespace Exordium {
 	std::queue < String > outputQueue;
 	std::queue < String > ModeoutputQueue;
 	Kine::SocketIPv4TCP socky;
-	typedef std::map <int, User *> user_map;
+	typedef std::map <Kine::String, User *> user_map;
 	user_map users;
       public:
 //	UserBase clients;
@@ -122,6 +122,7 @@ namespace Exordium {
 	User* addUser(Kine::String &, int &);
 	bool delUser(Kine::String &);
 	User* findUser(Kine::String &);
+	void setNick(User &,Kine::String &);
 	// dunno where you want these fellow james
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c);

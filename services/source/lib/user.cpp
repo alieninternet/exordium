@@ -180,9 +180,3 @@ void
 };
 
 
-void
-  User::setNick(String const &newnick)
-{
-   nickname = newnick.IRCtoLower();
-   services.getDatabase().query("UPDATE onlineclients set nickname='"+nickname+"' WHERE id='"+String::convert(onlineID)+"'");
-}

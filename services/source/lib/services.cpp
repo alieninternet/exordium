@@ -1042,42 +1042,31 @@ int
 User*
   Services::addUser(Kine::String &name, int &oid)
 {
-   users[oid] = new User(name,oid,*this);
-   return users[oid];
+   users[name] = new User(name,oid,*this);
+   return users[name];
 };
 
 User*
   Services::findUser(Kine::String &name)
 {
-   int uid = locateID(name);
-   if(uid==0)
-     {
-	return 0;
-     }
-   User *ptr = users[uid];
+   User *ptr = users[name.IRCtoLower()];
    return ptr;
 }
 
 bool
   Services::delUser(Kine::String &name)
 {
-   for(user_map::iterator it = users.begin();
-       it != users.end(); it++)
-     {
-	int id = (*it).first;
-	User *ptr = (*it).second;
-	if(ptr->getNickname() == name)
-	  {
-
-	     //Found our record.. delete it based on its id
-	     delete ptr;
-	     users.erase(id);
-	     return true;
-	  }
-
-     }
-
-      /* If we get here .. we can't find the record they've asked for.. return fal$    * so they can deal with it how they choose... */
-
-   return false;
+   users.erase(name.IRCtoLower());
+   return true;
 };
+
+void
+  Services::setNick(User &who, Kine::String &newnick)
+{
+   user_map::iterator user = users.find(who.getNickname().IRCtoLower());
+   users.erase(user);
+   users[newnick] = &who;
+   who.setNick(newnick);
+   
+};
+   
