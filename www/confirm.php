@@ -46,7 +46,7 @@ if ($_POST[submit])
       }
       else
       {
-        if ($r = $MYSQL->db_query("INSERT INTO nicks (id, nickname, password, email, registered, lasthost) VALUES('', '$_POST[nickname]', '$_POST[password]', '$_POST[email]', NOW(), '$_SERVER[REMOTE_ADDR]')"))
+        if ($r = $MYSQL->db_query("INSERT INTO nicks (id, nickname, password, email, registered, lasthost, lastid) VALUES('', '$_POST[nickname]', '$_POST[password]', '$_POST[email]', NOW(), '$_SERVER[REMOTE_ADDR]', NOW())"))
         {
           event_log("registered the nickname $_POST[nickname] ($_SERVER[REMOTE_ADDR].");
           echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";

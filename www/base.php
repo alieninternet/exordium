@@ -50,11 +50,27 @@ switch ($_POST[action])
     include "./funcs/$_POST[action].php";
     break;
 // Channel Activities
+  case "listchan":
+    include "./funcs/$_POST[action].php";
+    break;
+
   case "managechan":
     include "./funcs/$_POST[action].php";
     break;
     
   case "modchan":
+    include "./funcs/$_POST[action].php";
+    break;
+
+  case "addchanuser":
+    include "./funcs/$_POST[action].php";
+    break;
+
+  case "modchanuser":
+    include "./funcs/$_POST[action].php";
+    break;
+
+  case "delchanuser":
     include "./funcs/$_POST[action].php";
     break;
 
@@ -139,6 +155,16 @@ default_page()
     echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
     echo "            <tr id=\"header\"><td>Logs</td></tr>";
     echo "            <form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><tr><td id=\"centerfield\"><input type=\"hidden\" name=\"action\" value=\"listlog\"><input id=\"submit\" type=\"submit\" name=\"sub\" value=\"View Log\"></td></tr></form>";
+    echo "          </table>";
+    echo "        </td>";
+    echo "      </tr>";
+    echo "    </table><br>";
+    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+    echo "      <tr>";
+    echo "        <td>\n";
+    echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
+    echo "            <tr id=\"header\"><td>Current Channels</td></tr>";
+    echo "            <form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><tr><td id=\"centerfield\"><input type=\"hidden\" name=\"action\" value=\"listchan\"><input id=\"submit\" type=\"submit\" name=\"sub\" value=\"List Channels\"></td></tr></form>";
     echo "          </table>";
     echo "        </td>";
     echo "      </tr>";

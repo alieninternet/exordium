@@ -6,7 +6,7 @@ class Channel
   function
   Channel()
   {
-
+    
   }
 
   function
@@ -15,7 +15,7 @@ class Channel
     global $MYSQL;
 
     $column = 0;
-    if ($r = $MYSQL->db_query("SELECT `id` , `mode` , `desc` , `html` FROM `chanmodes` ORDER BY id"))
+    if ($r = $MYSQL->db_query("SELECT `id` , `mode` , `tdesc` , `html` FROM `chanmodes` ORDER BY id"))
     {
       if ($MYSQL->db_numrows($r) > 0)
       {
@@ -25,7 +25,7 @@ class Channel
           if ($column == 0) { echo "<tr>\n"; }
           echo "<td>";
           $c->html = stripslashes($c->html);
-          echo "<small><input id=\"q\" type=\"checkbox\" name=\"chanmode[$c->mode]\"> <b>$c->mode</b> $c->desc</small><br>";
+          echo "<small><input id=\"q\" type=\"checkbox\" name=\"chanmode[$c->mode]\"> <b>$c->mode</b> $c->tdesc</small><br>";
           echo "</td>";
           $column++;
           if ($column >= 2)
@@ -63,7 +63,7 @@ class Channel
       }
     }
     $column = 0;
-    if ($r = $MYSQL->db_query("SELECT `id` , `mode` , `desc` , `html` FROM `chanmodes` ORDER BY id"))
+    if ($r = $MYSQL->db_query("SELECT `id` , `mode` , `tdesc` , `html` FROM `chanmodes` ORDER BY id"))
     {
       if ($MYSQL->db_numrows($r) > 0)
       {
@@ -77,7 +77,7 @@ class Channel
             $ckd = "checked";
           else
             $ckd = "";
-          echo "<small><input id=\"q\" type=\"checkbox\" name=\"chanmode[$c->mode]\" $ckd> <b>$c->mode</b> $c->desc</small><br>";
+          echo "<small><input id=\"q\" type=\"checkbox\" name=\"chanmode[$c->mode]\" $ckd> <b>$c->mode</b> $c->tdesc</small><br>";
           echo "</td>";
           $column++;
           if ($column >= 2)
@@ -107,35 +107,176 @@ class Channel
   }
   
   function
-  is_registered($name)
+  options_chanaccess_levels($name)
+  {
+    global $MYSQL;
+    if ($r = $MYSQL->db_query("SELECT id, level, ldesc FROM chanlevels WHERE level<500 ORDER BY level"))
+    {
+      if ($MYSQL->db_numrows($r) > 0)
+      {
+        while ($row = $MYSQL->db_fetch_object($r))
+        {
+          echo "<input type=\"radio\" name=\"$name\" value=\"$row->level\"> <b>$row->level</b>&nbsp;$row->ldesc<br>\n";
+        }
+      }
+    }
+  }
+  
+
+  function
+  getOnlineChanID($chan)
+  {
+    global $MYSQL;
+
+    $name = strtolower($name);
+    if ($r = $MYSQL->db_query("SELECT id FROM onlinechan WHERE name='$name'"))
+    {
+      if ($MYSQL->db_numrows($r) < 1)
+      {
+        return 0;
+      }
+      else
+      {
+        $row = $MYSQL->db_fetch_object($r);
+        return $row->id;
+      }
+    }
+  }
+
+  function
+  isChanRegistered($name)
   {
     global $MYSQL;
     
-    if ($r = $MYSQL->db_query("SELECT name FROM chans WHERE name='$name'"))
+    if ($r = $MYSQL->db_query("SELECT id FROM chans WHERE name='$name'"))
     {
-      if ($MYSQL->db_numrows($r) > 0)
-        return 1;
+      if ($MYSQL->db_numrows($r) < 1)
+        return FALSE;
+      $row = $MYSQL->db_fetch_object($r);
+      if ($row->id > 0)
+        return TRUE;
       else
-        return 0;
+        return FALSE;
     }
     return 0;
   }
 
   function
-  has_access($nickid, $chanid)
+  isChanRegisteredID($chanid)
   {
     global $MYSQL;
     
-    if ($r = $MYSQL->db_get("SELECT chanid, nickid FROM chanaccess WHERE nickid='$nickid' AND chanid='$chanid'"))
+    if ($r = $MYSQL->db_query("SELECT id FROM chans WHERE id='$id'"))
     {
-      if ($MYSQL->db_numrows($r) > 0)
-        return 1;
+      if ($MYSQL->db_numrows($r) < 1)
+        return FALSE;
       else
-        return 0;
+      {
+        $row = $MYSQL->db_fetch_object($r);
+        return $row->id;
+      }
     }
-    return 0;
+    return FALSE;
   }
 
+  function
+  getChanAccess($chan)
+  {
+    global $MYSQL;
+    $NICK = new Nick();
+    $nick = $_SESSION[SESSION][nickname];
+    $nickid = $NICK->getRegisteredNickID($nick);    
+    $chanid = $this->getChanID($chan);
+
+    if ($r = $MYSQL->db_get("SELECT chanid, nickid FROM chanaccess WHERE nickid='$nickid' AND chanid='$chanid'"))
+    {
+      if ($MYSQL->db_numrows($r) < 1)
+        return FALSE;
+      else
+      {
+        $row = $MYSQL->db_fetch_row($r);
+        return $row->id;
+      }
+    }
+    return FALSE;
+  }
+
+  function
+  ifChanExists($name)
+  {
+    global $MYSQL;
+    if ($r = $MYSQL->db_query("SELECT id FROM onlinechan WHERE name='$name'"))
+    {
+      if ($MYSQL->db_numrows($r) < 1)
+        return FALSE;
+      else
+      {
+        $row = $MYSQL->db_fetch_object($r);
+        if ($row->id > 0)
+          return TRUE;
+        else
+          return FALSE;
+      }
+    }
+    return FALSE;
+  }
+
+  function
+  getChanName($chanid)
+  {
+    global $MYSQL;
+    if($r = $MYSQL->db_query("SELECT name FROM chans WHERE id='$chanid'"))
+    {
+      if ($MYSQL->db_numrows($r) < 1)
+      {
+        return FALSE;
+      }
+      else
+      {
+        $row = $MYSQL->db_fetch_object($r);
+        return $row->name;
+      }
+    }
+  }
+
+  function
+  getChanID($chan)
+  {
+    global $MYSQL;
+
+    $name = strtolower($name);
+    if ($r = $MYSQL->db_query("SELECT id FROM chans WHERE name='$name'"))
+    {
+      if ($MYSQL->db_numrows($r) < 1)
+      {
+        return 0;
+      }
+      else
+      {
+        $row = $MYSQL->db_fetch_object($r);
+        return $row->id;
+      }
+    }
+  }
+
+
+  function
+  AddAccess($name, $nick, $level)
+  {
+    global $MYSQL;
+    $nickid = $NICK->getRegisteredNickID($nick);
+    $chanid = $this->getChanID($name);
+    $MYSQL->db_query("INSERT INTO chanaccess VALUES('$chanid', '$nickid', '$level')");
+  }
+
+  function
+  DelAccess($name, $nick)  
+  {
+    global $MYSQL;
+    $nickid = $NICK->getRegisteredNickID($nick);
+    $chanid = $this->getChanID($name);
+    $MYSQL->db_query("DELETE FROM chanaccess WHERE chanid='$chanid' AND nickid='$nickid'");
+  }
 
   function
   has_chans()
@@ -150,6 +291,25 @@ class Channel
         return 0;
     }
     return 0;
+  }
+
+  function
+  select_users_chans($name)
+  {
+    global $MYSQL;
+    $nick = $_SESSION[SESSION][nickname];
+    if ($r = $MYSQL->db_query("SELECT id, name FROM chans WHERE owner='$nick'"))
+    {
+      if ($MYSQL->db_numrows($r) > 0)
+      {
+        echo "<select name=\"$name\">\n";
+        while ($c = $MYSQL->db_fetch_object($r))
+        {
+          echo "<option value=\"$c->id\">$c->name</option>\n";
+        }
+        echo "</select>\n";
+      }
+    }
   }
   
   function

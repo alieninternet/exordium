@@ -27,7 +27,7 @@ if ($_POST[submit])
     $name = strtolower($_POST[name]);
     if (!strchr($name, "#"))
       $name = "#".$name;
-    if ($CHAN->is_registered($name))
+    if ($CHAN->isChanRegistered($name))
     {
       echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
       echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
@@ -66,7 +66,7 @@ if ($_POST[submit])
       echo $sql;
     if ($MYSQL->db_query($sql))
     {
-      
+      $CHAN->AddAccess($name, $nick, "500");      
       event_log("$nick registered the channel $_POST[name].");
       echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
       echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
