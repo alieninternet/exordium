@@ -76,15 +76,24 @@ AC_ARG_ENABLE(language,
 AC_MSG_RESULT([English (default)])
 AC_SUBST(LANGUAGE)
 
-AC_CHECK_LIB([mysqlclient], [main], [
+AC_ARG_ENABLE(mysql_dir,
+[
+	--enable-mysql-path=<path> 	Path where mysql_config resides.],
+[
+        if test "$enableval"; then
+                mysql_config_prog="$enableval/mysql_config"
+                AC_MSG_RESULT([$enableval])
+        fi
+],[mysql_config_prog="mysql_config"])
 
-CPPFLAGS="$CPPFLAGS `mysql_config --cflags`"
-AC_DEFINE(HAVE_MYSQL)
-#CPPFLAGS="$CPPFLAGS -DHAVE_MYSQL"
-LDFLAGS="$LDFLAGS `mysql_config --libs`"
-AC_MSG_RESULT(Building with MySQL support)], [AC_MSG_RESULT([Building without MySQL support])])
-
-
+AC_CHECK_PROG(mysql_config, $mysql_config_prog, [yes])
+if test "$mysql_config" ; then
+        CPPFLAGS="$CPPFLAGS `$mysql_config_prog --cflags`"
+        LDFLAGS="$LDFLAGS `$mysql_config_prog --libs`"
+        AC_CHECK_LIB([mysqlclient], [main], [
+        AC_DEFINE(HAVE_MYSQL)
+        AC_MSG_RESULT(Building with MySQL support)], [AC_MSG_RESULT([Building without MySQL support])])
+fi
 
 AC_CHECK_LIB([pq], [main], [
 
