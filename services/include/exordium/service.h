@@ -31,7 +31,6 @@
 # include <aisutil/string.h>
 # include <aisutil/config/parser.h>
 //# include <kineircd/service.h>
-# include <kineircd/daemon.h>
 
 extern "C" {
 # include <sys/time.h>
@@ -152,8 +151,10 @@ namespace Exordium {
     public:
       // Constructor
       Service(void)
-	: signonTime(Kine::daemon().getTime())
-	{};
+	{
+	   // Urgh :( Set the sign-on time to "now"
+	   (void)gettimeofday(&signonTime, NULL);
+	};
       
       // Destructor
       virtual ~Service() 
