@@ -23,8 +23,8 @@ using namespace Exordium;
 
 struct Bot::functionTableStruct const
   Bot::functionTable[] = {
-  {"help", parseHELP},
-  {0}
+       {"help", &Bot::parseHELP},
+       {0, 0}
 };
 
 void
@@ -40,7 +40,7 @@ for (int i = 0; functionTable[i].command != 0; i++)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st, ch);
+          (this->*(functionTable[i].function))(origin, st, ch);
           return;
         }
     }
@@ -61,7 +61,7 @@ Bot::parseLine (String const &line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st, ch);
+          (this->*(functionTable[i].function))(origin, st, ch);
           return;
         }
     }
@@ -73,14 +73,14 @@ BOT_FUNC (Bot::parseHELP)
 {
 	String word = tokens.nextToken();
 	String parm = tokens.nextToken();
-	Services::doHelp(origin,"bot",word,parm);
+	services.doHelp(origin,"bot",word,parm);
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-	Services::registerService(name,name,"ircdome.org", "+dz",
+	services.registerService(name,name,"ircdome.org", "+dz",
 					"Bot Interface to Services");
-	Services::serviceJoin(name,"#Debug");
-	return new Module("bot",new Bot(name));
+	services.serviceJoin(name,"#Debug");
+	return new Module("bot",new Bot(services, name));
 }
 
 

@@ -22,17 +22,18 @@ private:
   struct functionTableStruct
   {
     char const *command;
-    void BOT_FUNC ((*function));
+     void BOT_FUNC ((Bot::* const function));
   };
   static struct functionTableStruct const functionTable[];
+   Exordium::Services& services;
   const String myName;
   void sendMessage(const String &to, const String &message)
 	{
-		Exordium::Services::serviceNotice(message,myName,to);
-	}
+		services.serviceNotice(message,myName,to);
+	};
 public:
-  Bot(const String &mn)
-	: myName(mn)
+  Bot(Exordium::Services& s, const String &mn)
+	: services(s), myName(mn)
 	{
 	};
 
@@ -43,8 +44,8 @@ public:
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
 private:
-   static void BOT_FUNC (parseHELP);
-   static void BOT_FUNC (parseQUOTE);
+  void BOT_FUNC (parseHELP);
+  void BOT_FUNC (parseQUOTE);
 };
 
 
