@@ -38,15 +38,7 @@ using namespace Exordium;
 
 // This namespace is intentionally anonymous
 namespace {
-   /* This is a zero-terminated array of lines to be appended to the list for
-    * /INFO. Lines must be 60 visible characters long or shorter. Do not use
-    * control characters other than those used in formatting IRC text. The
-    * character set for data here should be UTF-8. A ruler is provided to
-    * aid you keeping the data within 60 chars..
-    * 
-    * Note to developers: This should probably be placed in another file and
-    * passed through AutoGen.. It'll probably want a logo made up too..
-    */
+   // Full version/copyright/author information (see version.h)
    static const char* const versionInfo[] = EXORDIUM_VER_INFO;
    
    // information about ourselves
