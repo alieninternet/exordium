@@ -43,11 +43,7 @@ namespace mod_exordium {
 	
 	Log::init();
 	Log::logLine("Services started, beginning initalisation");
-	services->load_config();
-	db.init(services->mysqlHost,
-		services->mysqlUser,
-		services->mysqlPass,
-		services->mysqlDb);
+	db.init(*config);
 	services->init();
 	services->run();
 	Log::logLine("Services terminated - Normal exit");

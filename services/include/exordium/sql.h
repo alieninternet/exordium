@@ -9,8 +9,9 @@
 #define SQL_H
 
 #include <iostream>
+#include "exordium/conf.h"
 #include "mysql.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 using Kine::String;
 
@@ -21,7 +22,7 @@ class Sql
 private: 
 	static int sock;
 public:
-	static void init(const String &, const String &, const String &, const String &);
+	static void init(const Config &);
 	static MysqlRes query(String const &);
 	static String makeSafe(String const &);
 };

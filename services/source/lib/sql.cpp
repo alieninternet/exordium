@@ -11,6 +11,7 @@
 #include "exordium/log.h"
 #include "kineircd/str.h"
 #include <sys/time.h>
+#include <sstream>
 
 using
     Kine::String;
@@ -84,34 +85,21 @@ Sql::makeSafe(String const &line)
 }
 
 void
- 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    Sql::init(String const &host, String const &user, String const &pass,
-	      String const &db)
+  Sql::init(const Config &config)
 {
-    String          tolog =
-	String("MySQL Configuration: ") + host + " " + user + " " + pass +
-	" " + db;
-    Log::logLine(tolog);
-    if (!mysql.connect(host.c_str(), user.c_str(), pass.c_str())) {
+   ostringstream tolog;
+   tolog << "MySQL Configuration: " << config.getMySqlHost() << ' ' <<
+     config.getMySqlUser() << ' ' << config.getMySqlPass() << ' ' <<
+     config.getMySqlDb();
+    Log::logLine(tolog.str());
+    if (!mysql.connect(config.getMySqlHost().c_str(), 
+		       config.getMySqlUser().c_str(), 
+		       config.getMySqlPass().c_str())) {
 	Log::logLine(String("MySQL Error: ") + mysql.error());
 	exit(1);
     }
     Log::logLine("--> Successfully connected to MySQL database");
-    if (mysql.select_db(db.c_str())) {
+    if (mysql.select_db(config.getMySqlDb().c_str())) {
 	Log::logLine(String("MySQL Error: ") + mysql.error());
 	exit(1);
     }

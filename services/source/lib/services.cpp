@@ -225,67 +225,67 @@ Services::init(void)
 }
 
 /* Configuration File Parser */
-bool
-Services::load_config()
-{
-  int line = 1;
-  String UplinkHost = "none";
-  std::ifstream file (CONFIG);
-  if (!file.is_open ())
-    {
-      Log::logLine("Error opening file");
-    }
-  while (!file.eof ())
-    {
-      file >> buffer;
-      if (buffer.length () == 0 || buffer[0] == '#')
-        {
-          line++;
-          continue;
-        }
-
-      StringTokens st (buffer);
-      String command = st.nextToken (':').trim ().toUpper ();
-      String parameters = st.nextToken (':').trim ();
-	if(command == "UPLINKHOST")
-	{
-		UplinkHost = parameters;
-	}
-	if(command == "LOGFILE")
-	{
-		logFileName = parameters;		
-	}
-	if(command == "MYSQLHOST")
-	{
-		mysqlHost = parameters;
-	}
-	if(command == "MYSQLPORT")
-	{
-		mysqlPort = parameters.toInt();
-	}
-	if(command == "MYSQLUSER")
-	{
-		mysqlUser = parameters;
-	}
-	if(command == "MYSQLPASS")
-	{
-		mysqlPass = parameters;
-	}
-	if(command == "MYSQLDB")
-	{
-		mysqlDb = parameters;
-	}
-    }
-file.close();
-
-if(UplinkHost=="none" || logFileName=="none" || mysqlHost=="none" || mysqlDb=="none")
-{
-Log::logLine("--> Fatal Error whilst parsing configuration");
-exit(1);
-}
-Log::logLine("--> Successfully parsed Configuration file");
-return 0;
-};
+//bool
+//Services::load_config()
+//{
+//  int line = 1;
+//  String UplinkHost = "none";
+//  std::ifstream file (CONFIG);
+//  if (!file.is_open ())
+//    {
+//      Log::logLine("Error opening file");
+//    }
+//  while (!file.eof ())
+//    {
+//      file >> buffer;
+//      if (buffer.length () == 0 || buffer[0] == '#')
+//        {
+//          line++;
+//          continue;
+//        }
+//
+//      StringTokens st (buffer);
+//      String command = st.nextToken (':').trim ().toUpper ();
+//      String parameters = st.nextToken (':').trim ();
+//	if(command == "UPLINKHOST")
+//	{
+//		UplinkHost = parameters;
+//	}
+//	if(command == "LOGFILE")
+//	{
+//		logFileName = parameters;		
+//	}
+//	if(command == "MYSQLHOST")
+//	{
+//		mysqlHost = parameters;
+//	}
+//	if(command == "MYSQLPORT")
+//	{
+//		mysqlPort = parameters.toInt();
+//	}
+//	if(command == "MYSQLUSER")
+//	{
+//		mysqlUser = parameters;
+//	}
+//	if(command == "MYSQLPASS")
+//	{
+//		mysqlPass = parameters;
+//	}
+//	if(command == "MYSQLDB")
+//	{
+//		mysqlDb = parameters;
+//	}
+//    }
+//file.close();
+//
+//if(UplinkHost=="none" || logFileName=="none" || mysqlHost=="none" || mysqlDb=="none")
+//{
+//Log::logLine("--> Fatal Error whilst parsing configuration");
+//exit(1);
+//}
+//Log::logLine("--> Successfully parsed Configuration file");
+//return 0;
+//};
 
 
 bool Services::writeData (String & line)
