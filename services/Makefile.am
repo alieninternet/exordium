@@ -4,6 +4,12 @@ INCLUDES=-Iinclude/ -I../kineircd/include -Isource/ -Isource/modules \
 	@MYSQL_INCDIR@
 
 
+# Subdirectories to compile in
+SUBDIRS=\
+	libltdl \
+	.
+
+
 # Work out what modules..
 if EXORDIUM_COMPILE_BOT_MODULE
   EXORDIUM_TARGET_BOT_MODULE=mod_bot.la
