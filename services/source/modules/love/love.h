@@ -34,7 +34,7 @@
 
 
 # define LOVE_FUNC(x) \
-	void x(const Kine::String& origin, const Kine::StringTokens& tokens)
+     void x(Exordium::User& origin, Kine::StringTokens& line)
 
 
 // The class of lurrve
@@ -71,17 +71,8 @@ class Love : public Exordium::Service {
    handler_type handleTEST;
 
    // How to send private-messages (stepping-stone)
-   void sendMessage(const String& recipient, const String& message)
-     {
-	// This name should not be hard-coded - icky
-	// 
-	// It isn't anymore! (ner :( ) - init_func can now take another
-	// parm, being a String containing your name. (as defined by
-	// loadModule)
-	// 
-	// Oh wonderful James :) I suppose this comment is now redundant? :(
-	services.serviceNotice(message, myName, recipient);
-     };
+   void sendMessage(Exordium::User& recipient, const String& message)
+     { recipient.sendMessage(message, myName); };
    
  public:
    // Our constructor
@@ -92,12 +83,12 @@ class Love : public Exordium::Service {
      {};
    
    // Parser for incoming stuff sent on a channel
-   void parseLine(const Kine::String& line, const Kine::String& origin,
+   void parseLine(Kine::StringTokens& line, Exordium::User& origin,
 		  const Kine::String& channel)
      { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaehHAEhaE!!! */ };
    
    // Parser for incoming stuff sent directly to us
-   void parseLine(const Kine::String& line, const Kine::String& origin);
+   void parseLine(Kine::StringTokens& line, Exordium::User& origin);
 };
 
 #endif // __LOVE_H_

@@ -87,11 +87,10 @@ Love::Love(Exordium::Services& s, const String& mn)
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Love::parseLine(const String& line, const String& origin)
+void Love::parseLine(StringTokens& line, User& origin)
 {
    // Start breaking up the line
-   StringTokens st(line);
-   String command = st.nextToken().toLower();
+   String command = line.nextToken().toLower();
 
    // Run through the list of commands to find a match
    for (int i = 0; commandTable[i].command != 0; i++) {
@@ -103,7 +102,7 @@ void Love::parseLine(const String& line, const String& origin)
 #endif
 	 
 	 // Check if the minimum number of parameters is achieved
-	 if (st.countTokens() < commandTable[i].minParams) {
+	 if (line.countTokens() < commandTable[i].minParams) {
 	    // Complain! We should send help here, really..
 	    sendMessage(origin, "You need to use more parameters");
 	    return;
@@ -112,14 +111,14 @@ void Love::parseLine(const String& line, const String& origin)
 	 // Check if the maximum number of parameters is set, if we have to
 	 if ((commandTable[i].maxParams !=
 	      Love::commandTable_type::MAX_PARAMS_UNLIMITED) &&
-	     ((st.countTokens() - 1) > commandTable[i].maxParams)) {
+	     ((line.countTokens() - 1) > commandTable[i].maxParams)) {
 	    // Complain.. THIS IS CRAP.. like above..
 	    sendMessage(origin, "Too many parameters");
 	    return;
 	 }
 	 
 	 // Run the command and leave early
-	 (this->*(commandTable[i].handler))(origin, st);
+	 (this->*(commandTable[i].handler))(origin, line);
 	 return;
       }
    }
