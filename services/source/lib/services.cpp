@@ -326,7 +326,13 @@ namespace Exordium
 	socky.setRemoteAddress(config.getUplinkHost());
 
         // Note: Maybe add an option for port?
+
+        cout << "Host: " << socky.getRemoteAddress() << endl;
+
 	socky.setRemotePort(config.getUplinkPort());
+
+        cout << "Port: " << socky.getRemotePort() << endl;
+
 	if(!socky.connect())
 	  {
 	     std::cout << "Socky.connect() returned an error" << std::endl;
@@ -1144,7 +1150,15 @@ bool
 	  }
      }
    /* Should never get here.. but neryh :( */
-   return false;
+
+
+   /****
+      If the query's result is empty it'll never enter the while, so new server is never valid.
+      Changed: return false to return true
+      Why: If the query returns no result then the server is valid
+      -- PLV 
+   ****/
+   return true;
 };
 
 /* addClient(...)
