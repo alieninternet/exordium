@@ -595,7 +595,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    String password = tokens.nextToken();
    if(tokill=="" | password=="")
      {
-	origin.sendMessage("Usage: /msg nick kill nickname password",getName());
+	origin.sendMessage("Usage: kill nickname password",getName());
 	return;
      }
    User *ptr = services->findUser(tokill);
