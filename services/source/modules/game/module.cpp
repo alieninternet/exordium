@@ -110,7 +110,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
    
    if (game != channelGames.end()) {
       // If the parser returns false, it means we can leave the channel
-      if (!(*game).second->parseLine(origin, line)) {
+      if (!(*game).second->parseLine(origin, command, line)) {
 	 // Leave the channel and delete this game..
 	 services.servicePart(myName, channel);
 	 delete (*game).second;

@@ -75,10 +75,9 @@ const Exordi8::functionTable_type Exordi8::functionTable[] =
 /* parseLine - Parse an incoming command from someone
  * Original 29/08/2002 simonb
  */
-bool Exordi8::parseLine(Exordium::User& origin, StringTokens& tokens)
+bool Exordi8::parseLine(Exordium::User& origin, String& command, 
+			StringTokens& tokens)
 {
-   String command = tokens.nextToken().toLower();
-   
    // Run through the command list and find a matching command..
    for (int i = 0; functionTable[i].command != 0; i++) {
       // Is this a match?

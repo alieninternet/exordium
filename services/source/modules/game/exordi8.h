@@ -119,7 +119,8 @@ class Exordi8 : public ChannelGame {
      { return new Exordi8(game, channel, caller); }
    
    // Parse a line..
-   bool parseLine(Exordium::User& origin, LibAIS::StringTokens& tokens);
+   bool parseLine(Exordium::User& origin, LibAIS::String& command,
+		  LibAIS::StringTokens& tokens);
 };
    
 #endif // __EXORDI8_H__
