@@ -6,9 +6,8 @@
 */
 
 // Define if we are debugging
-#ifndef DEBUG
-# define DEBUG 1
-#endif
+
+#include <exordium/config.h>
 
 #include "include/love.h"
 
