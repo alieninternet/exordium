@@ -648,8 +648,7 @@ void
    const Nick::moduleInfo_type Nick::moduleInfo =
      {
 	"Nickname Service",
-	  0, 0,
-	  MASK_USER_SIGNON
+	  0, 0
      };
 
    // Start the service

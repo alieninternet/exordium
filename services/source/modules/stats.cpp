@@ -87,8 +87,7 @@ namespace Exordium
    // Module information structure
    const Stats::moduleInfo_type Stats::moduleInfo = {
       "Statistics Service",
-	0, 0,
-	MASK_USER_SIGNON
+	0, 0
    };
 };
 

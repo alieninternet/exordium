@@ -87,8 +87,7 @@ namespace Exordium
    // Module information structure
    const Vote::moduleInfo_type Vote::moduleInfo = {
       "Voting Service",
-	0, 0,
-	MASK_USER_SIGNON
+	0, 0
    };
 };
 

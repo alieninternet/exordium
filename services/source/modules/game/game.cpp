@@ -51,8 +51,7 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo = {
    "Game Service",
-     0, 0,
-     MASK_USER_SIGNON
+     0, 0
 };
 
 

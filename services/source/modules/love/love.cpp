@@ -53,8 +53,7 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Love::moduleInfo_type Love::moduleInfo = {
    "Cupid Service",
-     0, 0,
-     MASK_USER_SIGNON
+     0, 0
 };
 
 

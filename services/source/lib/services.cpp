@@ -1630,3 +1630,15 @@ int
      return database.dbGetValue().toInt();
    }
 }
+
+
+/* RegisterEvent - Just something im fiddling with */
+bool
+  Services::RegisterEvent ( const eventType& event, Service* module)
+{
+   eventList[event].push_back(module);
+   std::cout << "Events[]: Have registered a module "<< 
+     " to receive event of type " << event << std::endl;
+   return true;
+   
+}

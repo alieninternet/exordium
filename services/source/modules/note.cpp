@@ -248,8 +248,7 @@ namespace Exordium
    // Module information structure
    const Note::moduleInfo_type Note::moduleInfo = {
       "Note Service",
-	0, 0,
-	MASK_USER_SIGNON
+	0, 0
    };
 
 

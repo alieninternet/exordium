@@ -40,6 +40,7 @@
 #include <kineircd/password.h>
 #include <kineircd/daemon.h>
 #include <csignal>
+#include <vector>
 
 extern "C" {
 #include <unistd.h>
@@ -62,6 +63,7 @@ extern "C" {
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
 #include "exordium/dchan.h"
+#include "exordium/events.h"
 
 namespace Exordium {
    class CDatabase;  
@@ -108,6 +110,8 @@ namespace Exordium {
 	AISutil::SocketIPv4TCP socky;
 	typedef std::map <AISutil::String, User *> user_map;
 	typedef std::map <AISutil::String, dChan *> chan_map;
+	typedef vector< list< Service* > >eventListType;
+	eventListType eventList;
 	user_map users;
 	chan_map chans;
 	
@@ -123,6 +127,7 @@ namespace Exordium {
 	dChan* findChan(AISutil::String &);
 	void setNick(User &,AISutil::String &);
 	AISutil::String getRegNickCount(void);
+	bool RegisterEvent( const eventType&, Service*);
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db);
         // Mr. Destructor
