@@ -83,6 +83,7 @@ namespace Exordium {
       const void log(User& origin, AISutil::String const &, AISutil::String const &, AISutil::String const &);
       const void updateTopic(AISutil::String const &);
       const void setTopic(AISutil::String const &, AISutil::String const &);
+      const AISutil::String getTopic(void);
       const bool isOp(AISutil::String const &);
       const void mode(AISutil::String const &, AISutil::String const &,AISutil::String const &);
       const bool isVoice(AISutil::String const &);

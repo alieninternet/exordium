@@ -69,6 +69,7 @@ bool const dChan::isRegistered(void)
 {
 if (services.getDatabase().dbSelect("id","chans","name='"+name.toLower()+"'") < 1)
      return false;
+
 if (services.getDatabase().dbGetValue().toInt() > 0)
      return true;
    else
@@ -181,6 +182,15 @@ void const dChan::setTopic(String const &service, String const &topic)
    currentTime = time(NULL);
    services.queueAdd(":"+service+" TOPIC "+name+" Chan "+String::convert(currentTime)+" :"+topic);   
 }
+
+String const dChan::getTopic()
+{
+   if( services.getDatabase().dbSelect("topic", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}
+
 
 bool const dChan::isOp(String const &nick)
 {
