@@ -12,8 +12,6 @@
 
 #include "include/love.h"
 
-#include <exordium/service.h>
-#include <exordium/services.h>
 #include <exordium/module.h>
 
 #include <map>
@@ -81,16 +79,30 @@ void Love::parseLine(const String &line, const String &origin)
 	 assert(commandTable[i].handler != 0);
 #endif
 	 
+	 // Check if the minimum number of parameters is achieved
+	 if ((st.countTokens() - 1) >= commandTable[i].minParams) {
+	    // Complain! We should send help here, really..
+	    sendMessage(origin, "You need to use more parameters");
+	    return;
+	 }
+	 
+	 // Check if the maximum number of parameters is set, if we have to
+	 if ((commandTable[i].maxParams != 
+	      Love::commandTable_type::MAX_PARAMS_UNLIMITED) &&
+	     (st.countTokens() < commandTable[i].maxParams)) {
+	    // Complain.. THIS IS CRAP.. like above..
+	    sendMessage(origin, "Too many parameters");
+	    return;
+	 }
+	 
 	 // Run the command and leave early
 	 (this->*(commandTable[i].handler))(origin, st);
 	 return;
       }
    }
    
-#ifdef DEBUG
    // Bitch and moan.. bitch and moan..
-   Services::serviceNotice("Unrecognised Command", "Love", origin);
-#endif
+   sendMessage(origin, "Unrecognised Command");
 }
 
 
@@ -100,6 +112,7 @@ void Love::parseLine(const String &line, const String &origin)
 LOVE_FUNC(Love::handleTEST)
 {
    // something here.. other than this.. perhaps...
-   Services::servicePrivmsg("It worked, AND I AM A MEMBER FUNCTION!!", 
-			    "Love", origin);
+   sendMessage(origin, 
+	       "It worked, and it's a member function, and it's calling a "
+	       "mate of his which is also a member function!");
 }

@@ -8,12 +8,13 @@
 #ifndef __LOVE_H_
 # define __LOVE_H_ 1
 
+# include <exordium/service.h>
+# include <exordium/services.h>
 # include <kineircd/str.h>
+
 
 # define LOVE_FUNC(x) \
 	void x(const Kine::String &origin, const Kine::StringTokens &tokens)
-
-# include "exordium/service.h"
 
 
 // The class of lurrve
@@ -32,14 +33,23 @@ class Love : public Exordium::Service {
     */
    struct commandTable_type {
       const char *command;		// Command name
-      const short minParams;		// The minimum number of parameters
-      const short maxParams;		// Maximum parameters (No limit = -1)
+      const unsigned short minParams;	// The minimum number of parameters
+      const unsigned short maxParams;	// Maximum parameters (Any = below)
+      const static unsigned short MAX_PARAMS_UNLIMITED = 65535;
       const handler_type Love::*handler;// The function (handler) to call
       const int blahblahblahblahblah;	// For future use..
    } static const commandTable[];
    
    // Our wonderful command handlers
    handler_type handleTEST;
+
+   // How to send private-messages (stepping-stone)
+   void sendMessage(const String &recipient, const String &message)
+     {
+	// This name should not be hard-coded - icky
+	Exordium::Services::serviceNotice(message, "Love", recipient);
+     };
+
    
  public:
    // Our constructor
