@@ -1047,6 +1047,7 @@ CHAN_FUNC (Module::parseKICK)
 		  return;
 	       }
 	     ptr->kick(getNickname(),who,"("+origin.getNickname()+"/"+currnick+") "+reason);
+	     ptr->log(origin,getNickname(),"Kicked "+who+" from the channel ("+reason+")",channel);
 	     User *fptr = services->findUser(who);
 	     if(fptr==0)
 	       return;
@@ -1132,6 +1133,7 @@ CHAN_FUNC (Module::parseDROP)
 	  {
 	     if(origin.isIdentified())
 	       {
+		  dptr->log(origin,getNickname(),"Deregistered the channel",channel);
 		  services->getChannel().deregisterChannel(channel);
 		  String togo = "This channel has been deregistered \002"+reason;
 		  services->serviceNotice(String(togo),getNickname(),channel);
@@ -1181,8 +1183,6 @@ void
 	     String cname = services->getChannel().getChanIDName(foo.toInt());
 	     String cstr = origin.getNickname()+" "+origin.getNickname();
 	     services->serverMode(cname,"-o+v",cstr);
-//	     services->getChannel().internalVoice(origin.getNickname(),cname);
-//	     services->getChannel().internalDeOp(origin.getNickname(),cname);
 
 	  }
 
