@@ -1088,7 +1088,7 @@ bool
 {
    users.erase(name.IRCtoLower());
 
-   string querydel="DELETE from onlineclients WHERE nickname='" + name + "'";
+   String querydel="DELETE from onlineclients WHERE nickname='" + name + "'";
    getDatabase().query(querydel);
 
    return true;
