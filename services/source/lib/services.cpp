@@ -369,18 +369,10 @@ namespace Exordium
    void
      Services::doBurst (void)
        {
-	  String goingByeByesSoon;
-	  (void)config.getModules().loadModule("./modules/nick.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/chan.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/serv.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/note.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/bot.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/game.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/love.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/oper.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/stats.so",goingByeByesSoon);
-	  (void)config.getModules().loadModule("./modules/vote.so",goingByeByesSoon);
+	  // Start all the modules
 	  config.getModules().startAll(*this);
+	  
+	  // Umm, register the console.. uhh.. dodgey :(
 	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			  "The service James forgot :(");
 	  serviceJoin ("IRCDome", "#debug");

@@ -153,7 +153,23 @@ LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
       errString = "No module filename supplied!";
       return false;
    }
-   return true; // temporary
+
+   // Attempt to open the module
+   Service* const service = 
+     ((dataClass.*((Modules ConfigData::*)dataVariable)).
+      loadModule(values.front().trim(), errString));
+   
+   // Make sure the module was loaded
+   if (service == 0) {
+      return false;
+   }
+   
+   // Parse the module's configuration data
+   return
+     LibAIS::ConfigParser::parse(configData, position,
+				 ((void *)
+				  &(service->getConfigData().getDefinitions())),
+				 service->getConfigData());
 }
 
 
@@ -175,5 +191,8 @@ LIBAIS_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
       errString = "No module filename supplied!";
       return false;
    }
-   return true; // temporary
+
+   // Attempt to open the module
+   return ((dataClass.*((Modules ConfigData::*)dataVariable)).
+	   loadModule(values.front().trim(), errString) != 0);
 }
