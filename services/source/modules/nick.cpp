@@ -223,7 +223,7 @@ NICK_FUNC (Nick::parseSET)
 	{
 		if(value=="")
 		{
-			String togo = "Usage is /msg Nick set msn MSN/AIM number/handle";
+			String togo = "Usage is /msg Nick set msn MSN handle";
 			Services::serviceNotice(togo,"Nick",origin);
 			return;
 		}
@@ -231,9 +231,26 @@ NICK_FUNC (Nick::parseSET)
 		Sql::query(query);
 		String togo = "MSN/AIM has been changed to \002"+value;
 		Services::serviceNotice(togo,"Nick",origin);
-		Services::log(origin,"Nick","Changed MSN/AIM address to "+value);
+		Services::log(origin,"Nick","Changed MSN address to "+value);
 		return;
 	}
+
+	if(command=="aim")
+	{
+		if(value=="")
+		{
+			String togo = "Usage is /msg Nick set aim handle";
+			Services::serviceNotice(togo,"Nick",origin);
+			return;
+		}
+		String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin+"'";
+		Sql::query(query);
+		String togo = "MSN/AIM has been changed to \002"+value;
+		Services::serviceNotice(togo,"Nick",origin);
+		Services::log(origin,"Nick","Changed AIM address to "+value);
+		return;
+	}
+
 
 	if(command=="icq")
 	{

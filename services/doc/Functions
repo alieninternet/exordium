@@ -161,7 +161,9 @@ void setLanguage(S nick, S language)		Set a users primary language to the given 
 
 String getURL(S nick)				Return (if any) the associated url for a nickname.
 
-String getMSN(S nick)				Return (if any) the associated MSN/AIM for a nickname.
+String getMSN(S nick)				Return (if any) the associated MSN for a nickname.
+
+String getAIM(S nick)				Return (if any) the associated AIM for a nickname.
 
 String getICQ(S nick)				Return (if any) the associated ICQ for a nickname.
 

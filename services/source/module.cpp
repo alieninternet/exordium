@@ -45,7 +45,7 @@ KINE_MODULE_STOP(moduleStop)
 static const Kine::Module::basicInfo_type moduleInfo = {
    // List our version/copyright information (fill this in with defines James)
    "exordium", // short name of the module, usually one word
-   "Exordium IRCDome Network Services", // long name of the module
+   "Exordium IRC Network Services", // long name of the module
    "Copyright (c) 2002 IRCDome Development Team", // Copyright information
    0, // Major version number
    1, // Minor version number

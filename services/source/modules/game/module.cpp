@@ -128,9 +128,8 @@ GAME_FUNC (Game::parseQUOTE)
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
    cout << "I am called " << name << endl;
-   Game::me = name;
-   Services::registerService(Game::me,Game::me,"ircdome.org", "+dz", "Network Games!");
-   Services::serviceJoin(Game::me, "#Debug");
+   Services::registerService("game","game","ircdome.org", "+dz", "Network Games!");
+   Services::serviceJoin("game", "#Debug");
    return new Module("game", new Game()
 );
 

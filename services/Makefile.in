@@ -30,3 +30,9 @@ distclean:
 	done
 	$(RM) -r *~ include/*~ autom* config* Makefile
 	
+dump:
+	mysqldump --all --complete-insert -e --add-locks --delayed-insert --lock-tables services >db-dump.sql
+	mysqldump --all --complete-insert -e --add-locks --delayed-insert --lock-tables --xml services >db-dump.xml
+	gzip -v9 db-dump.sql
+	gzip -v9 db-dump.xml
+	
