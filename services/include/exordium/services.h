@@ -367,6 +367,11 @@ namespace Exordium {
 	unsigned long random(unsigned long max);
 	int locateID(String const &nick);
 	Kine::String generatePassword(String const &,String const &);
+	bool isAuthorised(String const &);
+	User* addClient(String const &, String const &, String const &,
+			String const &, String const &, String const &,
+			String const &, String const &, String const &);
+	
      };
 }; // namespace Exordium
 

@@ -134,6 +134,13 @@ namespace Exordium
 	 * 
 	 */
 	int getAccess(Kine::String const &);
+	/* addCheckIdentify()
+	 * 
+	 * Force a client to identify for this nickname...
+	 * 
+	 */
+	void addCheckIdentify(void);
+	
 	/* Our constructor definition */
 	User(String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh

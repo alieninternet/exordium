@@ -216,5 +216,11 @@ int
    return 0;
 }
 
-  
+void
+  User::addCheckIdentify(void)
+{
+   sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick");
+   services.getDatabase().query("INSERT into kills values('','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"')");
+};
+
 

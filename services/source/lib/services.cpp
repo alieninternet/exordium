@@ -1100,3 +1100,47 @@ String
    String bob((char *)Kine::Password::makePassword(nickname,password).s_char,(String::size_type)20);
    return bob;
 }
+
+/* isAuthorised(String)
+ * 
+ * Return true if the specificed server is allowed to connect 
+ * to the network ... otherwise false
+ * 
+ */
+
+bool
+  Services::isAuthorised(String const &server)
+{
+   MysqlRes res = database.query("SELECT id from serverlist where name='"+server+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	if((int)row[0]>0)
+	  {
+	     return true;
+	  }
+	else
+	  {
+	     return false;
+	  }
+     }
+   /* Should never get here.. but neryh :( */
+   return false;
+};
+
+User*
+  Services::addClient(String const &nick, String const &hops,
+		      String const &timestamp, String const &username,
+		      String const &host, String const &vwhost, 
+		      String const &server, String const &modes,
+		      String const &realname)
+{
+   database.query("INSERT into onlineclients('','"+nick.toLower()+"','"
+		  +hops + "','" + timestamp + "','" + username + "','"
+		  +host + "','" + vwhost + "','" + server + "','"
+		  +modes+ "','" + database.makeSafe(realname) + "')");
+   int foo = locateID(nick);
+   String client = nick.IRCtoLower();
+   User *ptr = addUser(client,foo);
+   return ptr;
+};
