@@ -147,5 +147,5 @@ namespace {
 }; // namespace {anonymous}
 
 
-// this is called when the module is initially loaded
+// This is called when the module is initially loaded
 KINE_MODULE_INIT { return new mod_exordium(); };
