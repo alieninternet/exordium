@@ -142,6 +142,45 @@ AM_CONDITIONAL(EXORDIUM_COMPILE_DB_PGSQL,
 AC_SUBST(PGSQL_INCDIR)
 AC_SUBST(PGSQL_LDFLAGS)
 
+
+dnl Work out which modules we want..
+AC_MSG_CHECKING([which modules to compile])
+
+dnl A macro, based on the one I wrote for kine's configure script (- pickle)
+dnl use: AC_EXORDIUM_MODULE_CHECK(name, [the name of the module])
+AC_DEFUN([AC_EXORDIUM_MODULE_CHECK],[
+  AC_ARG_ENABLE($1-module,
+                AC_HELP_STRING([--disable-$1-module],
+		               [Disable $2]),
+   [
+    if test "$enableval" \!= "yes"; then
+      echo -n "$1 "
+      AS_TR_SH(exordium_test_compile_$1_module)=yes
+    fi
+   ],[
+    echo -n "$1 "
+    AS_TR_SH(exordium_test_compile_$1_module)=yes
+   ])
+  AM_CONDITIONAL(AS_TR_CPP(EXORDIUM_COMPILE_$1_MODULE),
+                 [test x$AS_TR_SH(exordium_test_compile_$1_module) = xyes])
+ ])
+ 
+AC_EXORDIUM_MODULE_CHECK([bot], [the bot assistance module])
+AC_EXORDIUM_MODULE_CHECK([chan], [the channel service module])
+AC_EXORDIUM_MODULE_CHECK([credits], [the credits module])
+AC_EXORDIUM_MODULE_CHECK([game], [the games module])
+AC_EXORDIUM_MODULE_CHECK([love], [the love/cupid module])
+AC_EXORDIUM_MODULE_CHECK([nick], [the nickname service module])
+AC_EXORDIUM_MODULE_CHECK([note], [the note service module])
+AC_EXORDIUM_MODULE_CHECK([oper], [the IRC operator module])
+AC_EXORDIUM_MODULE_CHECK([serv], [the service service module :)])
+AC_EXORDIUM_MODULE_CHECK([stats], [the statistics module])
+AC_EXORDIUM_MODULE_CHECK([vote], [the voting module])
+
+dnl finish off the line
+echo
+
+
 AC_CONFIG_FILES([source/Makefile
 		 source/libbank/Makefile
 		 source/modules/Makefile
