@@ -127,7 +127,7 @@ Service* const Modules::loadModule(const String& fileName,
 /* unloadModule - Remove a module from the list, and unload it
  * Original 07/06/2002 pickle
  */
-void Modules::unloadModule(const Kine::Name& name, const String& reason)
+void Modules::unloadModule(const Kine::ClientName& name, const String& reason)
 {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
@@ -185,7 +185,7 @@ void Modules::unloadAll(const String& reason)
 /* exists - Check if a module exists
  * Original 07/06/2002 james
  */
-bool Modules::exists(const Kine::Name& name) const
+bool Modules::exists(const Kine::ClientName& name) const
 {
    // Locate the module..
    modules_type::const_iterator moduleLocation =
@@ -203,7 +203,7 @@ bool Modules::exists(const Kine::Name& name) const
 /* throwLine - Throw a line at the appropriate service (sent directly)
  * Original 07/06/2002 pickle
  */
-void Modules::throwLine(const Kine::Name& name, StringTokens& line,
+void Modules::throwLine(const Kine::ClientName& name, StringTokens& line,
 			User& origin, const bool safe)
 {
    // Locate the module..
@@ -218,7 +218,7 @@ void Modules::throwLine(const Kine::Name& name, StringTokens& line,
 /* throwLine - Throw a line at the appropriate service (sent to a channel)
  * Original 07/06/2002 pickle
  */
-void Modules::throwLine(const Kine::Name& name, StringTokens& line,
+void Modules::throwLine(const Kine::ClientName& name, StringTokens& line,
 			User& origin, const String& channel)
 {
    // Locate the module..

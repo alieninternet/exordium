@@ -162,7 +162,7 @@ NICK_FUNC (Module::parseAUTH)
 /* Info */
   NICK_FUNC (Module::parseINFO)
 {
-   Kine::Name who = tokens.nextToken();
+   Kine::ClientName who = tokens.nextToken();
    who = who.IRCtoLower();
    if(who.empty())
 	{
@@ -585,7 +585,7 @@ NICK_FUNC (Module::parseAUTH)
 /* Access */
   NICK_FUNC (Module::parseACCESS)
 {
-   Kine::Name nickname = tokens.nextToken();
+   Kine::ClientName nickname = tokens.nextToken();
    if(nickname=="")
      {
 	origin.sendMessage(GETLANG(nick_USAGE_ACCESS),
@@ -660,7 +660,7 @@ NICK_FUNC (Module::parseAUTH)
 /* Kill */
   NICK_FUNC (Module::parseKILL)
 {
-   Kine::Name tokill = tokens.nextToken();
+   Kine::ClientName tokill = tokens.nextToken();
    String password = tokens.nextToken();
    if(tokill=="" | password=="")
      {

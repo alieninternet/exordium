@@ -47,7 +47,7 @@ const Module::functionTableStruct Module::functionTable[] = {
 
 void
   Module::parseLine (StringTokens& line, User& origin,
-		     const Kine::Name& channel)
+		     const Kine::ChannelName& channel)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();

@@ -78,7 +78,7 @@ namespace Exordium {
 	 
 	 // Parser for incoming stuff sent on a channel
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-			const Kine::Name& channel)
+			const Kine::ChannelName& channel)
 	   { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaHAEhaE!!! */ };
 	 
 	 // Parser for incoming stuff sent directly to us

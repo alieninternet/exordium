@@ -45,7 +45,7 @@ CHANNEL_GAME_CREATOR_FUNCTION
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel
  * Original 29/08/2002 pickle
  */
-Exordi8::Exordi8(Exordium::GameModule::Module& module, const Kine::Name& channel,
+Exordi8::Exordi8(Exordium::GameModule::Module& module, const Kine::ChannelName& channel,
 		 Exordium::User& caller)
   : ChannelGame(module, channel.IRCtoLower()),
 playing(false),

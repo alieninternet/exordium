@@ -30,14 +30,14 @@
 # include <aisutil/string.h>
 # include <map>
 # include <exordium/services.h>
-# include <kineircd/name.h>
+# include <kineircd/clientname.h>
 
 namespace Exordium
 {
    class User
      {
       private:
-	Kine::Name nickname;
+	Kine::ClientName nickname;
 	int onlineID;
 	Services& services;
 	bool registered; /* Are we a registered nick or not? */
@@ -50,7 +50,7 @@ namespace Exordium
        *
        */
 
-	const Kine::Name& getNickname(void) const
+	const Kine::ClientName& getNickname(void) const
 	  { return nickname; };
 
       /* getOnlineID()
@@ -189,7 +189,7 @@ namespace Exordium
        * Return true if we are identified as the given nickname.
        *
        */
-	bool isIdentified(Kine::Name const &);
+	bool isIdentified(Kine::ClientName const &);
 	
       /* getServer()
        * 

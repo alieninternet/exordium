@@ -112,7 +112,7 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Exordium::GameModule::Module& module, const Kine::Name& channel,
+   Exordi8(Exordium::GameModule::Module& module, const Kine::ChannelName& channel,
 	   Exordium::User& caller);
    
    // Parse a line..

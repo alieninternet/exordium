@@ -109,7 +109,7 @@ OPER_FUNC(Module::parseGLOBAL)
 
 OPER_FUNC(Module::parseMDEOP)
 {
-   Kine::Name channel = tokens.nextToken();
+   Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(oper_MDEOP_USAGE), getNickname());
@@ -127,7 +127,7 @@ OPER_FUNC(Module::parseMDEOP)
 
    for (int i=0; i<nbRes; i++)
      {
-	Kine::Name inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
+	Kine::ClientName inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
 	std::cout << inick << std::endl;
 	services->mode(getNickname(),channel,"-ov",inick);
 	User *ptr = services->findUser(inick);
@@ -223,7 +223,7 @@ OPER_FUNC(Module::parseZLINE)
 
 OPER_FUNC(Module::parseJOIN)
 {
-   Kine::Name chan = tokens.nextToken();
+   Kine::ChannelName chan = tokens.nextToken();
    chan = chan.IRCtoLower();
    if(chan=="")
      {
@@ -246,7 +246,7 @@ OPER_FUNC(Module::parseJOIN)
 
 OPER_FUNC(Module::parsePART)
 {
-   Kine::Name chan = tokens.nextToken();
+   Kine::ChannelName chan = tokens.nextToken();
    chan = chan.IRCtoLower();
    if(chan=="")
      {
@@ -268,7 +268,7 @@ OPER_FUNC(Module::parsePART)
 
 OPER_FUNC (Module::parseKILL)
 {
-   Kine::Name tokill = tokens.nextToken();
+   Kine::ClientName tokill = tokens.nextToken();
    String reason = tokens.rest();
    if(tokill == "" | reason == "")
      {
@@ -292,7 +292,7 @@ OPER_FUNC (Module::parseKILL)
 
 OPER_FUNC (Module::parseJUPE)
 {
-   Kine::Name tojupe = tokens.nextToken();
+   Kine::ClientName tojupe = tokens.nextToken();
    String reason = tokens.rest();
 
    if (tojupe == "" | reason == "")
@@ -317,7 +317,7 @@ OPER_FUNC (Module::parseJUPE)
    else
      {
 	User *ptr = services->findUser(tojupe);
-	Kine::Name who = origin.getNickname();
+	Kine::ClientName who = origin.getNickname();
 	User *optr = services->findUser(who);
 	if (ptr != 0)
 	  {
@@ -337,7 +337,7 @@ OPER_FUNC (Module::parseJUPE)
 
 OPER_FUNC (Module::parseWHOIS)
 {
-   Kine::Name target = tokens.nextToken();
+   Kine::ClientName target = tokens.nextToken();
    target = target.IRCtoLower();
 
    if (target == "")

@@ -132,12 +132,12 @@ namespace Exordium {
       
 
       User* const addUser(const AISutil::String& name, const int oid);
-      bool delUser(Kine::Name &);
-      User* findUser(Kine::Name &);
+      bool delUser(Kine::ClientName &);
+      User* findUser(Kine::ClientName &);
       
-      dChan* const addChan(const Kine::Name& name, const int oid);
-      bool delChan(Kine::Name &);
-      dChan* findChan(Kine::Name &);
+      dChan* const addChan(const Kine::ChannelName& name, const int oid);
+      bool delChan(Kine::ChannelName &);
+      dChan* findChan(Kine::ChannelName &);
       
       Server* const addServer(const AISutil::String&, const int&,
 			      const AISutil::String&);
@@ -146,7 +146,7 @@ namespace Exordium {
       
       
       
-      void setNick(User &,Kine::Name &);
+      void setNick(User &,Kine::ClientName &);
       
       void mode(AISutil::String const &, AISutil::String const &,
 		AISutil::String const &, AISutil::String const &);
@@ -230,16 +230,17 @@ namespace Exordium {
       // These should be moved to the new channel classes
       void serviceKick(AISutil::String const &, AISutil::String const &,
 		       AISutil::String const &);
-      bool isOp(AISutil::String const &, AISutil::String const &);
+      bool isOp(const Kine::ClientName& nick,
+		const Kine::ChannelName& channel);
       bool isVoice(AISutil::String const &, AISutil::String const &);
       
       
       // This should be moved to the NOTE MODULE
-      void sendNote(Kine::Name const &, Kine::Name const &,
+      void sendNote(Kine::ClientName const &, Kine::ClientName const &,
 		    AISutil::String const &);
       
-      int locateID(Kine::Name const &nick);
-      User* addClient(Kine::Name const &, AISutil::String const &,
+      int locateID(Kine::ClientName const &nick);
+      User* addClient(Kine::ClientName const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
 		      AISutil::String const &,
@@ -261,7 +262,7 @@ namespace Exordium {
       void addOper(AISutil::String const &, int access);
       void delOper(AISutil::String const &);
       bool isOper(AISutil::String const &);
-      void validateOper(Kine::Name &);
+      void validateOper(Kine::ClientName &);
       void sendGOper(AISutil::String const &, AISutil::String const &);
       void sendHelpme(AISutil::String const &, AISutil::String const &);
       void setMode(AISutil::String const &, AISutil::String const &);      

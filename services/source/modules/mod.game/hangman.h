@@ -108,7 +108,7 @@ class Hangman : public ChannelGame {
  public:
    // Constructor
    Hangman(Exordium::GameModule::Module& module,
-	   const Kine::Name& channel, Exordium::User& caller);
+	   const Kine::ChannelName& channel, Exordium::User& caller);
    
    // Handy creation function
    //static CHANNEL_GAME_CREATOR_FUNC(createGame)

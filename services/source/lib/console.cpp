@@ -28,6 +28,7 @@
 # include "autoconf.h"
 #endif
 
+#include <cassert>
 #include <aisutil/string.h>
 #include "console.h"
 #include "core_language.h"
@@ -47,7 +48,7 @@ const struct Console::functionTableStruct Console::functionTable[] = {
 void Console::parseLine(const String &line, const String &requestor) 
 {
    StringTokens st (line);
-   Kine::Name origin = requestor;
+   Kine::ClientName origin = requestor;
    String command = st.nextToken ().toLower ();
    User *ptr = services.findUser(origin);
 

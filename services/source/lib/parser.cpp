@@ -76,7 +76,7 @@ void Parser::parseLine(const String& line)
 {
    std::cout << "line() -> : " << line << std::endl;
    StringTokens st (line);
-   Kine::Name origin = "";
+   Kine::ClientName origin;
 #ifdef DEBUG
    std::cout << "DEBUG RX: " << line << std::endl;
 #endif
@@ -164,8 +164,8 @@ void
    bool add = false;
    bool take = false;
    int i;
-   Kine::Name dest = tokens.nextToken();
-   Kine::Name nick = OLDorigin;
+   Kine::ChannelName dest = tokens.nextToken();
+   Kine::ClientName nick = OLDorigin;
    String currentmodes="";
    if(dest[0]=='#')
      {
@@ -251,7 +251,7 @@ void
 void
   PARSER_FUNC (Parser::parsePART)
 {
-   Kine::Name channel = tokens.nextToken();
+   Kine::ChannelName channel = tokens.nextToken();
    dChan *ptr = services.findChan(channel);
    User  *uptr = services.findUser(OLDorigin);
 
@@ -271,7 +271,7 @@ void PARSER_FUNC (Parser::parseN)
    if(tokens.countTokens() < 9)
      {
 /* Client Nickname Change */
-	Kine::Name tempString = OLDorigin.IRCtoLower().trim();
+	Kine::ClientName tempString = OLDorigin.IRCtoLower().trim();
         User *origin = services.findUser(tempString);
 	if(origin==0)
 	  {
@@ -280,7 +280,7 @@ void PARSER_FUNC (Parser::parseN)
 	     return;
 	  }
 
-        Kine::Name newnick=tokens.nextToken().trim();
+        Kine::ClientName newnick=tokens.nextToken().trim();
         services.setNick(*origin, newnick);
         services.getDatabase().dbDelete("kills", "nick='"+OLDorigin+"'");
 	if(services.isNickRegistered(origin->getNickname()))
@@ -303,7 +303,7 @@ void PARSER_FUNC (Parser::parseN)
 	  }
 	return;
      }
-   Kine::Name nick = tokens.nextToken();
+   Kine::ClientName nick = tokens.nextToken();
    String hops = tokens.nextToken();
    String timestamp = tokens.nextToken();
    String modes = tokens.nextToken();
@@ -387,7 +387,7 @@ void
      }
    
    String OLDoriginl = OLDorigin.IRCtoLower();
-   Kine::Name target = tokens.nextToken ();
+   Kine::ClientName target = tokens.nextToken ();
    String message(tokens.nextColonToken());
 
    if ((message[0] == '\001') && (message[message.length () - 1] == '\001'))
@@ -513,7 +513,7 @@ void
    int  status = 0;
    String ts1 = tokens.nextToken();
    //String ts2 = tokens.nextToken();
-   Kine::Name chan = tokens.nextToken();
+   Kine::ChannelName chan = tokens.nextToken();
    String modes = tokens.nextToken();
    bool more;
    more = tokens.hasMoreTokens();
@@ -527,7 +527,7 @@ void
      {
 	/* We have no record for this channel, make it. */
 	std::cout << "Channel record being made for " << chan << std::endl;
-	dptr = services.addChan(chan.IRCtoLower(),services.getOnlineChanID(chan));
+	dptr = services.addChan(chan,services.getOnlineChanID(chan));
      }
 
    std::cout << "parseSJOIN() - " << ts1 << " : " << chan << " : " << modes <<std::endl;
@@ -552,7 +552,7 @@ void
 	String user = tokens.nextToken();
 	StringTokens luser (user);
 	String foo = luser.nextColonToken();
-	Kine::Name username = foo.trim();
+	Kine::ClientName username = foo.trim();
 	status = 0;
 	std::cout << "parseSjoin() " << user << " : " << foo << std::endl;
         // First check if both @ and + are there
@@ -647,7 +647,7 @@ void
 void
   PARSER_FUNC (Parser::parseKILL)
 {
-   Kine::Name who = tokens.nextToken();
+   Kine::ClientName who = tokens.nextToken();
    String reason = tokens.rest();
    int oid = services.locateID(who);
    if(services.isOper(who))
@@ -679,7 +679,7 @@ void
    // OLDorigin can be either a user or a server so we dont consider it,
    // the user is given later
    //
-   Kine::Name channel = tokens.nextToken();
+   Kine::ChannelName channel = tokens.nextToken();
    String source = tokens.nextToken();
 
    // Skip timestamp

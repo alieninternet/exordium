@@ -64,7 +64,7 @@ namespace Exordium {
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-			const Kine::Name& channel)
+			const Kine::ChannelName& channel)
 	   {};
 
 	 // Grab the information structure of a module
@@ -77,11 +77,11 @@ namespace Exordium {
 	   { return configData; };
 	 
 	 // Public functions here please!.
-	 void addFreeze(Kine::Name const &,AISutil::String const &,
+	 void addFreeze(Kine::ChannelName const &,AISutil::String const &,
 			int const &,AISutil::String const &);
-	 int timesFreezed(Kine::Name const &);
-	 bool isFreezed(Kine::Name const &);
-	 void delFreeze(Kine::Name const &);
+	 int timesFreezed(Kine::ChannelName const &);
+	 bool isFreezed(Kine::ChannelName const &);
+	 void delFreeze(Kine::ChannelName const &);
 
        private:
 	 SERV_FUNC(parseCLIST);

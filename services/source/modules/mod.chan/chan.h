@@ -72,12 +72,12 @@ namespace Exordium {
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-			const Kine::Name& channel);
+			const Kine::ChannelName& channel);
 	 
 	 void handleAway(Exordium::User& origin, 
 			 const AISutil::String& reason);
 
-         void handleTopic(const Kine::Name&, dChan& channel, const AISutil::String &);
+         void handleTopic(const Kine::ClientName&, dChan& channel, const AISutil::String &);
 
          void handleChannelJoin(User& origin, dChan &channel, const int &status);
          void handleChannelPart(User& origin, dChan &channel);
@@ -116,7 +116,7 @@ namespace Exordium {
 	 CHAN_FUNC(parseCOMMANDS);
          CHAN_FUNC(parseDROP);
 
-	 bool isFreezed(Kine::Name const &);
+	 bool isFreezed(Kine::ChannelName const &);
 
       }; // class Module
    }; // namespace ChanModule

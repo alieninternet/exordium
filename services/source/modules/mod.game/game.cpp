@@ -120,7 +120,7 @@ void Module::stop(const String& reason)
  * Original 13/07/2002 james
  */
 void Module::parseLine(StringTokens& line__, User& origin,
-		       const Kine::Name& channel)
+		       const Kine::ChannelName& channel)
 {
    // dirty kludge.. at least until the core strips the char properly??
    StringTokens line(line__.rest().substr(1));
@@ -238,7 +238,7 @@ GAME_FUNC(Module::handleQUOTE)
  */
 GAME_FUNC(Module::handleSTART)
 {
-   Kine::Name chan = line.nextToken();
+   Kine::ChannelName chan = line.nextToken();
    chan = chan.IRCtoLower();
    String game = line.nextToken().toLower();
 #ifdef DEBUG

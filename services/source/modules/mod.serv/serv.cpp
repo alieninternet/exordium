@@ -108,7 +108,7 @@ SERV_FUNC (Module::parseSTATUS)
    long tx = services->getCountTx();
    long rx = services->getCountRx();
    origin.sendMessage(GETLANG(serv_STATUS_TXRX,String::convert(tx),String::convert(rx)),getNickname());
-   int now_time = time(NULL);
+   time_t now_time = time(NULL);
    origin.sendMessage(GETLANG(serv_STATUS_CURR_TIME,ctime(&now_time)),getNickname());
    time_t start_day;
    start_day = services->getStartTime();
@@ -168,7 +168,7 @@ SERV_FUNC (Module::parseFREEZE)
      }
    if(func=="add")
      {
-	Kine::Name chan = tokens.nextToken();
+	Kine::ChannelName chan = tokens.nextToken();
 	String reason = tokens.rest();
 	if(chan=="" | reason=="")
 	  {
@@ -276,7 +276,7 @@ SERV_FUNC (Module::parseFREEZE)
      }
    if(func=="list")
      {
-	Kine::Name channel = tokens.nextToken();
+	Kine::ChannelName channel = tokens.nextToken();
 	if(channel=="")
 	  {
 	     origin.sendMessage(GETLANG(serv_FREEZE_LIST_USAGE),getNickname());
@@ -311,7 +311,7 @@ SERV_FUNC (Module::parseFREEZE)
 
 SERV_FUNC (Module::parseGETHASH)
 {
-   Kine::Name who = tokens.nextToken();
+   Kine::ClientName who = tokens.nextToken();
    if(who=="")
      {
 	origin.sendMessage(GETLANG(serv_GETHASH_USAGE),getNickname());
@@ -743,7 +743,7 @@ SERV_FUNC (Module::parseHELPON)
 SERV_FUNC (Module::parseNLIST)
 {
    String tomatch = tokens.nextToken();
-   Kine::Name dest = tokens.nextToken();
+   Kine::ClientName dest = tokens.nextToken();
    if(tomatch=="")
      {
 	origin.sendMessage(GETLANG(serv_NLIST_USAGE),getNickname());
@@ -813,7 +813,7 @@ SERV_FUNC (Module::parseNLIST)
 SERV_FUNC (Module::parseELIST)
 {
    String tomatch = tokens.nextToken();
-   Kine::Name dest = tokens.nextToken();
+   Kine::ClientName dest = tokens.nextToken();
    if(tomatch=="")
      {
 	origin.sendMessage(GETLANG(serv_ELIST_USAGE),getNickname());
@@ -913,8 +913,8 @@ SERV_FUNC (Module::parseDELNICK)
 
 SERV_FUNC (Module::parseCLIST)
 {
-   Kine::Name who = tokens.nextToken();
-   Kine::Name send = tokens.nextToken();
+   Kine::ClientName who = tokens.nextToken();
+   Kine::ClientName send = tokens.nextToken();
    if(who=="")
      {
 	origin.sendMessage(GETLANG(serv_CLIST_USAGE),getNickname());
@@ -1035,13 +1035,13 @@ bool Module::start(Exordium::Services& s)
    return true;
 }
 
-void Module::delFreeze(Kine::Name const &chan)
+void Module::delFreeze(Kine::ChannelName const &chan)
 {
    services->getDatabase().dbUpdate("chanfreeze","expires=0","name='"+
 				    String::convert(services->getChannel().getChanID(chan.IRCtoLower()))+"'");
 }
 
-void Module::addFreeze(Kine::Name const &chan, String const &setby,
+void Module::addFreeze(Kine::ChannelName const &chan, String const &setby,
 		       int const &expires, String const &reason)
 {
    services->getDatabase().dbInsert("chanfreeze","'','"+String::convert(services->getChannel().getChanID(chan.IRCtoLower()))+"','"
@@ -1049,7 +1049,7 @@ void Module::addFreeze(Kine::Name const &chan, String const &setby,
 				    +",'"+reason+"'");
 }
 
-bool Module::isFreezed(Kine::Name const &chan)
+bool Module::isFreezed(Kine::ChannelName const &chan)
 {
    if(services->getDatabase().dbSelect("id","chanfreeze","name='"
 				       +String::convert(services->getChannel().getChanID(chan.IRCtoLower()))
@@ -1059,7 +1059,7 @@ bool Module::isFreezed(Kine::Name const &chan)
      return true;
 }
 
-int Module::timesFreezed(Kine::Name const &chan)
+int Module::timesFreezed(Kine::ChannelName const &chan)
 {
    return services->getDatabase().dbSelect("id","chanfreeze","name='"
 					   +String::convert(services->getChannel().getChanID(chan.IRCtoLower()))

@@ -27,6 +27,9 @@
 #ifndef _SOURCE_LIB_CONFIG_H_
 # define _SOURCE_LIB_CONFIG_H_ 1
 
+# include <kineircd/clientname.h>
+# include <kineircd/channelname.h>
+
 # include "exordium/config.h"
 # include "exordium/database/database.h"
 # include "modules.h"
@@ -51,8 +54,8 @@ namespace Exordium {
       AISutil::String defConsoleDescription;	// Console's real name field
       bool defConsoleEnabled;			// Is the console active?
       AISutil::String defConsoleHostname;	// The console's host name
-      Kine::Name defConsoleName;		// The console's nickname
-      Kine::Name defConsoleChan;		// Console's channel
+      Kine::ClientName defConsoleName;		// The console's nickname
+      Kine::ChannelName defConsoleChan;		// Console's channel
 
       // 'DATABASE' class
       CDatabase* defDatabase;			// Our database engine
@@ -95,9 +98,9 @@ namespace Exordium {
 	{ return defConsoleEnabled; };
       const AISutil::String& getConsoleHostname(void) const
 	{ return defConsoleHostname; };
-      const Kine::Name& getConsoleName(void) const
+      const Kine::ClientName& getConsoleName(void) const
 	{ return defConsoleName; };
-      const Kine::Name& getConsoleChan(void) const
+      const Kine::ChannelName& getConsoleChan(void) const
         { return defConsoleChan; };
 
       // 'DATABASE' class

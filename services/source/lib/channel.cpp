@@ -173,7 +173,7 @@ int
 }
 
 /* Return the given name for the id given */
-Kine::Name
+Kine::ChannelName
   Channel::getChanName(int const &number)
 {
    if( services.getDatabase().dbSelect("name", "chans", "id="+String::convert(number)) < 1 )
@@ -244,7 +244,7 @@ void
 
 /* Deregister a channel, and remove all pertaining channel access entries */
 void
-  Channel::deregisterChannel(const Kine::Name& name)
+  Channel::deregisterChannel(const Kine::ChannelName& name)
 {
    int foo = getChanID(name);
 
@@ -283,7 +283,7 @@ void
 
 /* Register a channel with the given owner */
 void
-  Channel::registerChannel(const Kine::Name& name, String const &owner)
+  Channel::registerChannel(const Kine::ChannelName& name, String const &owner)
 {
    services.getDatabase().dbInsert("chans", 
        "'','"+name.IRCtoLower()+"','"+owner+
@@ -347,7 +347,7 @@ void
      {
 	String nid = services.getDatabase().dbGetValue();
 	int foo = nid.toInt();
-	Kine::Name tnick = services.getOnlineNick(foo);
+	Kine::ClientName tnick = services.getOnlineNick(foo);
 	User *ptr = services.findUser(tnick);
 
 	String ident = ptr->getIdent();

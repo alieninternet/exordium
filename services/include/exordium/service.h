@@ -30,11 +30,11 @@
 # include <string>
 # include <aisutil/string.h>
 # include <aisutil/config/parser.h>
+# include <kineircd/daemon.h>
+# include <kineircd/clientname.h>
+# include <kineircd/channelname.h>
 # include <kineircd/service.h>
 
-extern "C" {
-# include <sys/time.h>
-};
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -103,7 +103,7 @@ namespace Exordium {
 	 AISutil::String defDescription;		// Our description
 	 AISutil::String defDistribution;		// Our scope mask
 	 AISutil::String defHostname;			// Our hostname
-	 Kine::Name defName;				// Our name
+	 Kine::ClientName defName;			// Our name
 	 AISutil::String defIdent;			// Out ident
 	 
        public:
@@ -145,17 +145,16 @@ namespace Exordium {
        */
       Exordium::Services* services;
       
-      // The sign-on time for this module
-      timeval signonTime;
-      
     public:
       // Constructor
+      Service(const Kine::ClientName& nick, const std::string& host)
+	: Kine::Service(nick, host, Kine::daemon().getTime())
+	{};
+      
+      // this needs to be removed 'cause it's broken
       Service(void)
-	: Kine::Service(signonTime)
-	{
-	   // Urgh :( Set the sign-on time to "now"
-	   (void)gettimeofday(&signonTime, NULL);
-	};
+	: Kine::Service("nick", "host", Kine::daemon().getTime())
+	{};
       
       // Destructor
       virtual ~Service() 
@@ -172,7 +171,7 @@ namespace Exordium {
 			     const bool safe) = 0;
       
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
-			     const Kine::Name& channel) = 0;
+			     const Kine::ChannelName& channel) = 0;
       
       virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
       virtual void handleClientSignon(User& origin) {};
@@ -198,25 +197,13 @@ namespace Exordium {
        * 
        */
 
-      // Return the nickname of the module
-      const Kine::Name& getNickname(void) const
-	{ return getConfigData().getName(); };
-      
       // Return the username/identity of the service
       const std::string& getUsername(void) const
 	{ return getConfigData().getIdent(); };
-
-      // Return the hostname of this service module
-      const std::string& getHostname(void) const
-	{ return getConfigData().getHostname(); };
       
       // Return the description of this service module
       const std::string& getDescription(void) const
 	{ return getConfigData().getDescription(); };
-      
-      // Return the time this module was created/signed on to the network
-      const timeval& getSignonTime(void) const
-	{ return signonTime; };
    };
 };
 

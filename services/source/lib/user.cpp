@@ -325,13 +325,13 @@ bool
  */
 
 bool
-  User::isIdentified(Kine::Name const &as)
+  User::isIdentified(Kine::ClientName const &as)
 {
    if( services.getDatabase().dbSelect("idas", "nicksidentified", "nick='"+getOnlineIDString()+"'") < 1 )
      return false;
 
    String temp = services.getDatabase().dbGetValue();
-   Kine::Name idnick = services.getNick(temp.toInt());
+   Kine::ClientName idnick = services.getNick(temp.toInt());
 
    if( idnick.IRCtoLower() == as.IRCtoLower() )
      return true;

@@ -31,7 +31,8 @@
 # include <aisutil/string.h>
 # include <kineircd/password.h>
 # include <kineircd/daemon.h>
-# include <kineircd/name.h>
+# include <kineircd/clientname.h>
+# include <kineircd/channelname.h>
 
 # include <exordium/config.h>
 # include <exordium/channel.h>
@@ -99,14 +100,14 @@ namespace Exordium {
       // 'User' operability functions
       virtual User* const addUser(const AISutil::String& name,
 				  const int oid) = 0;
-      virtual bool delUser(Kine::Name &) = 0;
-      virtual User* findUser(Kine::Name &) = 0;
+      virtual bool delUser(Kine::ClientName &) = 0;
+      virtual User* findUser(Kine::ClientName &) = 0;
       
       // 'dChan' operability functions
-      virtual dChan* const addChan(const Kine::Name& name,
+      virtual dChan* const addChan(const Kine::ChannelName& name,
 				   const int oid) = 0;
-      virtual bool delChan(Kine::Name &) = 0;
-      virtual dChan* findChan(Kine::Name &) = 0;
+      virtual bool delChan(Kine::ChannelName &) = 0;
+      virtual dChan* findChan(Kine::ChannelName &) = 0;
       
       // 'Server' operability functions
       virtual Server* const addServer(const AISutil::String&,
@@ -119,7 +120,7 @@ namespace Exordium {
 				      
       
       // Allows Services:: to change a User's nick.
-      virtual void setNick(User &, Kine::Name &) = 0;
+      virtual void setNick(User &, Kine::ClientName &) = 0;
       
       // Send modes.
       virtual void mode(AISutil::String const &, AISutil::String const &,
@@ -181,8 +182,8 @@ namespace Exordium {
       virtual void serviceKick(AISutil::String const &,
 			       AISutil::String const &,
 			       AISutil::String const &) = 0;
-      virtual bool isOp(AISutil::String const &,
-			AISutil::String const &) = 0;
+      virtual bool isOp(Kine::ClientName const &,
+			Kine::ChannelName const &) = 0;
       virtual bool isVoice(AISutil::String const &,
 			   AISutil::String const &) = 0;
       // And this should be removed when the new channel classes are done.
@@ -190,11 +191,11 @@ namespace Exordium {
       
       
       // This should be moved to the NOTE MODULE
-      virtual void sendNote(Kine::Name const &, Kine::Name const &,
+      virtual void sendNote(Kine::ClientName const &, Kine::ClientName const &,
 			    AISutil::String const &) = 0;
       
-      virtual int locateID(Kine::Name const &nick) = 0;
-      virtual User* addClient(Kine::Name const &, AISutil::String const &,
+      virtual int locateID(Kine::ClientName const &nick) = 0;
+      virtual User* addClient(Kine::ClientName const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
 			      AISutil::String const &,
@@ -215,7 +216,7 @@ namespace Exordium {
       virtual void addOper(AISutil::String const &, int access) = 0;
       virtual void delOper(AISutil::String const &) = 0;
       virtual bool isOper(AISutil::String const &) = 0;
-      virtual void validateOper(Kine::Name &) = 0;
+      virtual void validateOper(Kine::ClientName &) = 0;
       virtual void sendGOper(AISutil::String const &,
 			AISutil::String const &) = 0;
       virtual void sendHelpme(AISutil::String const &,

@@ -28,10 +28,10 @@
 # define _SOURCE_LIB_PARSER_H_ 1
 
 # include <aisutil/string.h>
-# include <kineircd/name.h>
+# include <kineircd/clientname.h>
 
 # define PARSER_FUNC(x) \
-     x(Kine::Name& OLDorigin, AISutil::StringTokens& tokens)
+     x(Kine::ClientName& OLDorigin, AISutil::StringTokens& tokens)
 
 namespace Exordium {
    class ServicesInternal;

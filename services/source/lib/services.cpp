@@ -227,7 +227,7 @@ config(c),
 sock(-1),
 maxSock(-1),
 inputBufferPosition(0),
-startTime(time(NULL)),
+//startTime(time(NULL)),
 lastPing(time(NULL)),
 disconnectTime(time(NULL)),
 stopTime(0),
@@ -332,6 +332,9 @@ bool ServicesInternal::handleInput (void)
 	  }
 	return true;
      }
+   
+   // eh ???
+   return false;
 }
 
 /* disconnect()
@@ -761,7 +764,8 @@ void
 }
 
 bool
-  ServicesInternal::isOp(String const &nick, String const &chan)
+  ServicesInternal::isOp(const Kine::ClientName &nick,
+			 const Kine::ChannelName &chan)
 {
    int chanid = channel.getOnlineChanID(chan);
    int nickid = locateID(nick);
@@ -789,9 +793,10 @@ bool
 }
 
 void
-  ServicesInternal::sendNote(Kine::Name const &from, Kine::Name const &to, String const &text)
+  ServicesInternal::sendNote(Kine::ClientName const &from,
+			     Kine::ClientName const &to, String const &text)
 {
-   Kine::Name thenick = to.IRCtoLower();
+   Kine::ClientName thenick = to.IRCtoLower();
    database.dbInsert("notes", "'','"+from+"','"+to+"',NOW(),'"+text+"'");
    int foo = locateID(thenick);
    if(foo>0)
@@ -830,7 +835,7 @@ void ServicesInternal::checkpoint(void)
 	String id = database.dbGetValue(0);
 	String killt = database.dbGetValue(2);
 	int nowt = currentTime;
-	Kine::Name tomod = database.dbGetValue(1);
+	Kine::ClientName tomod = database.dbGetValue(1);
 	database.dbGetRow();
 
 	if(killt.toInt() < nowt)
@@ -838,7 +843,7 @@ void ServicesInternal::checkpoint(void)
 	     database.dbDelete("kills", "id='"+id+"'");
 	     int foo = 0;
 	     bool running = true;
-	     String newnick = "";
+	     Kine::ClientName newnick = "";
 	     while(running)
 	       {
 		  foo++;
@@ -947,7 +952,7 @@ Server* const ServicesInternal::addServer(const String &name, const int &hops, c
  * Add a channel to our channel map
  *
  */
-dChan* const ServicesInternal::addChan(const Kine::Name& name, const int oid)
+dChan* const ServicesInternal::addChan(const Kine::ChannelName& name, const int oid)
 {
    return chans[name] = new dChan(name.IRCtoLower(),oid,*this);
 }
@@ -967,7 +972,7 @@ User* const ServicesInternal::addUser(const String& name, const int oid)
  * Find and return a pointer to a user.
  *
  */
-User* ServicesInternal::findUser(Kine::Name &name)
+User* ServicesInternal::findUser(Kine::ClientName &name)
 {
    User *ptr = users[name.IRCtoLower().trim()];
    if(ptr == 0)
@@ -982,7 +987,7 @@ User* ServicesInternal::findUser(Kine::Name &name)
  * Find and return a pointer to that channel.
  *
  */
-dChan* ServicesInternal::findChan(Kine::Name &name)
+dChan* ServicesInternal::findChan(Kine::ChannelName &name)
 {
    dChan *ptr = chans[name.IRCtoLower().trim()];
    if(ptr==0)
@@ -1012,7 +1017,7 @@ Server* ServicesInternal::findServer(String &name)
  * Find.. and delete the given user.
  *
  */
-bool ServicesInternal::delUser(Kine::Name &name)
+bool ServicesInternal::delUser(Kine::ClientName &name)
 {
    users.erase(name.IRCtoLower());
 
@@ -1026,7 +1031,7 @@ bool ServicesInternal::delUser(Kine::Name &name)
  * Delete the given channel.
  *
  */
-bool ServicesInternal::delChan(Kine::Name &name)
+bool ServicesInternal::delChan(Kine::ChannelName &name)
 {
    chans.erase(name.IRCtoLower());
    database.dbDelete("onlinechan","name='"+name.IRCtoLower()+"'");
@@ -1051,7 +1056,7 @@ bool ServicesInternal::delServer(String &name)
  * a new nickname.
  *
  */
-void ServicesInternal::setNick(User &who, Kine::Name &newnick)
+void ServicesInternal::setNick(User &who, Kine::ClientName &newnick)
 {
 #ifdef DEBUG
    logLine("setNick: " + newnick, Log::Debug);
@@ -1072,7 +1077,7 @@ void ServicesInternal::setNick(User &who, Kine::Name &newnick)
  * ..
  */
 
-User* ServicesInternal::addClient(Kine::Name const &nick, String const &hops,
+User* ServicesInternal::addClient(Kine::ClientName const &nick, String const &hops,
 				  String const &timestamp,
 				  String const &username, String const &host,
 				  String const &server,
@@ -1093,7 +1098,7 @@ User* ServicesInternal::addClient(Kine::Name const &nick, String const &hops,
  * shouldn't be here.. really .. just a stop gap for now
  *
  */
-int ServicesInternal::locateID(Kine::Name const &nick)
+int ServicesInternal::locateID(Kine::ClientName const &nick)
 {
 
    // Saftey Check - Remove any special chars.
@@ -1241,7 +1246,7 @@ bool ServicesInternal::isOper(String const &nick)
      return true;
 }
 
-void ServicesInternal::validateOper(Kine::Name &origin)
+void ServicesInternal::validateOper(Kine::ClientName &origin)
 {
    //Active Oper? (hah :-)
    User *ptr = findUser(origin);
