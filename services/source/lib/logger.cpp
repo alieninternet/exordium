@@ -40,6 +40,6 @@ using namespace Exordium;
 void Logger::logLine(const std::string& str,
 		     const Kine::Logger::Mask::type mask)
 {
-//   std::cout << "Database logger: The mask is " << mask <<
-//     " and the string is:\n'" << str << "'" << std::endl;
+   std::cout << "Database logger: The mask is " << mask <<
+     " and the string is:\n'" << str << "'" << std::endl;
 }
