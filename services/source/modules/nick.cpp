@@ -115,6 +115,8 @@ void
 	     String lurl = services.getNickname().getURL(who);
 	     String lyah = services.getNickname().getYAHOO(who);
 	     String lqui = services.getNickname().getQuitMessage(who);
+	     bool deopAway = services.getNickname().deopAway(who);
+	     bool modNick = services.getNickname().modNick(who);
 	     String toa = "Nickname Information for \002"+who;
 	     String tob = "Last host : \002"+lhost;
 	     String toc = "Last identified : \002"+lid;
@@ -126,6 +128,12 @@ void
 	     String toh = "URL : \002"+lurl;
 	     String toj = "Yahoo! : \002"+lyah;
 	     String tok = "Last Quit Message : \002"+lqui;
+	     String tol = "Options : ";
+	     if(deopAway)
+	       String tol = tol + " Deop on Away";
+	     if(modNick)
+	       String tol = tol + ", Nickname Enforcement";
+						 
 	     services.serviceNotice(toa,"Nick",origin);
 	     services.serviceNotice(tob,"Nick",origin);
 	     services.serviceNotice(toc,"Nick",origin);
@@ -137,6 +145,7 @@ void
 	     services.serviceNotice(toh,"Nick",origin);
 	     services.serviceNotice(toj,"Nick",origin);
 	     services.serviceNotice(tok,"Nick",origin);
+	     services.serviceNotice(tol,"Nick",origin);
 	     return;
 	  }
      }

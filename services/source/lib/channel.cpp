@@ -55,9 +55,13 @@ namespace Exordium
        {
 	  int cid = getOnlineChanID(channel);
 	  int nid = services.getNickname().getOnlineNickID(nickname);
+	  String Dquery = "DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid);
+	  services.getDatabase().query(Dquery);
 	  String query = "INSERT into chanstatus values ('"
 	    +String::convert(cid)+"','"+String::convert(nid)+"','2')";
 	  services.getDatabase().query(query);
+       services.Debug("Have marked "+nickname+" as being opped in "+channel);
+	  
        }
 
 /* Update our tables as showing the given user is 'voiced'
@@ -67,9 +71,13 @@ namespace Exordium
        {
 	  int cid = getOnlineChanID(channel);
 	  int nid = services.getNickname().getOnlineNickID(nickname);
+          String Dquery = "DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid);
+	            services.getDatabase().query(Dquery);
 	  String query = "INSERT into chanstatus values ('"
 	    +String::convert(cid)+"','"+String::convert(nid)+"','1')";
 	  services.getDatabase().query(query);
+	  services.Debug("Have marked "+nickname+" as being voiced in "+channel);
+	  
        }
 
 /* Update our tables as showing the given user in the channel
@@ -79,9 +87,13 @@ namespace Exordium
        {
 	  int cid = getOnlineChanID(channel);
 	  int nid = services.getNickname().getOnlineNickID(nickname);
+          String Dquery = "DELETE from chanstatus where chanid="+String::convert(cid)+" AND nickid="+String::convert(nid);
+	            services.getDatabase().query(Dquery);
 	  String query = "INSERT into chanstatus values ('"
 	    +String::convert(cid)+"','"+String::convert(nid)+"','0')";
 	  services.getDatabase().query(query);
+	  services.Debug("Have marked "+nickname+" as being NORMAL in "+channel);
+	  
        }
    bool
      Channel::ChanLog(String const &channel)
@@ -148,9 +160,9 @@ namespace Exordium
        {
 	  int chanid = getOnlineChanID(channel);
 	  int nickid = services.getNickname().getOnlineNickID(nickname);
-	  String query = "DELETE from chanstatus where chanid='"
-	    +String::convert(chanid)+"' AND nickid='"
-	    + String::convert(nickid) + "' AND status='2'";
+          String Dquery = "DELETE from chanstatus where chanid="+String::convert(chanid)+" AND nickid="+String::convert(nickid);
+	  services.getDatabase().query(Dquery);
+	  String query = "INSERT into chanstatus values('','"+String::convert(chanid)+"','"+String::convert(nickid)+"')";
 	  services.getDatabase().query(query);
        }
 

@@ -18,6 +18,36 @@ using Kine::Password;
 namespace Exordium
 {
 
+   String
+     Nickname::stripModes(String const &nick)
+       {
+	  char *temp = new char[nick.length() + 1];
+
+	  for (register unsigned int i = (nick.length() + 1); i--;)
+	    {
+
+	       char ch = nick.c_str()[i];
+	       switch(ch)
+		 {
+
+		  case '@': /* Opped.. */
+		    temp[i] = ' ';
+		    continue;
+		  case '+': /* Voiced */
+		    temp[i] = ' ';
+		    continue;
+		  default:
+		    temp[i] = ch;
+		 }
+
+	    }
+
+	  String result(temp);
+	  delete(temp);
+	  return result.trim();
+
+       }
+
    void
      Nickname::setModNick(String const &nick, bool const &value)
        {
@@ -32,7 +62,7 @@ namespace Exordium
 	    }
 	  services.getDatabase().query(query);
        }
-   
+
    void
      Nickname::setDeopAway(String const &nick, bool const &value)
        {
@@ -48,7 +78,7 @@ namespace Exordium
 	  services.getDatabase().query(query);
        }
 
-  bool
+   bool
      Nickname::modNick(String const &nick)
        {
 	  String query = "SELECT modnick from nicks where nickname='"+nick+"'";
@@ -68,7 +98,7 @@ namespace Exordium
 	    }
 	  return false;
        }
-   
+
    bool
      Nickname::deopAway(String const &nick)
        {
@@ -89,7 +119,7 @@ namespace Exordium
 		    return false;
 		 }
 	    }
-return false;
+	  return false;
        }
    void
      Nickname::updateHost (String const &nick, String const &host)
@@ -113,8 +143,7 @@ return false;
 	    }
 	  return "";
        }
-   
-	  
+
    String
      Nickname::getRegNickCount(void)
        {
@@ -207,7 +236,7 @@ return false;
 			  String host, String vwhost, String server, String modes,
 			  String realname)
        {
-	  services.getDatabase().query (String ("insert into onlineclients values('','") + nick +String ("','") + hops + String ("','") + timestamp +String ("','") + username + String ("','") + host + String ("','") + vwhost + String ("','") + server + String ("','") + modes + String ("','") + services.getDatabase().makeSafe(realname) +String ("')"));
+	  services.getDatabase().query (String ("insert into onlineclients values('','") + nick.toLower() +String ("','") + hops + String ("','") + timestamp +String ("','") + username + String ("','") + host + String ("','") + vwhost + String ("','") + server + String ("','") + modes + String ("','") + services.getDatabase().makeSafe(realname) +String ("')"));
 
        }
 
@@ -275,7 +304,10 @@ return false;
    int
      Nickname::getOnlineNickID(String const &nick)
        {
-	  String query = "select id from onlineclients where nickname='" + nick + "'";
+          // Saftey Check - Remove any special chars.
+	  String newnick = stripModes(nick.toLower());
+	   
+	  String query = "select id from onlineclients where nickname='" + newnick + "'";
 	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
@@ -285,6 +317,7 @@ return false;
 	       return id.toInt();
 	    }
 	  res.free_result();
+	  services.Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID for nickname "+newnick.toLower());
 	  return 0;
        }
 
@@ -489,8 +522,8 @@ return false;
      Nickname::genAuth(String const &nickname)
        {
 	  String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::
-	    makePassword("VIVA LA FRANCE :)",nickname),Services::PasswordStrBase,Services::PasswordStrBaseLongPad);
-	  
+							   makePassword("VIVA LA FRANCE :)",nickname),Services::PasswordStrBase,Services::PasswordStrBaseLongPad);
+
 	  String query = "INSERT into pendingnicks values ('','"+nickname+"','" +authcode+"')";
 	  services.getDatabase().query(query);
 	  String tosend = "\002[\002New Registration\002]\002 Nickname "+nickname+" -> "+authcode;

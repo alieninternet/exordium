@@ -120,10 +120,13 @@ void
    String dest = tokens.nextToken();
    if(dest[0]=='#')
      {
-	if(!services.getChannel().isChanRegistered(dest))
-	  {
-	     return;
-	  }
+//	if(!services.getChannel().isChanRegistered(dest))
+//	  {
+//	     return;
+//	  }
+// I decided that chanstatus should have info on ALL channels....
+// 
+// 
 	String modes = tokens.nextColonToken();
 	int length = modes.length();
 	for (i = 0; i!=length; i++)
@@ -156,12 +159,16 @@ void
 		  if(add)
 		    {
 		       String target = tokens.nextToken();
-		       services.getChannel().internalOp(target,dest);
+		       if(target.toLower()=="chan")
+			 return;
+		       services.getChannel().internalOp(target.toLower(),dest);
 		    }
 		  if(take)
 		    {
 		       String target = tokens.nextToken();
-		       services.getChannel().internalDeOp(target,dest);
+		       if(target.toLower()=="chan")
+			 return;
+		       services.getChannel().internalDeOp(target.toLower(),dest);
 		    }
 	       }
 	     if(modes[i] == 'v')
@@ -169,12 +176,16 @@ void
 		  if(add)
 		    {
 		       String target = tokens.nextToken();
-		       services.getChannel().internalVoice(target,dest);
+		       if(target.toLower()=="chan")
+			 return;
+		       services.getChannel().internalVoice(target.toLower(),dest);
 		    }
 		  if(take)
 		    {
 		       String target = tokens.nextToken();
-		       services.getChannel().internalDeVoice(target,dest);
+		       if(target.toLower()=="chan")
+			 return;
+		       services.getChannel().internalDeVoice(target.toLower(),dest);
 		    }
 	       }
 	  }

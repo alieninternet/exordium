@@ -21,7 +21,7 @@ namespace Exordium {
       Nickname(Services& s)
 	: services(s)
 	{};
-      
+      Kine::String stripModes(Kine::String const &nick);
       Kine::String getRegNickCount(void);
       Kine::String getOnlineCount(void);
       void updateHost(Kine::String const &, Kine::String const &);
