@@ -41,6 +41,11 @@ const AISutil::ConfigParser::defTable_type Config::definitionTable =
 	  &defClassConsole, 0
      },
      {
+	"DATABASE", 4,
+	  (void *)&Config::defDatabase, 0,
+	  0, &classHandleDatabase
+     },
+     {
 	"LOGFILE", 3,
 	  (void *)&Config::defLogfile, &varHandleString,
 	  0, 0
@@ -159,6 +164,9 @@ Config::Config(void)
     defConsoleHostname("somewhere.org"),
     defConsoleName("Exordium"),
 
+    // 'DATABASE' class
+    defDatabase(0),
+
     // 'SQL' class
     defSqlDatabase("services"),
     defSqlHostname("localhost"),
@@ -167,6 +175,51 @@ Config::Config(void)
     defSqlUsername("root")
 {
    // nothing here!
+}
+
+
+/* ~Config - Destructor
+ * Original 03/10/2002 pickle
+ */
+Config::~Config(void)
+{
+   // Delete the database engine
+   if (defDatabase != 0) {
+      delete defDatabase;
+   }
+}
+
+
+/* checkConfig - Check the configuration has been done correctly (fail-safe)
+ * Original 03/10/2002 pickle
+ */
+bool Config::checkConfig(void)
+{
+   // If the database engine has not been initialised, we are broken
+   if (defDatabase == 0) {
+      return false;
+   }
+   
+   // Otherwise, everything is okay
+   return true;
+}
+
+
+/* classHandleDatabase - Handle a database{}; configuration class
+ * Original ...
+ */
+LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleDatabase)
+{
+   // Check if the first value is empty (the database engine type field)
+   if (values.empty() || values.front().empty()) {
+      errString = "No engine specified";
+      return false;
+   }
+   
+   std::cout << "Database engine wanted was " << values.front() << std::endl;
+   
+   errString = "Coming soon :) Please use the sql {} config class instead, for now";
+   return false;
 }
 
 

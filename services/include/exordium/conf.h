@@ -29,6 +29,7 @@
 
 # include <aisutil/config/data.h>
 # include <aisutil/string/string.h>
+# include <exordium/database/database.h>
 # include <exordium/modules.h>
 
 namespace Exordium {
@@ -51,6 +52,10 @@ namespace Exordium {
       bool defConsoleEnabled;			// Is the console active?
       AISutil::String defConsoleHostname;	// The console's host name
       AISutil::String defConsoleName;		// The console's nickname
+
+      // 'DATABASE' class
+      CDatabase* defDatabase;			// Our database engine
+      static LIBAISUTIL_CONFIG_CLASS_HANDLER(classHandleDatabase);
       
       // 'MODULE' class/variable stuff
       Modules defModules;			// Loaded modules
@@ -69,6 +74,12 @@ namespace Exordium {
     public:
       // Constructor (sets up defaults mainly)
       Config(void);
+      
+      // Destructor
+      ~Config(void);
+      
+      // Check the configuration (fail-safe for when the module starts)
+      bool checkConfig(void);
       
       // Top variables
       const AISutil::String& getLogfile(void) const
@@ -91,6 +102,10 @@ namespace Exordium {
 	{ return defConsoleHostname; };
       const AISutil::String& getConsoleName(void) const
 	{ return defConsoleName; };
+
+      // 'DATABASE' class
+      CDatabase& getDatabase(void)
+	{ return *defDatabase; };
       
       // 'MODULE' class
       Modules& getModules(void)

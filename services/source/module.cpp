@@ -53,6 +53,14 @@ namespace {
 	std::cout << "conditions; please see the enclosed LICENSE file" << std::endl;
 	std::cout << "mod_exordium::moduleStart()" << std::endl;
 
+	// Check the configuration was completely setup, otherwise get cranky
+/* I will uncomment this shortly
+	if (!config.checkConfig()) {
+	   // Tell KineIRCd that we refuse to start
+	   return false;
+	}
+ */
+	
 	// New Logger (the config file will have been created by now)
 	logger = new Log(*config);
 
