@@ -1,3 +1,4 @@
+
 Add auto-deidentify on away thing :) - settable via nick set
 
 Add channel topic following - settable via chan set - updates channel topics
@@ -11,5 +12,5 @@ Fix bug where when services voices/deops a user when they go away, we
 don't call internalVoice + internalDeop so services still thinks the
 user is opped!.
 
-
-
+Services needs to track AWAY status - and NOT op etc when an AWAY user 
+joins a channel
