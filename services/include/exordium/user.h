@@ -167,6 +167,13 @@ namespace Exordium {
        * 
        */
       AISutil::String getIdent(void);
+
+      /* getVWHost()
+       * 
+       * Return the users vw host
+       * 
+       */
+      AISutil::String getVWHost(void);
       
       /* isIdentified()
        * 

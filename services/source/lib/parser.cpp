@@ -477,6 +477,21 @@ void
 				    target);
 	return;
      }
+   if(target.toLower()=="chan@services.peoplechat.org")
+     {
+	if(!services.getConfigInternal().getModules().exists("chan"))
+	  {
+	     String togo = "Sorry - This part of services is currently undergoing maintenance";
+	     services.serviceNotice(togo,target,OLDoriginl);
+	  }
+	std::cout << "Throwing this to CHAN: " << message << std::endl;
+	StringTokens too(message);
+	services.getConfigInternal().getModules().throwLine("chan",too,*origin,true);
+	return;
+     }
+   
+	
+	
    //Hard check for nick if its @ircdome.org ......
    if(target.toLower()=="nick@services.peoplechat.org")
      {
@@ -558,7 +573,7 @@ void
    bool normal = false;
    int  status = 0;
    String ts1 = tokens.nextToken();
-   String ts2 = tokens.nextToken();
+   //String ts2 = tokens.nextToken();
    String chan = tokens.nextToken();
    String modes = tokens.nextToken();
    bool more;

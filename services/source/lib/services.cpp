@@ -403,22 +403,24 @@ bool ServicesInternal::connect (void)
 
 /* *Whistles* Config option */
 /* Whistle all you want, its done :c */
-   queueAdd ("PASS "+config.getUplinkPass()+" :TS");
-   queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
-/* Jesus, so many hard coded stuff :( */
+   queueAdd ("PASS "+config.getUplinkPass()+" :TS7");
+   queueAdd ("CAPAB TS3 NOQUIT SSJOIN BURST UNCONNECT HIDENAME NICKIP SERVICE");
+   //queueAdd ("MYID 1");
+
+   /* Jesus, so many hard coded stuff :( */
 /* It's okay, all the server connection stuff has a very very very limited
  * lifespan in anycase.. - pickle
  */
    queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
 	     Kine::config().getOptionsDescription());
-
+   queueAdd ("MYID 1");
    // Do we have an underling?
    if (!config.getUnderlingHostname().empty())
      {
 	queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
      }
 
-   queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
+   queueAdd ("SVINFO 7 3 0 :"+String::convert(currentTime));
    queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
    queueAdd ("BURST");
    //	queueFlush();
@@ -433,9 +435,9 @@ bool ServicesInternal::connect (void)
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
 	// I smell a configuration variable.. *sniff sniff* can you?
-	serviceJoin(config.getConsoleName(), config.getConsoleChan());
-	mode(config.getConsoleName(),config.getConsoleChan(),"+o",config.getConsoleName());
-	setMode(config.getConsoleName(),"+oz");
+	// serviceJoin(config.getConsoleName(), config.getConsoleChan());
+	mode(config.getConsoleName(),config.getConsoleChan(),"+O",config.getConsoleName());
+	//setMode(config.getConsoleName(),"+oz");
      }
    connected = true;
    queueAdd ("BURST 0");

@@ -1,20 +1,20 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
- * 
+ *
  * Exordium is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Exordium is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,7 +78,7 @@ struct Module::functionTableStruct const
 
 void
   Module::parseLine (StringTokens& line, User& origin
-		   , const String& chan)
+		     , const String& chan)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -120,33 +120,33 @@ CHAN_FUNC (Module::parseCOMMANDS)
 
 {
 
-  String::size_type lineLength = 200;
-  origin.sendMessage("Command list for " + getName() + ":",getName());
-  std::ostringstream list(" -=>");
-  for (int i = 0; functionTable[i].command != 0; i++) {
-     list << " " << functionTable[i].command;
-     if (list.str().length() >= lineLength) {
-          origin.sendMessage(list.str(),getName());
-         list.str() = " -=>";
-      }
-   }
-   if (list.str().length() > 4) {
-      origin.sendMessage(list.str(),getName());
-   }
+   String::size_type lineLength = 200;
+   origin.sendMessage("Command list for " + getName() + ":",getName());
+   std::ostringstream list(" -=>");
+   for (int i = 0; functionTable[i].command != 0; i++)
+     {
+	list << " " << functionTable[i].command;
+	if (list.str().length() >= lineLength)
+	  {
+	     origin.sendMessage(list.str(),getName());
+	     list.str() = " -=>";
+	  }
+     }
+   if (list.str().length() > 4)
+     {
+	origin.sendMessage(list.str(),getName());
+     }
    origin.sendMessage("End of command list",getName());
-
-
 
 }
 
-  CHAN_FUNC (Module::parseSEEN)
+CHAN_FUNC (Module::parseSEEN)
 {
    origin.sendMessage("This command is disabled",getName());
    return;
 }
 
-
-  CHAN_FUNC (Module::parseSET)
+CHAN_FUNC (Module::parseSET)
 {
    String channel = "";
    if(!chan.empty())
@@ -170,7 +170,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Could not locate that channel",getName());
 	return;
      }
-   
+
    if(!ptr->isRegistered())
      {
         origin.sendMessage("Error: That channel is not registered",getName());
@@ -200,7 +200,8 @@ CHAN_FUNC (Module::parseCOMMANDS)
 		    }
 		  origin.sendMessage("Usage: set #channel log true/false",getName());
 		  return;
-	       } // /LOG
+	       }
+	     // /LOG
 	     origin.sendMessage("Unsupported channel option",getName());
 	     return;
 	  }
@@ -210,8 +211,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseLISTBAN)
+CHAN_FUNC (Module::parseLISTBAN)
 {
    String channel = "";
    if(!chan.empty())
@@ -234,17 +234,17 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: I cannot find that channel",getName());
 	return;
      }
-   
+
    if(!ptr->isRegistered())
      {
 	origin.sendMessage("Error: Channel not registered",getName());
 	return;
      }
-    String tempnick = origin.getNickname();
-    ptr->sendBans(tempnick,getName());
+   String tempnick = origin.getNickname();
+   ptr->sendBans(tempnick,getName());
 }
 
-  CHAN_FUNC (Module::parseINFO)
+CHAN_FUNC (Module::parseINFO)
 {
    String channel = "";
    if(!chan.empty())
@@ -267,7 +267,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: That channel does not exist",getName());
 	return;
      }
-   
+
    if(!ptr->isRegistered())
      {
         origin.sendMessage("Error: That channel is not registered",getName());
@@ -278,7 +278,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    origin.sendMessage("Unique IDS : "+String::convert(ptr->getRegisteredID())+"/"+String::convert(ptr->getOnlineID()),getName());
 }
 
-  CHAN_FUNC (Module::parseADDUSER)
+CHAN_FUNC (Module::parseADDUSER)
 {
    String channel = "";
    if(!chan.empty())
@@ -308,7 +308,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Nickname is not registered",getName());
 	return;
      }
-   
+
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -336,7 +336,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
      }
 }
 
-  CHAN_FUNC (Module::parseTOPIC)
+CHAN_FUNC (Module::parseTOPIC)
 {
    String channel = "";
    if(chan!="")
@@ -353,7 +353,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;
      }
-   
+
    String topic = tokens.rest();
    String la = origin.getIDList();
    StringTokens st (la);
@@ -375,23 +375,61 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseHELP)
+CHAN_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
    services->doHelp(origin,getName(),word,parm);
 }
 
-
-  CHAN_FUNC (Module::parseBAN)
+CHAN_FUNC (Module::parseBAN)
 {
-   origin.sendMessage("Disabled until next build",getName());
-   return;
+   String channel = "";
+   if(chan!="")
+     {
+
+	channel = chan;
+     }
+
+   else
+     {
+
+	channel = tokens.nextToken();
+     }
+
+   if(channel=="")
+     {
+
+	origin.sendMessage("Usage: ban #channel nickname reason here",getName());
+	return;
+     }
+
+   dChan *ptr = services->findChan(channel);
+   if(ptr==0)
+     {
+
+	origin.sendMessage("Error: Cannot find that channel",getName());
+	return;
+     }
+   String who = tokens.nextToken();
+   String reason = tokens.rest();
+   if(who=="" | reason=="")
+     {
+	origin.sendMessage("Usage: ban #channel nickname reason here",getName());
+	return;
+     }
+   User *uptr = services->findUser(who);
+   if(uptr==0)
+     {
+	origin.sendMessage("Error: Cannot find that user",getName());
+	return;
+     }
+   
+	
+
 }
 
-
-  CHAN_FUNC (Module::parseREGISTER)
+CHAN_FUNC (Module::parseREGISTER)
 {
    String channel = tokens.nextToken();
    if (channel=="")
@@ -405,13 +443,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	return;
      }
    dChan *ptr = services->findChan(channel);
-   
+
    if(ptr==0)
      {
 	origin.sendMessage("Error: Channel does not exist",getName());
 	return;
      }
-   
+
    if(!origin.isRegistered())
      {
 	origin.sendMessage("Error: Your nickname is not registered",getName());
@@ -439,19 +477,10 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseOP)
+CHAN_FUNC (Module::parseOP)
 {
-   String channel = "";
-   if(chan!="")
-     {
-	channel = chan;
-     }
-   else
-     {
-	channel = tokens.nextToken();
-     }
-   if(channel=="")
+    String channel = tokens.nextToken();
+    if(channel=="")
      {
 	origin.sendMessage("Usage: op #channel nick [nick2,nick3,..]",getName());
 	return;
@@ -518,8 +547,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseDEOP)
+CHAN_FUNC (Module::parseDEOP)
 {
    String channel = "";
    if(chan!="")
@@ -530,7 +558,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
      {
 	channel = tokens.nextToken();
      }
-  
+
    if(channel=="")
      {
 	origin.sendMessage("Usage: deop #channel optional list of nicknames to op",getName());
@@ -542,7 +570,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;
      }
-   
+
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -598,8 +626,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseVOICE)
+CHAN_FUNC (Module::parseVOICE)
 {
    String channel = "";
    if(chan!="")
@@ -622,7 +649,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Could not find that channel",getName());
 	return;
      }
-   
+
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -678,8 +705,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseDEVOICE)
+CHAN_FUNC (Module::parseDEVOICE)
 {
    String channel = "";
    if(chan!="")
@@ -702,7 +728,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;
      }
-   
+
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -758,8 +784,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-
-  CHAN_FUNC (Module::parseKICK)
+CHAN_FUNC (Module::parseKICK)
 {
    String channel = "";
    if(chan!="")
@@ -784,7 +809,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;
      }
-   
+
    String thelist = origin.getIDList();
    StringTokens st (thelist);
    bool more = false;
@@ -812,7 +837,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
    return;
 }
 
-  CHAN_FUNC (Module::parseACCESS)
+CHAN_FUNC (Module::parseACCESS)
 {
    String channel = "";
    if(chan!="")
@@ -835,31 +860,32 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: I cannot find that channel",getName());
 	return;
      }
- 
+
    if(!ptr->isRegistered())
      {
 	origin.sendMessage("Error: That channel is not registered",getName());
 	return;
      }
-   
+
    origin.sendMessage("Channel access list for " + channel,
 		      getName());
-   
+
    int nbRes =
      services->getDatabase().dbSelect("nickid,access", "chanaccess",
-				      "chanid=" + 
+				      "chanid=" +
 				      String::convert(ptr->getRegisteredID()));
-   
+
    CResult *myRes = services->getDatabase().dbGetResultSet();
-  
+
    String tnickid, taccess;
-   
-   for (int i = 0; i < nbRes; i++) {
-      int foo = myRes->getValue(i,0).toInt();
-      origin.sendMessage(services->getNick(myRes->getValue(i,0).toInt()) + " has level "
-			 +myRes->getValue(i,1)+" access",getName());
-   }
-   origin.sendMessage("End of access list",getName());   
+
+   for (int i = 0; i < nbRes; i++)
+     {
+	int foo = myRes->getValue(i,0).toInt();
+	origin.sendMessage(services->getNick(myRes->getValue(i,0).toInt()) + " has level "
+			   +myRes->getValue(i,1)+" access",getName());
+     }
+   origin.sendMessage("End of access list",getName());
    ptr->log(origin,"Chan","Did a channel access",channel);
    //Finished with result set! Clean up
    delete myRes;
@@ -880,8 +906,8 @@ void
    if(origin.deopAway())
      {
 	if(services->getDatabase().dbSelect("chanid","chanstatus",
-					   "nickid="+origin.getOnlineIDString()+
-					   " AND status=2") > 0)
+					    "nickid="+origin.getOnlineIDString()+
+					    " AND status=2") > 0)
 	  {
 	     String foo = services->getDatabase().dbGetValue();
 	     String cname = services->getChannel().getChanIDName(foo.toInt());
@@ -889,22 +915,20 @@ void
 	     services->serverMode(cname,"-o+v",cstr);
 	     services->getChannel().internalVoice(origin.getNickname(),cname);
 	     services->getChannel().internalDeOp(origin.getNickname(),cname);
-	     
-	     
+
 	  }
-	
+
      }
-   
+
 }
 
-
 // Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo =
+{
    "Channel Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY /* AWAY's */
 };
-
 
 // Start the service
 bool Module::start(Exordium::Services& s)
@@ -916,32 +940,33 @@ bool Module::start(Exordium::Services& s)
    db = new CDatabase(services->getDatabase());
    // Attempt to affirm our database tables..
    unsigned int i = 0;
-   while (Tables::tables[i] != 0) {
-      // Try to affirm this table..
-      if (!services->getDatabase().affirmTable(*(Tables::tables[i]))) {
-	 services->logLine(String("Unable to affirm mod_chan database "
-				  "table '") +
-			   Tables::tables[i]->name + "'",
-			   Log::Fatality); 
-	 return false;
-      }
-      
-      // Next table..
-      i++;
-   }
-   
+   while (Tables::tables[i] != 0)
+     {
+	// Try to affirm this table..
+	if (!services->getDatabase().affirmTable(*(Tables::tables[i])))
+	  {
+	     services->logLine(String("Unable to affirm mod_chan database "
+				      "table '") +
+			       Tables::tables[i]->name + "'",
+			       Log::Fatality);
+	     return false;
+	  }
+
+	// Next table..
+	i++;
+     }
+
    // Register ourself to the network
-   services->registerService(getName(), getName(), 
+   services->registerService(getName(), getName(),
 			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
-   
+
    // This should be internal :(
    services->getChannel().synchChannels();
-   
+
    // We started okay :)
    return true;
 }
-
 
 // Stop the service - bye bye!
 void Module::stop(const String& reason)

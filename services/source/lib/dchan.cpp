@@ -131,10 +131,12 @@ int const dChan::getCount(void)
    
 }
 
-void const dChan::addAccess(String const &nick, String const &level)
+void const dChan::addAccess(String &nick, String const &level)
 {
+   User *ptr = services.findUser(nick);
+  
    services.getDatabase().dbInsert("chanaccess","'"+String::convert(getRegisteredID())+
-				   "','"+level+"'");
+				   "','"+String::convert(ptr->getRegisteredNickID())+"','"+level+"'");
 }
 
 void const dChan::log(User& origin, String const &service,String const &text, String const &cname)
@@ -193,5 +195,11 @@ void const dChan::kick(String const &service,String const &nick,String const &re
    if(ptr==0)
      return;
    delUser(*ptr);
+   
+}
+
+void const dChan::ban(User &user, String const &reason)
+{
+//String host = user->getHost();
    
 }

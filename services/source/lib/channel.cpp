@@ -330,7 +330,7 @@ void
 void
   Channel::synchChannel(String const &name, String const &topic, String const &modes)
 {
-   services.serviceJoin("Chan",name);
+   //services.serviceJoin("Chan",name);
    services.serverMode(name,"+o","Chan");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
 		     name + " +r");

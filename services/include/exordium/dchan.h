@@ -77,7 +77,7 @@ namespace Exordium {
       const void sendBans(AISutil::String &,AISutil::String const &);
       const AISutil::String getOwner(void);
       const int getCount(void);
-      const void addAccess(AISutil::String const &,AISutil::String const &);
+      const void addAccess(AISutil::String &,AISutil::String const &);
       const void log(User& origin, AISutil::String const &, AISutil::String const &, AISutil::String const &);
       const void updateTopic(AISutil::String const &);
       const void setTopic(AISutil::String const &, AISutil::String const &);
@@ -85,6 +85,7 @@ namespace Exordium {
       const void mode(AISutil::String const &, AISutil::String const &,AISutil::String const &);
       const bool isVoice(AISutil::String const &);
       const void kick(AISutil::String const &,AISutil::String const &,AISutil::String const &);
+      const void ban(User& origin,AISutil::String const &);
       dChan(AISutil::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..
