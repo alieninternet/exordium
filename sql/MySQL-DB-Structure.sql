@@ -129,17 +129,6 @@ CREATE TABLE emails (
 ) TYPE=MyISAM;
 
 #
-# Table structure for table 'foo'
-#
-
-DROP TABLE IF EXISTS foo;
-CREATE TABLE foo (
-  id int(1) NOT NULL default '0',
-  bar set('a','e','b','c','d') default NULL,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-#
 # Table structure for table 'glines'
 #
 
@@ -169,11 +158,11 @@ CREATE TABLE help (
 ) TYPE=MyISAM;
 
 #
-# Table structure for table 'identified'
+# Table structure for table 'nicksidentified'
 #
 
-DROP TABLE IF EXISTS identified;
-CREATE TABLE identified (
+DROP TABLE IF EXISTS nicksidentified;
+CREATE TABLE nicksidentified (
   id int(11) NOT NULL auto_increment,
   nick int(11) NOT NULL default '0',
   idas int(11) NOT NULL default '0',
@@ -321,11 +310,11 @@ CREATE TABLE onlineopers (
 
 
 #
-# Table structure for table 'pendingnicks'
+# Table structure for table 'nickspending'
 #
 
-DROP TABLE IF EXISTS pendingnicks;
-CREATE TABLE pendingnicks (
+DROP TABLE IF EXISTS nickspending;
+CREATE TABLE nickspending (
   id int(20) NOT NULL auto_increment,
   nickname varchar(32) NOT NULL default '',
   auth varchar(250) NOT NULL default '',
@@ -357,17 +346,17 @@ CREATE TABLE stats (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+##
+## Table structure for table 'topics'
+##
 #
-# Table structure for table 'topics'
-#
-
-DROP TABLE IF EXISTS topics;
-CREATE TABLE topics (
-  id int(11) NOT NULL auto_increment,
-  type char(1) NOT NULL default 'A',
-  contents varchar(250) NOT NULL default '',
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
+#DROP TABLE IF EXISTS topics;
+#CREATE TABLE topics (
+#  id int(11) NOT NULL auto_increment,
+#  type char(1) NOT NULL default 'A',
+#  contents varchar(250) NOT NULL default '',
+#  PRIMARY KEY  (id)
+#) TYPE=MyISAM;
 
 #
 # Table structure for table 'triggers'
@@ -384,22 +373,22 @@ CREATE TABLE triggers (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+##
+## Table structure for table 'words'
+##
 #
-# Table structure for table 'words'
+#DROP TABLE IF EXISTS words;
+#CREATE TABLE words (
+#  id int(11) NOT NULL auto_increment,
+#  word varchar(250) NOT NULL default '',
+#  PRIMARY KEY  (id)
+#) TYPE=MyISAM;
+
+#
+# Table structure for table 'bank'
 #
 
-DROP TABLE IF EXISTS words;
-CREATE TABLE words (
-  id int(11) NOT NULL auto_increment,
-  word varchar(250) NOT NULL default '',
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-#
-# Table structure for table 'credits'
-#
-
-DROP TABLE IF EXISTS credits;
+DROP TABLE IF EXISTS bank;
 CREATE TABLE bank (
   nickid int(11) NOT NULL,
   balance bigint(21),
