@@ -29,6 +29,7 @@ _$*
 *.olb
 *.o
 *.lo
+*.loT
 *.la
 *.obj
 *.so
