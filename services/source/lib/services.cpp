@@ -501,6 +501,17 @@ namespace Exordium
 	queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
 	stopping = true;
 	stopTime = currentTime + 5;
+
+        // Clean up before we die
+        database.query("DELETE from onlineclients");
+        database.query("DELETE from chanstatus");
+        database.query("DELETE from identified");
+        database.query("DELETE from kills");
+        database.query("DELETE from onlineservers");
+        database.query("DELETE from onlinechan");
+        database.query("DELETE from onlineopers");
+
+        exit(1);
      }
 
 /* SynchTime()
@@ -1652,3 +1663,79 @@ String
    return "";
 }
 
+
+void
+  Services::addOper(String const &nick, int access)
+{
+  String query="INSERT into onlineopers values(''," + String::convert(getRegisteredNickID(nick)) + "," +  
+                String::convert(access) + ")";
+
+  database.query(query);
+}
+
+
+void
+  Services::delOper(String const &nick)
+{
+  String query="DELETE from onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
+  database.query(query);
+}
+
+
+bool
+  Services::isOper(String const &nick)
+{
+  String query="SELECT id FROM onlineopers WHERE nickid=" + String::convert(getRegisteredNickID(nick));
+
+  MysqlRes res = database.query(query);
+  MysqlRow row;
+
+  while (row = res.fetch_row())
+  {
+    return true;
+  }
+
+  return false;
+}
+
+
+void
+  Services::validateOper(String &origin)
+{
+  //Active Oper? (hah :-)
+  User *ptr = findUser(origin);
+  int axs = ptr->getAccess("Oper");
+
+  if(axs==0)
+  {
+    //Non-Authorised.
+    String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
+    globop(tosend,"Oper");
+    String reason = "You have no permission to become an IRC Operator";
+    killnick(origin, "Oper", reason);
+    return;
+  }
+  if(axs==-1)
+  {
+    String tosend = origin+" just tried to become an IRC Operator - \002Suspended\002";
+    globop(tosend,"Oper");
+    String reason = "You are suspended - Do not try to become an Operator";
+    killnick(origin, "Oper", reason);
+    return;
+  }
+  if(axs>0)
+  {
+    String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
+    globop(tosend,"Oper");
+
+    if (!isOper(origin))
+       addOper(origin, axs);
+    else
+    {
+      std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << endl;
+    }
+
+    return;
+  }
+
+}

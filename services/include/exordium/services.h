@@ -399,7 +399,10 @@ namespace Exordium {
 	LibAIS::String getRegDate(LibAIS::String const &);
 	LibAIS::String getLastID(LibAIS::String const &);
 	LibAIS::String getLastHost(LibAIS::String const &);
-
+        void addOper(LibAIS::String const &, int access);
+        void delOper(LibAIS::String const &);
+        bool isOper(LibAIS::String const &);
+        void validateOper(LibAIS::String &);
 	
      };
 }; // namespace Exordium

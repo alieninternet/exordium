@@ -86,9 +86,10 @@ namespace Exordium {
        * nicknames settings of notice/privmsg
        */
       void sendMessage(LibAIS::String const &message,
-		       LibAIS::String const &origin);
+                       LibAIS::String const &service);
       void sendMessage(LibAIS::String const &message,
-		       LibAIS::String const &origin, bool const &privmsg);
+                       LibAIS::String const &service,
+                       bool const &privmsg);
       
       /* setModNick(bool)
        * 

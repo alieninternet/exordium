@@ -45,21 +45,21 @@ using namespace Exordium;
  */
 
 void
-  User::sendMessage(String const &message,String const &origin)
+  User::sendMessage(String const &message, String const &service)
 {
-   services.serviceNotice(message,origin,nickname);
+   services.serviceNotice(message,service,nickname);
 }
 
 void
-  User::sendMessage(String const &message, String const &origin, bool const &privmsg)
+  User::sendMessage(String const &message, String const &service, bool const &privmsg)
 {
    if(privmsg)
      {
-	services.servicePrivmsg(message,origin,nickname);
+	services.servicePrivmsg(message,service,nickname);
      }
    else
      {
-	services.serviceNoticeForce(message,origin,nickname);
+	services.serviceNoticeForce(message,service,nickname);
      }
 
 }
@@ -240,10 +240,12 @@ int
  *
  */
 
+
+// NOTE! Gotta change the service name for sendMessage
 void
   User::addCheckIdentify(void)
 {
-   sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick");
+   sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick", "");
    services.getDatabase().query("INSERT into kills values('','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"')");
 };
 

@@ -483,6 +483,26 @@ String
    return "";
 }
 
+int
+  Channel::getNbUsers(String const &chan)
+{
+  String query="SELECT count(*) FROM chanstatus WHERE chanid=" + String::convert(getOnlineChanID(chan));
+
+  MysqlRes res = services.getDatabase().query(query);
+  MysqlRow row;
+
+  while (row = res.fetch_row())
+  {
+    return (int)row[0];
+  }
+
+  return -1; // NOTREACHED
+
+}
+
+
+
+
 /* Ban the given mask from the channel */
 void
   Channel::banChan(String const &chan, String const &mask, String const &reason)

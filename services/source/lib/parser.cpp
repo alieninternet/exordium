@@ -49,6 +49,10 @@ const struct Parser::functionTableStruct Parser::functionTable[] =
      { "SQUIT", &Parser::parseSQUIT },
      { "SJOIN", &Parser::parseSJOIN },
      { "AWAY", &Parser::parseAWAY },
+     { "KICK", &Parser::parseKICK },
+     { "KILL", &Parser::parseKILL },
+     { "MOTD", &Parser::parseMOTD },
+     { "VERSION", &Parser::parseMOTD },
      { 0, 0 }
 };
 
@@ -299,34 +303,16 @@ void
 	  {
 	     if(add)
 	       {
-		  //Active Oper? (hah :-)
-		  User *ptr = services.findUser(OLDorigin);
-		  int axs = ptr->getAccess("Oper");
-		  if(axs==0)
-		    {
-		       //Non-Authorised.
-		       String tosend = OLDorigin+" just tried to become an IRC Operator - \002No Access\002";
-		       services.globop(tosend,"Oper");
-		       String reason = "You have no permission to become an IRC Operator";
-		       services.killnick(OLDorigin, "Oper", reason);
-		       return;
-		    }
-		  if(axs==-1)
-		    {
-		       String tosend = OLDorigin+" just tried to become an IRC Operator - \002Suspended\002";
-		       services.globop(tosend,"Oper");
-		       String reason = "You are suspended - Do not try to become an Operator";
-		       services.killnick(OLDorigin, "Oper", reason);
-		       return;
-		    }
-		  if(axs>0)
-		    {
-		       String tosend = OLDorigin+" just became an IRC Operator - level "+String::convert(axs);
-		       services.globop(tosend,"Oper");
-		       return;
-		       //Need to add to an online tables of opers..
-		    }
+                   services.validateOper(OLDorigin);
 	       }
+               else if(take)
+               {
+                   if(services.isOper(OLDorigin))
+                     services.delOper(OLDorigin);
+                   else
+                     std::cout << "Warning: inconsistency in parsem: oper is not in onlineopers!" << endl;
+
+               }
 
 	  }
      }
@@ -353,6 +339,9 @@ void
 {
    String channel = tokens.nextToken();
    services.getChannel().internalDel(OLDorigin,channel);
+
+   String query="DELETE from onlinechan WHERE name='" + channel + "'";
+   services.getDatabase().query(query);
 }
 
 void PARSER_FUNC (Parser::parseN)
@@ -370,7 +359,7 @@ void PARSER_FUNC (Parser::parseN)
 	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
 
-	
+
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
 	     if(!origin->isIdentified(origin->getNickname()))
@@ -426,6 +415,8 @@ void PARSER_FUNC (Parser::parseN)
       return;
    }
    
+
+
    if(services.isNickRegistered(nick))
      {
 	if(!newNick->isPending())
@@ -439,6 +430,12 @@ void PARSER_FUNC (Parser::parseN)
 	  }
 	
      }
+
+
+   // Applicate specific mode validation
+   if (modes.find("o"))
+     services.validateOper(OLDorigin);   
+
 
    
    int num = newNick->countHost();
@@ -583,6 +580,10 @@ void
    String reason = tokens.nextColonToken();
    int oid = services.locateID(OLDorigin);
 
+   // Delete quitting user from oper list
+   if(services.isOper(OLDorigin))
+     services.delOper(OLDorigin);
+
    services.delUser(OLDorigin); 
  
    String query;
@@ -591,6 +592,7 @@ void
    //Store the quit reason here
    query = "UPDATE nicks set quitmsg='" + reason + "' where nickname='"+OLDorigin+"'";
    services.getDatabase().query(query);
+
 }
 
 void
@@ -700,3 +702,36 @@ void
 	more = tokens.hasMoreTokens();
      }
 }
+
+
+
+
+
+void
+  PARSER_FUNC (Parser::parseKICK)
+{
+
+
+}
+
+
+
+void
+  PARSER_FUNC (Parser::parseKILL)
+{
+
+
+
+}
+
+// Return something to the user who does VERSION or MOTD on us.
+void
+  PARSER_FUNC (Parser::parseMOTD)
+{
+   User *origin = services.findUser(OLDorigin);
+
+   origin->sendMessage("AddANiceMessageHereWithVersionEtc", services.getConfig().getServicesHostname(), false);
+}
+
+
+

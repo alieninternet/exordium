@@ -74,6 +74,7 @@ namespace Exordium {
       void banChan(LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
       void RemoveBan(LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
       LibAIS::String getModes(void);
+      int getNbUsers(LibAIS::String const &);
    };
 }; // namespace Exordium
 

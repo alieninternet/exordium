@@ -305,6 +305,21 @@ CREATE TABLE onlineservers (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+
+#
+# Table structure for table 'onlineopers'
+#
+
+DROP TABLE IF EXISTS onlineopers;
+CREATE TABLE onlineopers (
+  id int(11) NOT NULL auto_increment,
+  nickid int(11) NOT NULL,
+  access int(3) NOT NULL default '0',
+  PRIMARY KEY  (id, nickid)
+) TYPE=MyISAM;
+
+
+
 #
 # Table structure for table 'pendingnicks'
 #

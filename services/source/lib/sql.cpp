@@ -68,6 +68,7 @@ logger(l)
    query("DELETE from kills");
    query("DELETE from onlineservers");
    query("DELETE from onlinechan");
+   query("DELETE from onlineopers");
 }
 
 MysqlRes Sql::query(const char* const query)
