@@ -207,7 +207,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 		    lastCheckPoint = currentTime;
 		    checkpoint ();
 		 }
-	       if (currentTime > (time_t) (lastExpireRun + 360))
+	       if (currentTime > (time_t) (lastExpireRun + 3600))
 		 {
 		    lastExpireRun = currentTime;
 		    SynchTime ();
