@@ -73,7 +73,7 @@ namespace Exordium {
       private:
 	const AISutil::String buffer;
 	Kine::Daemon& daemon;
-	Log& logger;
+	Log logger;
 
         CDatabase& database;
         
@@ -126,7 +126,7 @@ namespace Exordium {
 	void setNick(User &,AISutil::String &);
 	AISutil::String getRegNickCount(void);
 	// Mr. Constructor
-	Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db);
+	Services(Kine::Daemon& d, Config& c, CDatabase& db);
         // Mr. Destructor
         ~Services(void);	
 

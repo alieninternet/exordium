@@ -209,9 +209,9 @@ namespace Exordium
 	    }
        }
 
-   Services::Services(Kine::Daemon& d, Log& l, Config& c, CDatabase& db)
+   Services::Services(Kine::Daemon& d, Config& c, CDatabase& db)
      : daemon(d),
-   logger(l),
+   logger(c),
    database(db),
    config(c),
    parser(*this),

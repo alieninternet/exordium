@@ -26,7 +26,6 @@
 
 #include <iostream>
 #include <cassert>
-#include <exordium/log.h>
 #include <exordium/conf.h>
 #include <exordium/services.h>
 #include <exordium/database/database.h>
@@ -78,7 +77,6 @@ namespace {
    class mod_exordium : public Kine::Module {
     private:
       Config config;
-      Log* logger;
       Services* services;
 
       // this shouldn't be here.. the Config:: one should replace it
@@ -87,8 +85,7 @@ namespace {
     public:
       // Constructor
       mod_exordium(void)
-	: logger(0),
-          services(0),
+	: services(0),
           db(0)
 	{};
       
@@ -96,7 +93,6 @@ namespace {
       ~mod_exordium(void) {
 	 delete db;
 	 delete services;
-	 delete logger;
       };
 
       // Return the information about ourselves
@@ -117,21 +113,21 @@ namespace {
 	 }
  */
 	   
-	 // New Logger (the config file will have been created by now)
-	 logger = new Log(config);
-	 assert(logger != 0);
-	 
 	 // Create new database Instance
 	 db = new CDatabase(config);
 	 assert(db != 0);
 	 
-	 // Create the new services instance - Passing sql + logger YAY :|
-	 services = new Services(daemon, *logger, config, *db);
+	 // Create the new services instance - Passing sql YAY :|
+	 services = new Services(daemon, config, *db);
 	 assert(services != 0);
 
-	 logger->logLine("Services started, beginning initalisation");
+#ifdef DEBUG
+	 std::clog << "Services started, beginning initalisation" << std::endl;
+#endif
 	 services->run();
-	 logger->logLine("Services terminated - Normal exit");
+#ifdef DEBUG
+	 std::clog << "Services terminated - Normal exit" << std::endl;
+#endif
 	 exit(0); // we are naughty using this here..... very naughty.. :(
 	 
 	 // Tell Kine that we started happily
