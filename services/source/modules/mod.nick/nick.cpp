@@ -101,7 +101,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    String::size_type lineLength = 200;
 
    // Send the banner (this shouldn't be hard-coded)
-   origin.sendMessage(GETLANG(nick_COMMAND_LIST_START, getName()),
+   origin.sendMessage(GETLANG(COMMAND_LIST_START, getName()),
 		      getName());
    // Start formulating the data..
    std::ostringstream list(" -=>");
@@ -123,7 +123,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    }
 
    // Send the footer (this shouldn't be hard-coded)
-   origin.sendMessage(GETLANG(nick_COMMAND_LIST_END),
+   origin.sendMessage(GETLANG(COMMAND_LIST_END),
 		      getName());
 
 
@@ -188,13 +188,13 @@ NICK_FUNC (Module::parseAUTH)
    User *ptr = services->findUser(who);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(nick_ERROR_COULDNT_FIND_USER),
+	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),
 			   getName());
 	return;
      }
    if(!origin.isRegistered())
      {
-	origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 			   getName());
 	return;
      }
@@ -254,7 +254,7 @@ NICK_FUNC (Module::parseAUTH)
    String value = tokens.nextToken();
    if(!origin.isIdentified(origin.getNickname()))
      {
-	origin.sendMessage(GETLANG(nick_ERROR_NOT_IDENTIFIED),
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),
 			   getName());
         return;
      }
@@ -482,7 +482,7 @@ NICK_FUNC (Module::parseAUTH)
 				getName());
 	     return;
 	  }
-	origin.sendMessage(GETLANG(nick_ERROR_NOT_BOOLEAN),
+	origin.sendMessage(GETLANG(ERROR_NOT_BOOLEAN),
 			   getName());
 	return;
      }
@@ -592,7 +592,7 @@ NICK_FUNC (Module::parseAUTH)
 	  }
 	if(!ptr->isRegistered())
 	  {
-	     origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+	     origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 				getName());
 	     return;
 	  }
@@ -635,7 +635,7 @@ NICK_FUNC (Module::parseGHOST)
    }
   if (!services->isNickRegistered( toghost))
     {
-       origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+       origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 			  getName());
        return;
     }
@@ -667,7 +667,7 @@ NICK_FUNC (Module::parseIDENTIFY)
     }
   if (!origin.isRegistered())
     {
-       origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+       origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 			  getName());
        return;
     }

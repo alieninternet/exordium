@@ -66,6 +66,8 @@ mod_chan_la_LIBADD=\
 mod_chan_la_LDFLAGS=\
 	-avoid-version -module
 mod_chan_la_SOURCES=\
+	mod.chan/language.cpp \
+	mod.chan/language.h \
 	mod.chan/chan.cpp \
 	mod.chan/chan.h \
 	mod.chan/tables.cpp \
@@ -104,7 +106,18 @@ mod.nick/language.h: mod.nick/language.tpl $(top_builddir)/autogen/language.def
 		-b $(basename $@) \
 		-T mod.nick/language.tpl \
 		$(top_builddir)/autogen/language.def
+mod.chan/language.cpp: mod.chan/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T mod.chan/language.tpl \
+		$(top_builddir)/autogen/language.def
 
+mod.chan/language.h : mod.chan/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@)
+		-T mod.chan/language.tpl \
+		$(top_builddir)/autogen/language.def
+		
 
 mod_note_la_LIBADD=\
 	../libexordium.la

@@ -36,6 +36,9 @@
 #include <exordium/dchan.h>
 #include <exordium/database/base.h>
 #include <exordium/database/database.h>
+
+#include "language.h"
+
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::ChanModule;
@@ -44,35 +47,21 @@ struct Module::functionTableStruct const
   Module::functionTable[] =
 {
      {"access", &Module::parseACCESS},
-     {".access", &Module::parseACCESS},
      {"ban", &Module::parseBAN},
-     {".ban", &Module::parseBAN},
-     {".kick", &Module::parseKICK},
      {"kick", &Module::parseKICK},
-     {".op", &Module::parseOP},
      {"op", &Module::parseOP},
-     {".voice", &Module::parseVOICE},
      {"voice", &Module::parseVOICE},
      {"register", &Module::parseREGISTER},
      {"help", &Module::parseHELP},
      {"deop", &Module::parseDEOP},
-     {".deop", &Module::parseDEOP},
      {"devoice", &Module::parseDEVOICE},
-     {".devoice", &Module::parseDEVOICE},
      {"topic", &Module::parseTOPIC},
-     {".topic", &Module::parseTOPIC},
      {"adduser", &Module::parseADDUSER},
-     {".adduser", &Module::parseADDUSER},
      {"info", &Module::parseINFO},
-     {".info", &Module::parseINFO},
      {"listban", &Module::parseLISTBAN},
-     {".listban", &Module::parseLISTBAN},
-     {".set", &Module::parseSET},
      {"set", &Module::parseSET},
      {"seen", &Module::parseSEEN},
-     {".seen", &Module::parseSEEN},
      {"commands", &Module::parseCOMMANDS},
-     {".commands", &Module::parseCOMMANDS},
      {0, 0}
 };
 
@@ -113,7 +102,7 @@ void
 	     return;
 	  }
      }
-   origin.sendMessage("Unrecognized Command",getName());
+   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND,command),getName());
 }
 
 CHAN_FUNC (Module::parseCOMMANDS)
@@ -121,7 +110,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 {
 
    String::size_type lineLength = 200;
-   origin.sendMessage("Command list for " + getName() + ":",getName());
+   origin.sendMessage(GETLANG(COMMAND_LIST_START,getName()),getName());
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++)
      {
@@ -979,7 +968,7 @@ bool Module::start(Exordium::Services& s)
 	// Next table..
 	i++;
      }
-
+   Kine::langs().registerMap(Language::tagMap);
    // Register ourself to the network
    services->registerService(getName(), getName(),
 			     getConfigData().getHostname(),
