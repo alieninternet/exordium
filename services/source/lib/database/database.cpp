@@ -24,8 +24,8 @@
  *
  */
 
-
-#include <exordium/database/database.h>
+#include "exordium/config.h"
+#include "exordium/database/database.h"
 
 using namespace Exordium;
 using AISutil::String;

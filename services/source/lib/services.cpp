@@ -1143,8 +1143,6 @@ User*
                   +hops + "','" + timestamp + "','" + username + "','"
                   +host + "','" + vwhost + "','" + server + "','"
                   +modes+ "','" + realname + "'");
-
-   std::cout << "Just insert an entry for the user " << nick.toLower() << std::endl;
    int foo = locateID(nick);
    String client = nick.IRCtoLower();
    User *ptr = addUser(client,foo);

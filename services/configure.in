@@ -79,7 +79,8 @@ AC_SUBST(LANGUAGE)
 AC_CHECK_LIB([mysqlclient], [main], [
 
 CPPFLAGS="$CPPFLAGS `mysql_config --cflags`"
-CPPFLAGS="$CPPFLAGS -DHAVE_MYSQL"
+AC_DEFINE(HAVE_MYSQL)
+#CPPFLAGS="$CPPFLAGS -DHAVE_MYSQL"
 LDFLAGS="$LDFLAGS `mysql_config --libs`"
 AC_MSG_RESULT(Building with MySQL support)], [AC_MSG_RESULT([Building without MySQL support])])
 
@@ -91,19 +92,22 @@ CPPFLAGS="$CPPFLAGS -I`pg_config --includedir`"
 
 AC_CHECK_HEADERS([`pg_config --includedir`/libpq-fe.h],
   [
-    CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_FE_H"
+#    CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_FE_H"
+	AC_DEFINE(HAVE_LIBPQ_FE_H)
   ],
   [
     AC_CHECK_HEADERS([`pg_config --includedir`/libpq-int.h], 
     [
-      CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_INT_H"
+      #CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_INT_H"
+      AC_DEFINE(HAVE_LIBPQ_INT_H)
     ],
     [
       AC_MSG_ERROR([libpq headers not found!])
     ])
   ])
 
-CPPFLAGS="$CPPFLAGS -DHAVE_PGSQL"
+#CPPFLAGS="$CPPFLAGS -DHAVE_PGSQL"
+AC_DEFINE(HAVE_PGSQL)
 LDFLAGS="$LDFLAGS -L `pg_config --libdir`"
 LDFLAGS="$LDFLAGS  -lpq"
 AC_MSG_RESULT(Building with PostgreSQL support)], [AC_MSG_RESULT([Building without PosgreSQL support])])

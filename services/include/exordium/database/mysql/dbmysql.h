@@ -28,13 +28,13 @@
 #ifndef _DBMYSQL_H
 #define _DBMYSQL_H
 
-#include <exordium/database/base.h>
-#include <exordium/conf.h>
-#include <exordium/log.h>
+#include "exordium/database/base.h"
+#include "exordium/conf.h"
+#include "exordium/log.h"
 
 #include <aisutil/string/string.h>
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 namespace Exordium {
 

@@ -28,9 +28,8 @@
  * Normally, only supported DBs should be compiled in, but I dont know
  * of a way to change libservices_la_SOURCES that much, CPPFLAGS etc are easy but..
  */
-
+#include "exordium/config.h"
 #ifdef HAVE_MYSQL
-
 #include "exordium/database/mysql/dbmysql.h"
 
 

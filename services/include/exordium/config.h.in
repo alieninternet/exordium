@@ -41,4 +41,12 @@
 /* Language for services to use (as default)*/
 #undef LANGUAGE
 
+/* Are we compiling with MySQL support? */
+#undef HAVE_MYSQL
+
+/* Are we compiling with PostGres support? */
+#undef HAVE_LIBPQ_FE_H
+#undef HAVE_LIBPQ_INT_H
+#undef HAVE_PQSQL
+
 

@@ -24,7 +24,7 @@
  *
  */
 
-// Ugly ifdef..
+#include "exordium/config.h"
 #ifdef HAVE_PGSQL
 
 #include "exordium/database/postgresql/dbpgsql.h"
