@@ -106,20 +106,14 @@ void PARSER_FUNC (Parser::parseAWAY)
    User *origin = services.findUser(OLDorigin);
    if(origin == 0)
      {
-#ifdef DEBUG
-	std::cout << "Our pointer is null." << std::endl;
-#endif
+	services.logLine("Error in Parser::parseAWAY - Null pointer for user " + OLDorigin);
 	return;
      }
- 
-   /* From here on i'm fiddling with away */
    services.getConfigInternal().getModules().handleAway(*origin,reason);
-
 }
 void
   PARSER_FUNC (Parser::parseS)
 {
-   // this should all be in the 'serv' module :(   - pickle
    String serverName = tokens.nextToken ();
    String hops = tokens.nextToken ();
    String description = tokens.rest();
@@ -132,8 +126,6 @@ void
    }
    services.AddOnlineServer (serverName, hops, description);
 }
-
-/* NOTE: dont forget to uncomment after Channel is finished */
 
 void
   PARSER_FUNC (Parser::parseM)
@@ -296,11 +288,6 @@ void
                {
                    if(services.isOper(OLDorigin))
                      services.delOper(OLDorigin);
-#ifdef DEBUG
-                   else
-                     std::cout << "Warning: inconsistency in parsem: oper is not in onlineopers!" << std::endl;
-#endif
-
                }
 
 	  }
@@ -331,7 +318,7 @@ void
    ptr->delUser(*uptr);
    if(ptr->getCount()==0)
    {
-	std::cout << channel << "has 0 members! Deleting :C" << std::endl;
+        services.logLine(channel + " has 0 members.  Deleting");
 	services.delChan(channel);
    }
 }
@@ -346,34 +333,20 @@ void PARSER_FUNC (Parser::parseN)
         User *origin = services.findUser(tempString);
 	if(origin==0)
 	  {
-#ifdef DEBUG
-	     std::cout << "ParseN:  could not find the user named " << OLDorigin << std::endl;
-	     std::cout << "ParseN:  this is a fatal error - bailing ;-)" << std::endl;
-#endif
-	     exit(1);
+	     services.logLine("Parser::parseN Something fucked going on.. can't find a struct for the user " + tempString);
+	     services.logLine("Parser::parseN This is a bad error, should be able to find any user on a parm<11 count");
+	     exit(1); // Ouch!!!! but needed to catch the error.
 	  }
 	
         String newnick=tokens.nextToken().trim();
-#ifdef DEBUG
-	std::cout << "ParseN:" << newnick << std::endl;
-#endif
         services.setNick(*origin, newnick); 
         services.getDatabase().dbDelete("kills", "nick='"+OLDorigin+"'");
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
-#ifdef DEBUG
-	     std::cout << "Nick is registered" << std::endl;
-#endif
 	     if(!origin->isIdentified(origin->getNickname()))
 	       {
-#ifdef DEBUG
-		  std::cout << "it isn't identified" << std::endl;
-#endif
 		  if(!origin->isPending())
 		    {
-#ifdef DEBUG
-		       std::cout << "its not pending" << std::endl;
-#endif
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
 		       /* He's an annoying little pratt isn't he?
@@ -381,34 +354,10 @@ void PARSER_FUNC (Parser::parseN)
 			*/
 		       if(origin->modNick())
 			 {
-#ifdef DEBUG
-			    std::cout << "they want modnick :-)" << std::endl;
-#endif
 		       	   origin->addCheckIdentify();
 			 }
-#ifdef DEBUG
-		       else
-			 {
-			    std::cout << "they dont want modnick" << std::endl;
-			 }
-#endif
-		       
 		    }
-#ifdef DEBUG
-		  else
-		    {
-		       std::cout << "its pending status" << std::endl;
-		    }
-#endif
-		  
 	       }
-#ifdef DEBUG
-	     else
-	       {
-		  std::cout << "nick already identified" << std::endl;
-	       }
-#endif
-	     
 	  }
 	return;
      }
@@ -426,10 +375,8 @@ void PARSER_FUNC (Parser::parseN)
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
 				      vwhost, server, modes, realname);
    if (newNick == 0) {
-#ifdef DEBUG
-      std::cout << "That client wasn't such a nice fellow afterall :(" << 
-	std::endl;
-#endif
+      services.logLine("Parser::ParseN couldn't create a new user record for ");
+      services.logLine("Parser::ParseN "+nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+vwhost+" "+server+" "+modes+" "+realname);
       return;
    }
 
@@ -438,26 +385,23 @@ void PARSER_FUNC (Parser::parseN)
      services.validateOper(nick);
 */
 
-/*   
-*   int num = newNick->countHost();
-*
-*   int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
-*
-*   // NOTE: hardcoded bot nick?
-*   for (int i=0; i<nbRes; i++)
-*   {
-*      newNick->sendMessage("\002[\002PeopleChat Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
-*      services.getDatabase().dbGetRow();
-*   }
-*
-*   services.queueAdd(":PeopleChat WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
-*   if(num>2)
-*     {
-*	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
-*	services.globop(alert,"Oper");
-*	//Add gline.
-*     }
-*/
+   
+   int num = newNick->countHost();
+ 
+   int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
+   for (int i=0; i<nbRes; i++)
+   {
+      newNick->sendMessage("\002[\002PeopleChat Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
+      services.getDatabase().dbGetRow();
+   }
+
+   if(num>2)
+     {
+	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
+	services.sendGOper("Oper",alert);
+	//Add gline.
+     }
+
 }
 void
   PARSER_FUNC (Parser::parsePRIVMSG)

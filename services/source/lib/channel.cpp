@@ -67,7 +67,7 @@ namespace Exordium
 void
   Channel::internalOp(String const &nickname, String const &channel)
 {
-   std::cout << "InternalOP is depreciated" << std::endl;
+   services.logLine("Depreciated Function: InternalOP()");
    return;
 }
 
@@ -76,7 +76,7 @@ void
 void
   Channel::internalVoice(String const &nickname, String const &channel)
 {
-   std::cout << "Internalvoice is depreciated" << std::endl;
+   services.logLine("Depreciated Function: InternalVoice()");
    return;
 }
 
@@ -85,7 +85,7 @@ void
 void
   Channel::internalAdd(String const &nickname, String const &channel)
 {
-   std::cout << "internalAdd is depreciated" << std::endl;
+   services.logLine("Depreciated Functon: InternalAdd()");
    return;
 }
 bool
@@ -318,16 +318,8 @@ void
   Channel::synchChannels(void)
 {
    int nbRes = services.getDatabase().dbSelect("name,topic,modes", "chans");
-
-#ifdef DEBUG
-   std::cout << "nbRes:" << String::convert(nbRes) << std::endl;
-#endif
-
    for(int i=0; i<nbRes; i++)
    {
-#ifdef DEBUG
-     std::cout << "inside FOR!!!!!!" << std::endl;
-#endif
      synchChannel(services.getDatabase().dbGetValue(0), services.getDatabase().dbGetValue(1), 
                   services.getDatabase().dbGetValue(2));
      services.getDatabase().dbGetRow();

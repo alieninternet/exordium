@@ -229,13 +229,6 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleDatabase)
       errString = "No engine specified";
       return false;
    }
-   
-#ifdef DEBUG
-   // This is temporary. Database engine selection will replace this..
-   std::cout << "Database engine wanted was " << values.front() << std::endl;
-#endif
-   
-   errString = "Coming soon :) Please use the sql {} config class instead, for now";
    return false;
 }
 

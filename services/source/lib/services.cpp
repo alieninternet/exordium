@@ -187,8 +187,6 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 
 			 if(stopping)
 			   {
-				std::cout << stopTime << std::endl;
-				std::cout << currentTime << std::endl;
 			      if(stopTime < currentTime)
 				{
 #ifdef DEBUG
@@ -279,12 +277,6 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	  }
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
-#ifdef DEBUG
-	std::ostringstream debugging;
-	debugging << "UplinkHost = " << config.getUplinkHost() << 
-	  "; UplinkPort = " << config.getUplinkPort();
-	logLine(debugging.str(), Log::Debug);
-#endif
 	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
 	     logLine ("Fatal Error: Error resolving uplinkhost",
