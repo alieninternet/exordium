@@ -30,13 +30,17 @@
 
 #include "language.h"
 
-Kine::Languages::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR langtag +]
+Kine::Languages::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR langtag +][+ IF
+   (string-ci=?
+      (get "component")
+      "mod_nick")
+ +]
    { "[+
    (string-upcase
       (sprintf "%s%s"
          (get "tagPrefix")
 	 (get "name")))
- +]" },[+ ENDFOR +]
+ +]" },[+ ENDIF +][+ ENDFOR +]
    { 0 }
 };
 [+ == h +]
@@ -49,14 +53,21 @@ namespace Exordium {
    namespace NickModule {
       struct Lang { // <=- probably should be namespace too
          // Language tag look-up table (for our language map)
-         enum {[+ FOR langtag "," +]
-	    [+name+] = [+(for-index)+][+ ENDFOR +]	 
+         enum {[+ FOR langtag +][+ IF 
+   (string-ci=?
+      (get "component")
+      "mod_nick")
+ +]
+	    [+name+] = [+(for-index)+][+ IF 
+   (not
+      (last-for?))
+ +],[+ ENDIF +][+ ENDIF +][+ ENDFOR +]
 	 };
 	 
 	 // The language map
 	 static Kine::Languages::tagMap_type tagMap;
       }; // struct Language
-   }; // namespce NickModule
+   }; // namespace NickModule
 }; // namespace Exordium
 
 #endif // _SOURCE_MODULES_NICK_LANGUAGE_H_
