@@ -25,7 +25,6 @@
  */
 
 #include "include/oper.h"
-
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include <kineircd/str.h>
@@ -45,44 +44,27 @@ struct Oper::functionTableStruct const
 };
 
 void
-  Oper::parseLine (String const &line, String const &requestor, String const &chan)
+  Oper::parseLine (StringTokens& line, User& origin, String const &ch)
 {
-   StringTokens st (line);
-   String origin = requestor;
-   String command = st.nextToken ().toLower ();
-   String ch = chan;
-   for (int i = 0; functionTable[i].command != 0; i++)
-     {
-	// Does this match?
-	if (command == functionTable[i].command)
-	  {
-	     // Run the command and leave
-	     (this->*(functionTable[i].function))(origin, st, ch);
-	     return;
-	  }
-     }
-
    return;
 }
 
 void
-  Oper::parseLine (String const &line, String const &requestor)
+  Oper::parseLine (StringTokens& line, User& origin)
 {
-   StringTokens st (line);
-   String origin = requestor;
+   StringTokens& st = line;
    String command = st.nextToken ().toLower ();
-   String ch = "";
    for (int i = 0; functionTable[i].command != 0; i++)
      {
 	// Does this match?
 	if (command == functionTable[i].command)
 	  {
 	     // Run the command and leave
-	     (this->*(functionTable[i].function))(origin, st, ch);
+	     (this->*(functionTable[i].function))(origin, st);
 	     return;
 	  }
      }
-   sendMessage (requestor,"Unrecognized Command");
+   origin.sendMessage ("Unrecognized Command", getName());
 }
 
 void
@@ -90,7 +72,7 @@ void
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services.doHelp(origin,"oper",word,parm);
+   services->doHelp(origin,getName(),word,parm);
 }
 
 void
@@ -99,7 +81,7 @@ void
    String command = tokens.nextToken();
    if(command=="")
      {
-	services.serviceNotice("\002[\002Incorrect Usage\002]\002 jupe add/list/del","Oper",origin);
+	origin.sendMessage("\002[\002Incorrect Usage\002]\002 jupe add/list/del",getName());
 	return;
      }
    if(command=="add")
@@ -108,14 +90,14 @@ void
 	String reason = tokens.rest();
 	if(nickname=="" | reason=="")
 	  {
-	     services.serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe","oper",origin);
+	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe",getName());
 	     return;
 	  }
      }
 }
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Oper(services, name);
+   return new Oper();
 }
 
 // Module information structure
@@ -126,9 +108,10 @@ const Oper::moduleInfo_type Oper::moduleInfo = {
 
 
 // Start the service
-void Oper::start(void)
+void Oper::start(Exordium::Services& s)
 {
-   services.registerService(getName(),getName(),"ircdome.org", "+dz",
+   services = &s;
+   services->registerService(getName(),getName(),"ircdome.org", "+dz",
 			    "IRC Operator Services");
-   services.serviceJoin(getName(),"#Debug");
+   services->serviceJoin(getName(),"#Debug");
 }

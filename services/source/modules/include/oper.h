@@ -40,6 +40,9 @@ private:
    // Module information structure
    static const Exordium::Service::moduleInfo_type moduleInfo;
    
+   // Configuration data class
+   Exordium::Service::ConfigData configData;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -47,32 +50,38 @@ private:
   };
   static struct functionTableStruct const functionTable[];
 
-  void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
-	{
-		services.serviceNotice(message,myName,to);
-	}
 public:
-   Oper(Exordium::Services& s, const LibAIS::String &mn)
-     : Exordium::Service(s, mn)
+   Oper(void)
+     : configData(moduleInfo.fullName, "somewhere.org", "Oper")
 	{
 	};
 
   ~Oper(void)
 	{
-		std::cout << "Dead Oper" << std::endl;
 	};
    // Start the module
-   void start(void);
+   void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
    void stop(void) {};
       
-  void parseLine (LibAIS::String const &, LibAIS::String const &);
-  void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin, LibAIS::String const &);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };
+   
+   const Exordium::Service::ConfigData& getConfigData(void) const
+     {
+	 return configData; 
+     }
+   ;
+   Exordium::Service::ConfigData& getConfigData(void)
+     {
+	 return configData; 
+     }
+   ;
    
 private:
    void OPER_FUNC (parseHELP);

@@ -1662,7 +1662,18 @@ void
 	String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
 	globop(tosend,"Oper");
 	String reason = "You have no permission to become an IRC Operator";
-	killnick(origin, "Oper", reason);
+	/* We have a problem here - for some reason the parser is trying 
+	 * to validate every online user - this is what happened when I 
+	 * brought Oper online today
+	 * 
+	 * >09:32:41< *** Quits: Praetorian (Killed (Oper ()))
+	 * >09:32:41< *** Quits: Luster (Killed (Oper ()))
+	 * >09:32:41< *** Quits: allan1 (Killed (Oper ()))
+	 * 
+	 * None of these users had usermode +o :-)
+	 *
+	 * killnick(origin, "Oper", reason);
+	 */
 	return;
      }
    if(axs==-1)
