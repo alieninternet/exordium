@@ -536,10 +536,13 @@ void
 	return;
      }
    services.SecurePrivmsg = false;
-   if(!services.serviceM.exists(target.toLower()))
+   if(!services.serviceM.exists(target))
      {
-	String togo = "Sorry - This part of Services is currently offline for maintenance - please try again later";
-	services.serviceNotice(String(togo),target,OLDoriginl);
+	services.serviceNotice("Sorry - This part of Services is currently "
+			       "offline for maintenance - please try again "
+			       "later",
+			       services.getConfig().getServicesHostname(),
+			       OLDoriginl);
 	return;
      }
    StringTokens dodgeybutnotanymoredodgeythanthelastonewas(message);
