@@ -51,8 +51,8 @@ namespace Exordium {
       AISutil::String defConsoleDescription;	// Console's real name field
       bool defConsoleEnabled;			// Is the console active?
       AISutil::String defConsoleHostname;	// The console's host name
-      AISutil::String defConsoleName;		// The console's nickname
-      AISutil::String defConsoleChan;		// Console's channel
+      Kine::Name defConsoleName;		// The console's nickname
+      Kine::Name defConsoleChan;		// Console's channel
 
       // 'DATABASE' class
       CDatabase* defDatabase;			// Our database engine
@@ -95,9 +95,9 @@ namespace Exordium {
 	{ return defConsoleEnabled; };
       const AISutil::String& getConsoleHostname(void) const
 	{ return defConsoleHostname; };
-      const AISutil::String& getConsoleName(void) const
+      const Kine::Name& getConsoleName(void) const
 	{ return defConsoleName; };
-      const AISutil::String& getConsoleChan(void) const
+      const Kine::Name& getConsoleChan(void) const
         { return defConsoleChan; };
 
       // 'DATABASE' class

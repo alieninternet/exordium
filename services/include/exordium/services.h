@@ -31,6 +31,7 @@
 # include <aisutil/string.h>
 # include <kineircd/password.h>
 # include <kineircd/daemon.h>
+# include <kineircd/name.h>
 
 # include <exordium/config.h>
 # include <exordium/channel.h>
@@ -85,10 +86,10 @@ namespace Exordium {
         };
       virtual void liveLog(const AISutil::String &) = 0;
       // Function Declrations below here.
-      virtual void addFreeze(AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &) = 0;
-      virtual int timesFreezed(AISutil::String const &) = 0;
-      virtual bool isFreezed(AISutil::String const &) = 0;
-      virtual void delFreeze(AISutil::String const &) = 0;
+      virtual void addFreeze(Kine::Name const &,AISutil::String const &,int const &,AISutil::String const &) = 0;
+      virtual int timesFreezed(Kine::Name const &) = 0;
+      virtual bool isFreezed(Kine::Name const &) = 0;
+      virtual void delFreeze(Kine::Name const &) = 0;
       virtual int getAccess(AISutil::String const &, AISutil::String const &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;
       
@@ -99,15 +100,15 @@ namespace Exordium {
       
       virtual User* const addUser(const AISutil::String& name,
 				  const int oid) = 0;
-      virtual bool delUser(AISutil::String &) = 0;
-      virtual User* findUser(AISutil::String &) = 0;
+      virtual bool delUser(Kine::Name &) = 0;
+      virtual User* findUser(Kine::Name &) = 0;
       
-      virtual dChan* const addChan(const AISutil::String& name,
+      virtual dChan* const addChan(const Kine::Name& name,
 				   const int oid) = 0;
-      virtual bool delChan(AISutil::String &) = 0;
-      virtual dChan* findChan(AISutil::String &) = 0;
+      virtual bool delChan(Kine::Name &) = 0;
+      virtual dChan* findChan(Kine::Name &) = 0;
       
-      virtual void setNick(User &,AISutil::String &) = 0;
+      virtual void setNick(User &, Kine::Name &) = 0;
       
       virtual void mode(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &, AISutil::String const &) = 0;
@@ -181,12 +182,12 @@ namespace Exordium {
       
       
       // This should be moved to the NOTE MODULE
-      virtual void sendNote(AISutil::String const &, AISutil::String const &,
+      virtual void sendNote(Kine::Name const &, Kine::Name const &,
 			    AISutil::String const &) = 0;
       
-      virtual int locateID(AISutil::String const &nick) = 0;
+      virtual int locateID(Kine::Name const &nick) = 0;
       virtual bool isAuthorised(AISutil::String const &) = 0;
-      virtual User* addClient(AISutil::String const &, AISutil::String const &,
+      virtual User* addClient(Kine::Name const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
@@ -208,7 +209,7 @@ namespace Exordium {
       virtual void addOper(AISutil::String const &, int access) = 0;
       virtual void delOper(AISutil::String const &) = 0;
       virtual bool isOper(AISutil::String const &) = 0;
-      virtual void validateOper(AISutil::String &) = 0;
+      virtual void validateOper(Kine::Name &) = 0;
       virtual void sendGOper(AISutil::String const &,
 			AISutil::String const &) = 0;
       virtual void sendHelpme(AISutil::String const &,

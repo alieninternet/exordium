@@ -122,7 +122,7 @@ if (services.getDatabase().dbSelect("id","chans","name='"+name.toLower()+"'") < 
      return services.getDatabase().dbGetValue().toInt();
 }
 
-void const dChan::sendBans(String &dest, String const &from)
+void const dChan::sendBans(Kine::Name &dest, String const &from)
 {
   User *ptr = services.findUser(dest);
   if(ptr==0)
@@ -225,7 +225,7 @@ void const dChan::mode(String const &service,String const &mode,String const &ta
 void const dChan::kick(String const &service,String const &nick,String const &reason)
 {
    services.queueAdd(":"+service+" KICK "+name+" "+nick+" :"+reason);
-   String tempnick = String(nick);
+   Kine::Name tempnick = String(nick);
    User *ptr = services.findUser(tempnick);
    if(ptr==0)
      return;

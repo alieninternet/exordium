@@ -31,9 +31,10 @@
 /* This should be in source/lib/. - nothing outside of the core uses it.. */
 
 # include <aisutil/string.h>
+# include <kineircd/name.h>
 
 # define CONSOLE_FUNC(x) \
-     x(AISutil::String &origin, AISutil::StringTokens &tokens)
+     x(Kine::Name &origin, AISutil::StringTokens &tokens)
 
 namespace Exordium {
    class ServicesInternal;

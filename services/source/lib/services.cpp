@@ -44,7 +44,6 @@
 #include <fstream>
 #include <csignal>
 #include "exordium/service.h"
-#include <kineircd/utils.h>
 #include <kineircd/kineircdconf.h>
 #include <kineircd/signals.h>
 
@@ -847,9 +846,9 @@ bool
 }
 
 void
-  ServicesInternal::sendNote(String const &from, String const &to, String const &text)
+  ServicesInternal::sendNote(Kine::Name const &from, Kine::Name const &to, String const &text)
 {
-   String thenick = to.IRCtoLower();
+   Kine::Name thenick = to.IRCtoLower();
    database.dbInsert("notes", "'','"+from+"','"+to+"',NOW(),'"+text+"'");
    int foo = locateID(thenick);
    if(foo>0)
@@ -889,7 +888,7 @@ void ServicesInternal::checkpoint(void)
 	String id = database.dbGetValue(0);
 	String killt = database.dbGetValue(2);
 	int nowt = currentTime;
-	String tomod = database.dbGetValue(1);
+	Kine::Name tomod = database.dbGetValue(1);
 	database.dbGetRow();
 
 	if(killt.toInt() < nowt)
@@ -996,7 +995,7 @@ bool ServicesInternal::queueFlush(void)
  * Add a channel to our channel map
  *
  */
-dChan* const ServicesInternal::addChan(const String& name, const int oid)
+dChan* const ServicesInternal::addChan(const Kine::Name& name, const int oid)
 {
    return chans[name] = new dChan(name.IRCtoLower(),oid,*this);
 }
@@ -1016,7 +1015,7 @@ User* const ServicesInternal::addUser(const String& name, const int oid)
  * Find and return a pointer to a user.
  *
  */
-User* ServicesInternal::findUser(String &name)
+User* ServicesInternal::findUser(Kine::Name &name)
 {
 #ifdef DEBUG
    logLine("findUser() - Looking for " + name.IRCtoLower().trim(),
@@ -1040,7 +1039,7 @@ User* ServicesInternal::findUser(String &name)
  * Find and return a pointer to that channel.
  *
  */
-dChan* ServicesInternal::findChan(String &name)
+dChan* ServicesInternal::findChan(Kine::Name &name)
 {
 #ifdef DEBUG
    logLine("findChan() - Looking for " + name.IRCtoLower().trim(),
@@ -1063,7 +1062,7 @@ dChan* ServicesInternal::findChan(String &name)
  * Find.. and delete the given user.
  *
  */
-bool ServicesInternal::delUser(String &name)
+bool ServicesInternal::delUser(Kine::Name &name)
 {
    users.erase(name.IRCtoLower());
 
@@ -1077,7 +1076,7 @@ bool ServicesInternal::delUser(String &name)
  * Delete the given channel.
  *
  */
-bool ServicesInternal::delChan(String &name)
+bool ServicesInternal::delChan(Kine::Name &name)
 {
    chans.erase(name.IRCtoLower());
    database.dbDelete("onlinechan","name='"+name.IRCtoLower()+"'");
@@ -1090,7 +1089,7 @@ bool ServicesInternal::delChan(String &name)
  * a new nickname.
  *
  */
-void ServicesInternal::setNick(User &who, String &newnick)
+void ServicesInternal::setNick(User &who, Kine::Name &newnick)
 {
 #ifdef DEBUG
    logLine("setNick: " + newnick, Log::Debug);
@@ -1135,7 +1134,7 @@ bool ServicesInternal::isAuthorised(String const &server)
  * ..
  */
 
-User* ServicesInternal::addClient(String const &nick, String const &hops,
+User* ServicesInternal::addClient(Kine::Name const &nick, String const &hops,
 				  String const &timestamp,
 				  String const &username, String const &host,
 				  String const &vwhost, String const &server,
@@ -1156,7 +1155,7 @@ User* ServicesInternal::addClient(String const &nick, String const &hops,
  * shouldn't be here.. really .. just a stop gap for now
  *
  */
-int ServicesInternal::locateID(String const &nick)
+int ServicesInternal::locateID(Kine::Name const &nick)
 {
 
    // Saftey Check - Remove any special chars.
@@ -1299,18 +1298,18 @@ int ServicesInternal::getOnlineChanID(String const &id)
    else
      return database.dbGetValue().toInt();
 }
-void ServicesInternal::delFreeze(String const &chan)
+void ServicesInternal::delFreeze(Kine::Name const &chan)
 {
    int cid = getChannel().getChanID(chan.IRCtoLower());
    database.dbUpdate("chanfreeze","expires=0","name='"+String::convert(cid)+"'");
 }
 
-void ServicesInternal::addFreeze(String const &chan, String const &setby, int const &expires, String const &reason)
+void ServicesInternal::addFreeze(Kine::Name const &chan, String const &setby, int const &expires, String const &reason)
 {
    int cid = getChannel().getChanID(chan.IRCtoLower());
    database.dbInsert("chanfreeze","'','"+String::convert(cid)+"','"+setby+"',NOW(),"+String::convert(expires)+",'"+reason+"'");
 }
-bool ServicesInternal::isFreezed(String const &chan)
+bool ServicesInternal::isFreezed(Kine::Name const &chan)
 {
    int cid = getChannel().getChanID(chan.IRCtoLower());
    if(database.dbSelect("id","chanfreeze","name='"+String::convert(cid)+"' AND expires>"+String::convert(currentTime)) < 1)
@@ -1319,7 +1318,7 @@ bool ServicesInternal::isFreezed(String const &chan)
      return true;
 }
 
-int ServicesInternal::timesFreezed(String const &chan)
+int ServicesInternal::timesFreezed(Kine::Name const &chan)
 {
    int cid = getChannel().getChanID(chan.IRCtoLower());
    int nbRes = database.dbSelect("id","chanfreeze","name='"+String::convert(cid)+"'");
@@ -1344,7 +1343,7 @@ bool ServicesInternal::isOper(String const &nick)
      return true;
 }
 
-void ServicesInternal::validateOper(String &origin)
+void ServicesInternal::validateOper(Kine::Name &origin)
 {
    //Active Oper? (hah :-)
    User *ptr = findUser(origin);

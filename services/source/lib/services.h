@@ -124,10 +124,10 @@ namespace Exordium {
       void run(void);
       
       // Function Declrations below here.
-      void addFreeze(AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &);
-      int timesFreezed(AISutil::String const &);
-      bool isFreezed(AISutil::String const &);
-      void delFreeze(AISutil::String const &);
+      void addFreeze(Kine::Name const &,AISutil::String const &,int const &,AISutil::String const &);
+      int timesFreezed(Kine::Name const &);
+      bool isFreezed(Kine::Name const &);
+      void delFreeze(Kine::Name const &);
       int getAccess(AISutil::String const &, AISutil::String const &);
       void shutdown(const AISutil::String &);
       
@@ -140,14 +140,14 @@ namespace Exordium {
       
       
       User* const addUser(const AISutil::String& name, const int oid);
-      bool delUser(AISutil::String &);
-      User* findUser(AISutil::String &);
+      bool delUser(Kine::Name &);
+      User* findUser(Kine::Name &);
       
-      dChan* const addChan(const AISutil::String& name, const int oid);
-      bool delChan(AISutil::String &);
-      dChan* findChan(AISutil::String &);
+      dChan* const addChan(const Kine::Name& name, const int oid);
+      bool delChan(Kine::Name &);
+      dChan* findChan(Kine::Name &);
       
-      void setNick(User &,AISutil::String &);
+      void setNick(User &,Kine::Name &);
       
       void mode(AISutil::String const &, AISutil::String const &,
 		AISutil::String const &, AISutil::String const &);
@@ -238,12 +238,12 @@ namespace Exordium {
       
       
       // This should be moved to the NOTE MODULE
-      void sendNote(AISutil::String const &, AISutil::String const &,
+      void sendNote(Kine::Name const &, Kine::Name const &,
 		    AISutil::String const &);
       
-      int locateID(AISutil::String const &nick);
+      int locateID(Kine::Name const &nick);
       bool isAuthorised(AISutil::String const &);
-      User* addClient(AISutil::String const &, AISutil::String const &,
+      User* addClient(Kine::Name const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
@@ -267,7 +267,7 @@ namespace Exordium {
       void addOper(AISutil::String const &, int access);
       void delOper(AISutil::String const &);
       bool isOper(AISutil::String const &);
-      void validateOper(AISutil::String &);
+      void validateOper(Kine::Name &);
       void sendGOper(AISutil::String const &, AISutil::String const &);
       void sendHelpme(AISutil::String const &, AISutil::String const &);
       void setMode(AISutil::String const &, AISutil::String const &);      

@@ -76,7 +76,7 @@ namespace Exordium {
       const void setChanLog(bool const &);
       const void setChanSecure(bool const &);
       const bool isChanSecure(void);
-      const void sendBans(AISutil::String &,AISutil::String const &);
+      const void sendBans(Kine::Name &,AISutil::String const &);
       const AISutil::String getOwner(void);
       const int getCount(void);
       const void addAccess(AISutil::String &,AISutil::String const &);

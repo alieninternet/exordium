@@ -30,7 +30,7 @@
 # include <string>
 # include <aisutil/string.h>
 # include <aisutil/config/parser.h>
-//# include <kineircd/service.h>
+# include <kineircd/service.h>
 
 extern "C" {
 # include <sys/time.h>
@@ -48,7 +48,7 @@ namespace Exordium {
    class User;
    class dChan;
    
-   class Service /* : public Kine::Service */ {
+   class Service : public Kine::Service {
     public:
       struct moduleInfo_type {
 	 // Version information about the module
@@ -103,7 +103,7 @@ namespace Exordium {
 	 AISutil::String defDescription;		// Our description
 	 AISutil::String defDistribution;		// Our scope mask
 	 AISutil::String defHostname;			// Our hostname
-	 AISutil::String defName;			// Our name
+	 Kine::Name defName;				// Our name
 	 AISutil::String defIdent;			// Out ident
 	 
        public:
@@ -133,7 +133,7 @@ namespace Exordium {
 	   { return defDistribution; };
 	 const AISutil::String& getHostname(void) const
 	   { return defHostname; };
-	 const AISutil::String& getName(void) const
+	 const Kine::Name& getName(void) const
 	   { return defName; };
 	 const AISutil::String& getIdent(void) const
            { return defIdent; };
@@ -198,7 +198,7 @@ namespace Exordium {
        */
 
       // Return the nickname of the module
-      const AISutil::String& getNickname(void) const
+      const Kine::Name& getNickname(void) const
 	{ return getConfigData().getName(); };
       
       // Return the username/identity of the service

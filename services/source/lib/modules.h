@@ -29,6 +29,7 @@
 
 # include <map>
 # include <aisutil/string.h>
+# include <kineircd/name.h>
 
 extern "C" {
 # include <ltdl.h>
@@ -85,7 +86,7 @@ namespace Exordium {
 				AISutil::String& errString);
       
       // Remove a module from the list, and unload it
-      void unloadModule(const AISutil::String& name, 
+      void unloadModule(const Kine::Name& name, 
 			const AISutil::String& reason);
 
       // Start all modules in the list
@@ -95,14 +96,14 @@ namespace Exordium {
       void unloadAll(const AISutil::String& reason);
       
       // Check if a module exists
-      bool exists(const AISutil::String& name) const;
+      bool exists(const Kine::Name& name) const;
       
       // Throw a line at the appropriate service (sent directly)
-      void throwLine(const AISutil::String& name, AISutil::StringTokens& line, 
+      void throwLine(const Kine::Name& name, AISutil::StringTokens& line, 
 		     User &origin, const bool safe);
       
       // Throw a line at the appropriate service (sent to a channel)
-      void throwLine(const AISutil::String& name, AISutil::StringTokens& line,
+      void throwLine(const Kine::Name& name, AISutil::StringTokens& line,
 		     User& origin, const AISutil::String& channel);
       
       // Dump a list of modules

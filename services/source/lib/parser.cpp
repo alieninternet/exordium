@@ -75,7 +75,7 @@ const struct Parser::functionTableStruct Parser::functionTable[] =
 void Parser::parseLine(const String& line)
 {
    StringTokens st (line);
-   String origin = "";
+   Kine::Name origin = "";
 #ifdef DEBUG
    std::cout << "DEBUG RX: " << line << std::endl;
 #endif
@@ -156,7 +156,7 @@ void
    bool add = false;
    bool take = false;
    int i;
-   String dest = tokens.nextToken();
+   Kine::Name dest = tokens.nextToken();
    String currentmodes="";
    if(dest[0]=='#')
      {
@@ -242,7 +242,7 @@ void
 void
   PARSER_FUNC (Parser::parsePART)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    dChan *ptr = services.findChan(channel);
    User  *uptr = services.findUser(OLDorigin);
 
@@ -262,7 +262,7 @@ void PARSER_FUNC (Parser::parseN)
    if(tokens.countTokens() < 9)
      {
 /* Client Nickname Change */
-	String tempString = OLDorigin.trim().IRCtoLower();
+	Kine::Name tempString = OLDorigin.IRCtoLower().trim();
         User *origin = services.findUser(tempString);
 	if(origin==0)
 	  {
@@ -271,7 +271,7 @@ void PARSER_FUNC (Parser::parseN)
 	     return;
 	  }
 
-        String newnick=tokens.nextToken().trim();
+        Kine::Name newnick=tokens.nextToken().trim();
         services.setNick(*origin, newnick);
         services.getDatabase().dbDelete("kills", "nick='"+OLDorigin+"'");
 	if(services.isNickRegistered(origin->getNickname()))
@@ -319,7 +319,7 @@ void PARSER_FUNC (Parser::parseN)
      services.validateOper(nick);
 */
 
-   int num = newNick->countHost();
+//   int num = newNick->countHost();
 
    //int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
    //for (int i=0; i<nbRes; i++)
@@ -368,7 +368,7 @@ void
      }
    
    String OLDoriginl = OLDorigin.IRCtoLower();
-   String target = tokens.nextToken ();
+   Kine::Name target = tokens.nextToken ();
    String message(tokens.nextColonToken());
 
    if ((message[0] == '\001') && (message[message.length () - 1] == '\001'))
@@ -494,7 +494,7 @@ void
    int  status = 0;
    String ts1 = tokens.nextToken();
    //String ts2 = tokens.nextToken();
-   String chan = tokens.nextToken();
+   Kine::Name chan = tokens.nextToken();
    String modes = tokens.nextToken();
    bool more;
    more = tokens.hasMoreTokens();
@@ -533,7 +533,7 @@ void
 	String user = tokens.nextToken();
 	StringTokens luser (user);
 	String foo = luser.nextColonToken();
-	String username = foo.trim();
+	Kine::Name username = foo.trim();
 	status = 0;
 	std::cout << "parseSjoin() " << user << " : " << foo << std::endl;
         // First check if both @ and + are there
@@ -628,7 +628,7 @@ void
 void
   PARSER_FUNC (Parser::parseKILL)
 {
-   String who = tokens.nextToken();
+   Kine::Name who = tokens.nextToken();
    String reason = tokens.rest();
    int oid = services.locateID(who);
    if(services.isOper(who))
@@ -660,7 +660,7 @@ void
    // OLDorigin can be either a user or a server so we dont consider it,
    // the user is given later
    //
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    String source = tokens.nextToken();
 
    // Skip timestamp

@@ -28,6 +28,7 @@
 # define _INCLUDE_EXORDIUM_CHANNEL_H_ 1
 
 # include <aisutil/string.h>
+# include <kineircd/name.h>
 
 namespace Exordium {
    class Services;
@@ -55,17 +56,17 @@ namespace Exordium {
       int maxChannels(void);
       int maxChannelsUser(AISutil::String const &);
       int maxChannelsAccess(void);
-      AISutil::String getChanName(int const &);
+      Kine::Name getChanName(int const &);
       AISutil::String getChanIDName(int const &);
       void setTopic(AISutil::String const &,AISutil::String const &);
       void updateTopic(AISutil::String const &, AISutil::String const &);
       AISutil::String getChanOwner(int const &);
       void chanAddAccess(AISutil::String const &,AISutil::String const &,AISutil::String const &);
       void chanDelAccess(AISutil::String const &, AISutil::String const &);
-      void deregisterChannel(AISutil::String const &);
+      void deregisterChannel(const Kine::Name&);
       void synchChannels(void);
       void synchChannel(AISutil::String const &, AISutil::String const &, AISutil::String const &);
-      void registerChannel(AISutil::String const &, AISutil::String const &);
+      void registerChannel(const Kine::Name&, AISutil::String const &);
       int ownedChannels(AISutil::String const &); 
       void addChanBan(int const &,AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &);
       void banChan(AISutil::String const &, AISutil::String const &, AISutil::String const &);

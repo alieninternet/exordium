@@ -30,7 +30,7 @@
 
 #include "config.h"
 
-#include <kineircd/loggerconfig.h>
+#include <kineircd/logger.h>
 
 #ifdef DEBUG
 # include <cassert>
@@ -55,7 +55,7 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
      {
 	"LOGMASK", 3,
 	  (void *)&ConfigInternal::defLogMask,
-	  &Kine::LoggerConfig::varHandleLogMask,
+	  &Kine::Logger::Config::varHandleLogMask,
 	  0, 0
      },
      {

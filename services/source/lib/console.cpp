@@ -46,7 +46,7 @@ const struct Console::functionTableStruct Console::functionTable[] = {
 void Console::parseLine(const String &line, const String &requestor) 
 {
    StringTokens st (line);
-   String origin = requestor;
+   Kine::Name origin = requestor;
    String command = st.nextToken ().toLower ();
    User *ptr = services.findUser(origin);
 
