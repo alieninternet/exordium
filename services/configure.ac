@@ -7,7 +7,7 @@ AC_INIT([Exordium], [0.1-alpha], [http://sf.net/projects/exordium])
 AM_INIT_AUTOMAKE([1.6.1 foreign no-installinfo no-installman subdir-objects])
 AC_PROG_LIBTOOL
 AC_PREREQ(2.54)
-AC_COPYRIGHT(Exordium Network Services are (c) 2002,2003 Exordium Development Team)
+AC_COPYRIGHT(Exordium Network Services)
 AC_COPYRIGHT(Please read the LICENSE file for more information)
 AC_CONFIG_SRCDIR([include/autoconf.h.in])
 AM_CONFIG_HEADER([include/autoconf.h])
