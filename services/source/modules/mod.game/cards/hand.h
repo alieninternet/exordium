@@ -63,10 +63,6 @@ namespace Cards {
         {
            int i = 0;
            cards_type::iterator iter;
-           if(cards.empty() || idx < 0 || idx > cards.size())
-             {
-               return NULL;
-             }
 
 	   for(iter = cards.begin(); iter != cards.end(); iter++)
              {

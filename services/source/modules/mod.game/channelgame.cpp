@@ -27,8 +27,8 @@
 
 #include "channelgame.h"
 #include "exordi8.h"
+#include "poker.h"
 #include "hangman.h"
-
 
 /* The list of channel games. 
  * If this ever gets large, maybe AutoGen would be a wiser idea..
@@ -37,6 +37,7 @@
 const ChannelGame::channelGameTable_type ChannelGame::channelGameTable[] =
 {
      { "exordi8",		&Exordi8::createGame },
+     { "poker",		        &Poker::createGame },
      { "hangman",		&Hangman::createGame },
      { 0, 0 }
 };
