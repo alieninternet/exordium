@@ -587,10 +587,18 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String tokill = tokens.nextToken();
    String password = tokens.nextToken();
+   if(tokill=="" | password=="")
+     {
+	origin.sendMessage("Usage: /msg nick kill nickname password",getName());
+	return;
+     }
    User *ptr = services->findUser(tokill);
    if(ptr==0)
      {
 	origin.sendMessage("Error - Could not find a pointer for this user - Possible Bug?",getName());
+     }
+     else
+     { 
 	if(ptr->isPending())
 	  {
 	     String tosend = "Error - You cannot kill a nickname which is pending verification";
@@ -623,7 +631,6 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	     String togo = String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
 	     services->logLine(String(togo), Log::Warning);
 	  }
-
      }
 }
 
