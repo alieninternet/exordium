@@ -365,7 +365,6 @@ namespace Exordium {
 	int getRegisteredNickID(String const &);
 	void modeIdentify(String const &);
 	void updateLastID(String const &);
-	bool isIdentified(String const &);
 	Kine::String getNick(int const &);
 	Kine::String getOnlineNick(int const &);
 	Kine::String getpendingCode(String const &);

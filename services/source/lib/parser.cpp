@@ -235,7 +235,8 @@ void
 	     if(add)
 	       {
 		  //Active Oper? (hah :-)
-		  int axs = services.getAccess("Oper",OLDorigin);
+		  User *ptr = services.findUser(OLDorigin);
+		  int axs = ptr->getAccess("Oper");
 		  if(axs==0)
 		    {
 		       //Non-Authorised.
@@ -295,9 +296,9 @@ void PARSER_FUNC (Parser::parseN)
 	services.getDatabase().query(query);
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
-	     if(!services.isIdentified(origin->getNickname()))
+	     if(!origin->isIdentified(origin->getNickname()))
 	       {
-		  if(!services.isPending(origin->getNickname()))
+		  if(!origin->isPending())
 		    {
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
@@ -307,7 +308,7 @@ void PARSER_FUNC (Parser::parseN)
 		       if(origin->modNick())
 			 {
 			    
-		       services.addCheckidentify(origin->getNickname());
+		       origin->addCheckIdentify();
 			 }
 		       
 		    }
@@ -345,12 +346,12 @@ void PARSER_FUNC (Parser::parseN)
    
    if(services.isNickRegistered(nick))
      {
-	if(!services.isPending(nick))
+	if(!newNick->isPending())
 	  {
 	     if(newNick->modNick())
 	       {
 		  
-		  services.addCheckidentify(nick);
+		  newNick->addCheckIdentify();
 	       }
 	     
 	  }
@@ -358,7 +359,7 @@ void PARSER_FUNC (Parser::parseN)
      }
 
    
-   int num = services.countHost(host);
+   int num = newNick->countHost();
    String query = "SELECT txt from news where level=0 AND expires<"+String::convert(services.currentTime);
    MysqlRes res = services.getDatabase().query(query);
    MysqlRow row;
@@ -530,6 +531,7 @@ void
 	String user = tokens.nextToken();
 	StringTokens luser (user);
 	String foo = luser.nextColonToken();
+	User *ptr = services.findUser(foo);
 	if(foo[0]=='@')
 	  {
 	     op = true;
@@ -558,7 +560,7 @@ void
 	  }
 	if(normal)
 	  {
-	     if(services.isIdentified(foo.trim(),foo.trim()))
+	     if(ptr->isIdentified(foo))
 	       {
 		  int access = services.getChannel().getChanAccess(chan,foo.trim());
 		  String togo = "Client: \002:"+foo.trim()+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";

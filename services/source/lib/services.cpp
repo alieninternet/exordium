@@ -690,9 +690,11 @@ namespace Exordium
    void
      Services::log (String const &nick, String const &service, String const &text, String const &cname)
        {
-	  String nicks = getIDList(nick);
-	  String ident = getIdent(nick);
-	  String host = getHost(nick);
+	  String thenick = nick.IRCtoLower();
+	  User *ptr = findUser(thenick);
+	  String nicks = ptr->getIDList();
+	  String ident = ptr->getIdent();
+	  String host = ptr->getHost();
 	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"')";
 	  database.query(query);
        }
@@ -700,9 +702,11 @@ namespace Exordium
    void
      Services::log (String const &nick, String const &service, String const &text)
        {
-	  String nicks = getIDList(nick);
-	  String ident = getIdent(nick);
-	  String host = getHost(nick);
+	  String thenick = nick.IRCtoLower();
+	  User *ptr = findUser(thenick);
+	  String nicks = ptr->getIDList();
+	  String ident = ptr->getIdent();
+	  String host = ptr->getHost();
 	  String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','')";
 	  database.query(query);
        }
@@ -841,7 +845,7 @@ namespace Exordium
      Services::isOp(String const &nick, String const &chan)
        {
 	  int chanid = channel.getOnlineChanID(chan);
-	  int nickid = getOnlineNickID(nick);
+	  int nickid = locateID(nick);
 	  String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
 	  MysqlRes res = database.query(query);
 	  MysqlRow row;
@@ -862,7 +866,7 @@ namespace Exordium
      Services::isVoice(String const &nick, String const &chan)
        {
 	  int chanid = channel.getOnlineChanID(chan);
-	  int nickid = getOnlineNickID(nick);
+	  int nickid = locateID(nick);
 	  String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
 	  MysqlRes res = database.query(query);
 	  MysqlRow row;
@@ -900,13 +904,15 @@ namespace Exordium
    void
      Services::sendNote(String const &from, String const &to, String const &text)
        {
+	  String thenick = to.IRCtoLower();
+	  User *ptr = findUser(thenick);
 	  String query = String("insert into notes values('','")+from+"','"+to+"',NOW(),'"+text+"')";
 	  database.query(query);
-	  int foo = getOnlineNickID(to);
+	  int foo = ptr->getOnlineID();
 	  if(foo>0)
 	    {
 	       //Client is online.. But are they identified HUHUHUH?!!?
-	       if(isIdentified(to,to))
+	       if(ptr->isIdentified(to))
 		 {
 		    String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
 		    serviceNotice(togo,"Note",to);
@@ -941,7 +947,7 @@ namespace Exordium
 			 newnick = tomod+String::convert(foo);
 			 if(!isNickRegistered(newnick))
 			   {
-			      if(getOnlineNickID(newnick)==0)
+			      if(locateID(newnick)==0)
 				{
 				   //Oke we can use this one :)
 				   running = false;
