@@ -1,7 +1,7 @@
 /* $Id$
  *
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  *
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
@@ -89,8 +89,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	 return;
       }
    }
-   
-   origin.sendMessage("Unrecognised Command", getName());
+   origin.sendMessage("Unrecognised Command :"+command, getName());
    return;
 }
 
@@ -137,7 +136,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
          return;
       }
    }
-   origin.sendMessage("Unrecognised Command", getName());
+   origin.sendMessage("Unrecognised Command :"+command, getName());
    return;
 }
 
@@ -175,12 +174,6 @@ NICK_FUNC (Module::parseAUTH)
 		origin.sendMessage("Usage: info nickname",getName());
 		return;
 	}
-
-   if(who=="")
-     {
-	origin.sendMessage("Usage: /msg nick info nickname",getName());
-	return;
-     }
    User *ptr = services->findUser(who);
    if(ptr==0)
      {
@@ -192,24 +185,19 @@ NICK_FUNC (Module::parseAUTH)
 	origin.sendMessage("Error: That nickname is not registered",getName());
 	return;
      }
-
-   int saccess = origin.getAccess("Serv");
-   int oaccess = origin.getAccess("Oper");
-   if(saccess>0 || oaccess>0)
+   if(origin.getAccess("Serv")>0 || origin.getAccess("Oper")>0)
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     bool deopAway = ptr->deopAway();
-	     bool modNick = ptr->modNick();
 	     std::ostringstream tol;
 	     tol << "Options : ";
-	     if(deopAway)
+	     if(ptr->deopAway())
 	       {
-		  tol << " Deop on Away";
+		  tol << "{Deop on Away}";
 	       }
-	     if(modNick)
+	     if(ptr->modNick())
 	       {
-		  tol << ", Nickname Enforcement";
+		  tol << "{Nickname Enforcement}";
 	       }
 
 	     origin.sendMessage("Nickname Information for \002"+who,getName());
@@ -238,6 +226,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.sendMessage("URL : \002"+ptr->getURL(),getName());
 	     origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
 	     origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
+/* Tidy this up, send one set of info, and then send staff output after */
 }
 
 
@@ -247,7 +236,16 @@ NICK_FUNC (Module::parseAUTH)
    String command = tokens.nextToken();
    String value = tokens.nextToken();
    if(!origin.isIdentified(origin.getNickname()))
-     return;
+     {
+	origin.sendMessage("You are not identified as that nickname",getName());
+        return;
+     }
+   if(command=="")
+     {
+	origin.sendMessage("Set options are: password,email,language,modnick,privmsg,deopaway",getName());
+	return;
+     }
+   
    if(command=="pass" || command=="password" || command=="passwd")
      {
 	if(value=="")
@@ -260,60 +258,53 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.sendMessage("Error: New password must be greater than four letters",getName());
 	     return;
 	  }
-	String newhash = Utils::generatePassword(origin.getNickname(), value);
-        services->getDatabase().dbUpdate("nicks", "password='"+newhash+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "Password has been successfully changed to "+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),String("Changed nickname password"));
+	origin.setPassword(value);
+	origin.sendMessage("Password has been successfully changed to :"+value,getName());
+	origin.log(getName(),String("Changed nickname password"));
 	return;
      }
    if(command=="modnick")
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is set modnick true/false";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set modnick true/false",getName());
+	     return;
 	  }
 
 	if(value=="true")
 	  {
 	     origin.setModNick(true);
-	     String togo = "Nickname enforcement is now enabled";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Nickname enforcement is now enabled for this nickname",getName());
 	     return;
 	  }
 
 	if(value=="false")
 	  {
 	     origin.setModNick(false);
-	     String togo = "Nickname enforcement is now disabled";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Nickname enforcement is now disabled for this nickname",getName());
 	     return;
 	  }
 	origin.sendMessage("Error: Value must be true or false",getName());
 	return;
-
      }
 
    if(command=="deopaway")
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is set deopaway true/false";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set deopaway true/false",getName());
+	     return;
 	  }
 	if(value=="true")
 	  {
 	     origin.setDeopAway(true);
-	     String togo = "You will now be automatically deoped on setting away";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("DeopOnAway is now enabled for this nickname",getName());
 	     return;
 	  }
 	if(value=="false")
 	  {
 	     origin.setDeopAway(false);
-	     String togo = "You will no longer be automatically deoped on setting away";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("DeopOnAway is now disabled for this nickname",getName());
 	     return;
 	  }
 	origin.sendMessage("Error: Value must be true or false",getName());
@@ -324,8 +315,7 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set language LANGUAGE";
-	     origin.sendMessage(togo,getName());
+	      origin.sendMessage("Usage: set language LANGUAGE",getName());
 	     return;
 	  }
 	if(value=="english")
@@ -342,8 +332,7 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set email email@Address";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set email email@address",getName());
 	     return;
 	  }
         services->getDatabase().dbUpdate("nicks", "email='"+value+"'", "nickname='"+origin.getNickname()+"'");

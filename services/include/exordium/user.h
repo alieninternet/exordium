@@ -225,15 +225,18 @@ namespace Exordium {
        * 
        * Get the pending code (if any) for this nick
        */
-      const AISutil::String getPendingCode(void);
       const void clearPendingCode(void);
       const void registerNick(AISutil::String const &,
 			AISutil::String const &);
       const void log(AISutil::String const &, AISutil::String const &);
       const AISutil::String genAuth(void);
-      // Grab a user's password
-      const AISutil::String getPass(void);
 
+      // set* Functions.
+      const void setPassword(AISutil::String const &);
+      // get* Functions.
+      const AISutil::String getPendingCode(void);
+      
+      const AISutil::String getPass(void);
       const AISutil::String getURL(void);
       const AISutil::String getMSN(void);
       const AISutil::String getYAHOO(void);

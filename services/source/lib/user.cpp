@@ -358,6 +358,7 @@ bool
  */
 void User::setLanguage(const String& lang)
 {
+   if(isRegistered())
    services.getDatabase().dbUpdate("nicks", "lang='"+lang+"'",
 				   "nickname='" + nickname + "'");
 }
@@ -490,8 +491,13 @@ const String User::getEmail(void)
    return services.getDatabase().dbGetValue();
 }
 
+/*
+ * getRegDate
+ * 
+ * Return the registration date of this user
+ * 
+ */
 
-// getRegDate - return the registration date for a client.
 const String User::getRegDate(void)
 {
    if (services.getDatabase().dbSelect("registered", "nicks",
@@ -502,8 +508,13 @@ const String User::getRegDate(void)
    return services.getDatabase().dbGetValue();
 }
 
+/* 
+ * getLastID
+ * 
+ * Return the date this user last identified
+ * 
+ */
 
-// getLastID - return the date a client last identified
 const String User::getLastID(void)
 {
    if (services.getDatabase().dbSelect("lastid", "nicks",
@@ -514,8 +525,13 @@ const String User::getLastID(void)
    return services.getDatabase().dbGetValue();
 }
 
+/*
+ * getLastHost
+ * 
+ * The hostname this user last identified from
+ * 
+ */
 
-// getLastHost - get last host
 const String User::getLastHost(void)
 {
    if (services.getDatabase().dbSelect("lasthost", "nicks",
@@ -525,28 +541,50 @@ const String User::getLastHost(void)
    
    return services.getDatabase().dbGetValue();
 }
-// getPendingCode - get pending code (if any)
+/*
+ * getPendingCode
+ * 
+ * (If any) return the pending code for this user
+ * 
+ */
+
 const String User::getPendingCode(void)
 {
-   if 
-(services.getDatabase().dbSelect("auth","nickspending","nickname='"+nickname+"'") < 1)
+   if (services.getDatabase().dbSelect("auth","nickspending","nickname='"+nickname+"'") < 1)
 	return "";
    else
         return services.getDatabase().dbGetValue();
 }
-// clearPendingCode - clear (if any) our auth code.
+/*
+ * clearPendingCode
+ * 
+ * (If any) clears the pending code for this user
+ * 
+ */
 const void User::clearPendingCode(void)
 {
 services.getDatabase().dbDelete("nickspending","nickname='"+nickname+"'");
 }
 
-// registerNick(nick,password,email) .. Uhh DOH!
+/*
+ * registerNick
+ * 
+ * Registers this nickname (if not already)
+ * 
+ */
+
 const void User::registerNick(String const &password,String const &email)
 {
-services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'english','0','None','None','0','None Set','None Set','None recorded',1");
+if(!isRegistered())
+   services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'english','0','None','None','0','None Set','None Set','None recorded',1");
 }
 
-// isRegistered .. another mind numbing one!!
+/*
+ * isRegistered
+ * 
+ * Return true/false depending on registration status
+ * 
+ */
 const bool User::isRegistered(void)
 {
 if (services.getDatabase().dbSelect("id", "nicks", "nickname='"+nickname+"'") < 1)
@@ -559,19 +597,43 @@ else
 		return false;
 }
 }
+/*
+ * log
+ * 
+ * Log the given data as being done by this user
+ * 
+ * Two types of functions for log
+ */
 
-// log .. log some data :C
 const void User::log(String const &service,String const &log)
 {
 services.getDatabase().dbInsert("log","'','"+getIDList()+"','"+getIdent()+"','"+getHost()+"','"+service+"',NOW(),'"+log+"',''");
 }
 
-// the other log!!
+// the other log!! here plz :(
 
-// Gen auth code type thing!
+/*
+ * genAuth
+ * 
+ * Generate an authorisation code for this user
+ * 
+ */
 const String User::genAuth(void)
 {
 String authcode = Utils::generateRegcode(nickname,"VIVA LA FRANCE :)");
 services.getDatabase().dbInsert("nickspending","'','"+nickname+"','"+authcode+"'");
 return authcode;
 }
+
+/*
+ * setPassword
+ * 
+ * Update this users password with the given one
+ * 
+ */
+const void User::setPassword(String const &newpass)
+{
+   services.getDatabase().dbUpdate("nicks","password'="+newpass+"'","nickname='"+nickname+"'");
+         
+}
+
