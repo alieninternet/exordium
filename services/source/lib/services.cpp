@@ -1361,3 +1361,88 @@ time_t ServicesInternal::getStartTime()
 {
    return startTime;
 }
+
+void ServicesInternal::queueAdd(const String& line)
+{
+   if(connected)
+     {
+	if(!outputQueue.empty())
+	  {
+
+	     String foo = outputQueue.front();
+	     StringTokens dodgeyshit(foo);
+	     StringTokens dodgeyshittoo(line);
+	     String dodgeyshitpart1 = dodgeyshit.nextToken();
+	     String dodgeyshitpart2 = dodgeyshit.nextToken();
+	     String dodgeyshittoopart1 = dodgeyshittoo.nextToken();
+	     String dodgeyshittoopart2 = dodgeyshittoo.nextToken();
+	     String dodgeyshitchan = dodgeyshit.nextToken();
+	     String dodgeyshittoochan = dodgeyshittoo.nextToken();
+	     std::cout << "The Current Channel is " << dodgeyshittoochan << std::endl;
+	     std::cout << "The previous Channel is " << dodgeyshitchan << std::endl;
+	     if(dodgeyshitchan==dodgeyshittoochan)
+	       {
+		  if(dodgeyshitpart1==dodgeyshittoopart1)
+		    {
+		       // The channels and sender match up!
+		       String targetmode1 = dodgeyshit.nextToken();
+		       String targetmode2 = dodgeyshittoo.nextToken();
+		       String target1 = dodgeyshit.nextToken();
+		       //? Anymore
+		       bool more = false;
+		       int j=1;
+		       more = dodgeyshit.hasMoreTokens();
+		       while(more)
+			 {
+			    j++;
+			    target1 = target1+" "+dodgeyshit.nextToken();
+			    //Hey? Are we at 6?
+			    if(j==6)
+			      {
+				 // Gotta unload this line its too big
+				 more = false;
+			      }
+			    else
+
+			      {
+
+				 more = dodgeyshit.hasMoreTokens();
+			      }
+
+			 }
+		       if(j<6)
+			 {
+
+			    String target2 = dodgeyshittoo.nextToken();
+			    String newline = dodgeyshitpart1 +
+			      " MODE " + dodgeyshitchan +
+			      " "+targetmode1+targetmode2+
+			      " "+target1+" " +target2;
+			    std::cout << "New line would be: " << newline << std::endl;
+			    outputQueue.pop();
+			    outputQueue.push(newline+"\r\n");
+			    countTx += newline.length();
+			 }
+		       else
+			 {
+			    std::cout << "WHAT AM I DOING?!?!?! Line to big" << std::endl;
+			    //we need the front to be 'sent' before we can work... try and flush..
+			    outputQueue.push(line+"\r\n");
+			 }
+
+		       return;
+		    }
+	       }
+	  }
+
+	outputQueue.push(line + "\r\n");
+	countTx += line.length();
+     }
+   else
+     {
+
+	// logLine("Tried to TX " + line + " but not connected",
+	//         //            Log::Debug);
+     }
+
+};

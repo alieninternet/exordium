@@ -159,17 +159,8 @@ namespace Exordium {
       void liveLog (AISutil::String const &);
 
       void servicePart (AISutil::String const &, AISutil::String const &);
-      void queueAdd (const AISutil::String& line)
-	{
-	   if (connected) {
-	      //logLine("TX: " + line, Log::Debug);
-	      outputQueue.push(line + "\r\n");
-	      countTx += line.length();
-	   } else {
-	     // logLine("Tried to TX " + line + " but not connected",
-	//	      Log::Debug);
-	   }
-	};
+      void queueAdd (const AISutil::String& line);
+
 
       void killnick (AISutil::String const &target,
 		     AISutil::String const &from,
