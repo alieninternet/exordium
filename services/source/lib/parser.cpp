@@ -202,13 +202,17 @@ void
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
-
+		       std::cout << "Checking to see if " << target << " has access in " << dest << std::endl;
 		       User *ptr = services.findUser(target);
 		       if(dptr->isChanSecure())
 			 {
+			    std::cout << "  ^- Secire is enabled" << std::endl;
 			    /* Channel has SECURE enabled */
-			    if(dptr->getAccess(target)<100)
+			    int axs = dptr->getAccess(target);
+			    std::cout << "  ^- " << target << " has level " << axs << std::endl;
+			    if(axs<100)
 			      {
+				 std::cout << " ^- Deop the bitch" << std::endl;
 				 /* Hey not allowed to be opped!! */
 				 dptr->mode("Chan","-o",target);
 				 /* Tell origin off! */

@@ -317,7 +317,7 @@ CHAN_FUNC (Module::parseADDUSER)
      }
    dChan *ptr = services->findChan(channel);
    User *uptr = services->findUser(nickname);
-   if(!ptr->isRegistered())
+    if(!ptr->isRegistered())
      {
 	origin.sendMessage("Error: Cannot find that channel",getName());
 	return;

@@ -467,7 +467,7 @@ void ServicesInternal::shutdown(String const &reason)
 	    reason);
 
    stopping = true;
-   stopTime = currentTime + 5;
+   stopTime = currentTime + 15;
 
    // Clean up before we die
    database.dbDelete("onlineclients");
