@@ -21,6 +21,8 @@ namespace Exordium {
 	{};
       
       Kine::String getChanCount(void);
+      void setChanLog(Kine::String const &,bool const &);
+      bool ChanLog(Kine::String const &);
       void internalDeVoice(Kine::String const &, Kine::String const &);
       void internalDeOp(Kine::String const &, Kine::String const &);
       void internalVoice(Kine::String const &, Kine::String const &);

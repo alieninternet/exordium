@@ -83,6 +83,52 @@ namespace Exordium
 	    +String::convert(cid)+"','"+String::convert(nid)+"','0')";
 	  services.getDatabase().query(query);
        }
+   bool
+     Channel::ChanLog(String const &channel)
+       {
+	  String query = "SELECT clog from chanopts where name='"+channel.toLower()+"'";
+	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRow row;
+	  while ((row = res.fetch_row()))
+	    {
+
+	       String foo = ((std::string) row[0]).c_str();
+	       if(foo=="1")
+		 {
+
+		    return true;
+		 }
+
+	       else
+		 {
+
+		    return false;
+		 }
+
+	    }
+
+	  return false;
+       }
+
+   void
+     Channel::setChanLog(String const &channel, bool const &value)
+       {
+	  if(value)
+	    {
+	       String query = "DELETE from chanopts where name='"+channel.toLower()+"' AND clog=1";
+	       services.getDatabase().query(query);
+	       query = "INSERT into chanopts values ('','"+channel.toLower()+"',1)";
+	       services.getDatabase().query(query);
+	       return;
+	    }
+	  else
+	    {
+	       String query = "DELETE from chanopts where name='"+channel.toLower()+"' AND clog=1";
+	       services.getDatabase().query(query);
+	       return;
+	    }
+
+       }
 
 /* Update our tables as showing the given user is no longer
    in the channel, removing all status flags */
