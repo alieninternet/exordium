@@ -96,7 +96,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	origin.sendMessage(togo,getName());
 	long tx = services->getCountTx();
         long rx = services->getCountRx();
-	String tofo = "Tx : " + String::convert(tx) + " Rx : " + String::convert(tx);
+	String tofo = "Tx : \002" + String::convert(tx) + "\002 Rx : \002" + String::convert(rx) + "\002";
+
 	origin.sendMessage(tofo,getName());
 }
 
