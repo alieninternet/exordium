@@ -58,6 +58,7 @@ struct Module::functionTableStruct const
      {"topic", &Module::parseTOPIC},
      {"adduser", &Module::parseADDUSER},
      {"info", &Module::parseINFO},
+ //    {GETLANG(chan_COMMAND_INFO), &Module::parseINFO},
      {"listban", &Module::parseLISTBAN},
      {"set", &Module::parseSET},
      {"seen", &Module::parseSEEN},
@@ -101,6 +102,7 @@ void
 	     (this->*(functionTable[i].function))(origin, st, ch);
 	     return;
 	  }
+	
      }
    origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND,command),getName());
 }

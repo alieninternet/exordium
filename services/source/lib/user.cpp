@@ -34,6 +34,7 @@
 #include <kineircd/str.h>
 #include <kineircd/config.h>
 
+#include "core_language.h"
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium;
@@ -220,7 +221,9 @@ int
 void
   User::addCheckIdentify(void)
 {
-   sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@peoplechat.org identify <password>","Nick");
+   sendMessage(Kine::langs().get(
+   getLanguage(),Language::tagMap[Language::core_NICK_IDENTIFY_REQUEST].tagID),
+   "Nick");
    services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (Utils::random(60)))+"'");
    return;
 };

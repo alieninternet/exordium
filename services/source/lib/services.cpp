@@ -32,7 +32,7 @@
 #include "exordium/channel.h"
 #include "exordium/user.h"
 #include "exordium/utils.h"
-#include "console_language.h"
+#include "core_language.h"
 #include <queue>
 #include <map>
 #include <set>
@@ -434,8 +434,8 @@ bool ServicesInternal::connect (void)
 	registerService(config.getConsoleName(), config.getConsoleName(),
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
-	Kine::langs().registerMap(Language::ConsoletagMap);
      }
+   Kine::langs().registerMap(Language::tagMap);
    connected = true;
    queueAdd ("BURST 0");
    return true;

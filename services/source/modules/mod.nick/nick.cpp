@@ -364,8 +364,17 @@ NICK_FUNC (Module::parseAUTH)
 	      origin.setLanguage("de");
 	      origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Deutsch"),
 				 getName());
+	      return;
 	   }
-	   
+	if((value=="norsk") || (value=="norwegian") || (value=="no"))
+	  {
+	     std::cout << "Setting NORSK!" << std::endl;
+	     origin.setLanguage("no");
+	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Norske"),
+				getName());
+	     return;
+	  }
+	
 	origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
 			   getName());
 	return;

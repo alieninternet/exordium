@@ -31,7 +31,7 @@
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
 #include "console.h"
-#include "console_language.h"
+#include "core_language.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -57,7 +57,7 @@ void Console::parseLine(const String &line, const String &requestor)
 int access = ptr->getAccess(services.getConfigInternal().getConsoleName());
              if(required>access)
                {
-  ptr->sendMessage(GETLANG(console_NOT_ENOUGH_ACCESS),services.getConfigInternal().getConsoleName());
+  ptr->sendMessage(GETLANG(core_CONSOLE_NOT_ENOUGH_ACCESS),services.getConfigInternal().getConsoleName());
   String togo = ptr->getNickname()+" tried to use \002"+command+"\002";
   services.logLine(togo, Log::Warning);
   return;
