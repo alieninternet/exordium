@@ -816,7 +816,18 @@ langtag = {
    component = "mod_oper";
    data_en = "The server \b%p0\b is currently connected to the network. Please SQUIT this server before juping it";
 };
- 
+
+langtag = {
+   name = "oper_JUPE_SERVER_INVALID";
+   component = "mod_oper";
+   data_en = "Error: Invalid Server name. Please use only valid server names";
+};
+
+langtag = {
+   name = "oper_JUPE_NICK_INVALID";
+   component = "mod_oper";
+   data_en = "Error: Invalid Nickname. Please use only valid nicknames";
+};    
  
   
 /*
