@@ -24,7 +24,7 @@
  *
  */
 
-#include "include/note.h"
+#include "note.h"
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include "exordium/channel.h"

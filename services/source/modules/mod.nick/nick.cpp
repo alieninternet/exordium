@@ -24,7 +24,7 @@
  *
  */
 
-#include "include/nick.h"
+#include "nick.h"
 #include "exordium/services.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
