@@ -1,5 +1,6 @@
+#!/usr/local/bin/php -q
 <?
-$link = mysql_connect("db","root","");
+$link = mysql_connect("mysql","services","");
 mysql_select_db("services");
 $query = "SELECT * from emails";
 $result = mysql_query($query);

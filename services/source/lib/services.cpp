@@ -367,9 +367,6 @@ void
 	  }
 
 	socky.setRemoteAddress(config.getUplinkHost());
-
-        // Note: Maybe add an option for port?
-	//
 	socky.setRemotePort(config.getUplinkPort());
 
 	if(!socky.connect())
@@ -392,7 +389,7 @@ void
 	maxSock = socky.getFD() + 1;
 
 /* *Whistles* Config option */
-	queueAdd ("PASS pass :TS");
+	queueAdd ("PASS "+config.getUplinkPass()+" :TS");
 	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
 /* Jesus, so many hard coded stuff :( */
 /* It's okay, all the server connection stuff has a very very very limited

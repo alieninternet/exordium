@@ -80,6 +80,11 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
           (void *)&ConfigInternal::defUplinkPort, &varHandleUnsignedShortNoZero,
           0, 0
      },
+     {
+	"UPLINKPASS", 10,
+	  (void *)&Config::defUplinkPass, &varHandleString,
+	  0, 0
+     },
      { 0, 0, 0, 0, 0, 0 }
 };
 

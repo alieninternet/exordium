@@ -36,6 +36,7 @@ namespace Exordium {
     protected:
       // Variables (top class from the definition table above)
       AISutil::String defUnderlingHostname;	// Underling server hostname
+      AISutil::String defUplinkPass;
       
       // 'SQL' variables
       AISutil::String defSqlDatabase;		// MySql server database name

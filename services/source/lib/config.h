@@ -42,6 +42,7 @@ namespace Exordium {
       AISutil::String defUnderlingDescription;	// Underling server description
       AISutil::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
+      AISutil::String defUplinkPass;		// Uplink Pass (temporary)
 
       // 'CONSOLE' class and variables
       static const AISutil::ConfigParser::defTable_type defClassConsole;
@@ -79,7 +80,8 @@ namespace Exordium {
 	{ return defUplinkHost; };      
       const unsigned short getUplinkPort(void) const
         { return defUplinkPort; };
-
+      const AISutil::String& getUplinkPass(void) const
+	{ return defUplinkPass; };
       // 'CONSOLE' class
       const AISutil::String& getConsoleDescription(void) const
 	{ return defConsoleDescription; };
