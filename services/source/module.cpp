@@ -18,10 +18,10 @@ using namespace Exordium;
 namespace mod_exordium {
 
    // Our special little classes, we need these so we can delete them later
-   static Config *config;
-   static Log *logger;
-   static Services *services;
-   static Sql *db;   
+   static Config *config = 0;
+   static Log *logger = 0;
+   static Services *services = 0;
+   static Sql *db = 0;
    
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
@@ -32,7 +32,7 @@ namespace mod_exordium {
 	logger = new Logger(*config);
 	
 	// Create new SQL Instance
-	db = new Sql(*services,*config);
+	db = new Sql(*services, *logger, *config);
 	
 	// Create the new services instance - Passing sql + logger YAY :|
 	services = new Services(daemon, *config, *logger, *db);
