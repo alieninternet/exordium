@@ -11,7 +11,7 @@
             (get "component")
             "mod_nick")))
 	    
-   ;;; Define our dodgey counting thingy
+   ;;; Define our dodgy counting thingy
    (define counter 0)
 +]
 /* $Id$
