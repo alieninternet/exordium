@@ -22,6 +22,7 @@ using namespace Exordium;
 
 namespace Exordium {
 
+
 struct Game::functionTableStruct const
   Game::functionTable[] = {
   {"quote", parseQUOTE},
@@ -124,12 +125,15 @@ GAME_FUNC (Game::parseQUOTE)
 	}
 
 }
-extern "C" Module *service_init(void) 
+extern "C" Module *service_init(String const &name) 
 {
-   Services::registerService("Game","game","ircdome.org", "+dz", "Network Games!");
-   Services::serviceJoin("Game", "#Debug");
+   cout << "I am called " << name << endl;
+   Game::me = name;
+   Services::registerService(Game::me,Game::me,"ircdome.org", "+dz", "Network Games!");
+   Services::serviceJoin(Game::me, "#Debug");
    return new Module("game", new Game()
 );
+
 }
 
 

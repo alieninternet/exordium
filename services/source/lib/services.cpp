@@ -684,15 +684,15 @@ if(!handle)
 	Services::Debug("dlError() returned: "+foo);
 	return false;
 }
-Module *(*initfunc)(void) =
-                (Module *(*)(void))dlsym(handle, "service_init");
+Module *(*initfunc)(String const &) =
+                (Module *(*)(String const &))dlsym(handle, "service_init");
 if (initfunc == 0) 
 		{
 			String togo = "Error: Your module does not contain an init function";
 			Services::Debug(togo);
 			return false;
         	}
-        Module *modInfo = (*initfunc)();
+        Module *modInfo = (*initfunc)(name);
         serviceM.addModule(modInfo->modName, *modInfo->modService, handle);
 return true;
 }
@@ -816,10 +816,10 @@ while ((row = res.fetch_row()))
 			}
 		
 		}
-		//String msg = "This nickname does not belong to you, your nickname will now be changed";
-		//Services::serviceNotice(msg,"Nick",tomod);
-		//String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
-		//Services::queueAdd(String(togo));
+		String msg = "This nickname does not belong to you, your nickname will now be changed";
+		Services::serviceNotice(msg,"Nick",tomod);
+		String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
+		Services::queueAdd(String(togo));
 		
 		
 	}
