@@ -363,7 +363,8 @@ game_poker_la_LDFLAGS = \
 # ***************** END of mod_game *******************
 # Stuff we need to make, but automake is too dumb to realise
 BUILT_SOURCES=\
-	install/.lang 
+	install/.lang \
+	include/exordium/database/table.h
 
 # rule to create the exordium/database/table.h file
 include/exordium/database/table.h: include/exordium/database/table.h.tpl autogen/fieldtypes.def
