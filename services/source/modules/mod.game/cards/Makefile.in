@@ -130,7 +130,7 @@ lib_cards_la_SOURCES = card.cpp \
 		       hand.cpp \
 		       pack.cpp 
 
-subdir = source/modules/game/cards
+subdir = source/modules/mod.game/cards
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/include/exordium/config.h
 CONFIG_CLEAN_FILES =
@@ -164,7 +164,7 @@ all: all-am
 .SUFFIXES: .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  source/modules/game/cards/Makefile
+	  $(AUTOMAKE) --foreign  source/modules/mod.game/cards/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 libLTLIBRARIES_INSTALL = $(INSTALL)
