@@ -19,6 +19,9 @@
 // The class of lurrve
 class Love : public Exordium::Service {
  private:
+   // Our convenient type-definition of our handler functions
+   typedef LOVE_FUNC(handler_type);
+   
    /* Each command gets a little descriptor with the following parameters.
     * Note that in the future the padding field will be used, but for now
     * it is there to make the structure even (4x4 bytes) as processors like
@@ -27,13 +30,16 @@ class Love : public Exordium::Service {
     * wishes? Well okay, I thought we were at least.. Stop looking at me like
     * that.. Stop it! Stop it..... okay, OKAY - fine.. I'll go then. :(
     */
-   struct commandTableStruct {
+   struct commandTable_type {
       const char *command;		// Command name
       const short minParams;		// The minimum number of parameters
       const short maxParams;		// Maximum parameters (No limit = -1)
-      const LOVE_FUNC((*handler));	// The function (handler) to call
+      const handler_type *handler;	// The function (handler) to call
       const int blahblahblahblahblah;	// For future use.. (padding for now)
    } static const commandTable[];
+   
+   // Our wonderful command handlers
+   static handler_type handleTEST;
    
  public:
    // Our constructor
@@ -59,9 +65,6 @@ class Love : public Exordium::Service {
    
    // Parser for incoming stuff sent directly to us
    void parseLine(const Kine::String &line, const Kine::String &origin);
-   
-   // Our wonderful command handlers
-   static LOVE_FUNC(handleTEST);
 };
 
 #endif // __LOVE_H_

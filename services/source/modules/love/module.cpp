@@ -48,7 +48,7 @@ extern "C" Module *service_init(void) {
  * our case-insensitive searchy thingy looks on the premise that the incoming
  * command will be converted to lower-case..
  */
-const Love::commandTableStruct Love::commandTable[] = {
+const Love::commandTable_type Love::commandTable[] = {
      { 
 	"test",		0,	0,	&handleTEST,
 	  0 
