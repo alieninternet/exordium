@@ -194,10 +194,18 @@ mod_nick_la_LDFLAGS=\
 mod_nick_la_SOURCES=\
 		    source/modules/mod.nick/language.cpp \
 		    source/modules/mod.nick/language.h \
+		    source/modules/mod.nick/commands.cpp \
+		    source/modules/mod.nick/commands.h \
 		    source/modules/mod.nick/nick.cpp \
 		    source/modules/mod.nick/nick.h \
 		    source/modules/mod.nick/tables.cpp \
 		    source/modules/mod.nick/tables.h
+
+source/modules/mod.nick/commands.cpp: source/modules/mod.nick/commands.tpl source/modules/mod.nick/commands.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.nick/commands.tpl \
+		source/modules/mod.nick/commands.def
 
 source/modules/mod.nick/language.cpp source/modules/mod.nick/language.h: source/modules/mod.nick/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \

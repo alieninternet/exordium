@@ -1728,6 +1728,56 @@ langtag = {
 };
 
 langtag = {
+   name = "nick_HELP_ACCESS";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_AUTH";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_COMMANDS";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_GHOST";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_HELP";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_IDENTIFY";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_INFO";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_KILL";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_NICK";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET";
+   component = "mod_nick";
+};
+
+langtag = {
    name = "nick_ICQ_CHANGED";
    component = "mod_nick";
    data_en = "ICQ handle has been changed to :%p0";

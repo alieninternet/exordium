@@ -31,6 +31,7 @@
 #include "nick.h"
 #include "tables.h"
 #include "language.h"
+#include "commands.h"
 #include <kineircd/config.h>
 #include <exordium/utils.h>
 #include <sstream>
@@ -38,24 +39,6 @@
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::NickModule;
-
-struct Module::functionTableStruct const
-  Module::functionTable[] =
-{
-     {"auth", &Module::parseAUTH},
-     {"identify", &Module::parseIDENTIFY},
-     {"id", &Module::parseIDENTIFY},
-     {"help", &Module::parseHELP},
-     {"kill", &Module::parseKILL},
-     {"ghost", &Module::parseGHOST},
-     {"register", &Module::parseREGISTER},
-     {"access", &Module::parseACCESS},
-     {"set", &Module::parseSET},
-     {"info", &Module::parseINFO},
-     {"nick", &Module::parseNICK},
-     {"commands", &Module::parseCOMMANDS},
-     {0, 0}
-};
 
 /* Event Handlers */
 void
@@ -80,11 +63,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String command = line.nextToken().toLower();
    
-   for (int i = 0; functionTable[i].command != 0; i++) {
+   for (int i = 0; Commands::commandTable[i].command != 0; i++) {
       // Does this match?
-      if (command == functionTable[i].command) {
+      if (command == Commands::commandTable[i].command) {
 	 // Run the command and leave
-	 (this->*(functionTable[i].function))(origin, line, safe);
+	 (this->*(Commands::commandTable[i].function))(origin, line, safe);
 	 return;
       }
    }
@@ -103,9 +86,9 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 		      getNickname());
    // Start formulating the data..
    std::ostringstream list(" -=>");
-   for (int i = 0; functionTable[i].command != 0; i++) {
+   for (int i = 0; Commands::commandTable[i].command != 0; i++) {
       // Add the command to the list
-      list << " " << functionTable[i].command;
+      list << " " << Commands::commandTable[i].command;
 
    // How are we for size?
       if (list.str().length() >= lineLength) {
@@ -130,11 +113,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 
 {
    String command = tokens.nextToken().toLower();
-   for (int i = 0; functionTable[i].command != 0; i++) {
+   for (int i = 0; Commands::commandTable[i].command != 0; i++) {
       // Does this match?
-      if (command == functionTable[i].command) {
+      if (command == Commands::commandTable[i].command) {
          // Run the command and leave
-         (this->*(functionTable[i].function))(origin, tokens, safe);
+         (this->*(Commands::commandTable[i].function))(origin, tokens, safe);
          return;
       }
    }
@@ -642,9 +625,49 @@ NICK_FUNC (Module::parseAUTH)
 /* Do help... */
 NICK_FUNC (Module::parseHELP)
 {
- String word = tokens.nextToken();
- String parm = tokens.nextToken();
- services->doHelp(origin,getNickname(), word, parm);
+// String word = tokens.nextToken();
+// String parm = tokens.nextToken();
+// services->doHelp(origin,getNickname(), word, parm);
+
+   String command = tokens.nextToken();
+   
+   // this should be elsewhere.
+   struct Callout : public Kine::Languages::callFunction_type {
+      Exordium::User& origin;
+      const String& nick;
+      
+      bool operator()(const std::string& text)
+	{
+	   origin.sendMessage(text, nick);
+	   return true;
+	};
+      
+      Callout(Exordium::User& o, const String& n)
+	: origin(o), nick(n)
+	{};
+   };
+   
+   // find the command
+   for (int i = 0; Commands::commandTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == Commands::commandTable[i].command) {
+	 // this also should be elsewhere.
+	 Callout callout(origin, getNickname());
+	 
+	 // send the help appropriately
+	 Kine::langs().get(origin.getLanguage(),
+			   *Commands::commandTable[i].help,
+			   callout);
+	 
+	 // Leave.
+	 return;
+      }
+   }
+   
+   // kinda the wrong message, but good enough for now
+   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND, command),
+		      getNickname());
+   
 }
 
 

@@ -46,11 +46,6 @@ namespace Exordium {
 	 // Configuration data class
 	 Exordium::Service::ConfigData configData;
 	 
-	 struct functionTableStruct {
-	    char const* const command;
-	    NICK_FUNC((Module::* const function));
-	 } static const functionTable[];
-
 	 void sendMessage(const AISutil::String& to,
 			  const AISutil::String& message)
 	   { services->serviceNotice(message,getNickname(),to); };
@@ -88,7 +83,6 @@ namespace Exordium {
 	 Exordium::Service::ConfigData& getConfigData(void)
 	   { return configData; };
 	 
-       private:
 	 NICK_FUNC(parseIDENTIFY);
 	 NICK_FUNC(parseHELP);
 	 NICK_FUNC(parseKILL);
