@@ -48,6 +48,8 @@ struct Chan::functionTableStruct const
      {".listban", &Chan::parseLISTBAN},
      {".set", &Chan::parseSET},
      {"set", &Chan::parseSET},
+     {"seen", &Chan::parseSEEN},
+     {".seen", &Chan::parseSEEN},
      {0, 0}
 };
 
@@ -90,6 +92,27 @@ void
 	  }
      }
    services.serviceNotice ("\002[\002Unrecognised Command\002]\002", "Chan", requestor);
+}
+void
+  CHAN_FUNC (Chan::parseSEEN)
+{
+   String channel = "";
+   if(!chan.empty())
+     {
+	channel = chan;
+     }
+   
+   else
+     {
+	channel = tokens.nextToken();
+     }
+   if(channel.empty())
+     {
+	services.serviceNotice("Usage: seen #channel nickname","Chan",origin);
+	return;
+     }
+   //Finish Me. :=>
+   
 }
 
 void

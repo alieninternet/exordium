@@ -86,6 +86,8 @@ void PARSER_FUNC (Parser::parseAWAY)
 		  String cname = services.getChannel().getChanIDName(foo.toInt());
 		  String cstr = origin+" "+origin;
 		  services.serverMode(cname,"-o+v",cstr);
+		  services.getChannel().internalVoice(cstr,cname);
+		  services.getChannel().internalDeOp(cstr,cname);
 	       }
 
 	  }

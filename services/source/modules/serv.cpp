@@ -170,7 +170,7 @@ namespace Exordium
 		    services.serviceNotice("\002[\002Fatal Error\002]\002 Usage: del ID","Serv",origin);
 		    return;
 		 }
-	       String query = "DELETE FROM NEWS where id="+id;
+	       String query = "DELETE FROM news where id="+id;
 	       services.getDatabase().query(query);
 	       services.serviceNotice("News has been deleted","Serv",origin);
 	       return;
@@ -183,11 +183,6 @@ namespace Exordium
 	       if(type=="" | expires=="" | text=="")
 		 {
 		    services.serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here","Serv",origin);
-		    return;
-		 }
-	       if(type!="0" | type!="1" | type!="2")
-		 {
-		    services.serviceNotice("\002[\002Incorrect Usage\002]\002 Type must be one of 0,1 or 2 (users, helpers or opers","Serv",origin);
 		    return;
 		 }
 	       int nexpires = expires.toInt();

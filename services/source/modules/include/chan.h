@@ -55,6 +55,7 @@ private:
    void CHAN_FUNC (parseINFO);
    void CHAN_FUNC (parseLISTBAN);
 void CHAN_FUNC (parseSET);
+void CHAN_FUNC (parseSEEN);
 };
 
 
