@@ -142,7 +142,7 @@ void CDatabase::dbDelayedInsert(String const &table, String const &values)
 {
    database->dbLock(table);
    database->dbBeginTrans();
-   database->dbQuery("INSERT DELAYD into " + table + " VALUES ("+values+")");
+   database->dbQuery("INSERT DELAYED into " + table + " VALUES ("+values+")");
    database->dbCommit();
    database->dbUnlock();
    database->dbClearRes();

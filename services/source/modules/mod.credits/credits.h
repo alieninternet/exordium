@@ -73,7 +73,7 @@ namespace Exordium {
    
        public:
 	 Module(void)
-	   : configData(moduleInfo.fullName, "somewhere.org", "Credits"),
+	   : configData(moduleInfo.fullName, "somewhere.org", "Credits","credits"),
 	     bank(*services) 
 	   {};
 	 

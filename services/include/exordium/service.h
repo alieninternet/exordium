@@ -97,15 +97,17 @@ namespace Exordium {
 	 AISutil::String defDistribution;		// Our scope mask
 	 AISutil::String defHostname;			// Our hostname
 	 AISutil::String defName;			// Our name
+	 AISutil::String defIdent;			// Out ident
 	 
        public:
 	 // Constructor
 	 ConfigData(const AISutil::String& d, const AISutil::String& h,
-		    const AISutil::String& n)
+		    const AISutil::String& n, const AISutil::String& u)
 	   : defDescription(d),
 	     defDistribution("*"), // <=- network-wide distribution scope
 	     defHostname(h),
-	     defName(n)
+	     defName(n),
+	     defIdent(u)
 	   {};
 
 	 // Destructor
@@ -126,6 +128,8 @@ namespace Exordium {
 	   { return defHostname; };
 	 const AISutil::String& getName(void) const
 	   { return defName; };
+	 const AISutil::String& getIdent(void) const
+           { return defIdent; };
       };
       
     protected:
@@ -170,6 +174,10 @@ namespace Exordium {
       // Return the nickname of the module (for lazy people)
       const AISutil::String& getName(void) const
 	{ return getConfigData().getName(); };
+      
+      const AISutil::String& getIdent(void) const
+	{ return getConfigData().getIdent(); };
+	   
    };
 };
 

@@ -53,5 +53,11 @@ const AISutil::ConfigParser::defTable_type
 	    (void *)&ConfigData::defName, &varHandleStringOneWord,
 	    0, 0
        },
+       {
+	  "IDENT", 5,
+	    (void *)&ConfigData::defIdent, &varHandleStringOneWord,
+	    0, 0
+       },
+     
        { 0, 0, 0, 0, 0, 0 }
   };

@@ -90,7 +90,7 @@ void
 
 BOT_FUNC(Module::parseHELP)
 {
-   services->doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
+   services->doHelp(origin,getName(),tokens.nextToken(),tokens.nextToken());
 }
 
 
@@ -113,7 +113,7 @@ bool Module::start(Exordium::Services& s)
    services = &s;
    
    // Register ourself to the network
-   services->registerService(getName(), getName(), 
+   services->registerService(getName(), getIdent(), 
 			    getConfigData().getHostname(),
 			    getConfigData().getDescription());
    

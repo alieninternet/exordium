@@ -56,7 +56,7 @@ namespace Exordium {
 	 CDatabase* db;
        public:
 	 Module(void)
-	   : configData(moduleInfo.fullName, "somewhere.org", "Chan")
+	   : configData(moduleInfo.fullName, "peoplechat.org", "Chan","chan")
 	   {};
 	 
 	 ~Module(void)
