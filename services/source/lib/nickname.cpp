@@ -435,7 +435,7 @@ void
 Nickname::registerNick(String const &nick, String const &password, String const &email)
 {
 String gpass = generatePassword(nick.toLower(),password);
-String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'','','','')";
+String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'english','0','No MSN Set','http://ircdome.org',0,'None Set','None Set')";
 services.getDatabase().query(query);
 }    
 
