@@ -10,7 +10,7 @@
 #include "exordium/nickname.h"
 #include "exordium/channel.h"
 #include "exordium/log.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include "exordium/sql.h"
 #include "exordium/ircdome.h"
 

@@ -27,7 +27,7 @@
 # include <cstdlib>
 # include <netinet/in.h>
 
-# include "kineircd/str.h"
+# include <kineircd/str.h>
 
 // Macros
 # define octStr(x)	baseXStr(x, 8)		// Convert decimal to octal

@@ -7,7 +7,7 @@
 
 #include "exordium/channel.h"
 #include "exordium/nickname.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include "exordium/services.h"
 #include "exordium/sql.h"
 

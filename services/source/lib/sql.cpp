@@ -9,7 +9,7 @@
 #include "exordium/mysql.h"
 #include "exordium/services.h"
 #include "exordium/log.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include <sys/time.h>
 #include <sstream>
 

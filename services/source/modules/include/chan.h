@@ -8,7 +8,7 @@
 
 #include "exordium/service.h"
 #include "exordium/services.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 # define CHAN_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
 

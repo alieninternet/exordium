@@ -10,7 +10,7 @@
 
 #include "exordium/services.h"
 #include "exordium/service.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 # define NICK_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
 

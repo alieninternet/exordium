@@ -11,7 +11,7 @@
 #include "exordium/nickname.h"
 #include "exordium/service.h"
 #include "exordium/services.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include "exordium/module.h"
 #include <map>
 #include "exordium/sql.h"

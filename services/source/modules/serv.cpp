@@ -9,7 +9,7 @@
 #include "exordium/services.h"
 #include "exordium/nickname.h"
 #include "exordium/channel.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include "exordium/sql.h"
 #include "exordium/module.h"
 

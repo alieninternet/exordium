@@ -8,8 +8,8 @@
 #include "include/nick.h"
 #include "exordium/services.h"
 #include "exordium/nickname.h"
-#include "kineircd/str.h"
-#include "kineircd/utils.h"
+#include <kineircd/str.h>
+#include <kineircd/utils.h>
 #include "exordium/sql.h"
 #include "exordium/module.h"
 #include <map>

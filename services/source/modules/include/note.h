@@ -8,7 +8,7 @@
 #ifndef __NOTE_H_
 #define __NOTE_H_
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 # define NOTE_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
 
 using Kine::String;

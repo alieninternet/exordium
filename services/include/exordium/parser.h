@@ -9,7 +9,7 @@
 #define __PARSER_H_
 
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 # define PARSER_FUNC(x)         x(Kine::String &origin, Kine::StringTokens &tokens)
 

@@ -9,7 +9,7 @@
 #define __MODULE_H
 
 #include "service.h"
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 namespace Exordium {
 

@@ -9,7 +9,7 @@
 #include <time.h>
 #include <iomanip>
 #include <iostream>
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include <fstream>
 
 using namespace Exordium;

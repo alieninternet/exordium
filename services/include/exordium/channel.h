@@ -6,7 +6,7 @@
 #ifndef __CHANNEL_H_
 #define __CHANNEL_H_
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 using Kine::String;
 

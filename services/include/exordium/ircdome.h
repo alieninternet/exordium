@@ -8,7 +8,7 @@
 #ifndef __IRCDOME_H_
 #define __IRCDOME_H_
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 # define IRCDOME_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
 

@@ -8,7 +8,7 @@
 #ifndef __SERVICES_H
 #define __SERVICES_H
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include <queue>
 #include <map>
 #include <set>

@@ -8,7 +8,7 @@
 #ifndef __NICKNAME_H_
 #define __NICKNAME_H_
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 using Kine::String;
 

@@ -8,7 +8,7 @@
 #ifndef __SERV_H_
 #define __SERV_H_
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 
 # define SERV_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
 

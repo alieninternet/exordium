@@ -8,7 +8,7 @@
 #ifndef __GAME_H_
 #define __GAME_H_
 
-#include "kineircd/str.h"
+#include <kineircd/str.h>
 #include "exordium/services.h"
 
 # define GAME_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)

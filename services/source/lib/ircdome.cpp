@@ -7,8 +7,8 @@
 
 #include "exordium/services.h"
 #include "exordium/nickname.h"
-#include "kineircd/str.h"
-#include "kineircd/utils.h"
+#include <kineircd/str.h>
+#include <kineircd/utils.h>
 #include "exordium/ircdome.h"
 
 using Kine::String;
