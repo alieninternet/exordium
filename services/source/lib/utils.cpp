@@ -29,7 +29,6 @@
 #endif
 
 #include <kineircd/password.h>
-#include <openssl/evp.h>
 
 #include "exordium/utils.h"
 
