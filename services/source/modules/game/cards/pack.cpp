@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2002 Simon Butcher <simonb@alien.net.au>
  *
- * This file is a part of SOME PROJECT.
+ * This file is a part of Exordium.
  * 
  * KineIRCd is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
