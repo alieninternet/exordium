@@ -30,10 +30,10 @@
 #include "pack.h"
 
 
-/* Pack - Pack constructor; populates a fresh pack of cards in 'mint' order
- * Original 29/08/2002 pickle
+/* Populate - Populates a fresh pack of cards in 'mint' order
+ * Original 29/08/2002 pickle - moved into own method by josullivan
  */
-Cards::Pack::Pack(bool withJoker)
+void Cards::Pack::Populate(bool withJoker)
 {
    // Run through and populate the pack (yes, rank is sorted DOWNWARDS)
    for (register unsigned int suit = 1; suit != 5; suit++) {
@@ -47,7 +47,6 @@ Cards::Pack::Pack(bool withJoker)
       cards.push_back(Cards::Card(Card::Suit::Joker));
    }
 };
-
 
 /* shuffle - Shuffle the pack of cards
  * Original 30/08/2002 pickle

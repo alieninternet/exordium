@@ -38,13 +38,16 @@ namespace Cards {
     private:
       typedef std::vector <Card> cards_type;
       
+    protected:
       // Our cards
       cards_type cards;
       
     public:
       // Constructor (populates the pack, all cards are in 'mint' order)
-      Pack(bool withJoker = false);
+      Pack(bool withJoker = false) { Populate(withJoker); }
       
+      virtual void Populate(bool withJoker);
+
       // Return the number of cards left in the pack
       cards_type::size_type getCardCount(void) const
 	{ return cards.size(); };
