@@ -32,60 +32,61 @@
 # include <aisutil/string/string.h>
 # include <exordium/database/base.h>
 # include <exordium/database/table.h>
-#include <exordium/singleton.h>
+# include <exordium/config.h>
 
-#include <map>
-
-using namespace std;
 
 namespace Exordium {
-
-  class Database;
-
-  #define databaseFwd (*Database::instance())
 
   struct db_supported_engines_t
   {
      bool mysql;
      bool pgsql;
-     bool firebird;
   };
 
+
+  class Config;
 
   /*
    * Public API for databases
    *
    *
    */
-  class Database:public Singleton<Database>
+  class CDatabase
   { 
     public:
-      friend class Singleton<Database>;
+      CDatabase(Config &c);
 
 
-      void dbConnect(void) { sqldrivers[selectedDriver]->dbConnect(); }
-      void dbDisconnect(void) { sqldrivers[selectedDriver]->dbDisconnect(); }
+     ~CDatabase(void)
+       {
+	  dbDisconnect();
+	  delete database;
+       }
 
-      void useDriver(AISutil::String const &driver);
+
+
+      void dbConnect(void) { database->dbConnect(); }
+      void dbDisconnect(void) { database->dbDisconnect(); }
+
 
       // Select * from <table>
-      void dbSelect(AISutil::String const &table);
+      int dbSelect(AISutil::String const &table);
 
       // Select <fields> from <table>
-      void dbSelect(AISutil::String const &fields, AISutil::String const &table);
+      int dbSelect(AISutil::String const &fields, AISutil::String const &table);
 
       // Select <fields> from <table> where <whereargs>
-      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
+      int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
 
       // Select <fields> from <table> where <whereargs> order by <orderargs>
-      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs);
+      int dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs);
 
 
       // Select count(*) from <table>
-      void dbCount(AISutil::String const &table);
+      int dbCount(AISutil::String const &table);
 
       // Select count(*) from <table> where <whereargs>
-      void dbCount(AISutil::String const &table, AISutil::String const &whereargs);
+      int dbCount(AISutil::String const &table, AISutil::String const &whereargs);
 
 
 
@@ -102,18 +103,17 @@ namespace Exordium {
       // Delete * from <table>
       void dbDelete(AISutil::String const &table);
 
-      int dbResults(void);
 
-      void dbQuery(AISutil::String const &query) { sqldrivers[selectedDriver]->dbQuery(query); }
 
-      AISutil::String dbGetValue(void) { return(sqldrivers[selectedDriver]->dbGetValue()); }
-      AISutil::String dbGetValue(int field) { return(sqldrivers[selectedDriver]->dbGetValue(field)); }
 
-      void dbGetRow(void) { sqldrivers[selectedDriver]->dbGetRow(); }
 
-      bool eof(void) { return sqldrivers[selectedDriver]->eof(); }
+      int dbQuery(AISutil::String const &query) { return(database->dbQuery(query)); }
 
-      int affectedRows(void) { return sqldrivers[selectedDriver]->affectedRows(); }
+      AISutil::String dbGetValue(void) { return(database->dbGetValue()); }
+      AISutil::String dbGetValue(int field) { return(database->dbGetValue(field)); }
+
+      void dbGetRow(void) { database->dbGetRow(); }
+
 
       /* Affirm a table's structure. Return true if the table exists. If the
        * table does not exist, or has missing fields, then the database engine
@@ -127,20 +127,32 @@ namespace Exordium {
        { return true; /* <=- temporary; waiting for the new database code*/ };
      
       
+      enum
+      {
+        db_mysql  = 1,
+        db_pgsql  = 2,
+      };
       
+      typedef int db_engines_t;
+
     private:
-      Database(void);
+      Config &config;
 
-      // Maps a driver name with an object ptr
-      map<AISutil::String, SqlBase*> sqldrivers;
+      CBase *database;
 
-      AISutil::String selectedDriver;
-   
+      // Ensure a certain 'sanity', do not overuse the preprocessor
+      db_engines_t db_engines;
+     
       db_supported_engines_t db_supported_engines;
 
-      void dbSelectDB(AISutil::String const &dbName) { sqldrivers[selectedDriver]->dbSelectDB(dbName); }
+      void dbBeginTrans(void) { database->dbBeginTrans(); }
+      void dbCommit(void) { database->dbCommit(); }
+      void dbRollback(void) { database->dbRollback(); }
 
-  }; // class Database
+      void dbSelectDB(AISutil::String const &dbName) { database->dbSelectDB(dbName); }
+
+
+  }; // class CDatabase
 
 }; // namespace Exordium
 

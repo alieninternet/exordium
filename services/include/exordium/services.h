@@ -24,260 +24,188 @@
  *
  */
 
-#ifndef _INCLUDE_SERVICES_H_
-# define _INCLUDE_SERVICES_H_ 1
+#ifndef _INCLUDE_EXORDIUM_SERVICES_H_
+# define _INCLUDE_EXORDIUM_SERVICES_H_ 1
 
-# include <aisutil/socket/sockets.h>
+# include <ctime>
+# include <kineircd/str.h>
+# include <kineircd/utils.h>
+# include <kineircd/password.h>
+# include <kineircd/daemon.h>
 
-# include "exordium/parser.h"
-# include "exordium/console.h"
-# include "exordium/singleton.h"
-# include "exordium/log.h"
+# include <exordium/config.h>
+# include <exordium/channel.h>
+# include <exordium/dchan.h>
+# include <exordium/log.h>
 
-#include "kineircd/daemon.h"
-#include "kineircd/utils.h"
-
-#include <queue>
-#include <map>
-#include <ctime>
 
 namespace Exordium {
-
-   #define servicesFwd (*Services::instance())
- 
-   class Services : public Singleton<Services> {
-    private:
-      Parser parser;
-      Console console;
-
-      const AISutil::String buffer;
-      int sock;
-      int maxSock;
-      char *inputBuffer;
-      static const unsigned int inputBufferSize = 512;
-      unsigned int inputBufferPosition;
-      struct sockaddr_in addr;
-      time_t startTime;
-      time_t lastPing;
-      time_t disconnectTime;
-      time_t stopTime;
-      time_t serverLastSpoke;
-      time_t lastCheckPoint;
-      time_t lastExpireRun;
-      time_t currentTime;
-      bool connected;
-      bool stopping;
-      bool sendPing;
-      bool burstOk;
-      unsigned long countTx;
-      unsigned long countRx;
-      unsigned long remoteAddress;
-      std::queue < AISutil::String > outputQueue;
-      AISutil::SocketIPv4TCP socky;
-      
-      bool handleInput(void);
-      
-      bool queueReady(void) const
-	{ return !outputQueue.empty(); };
-      
-      void queueKill (void)
-	{
-	   while(!outputQueue.empty()) {
-	      outputQueue.pop();
-	   }
-	};
-      
-      void SynchTime(void);
-      void expireRun(void);
-      void disconnect(void);
-      bool connect(void);
-      AISutil::String getLogCount(void);
-      AISutil::String getGlineCount(void);
-      AISutil::String getNoteCount(void);
-      void doBurst(void);
-      bool queueFlush(void);
-      AISutil::String parseHelp(AISutil::String const &);
-      
-	
-      void checkpoint(void);
-
-
-      // Constructor
-      Services(void);
-	
-    public:
-      friend class Singleton<Services>;
-	
-      // Destructor
-      ~Services(void)
-	{};
-
-
-      static const Kine::Utils::base_type PasswordStrBase = 85;
-      static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
-
-      // *sigh* grab the console object :(
-      Console& getConsole(void)
-	{ return console; };
-
-      bool SecurePrivmsg;
-
-      time_t getCurrentTime(void) { return currentTime; }
-
-      unsigned long random(unsigned long max) { return (unsigned long)(((max+1.0) * rand()) / RAND_MAX); }
-
-
+   class CDatabase;  
+   class User;
    
-      // These will disappear upon full integration with kine..
-      void run(void);
-
-      AISutil::String generatePassword(const AISutil::String&, const AISutil::String&);
-
-
+   class Services {
+    protected:
+      // Our database handler, however this should be in the config class..
+      CDatabase& database;
+      
+      // This will be going soon (plv?)
+      Channel channel;
+      
+      // Constructor
+      Services(CDatabase& db)
+	: database(db),
+          channel(*this)
+	{};
+      
+    public:
+      time_t currentTime;
+      
+      // Destructor
+      virtual ~Services(void)
+	{};
+      
+      // Grab the database reference
+      CDatabase& getDatabase(void)
+	{ return database; };
+      
+      // Grab the configuration reference
+      virtual const Config& getConfig(void) const = 0;
+      
+      // Return the channel thingy
+      Channel& getChannel(void)
+	{ return channel; };
+      
       // Log a line of text..
       void logLine(const std::string& line,
-                   const Log::mask_type mask = Log::Informative)
-        { Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); }
+		   const Log::mask_type mask = Log::Informative)
+	{ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); };
 
-      
       // Function Declrations below here.
-      int getAccess(AISutil::String &, AISutil::String &);
-      void shutdown(const AISutil::String &);
+      virtual int getAccess(AISutil::String &, AISutil::String &) = 0;
+      virtual void shutdown(const AISutil::String &) = 0;
       
-      // This should be in the GAME MODULE
-      AISutil::String getQuote(int const &number);
+      virtual void AddOnlineServer(AISutil::String const &,
+				   AISutil::String const &, 
+				   AISutil::String const &) = 0;
+      virtual void DelOnlineServer(AISutil::String const &) = 0;
       
-      void AddOnlineServer(AISutil::String const &, AISutil::String const &, 
-			   AISutil::String const &);
-      void DelOnlineServer(AISutil::String const &);
+      virtual User* const addUser(const AISutil::String& name,
+				  const int oid) = 0;
+      virtual bool delUser(AISutil::String &) = 0;
+      virtual User* findUser(AISutil::String &) = 0;
       
+      virtual dChan* const addChan(const AISutil::String& name,
+				   const int oid) = 0;
+      virtual bool delChan(AISutil::String &) = 0;
+      virtual dChan* findChan(AISutil::String &) = 0;
       
-      void mode(AISutil::String const &, AISutil::String const &,
-		AISutil::String const &, AISutil::String const &);
+      virtual void setNick(User &,AISutil::String &) = 0;
+      
+      virtual void mode(AISutil::String const &, AISutil::String const &,
+			AISutil::String const &, AISutil::String const &) = 0;
       
       // This shold be in the Service:: class
-      void doHelp(AISutil::String const &, AISutil::String const &, AISutil::String const &,
-		  AISutil::String const &);
+      virtual void doHelp(User&, AISutil::String const &,
+			  AISutil::String const &,
+			  AISutil::String const &) = 0;
       
-      void log(User&, AISutil::String const &, AISutil::String const &,
-	       AISutil::String const &);
-      void log(User&, AISutil::String const &, AISutil::String const &);
+      virtual void log(User&, AISutil::String const &, 
+		       AISutil::String const &, AISutil::String const &) = 0;
+      virtual void log(User&, AISutil::String const &,
+		       AISutil::String const &) = 0;
       
       // This is in the wrong place, surely
-      void sendEmail(AISutil::String const &, AISutil::String const &,
-		     AISutil::String const &);
-
-      void servicePart (AISutil::String const &, AISutil::String const &);
-      void queueAdd (const AISutil::String& line)
-	{
-	   if (connected) {
-	      logLine("TX: " + line, Log::Debug);
-	      outputQueue.push(line + "\r\n");
-	      countTx += line.length();
-	   } else {
-	      logLine("Tried to TX " + line + " but not connected",
-		      Log::Debug);
-	   }
-	};
-
-      void killnick (AISutil::String const &target,
-		     AISutil::String const &from,
-		     AISutil::String const &reason)
-	{
-	   queueAdd(":" + from + " KILL " + target + " :" + reason);
-	};
+      virtual void sendEmail(AISutil::String const &, AISutil::String const &,
+			     AISutil::String const &) = 0;
       
-      void serviceNotice(AISutil::String const &line,
-			 AISutil::String const &service, 
-			 AISutil::String const &target)
-	{
-	   if (usePrivmsg(target.toLower())) {
-	      queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
-	   } else {
-	      queueAdd(":" + service + " NOTICE " + target + " :" + line);
-	   }
-	}
+      virtual void servicePart (AISutil::String const &,
+				AISutil::String const &) = 0;
       
-      void serviceNoticeForce(AISutil::String const &line, 
-			      AISutil::String const &service,
-			      AISutil::String const &target)
-	{
-	   queueAdd(":" + service + " NOTICE " + target + " :" + line);
-	}
+      //Inline Functions Below here.
+      virtual void killnick (AISutil::String const &target,
+			     AISutil::String const &from,
+			     AISutil::String const &reason) = 0;
       
-      void servicePrivmsg(AISutil::String const &line,
-			  AISutil::String const &service, 
-			  AISutil::String const &target)
-	{
-	   queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
-	}
+      virtual void serviceNotice(AISutil::String const &line,
+				 AISutil::String const &service, 
+				 AISutil::String const &target) = 0;
+      
+      virtual void serviceNoticeForce(AISutil::String const &line, 
+				      AISutil::String const &service,
+				      AISutil::String const &target) = 0;
+      
+      virtual void servicePrivmsg(AISutil::String const &line,
+				  AISutil::String const &service, 
+				  AISutil::String const &target) = 0;
+      
+      virtual void serviceQuit(const AISutil::String& name,
+			       const AISutil::String& reason) = 0;
       
       // This does not modify a server mode, it should be renamed.
-      void serverMode(AISutil::String const &chan, AISutil::String const &mode,
-		      AISutil::String const &target)
-	{
-	   queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
-	}
+      virtual void serverMode(AISutil::String const &chan,
+			      AISutil::String const &mode,
+			      AISutil::String const &target) = 0;
       
-      void sendCTCPpingReply(AISutil::String const &from,
-			     AISutil::String const &who,
-			     AISutil::String & data)
-	{
-	   queueAdd(":" + from + " NOTICE " + who + " :\001PING " + 
-		    data + "\001");
-	};
+      virtual void registerService(AISutil::String const &nick,
+				   AISutil::String const &user,
+				   AISutil::String const &host,
+				   AISutil::String const &realname) = 0;
       
-      void sendCTCPversionReply(AISutil::String const &from,
-				AISutil::String const &who)
-	{
-	   queueAdd(":" + from + " NOTICE " + who +
-		    " :\001VERSION IRCDome Network Services (c)2002 James I Wilkins <james@ircdome.org>\001");
-	};
+      virtual void serviceJoin(AISutil::String const &service,
+			       AISutil::String const &target) = 0;
       
-      
-      void registerService(AISutil::String const &nick,
-			   AISutil::String const &user,
-			   AISutil::String const &host,
-			   AISutil::String const &realname)
-	{                               
-	   queueAdd ("NICK " + nick + " 1 " + 
-		     AISutil::String::convert(currentTime) + " +dz " + user + 
-		     " " + host + 
-		     " services.ircdome.org services.ircdome.org 0 1 :" + 
-		     realname);
-        }; 
-      
-      void serviceJoin(AISutil::String const &service,
-		       AISutil::String const &target);
-      
-      bool usePrivmsg(AISutil::String const &);
+      virtual bool usePrivmsg(AISutil::String const &) = 0;
       
       // These should be moved to the new channel classes
-      void serviceKick(AISutil::String const &, AISutil::String const &,
-		       AISutil::String const &);
+      virtual void serviceKick(AISutil::String const &,
+			       AISutil::String const &,
+			       AISutil::String const &) = 0;
+      virtual bool isOp(AISutil::String const &,
+			AISutil::String const &) = 0;
+      virtual bool isVoice(AISutil::String const &,
+			   AISutil::String const &) = 0;
+      // And this should be removed when the new channel classes are done.
+      virtual void queueAdd(const AISutil::String&) = 0;
       
       
       // This should be moved to the NOTE MODULE
-      void sendNote(AISutil::String const &, AISutil::String const &,
-		    AISutil::String const &);
+      virtual void sendNote(AISutil::String const &, AISutil::String const &,
+			    AISutil::String const &) = 0;
       
-      bool isAuthorised(AISutil::String const &);
-      int getRequiredAccess(AISutil::String const &, AISutil::String const &);
+      virtual int locateID(AISutil::String const &nick) = 0;
+      virtual bool isAuthorised(AISutil::String const &) = 0;
+      virtual User* addClient(AISutil::String const &, AISutil::String const &,
+			      AISutil::String const &, AISutil::String const &,
+			      AISutil::String const &, AISutil::String const &,
+			      AISutil::String const &, AISutil::String const &,
+			      AISutil::String const &) = 0;
+      virtual int getRequiredAccess(AISutil::String const &,
+				    AISutil::String const &) = 0;
+      virtual bool isNickRegistered(AISutil::String const &) = 0;
       
-      void modeIdentify(AISutil::String const &);
-            
-      void addOper(AISutil::String const &, int access);
-      void delOper(AISutil::String const &);
-      bool isOper(AISutil::String const &);
-      void validateOper(AISutil::String &);
+      // This should be in the NICK MODULE
+      virtual void modeIdentify(AISutil::String const &) = 0;
+      virtual void updateLastID(AISutil::String const &) = 0;
       
-      unsigned long getCountTx(void) const
-	{ return countTx; };
-      unsigned long getCountRx(void) const
-	{ return countRx; };
       
-      void doPong(AISutil::String const &);
+      virtual int getRegisteredNickID(AISutil::String const &) = 0;
+
+      virtual AISutil::String getNick(int const &) = 0;
+      virtual AISutil::String getOnlineNick(int const &) = 0;
+      virtual AISutil::String getpendingCode(AISutil::String const &) = 0;
+      virtual void registerNick(AISutil::String const &,
+				AISutil::String const &,
+				AISutil::String const &) = 0;
+      virtual AISutil::String genAuth(AISutil::String const &) = 0;
+      
+      virtual void addOper(AISutil::String const &, int access) = 0;
+      virtual void delOper(AISutil::String const &) = 0;
+      virtual bool isOper(AISutil::String const &) = 0;
+      virtual void validateOper(AISutil::String &) = 0;
    }; // class Services
 }; // namespace Exordium
 
-#endif // _INCLUDE_SERVICES_H_
+# include <exordium/database/database.h>
+# include <exordium/user.h>
+
+#endif // _INCLUDE_EXORDIUM_SERVICES_H_

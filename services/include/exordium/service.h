@@ -39,6 +39,7 @@
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
 
 namespace Exordium {
+   class Services;
    class User;
    
    class Service {
@@ -93,6 +94,7 @@ namespace Exordium {
 	 
        protected:
 	 AISutil::String defDescription;		// Our description
+	 AISutil::String defDistribution;		// Our scope mask
 	 AISutil::String defHostname;			// Our hostname
 	 AISutil::String defName;			// Our name
 	 
@@ -101,6 +103,7 @@ namespace Exordium {
 	 ConfigData(const AISutil::String& d, const AISutil::String& h,
 		    const AISutil::String& n)
 	   : defDescription(d),
+	     defDistribution("*"), // <=- network-wide distribution scope
 	     defHostname(h),
 	     defName(n)
 	   {};
@@ -117,6 +120,8 @@ namespace Exordium {
 	 // Return variables..
 	 const AISutil::String& getDescription(void) const
 	   { return defDescription; };
+	 const AISutil::String& getDistribution(void) const
+	   { return defDistribution; };
 	 const AISutil::String& getHostname(void) const
 	   { return defHostname; };
 	 const AISutil::String& getName(void) const
@@ -124,7 +129,11 @@ namespace Exordium {
       };
       
     protected:
-
+      /* Where is services? This is a pointer because we will not know
+       * where services is upon initialisation of the class..
+       */
+      Exordium::Services* services;
+      
     public:
       // Constructor
       Service(void)
@@ -135,13 +144,14 @@ namespace Exordium {
 	{};
 
       // Start the module (return false if the module is unable to start)
-      virtual bool start(void) = 0;
+      virtual bool start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
       virtual void stop(const AISutil::String& reason) {};
 
       // Parsers
-      virtual void parseLine(AISutil::StringTokens& line, User& origin) = 0;
+      virtual void parseLine(AISutil::StringTokens& line, User& origin,
+			     const bool safe) = 0;
       
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
 			     const AISutil::String& channel) = 0;
@@ -163,6 +173,7 @@ namespace Exordium {
    };
 };
 
+#include <exordium/services.h>
 #include <exordium/user.h>
 
 #endif // _INCLUDE_EXORDIUM_SERVICE_H_
