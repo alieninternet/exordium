@@ -70,8 +70,7 @@ namespace Exordium {
       ServicesInternal(ConfigInternal& c, CDatabase& db);
 	
       // Destructor
-      ~ServicesInternal(void)
-	{};
+      ~ServicesInternal(void);
 
       // Grab the configuration reference
       const Config& getConfig(void) const
@@ -85,12 +84,6 @@ namespace Exordium {
       Console& getConsole(void)
 	{ return console; };
 
-      // These will disappear upon full integration with kine..
-      void run(void);
-      
-      // Function Declrations below here.
-      void shutdown(const AISutil::String &);
-      
 
       User* const addUser(const AISutil::String& name, const int oid);
       bool delUser(Kine::ClientName &);

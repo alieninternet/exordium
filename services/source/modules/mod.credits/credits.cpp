@@ -93,7 +93,7 @@ bool Module::start(Exordium::Services& s)
 /* stop - Stop the service
  * Original 17/09/2002 pickle
  */
-void Module::stop(const String& reason)
+void Module::stop(const String* const reason)
 {
    // Umm, we should QUIT from the network here.. but how?
 }

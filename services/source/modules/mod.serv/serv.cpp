@@ -159,7 +159,7 @@ SERV_FUNC (Module::parseDIE)
      }
    origin.sendMessage(GETLANG(serv_DIE_SUCCESS),getNickname());
    services->sendGOper(getNickname(),origin.getNickname()+" issued an immediate services \002shutdown\002 for \002"+reason);
-   services->shutdown("\002"+origin.getNickname()+"\002 - "+reason);
+//   services->shutdown("\002"+origin.getNickname()+"\002 - "+reason);
 }
 SERV_FUNC (Module::parseFREEZE)
 {

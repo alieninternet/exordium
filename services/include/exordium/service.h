@@ -164,7 +164,7 @@ namespace Exordium {
       virtual bool start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
-      virtual void stop(const AISutil::String& reason) {};
+      virtual void stop(const AISutil::String* const reason = 0) {};
 
       // Parsers
       virtual void parseLine(AISutil::StringTokens& line, User& origin,

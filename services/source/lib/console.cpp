@@ -97,9 +97,8 @@ void CONSOLE_FUNC(Console::parseMODULE)
       services.serviceNotice("Unloading module " + name,
 			     services.getConfigInternal().getConsoleName(),
 			     origin);
-      services.getConfigInternal().getModules().unloadModule(name,
-							     origin +
-							     " unloaded me :(");
+      String reason = origin + " unloaded me :(";
+      services.getConfigInternal().getModules().unloadModule(name, &reason);
       services.sendGOper("PeopleChat",origin+ " \002unloaded\002 module " + name);
       return;
    }

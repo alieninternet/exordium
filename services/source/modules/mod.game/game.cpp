@@ -98,7 +98,7 @@ bool Module::start(Exordium::Services& s)
 /* stop - Stop the service
  * Original 17/09/2002 pickle
  */
-void Module::stop(const String& reason)
+void Module::stop(const String* const reason)
 {
    // Leave all the channels we're on..
    while (!channelGames.empty()) {
@@ -112,7 +112,7 @@ void Module::stop(const String& reason)
    }
    
    // Quit - bye bye!
-   services->serviceQuit(getNickname(), reason);
+   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
 }
 
 

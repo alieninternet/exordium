@@ -289,8 +289,8 @@ bool Module::start(Exordium::Services& s)
 
 
 // Stop the service
-void Module::stop(const String& reason)
+void Module::stop(const String* const reason)
 {
    Kine::langs().deregisterMap(Language::tagMap);
-   services->serviceQuit(getNickname(), reason);
+   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
 }

@@ -84,7 +84,7 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
 	 
 	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String& reason);
+	 void stop(const AISutil::String* const reason = 0);
 	 
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);

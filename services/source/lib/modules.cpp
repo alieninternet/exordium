@@ -127,7 +127,8 @@ Service* const Modules::loadModule(const String& fileName,
 /* unloadModule - Remove a module from the list, and unload it
  * Original 07/06/2002 pickle
  */
-void Modules::unloadModule(const Kine::ClientName& name, const String& reason)
+void Modules::unloadModule(const Kine::ClientName& name,
+			   const String* const reason)
 {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
@@ -172,7 +173,7 @@ void Modules::startAll(Services& services)
 /* unloadAll - Stop all the modules in the list
  * Original 21/09/2002 pickle
  */
-void Modules::unloadAll(const String& reason)
+void Modules::unloadAll(const String* const reason)
 {
    while (!modules.empty()) {
       (*modules.begin()).second->service->stop(reason);

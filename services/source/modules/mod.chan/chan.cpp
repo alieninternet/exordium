@@ -1525,10 +1525,10 @@ bool Module::start(Exordium::Services& s)
 }
 
 // Stop the service - bye bye!
-void Module::stop(const String& reason)
+void Module::stop(const String* const reason)
 {
    // Quit :(
-   services->serviceQuit(getNickname(), reason);
+   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
 }
 
 bool Module::isFreezed(Kine::ChannelName const &chan)

@@ -86,14 +86,14 @@ namespace Exordium {
 				AISutil::String& errString);
       
       // Remove a module from the list, and unload it
-      void unloadModule(const Kine::ClientName& name, 
-			const AISutil::String& reason);
+      void unloadModule(const Kine::ClientName& name,
+			const AISutil::String* const reason = 0);
 
       // Start all modules in the list
       void startAll(Exordium::Services& services);
       
       // Stop and unload all the modules in the list
-      void unloadAll(const AISutil::String& reason);
+      void unloadAll(const AISutil::String* const reason = 0);
       
       // Check if a module exists
       bool exists(const Kine::ClientName& name) const;

@@ -42,10 +42,8 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
-#include <csignal>
 #include "exordium/service.h"
 #include <kineircd/kineircdconf.h>
-#include <kineircd/signals.h>
 
 extern "C"
 {
@@ -68,143 +66,8 @@ using AISutil::String;
 using AISutil::StringTokens;
 using Kine::Password;
 using AISutil::StringMask;
-using Kine::Signals;
 using namespace Exordium;
 
-/** Our rehash handler.  Contains things we do upon receiving a REHASH */
-KINE_SIGNAL_HANDLER_FUNC(Rehash)
-{
-   ((Services*)foo)->logLine("\002[\002Rehash\002]\002 Services has received "
-			     "the REHASH signal");
-}
-
-/** Our death handler.  Contains things we do upon receiving DEATH */
-KINE_SIGNAL_HANDLER_FUNC(Death)
-{
-   String reason =
-     "\002[\002Fatal Error\002]\002 Services received \002" +
-     String(sys_siglist[signal]) + "\002 - Initiating shutdown";
-   ((Services *)foo)->logLine(reason, Log::Warning);
-   ((Services *)foo)->shutdown(reason);
-   exit(1); /* Until kine's signal thingies are fixed :C */
-}
-/** Run() Called from the module to begin operation.
- * This begins the main 'loop' for services, initiates our connection
- * etc.
- */
-/*
-void
-  ServicesInternal::run(void)
-{
-   lastExpireRun = 0;
-   buildNumber = 1;
-   srand(time(NULL));
-   logLine ("Cleaning out (any) stale entries from the DB");
-   database.dbDelete("onlineclients");
-   database.dbDelete("chanstatus");
-   database.dbDelete("nicksidentified");
-   database.dbDelete("kills");
-   database.dbDelete("onlineservers");
-   database.dbDelete("onlinechan");
-   database.dbDelete("onlineopers");
-
-   logLine ("Entering main loop...");
-   for (;;)
-     {
-	time (&currentTime);
-	timer.tv_sec = 1;
-	timer.tv_usec = 0;
-	FD_ZERO (&inputSet);
-	FD_ZERO (&outputSet);
-
-	if (connected)
-	  {
-	     if (!stopping)
-	       {
-		  FD_SET (socky.getFD(), &inputSet);
-	       }
-	     if (queueReady ())
-	       {
-		  FD_SET (socky.getFD(), &outputSet);
-	       }
-	  }
-#ifdef DEBUG
-	else
-	  {
-	     logLine("not connected...", Log::Debug);
-	  }
-#endif
-
-	switch (select (maxSock, &inputSet, &outputSet, NULL, &timer))
-	  {
-	   case 0:         // Select timed out
-	     break;
-	   case -1:                // Select broke
-	     break;
-	   default:                // Select says there is something to process
-	     // Something from the socket?
-	     if (FD_ISSET (socky.getFD(), &inputSet))
-	       {
-		  handleInput();
-	       }
-	     if (FD_ISSET (socky.getFD(), &outputSet))
-	       {
-		  if (!queueFlush ())
-		    {
-		       if(!stopping)
-			 //Ok, technically nasty, but if we're in a shutdown
-			 //state, do we really care if the connection closes?
-			 {
-			    logLine("Disconnecting... (Queue flushing error)");
-			    connected = false;
-			    disconnectTime = currentTime;
-			    disconnect ();
-			 }
-		    }
-
-		  if(stopping)
-		    {
-		       if(stopTime < currentTime)
-			 {
-#ifdef DEBUG
-			    logLine("Disconnecting, QueueFlushed and in stop state",
-				    Log::Debug);
-#endif
-			    connected = false;
-			    exit(0);
-			 }
-		    }
-
-	       }
-	  }
-	if (currentTime > (time_t) (lastCheckPoint + 10))
-	  {
-	     lastCheckPoint = currentTime;
-	     checkpoint ();
-	  }
-	if (currentTime > (time_t) (lastExpireRun + 3600))
-	  {
-	     lastExpireRun = currentTime;
-	     SynchTime ();
-
-	  }
-
-#ifdef DEBUG
-	if(!connected)
-	  {
-	     logLine("Not connected", Log::Debug);
-	  }
-#endif
-	if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
-	  {
-#ifdef DEBUG
-	     logLine("Beginning Connect Attempt", Log::Debug);
-#endif
-	     connect ();
-	  }
-     }
-}
- */
 
 ServicesInternal::ServicesInternal(ConfigInternal& c, CDatabase& db)
   : Services(db),
@@ -219,35 +82,39 @@ stopping(false)
 {
    currentTime = time(NULL);
 
-#ifdef DEBUG
-   logLine("Setting up signal handlers",
-	   Log::Debug);
-#endif
-   Kine::signals().addHandler(&Rehash,
-			      Signals::REHASH,
-			      (void *)this);
-   Kine::signals().addHandler(&Death,
-			      Signals::VIOLENT_DEATH |
-			      Signals::PEACEFUL_DEATH,
-			      (void *)this);
-
    database.dbConnect();
+
+   srand(time(NULL));
+   logLine ("Cleaning out (any) stale entries from the DB");
+   database.dbDelete("onlineclients");
+   database.dbDelete("chanstatus");
+   database.dbDelete("nicksidentified");
+   database.dbDelete("kills");
+   database.dbDelete("onlineservers");
+   database.dbDelete("onlinechan");
+   database.dbDelete("onlineopers");
+   
+   // Start all the modules
+   config.getModules().startAll(*this);
+   
+   // Is the console actually wanted?
+   if (config.getConsoleEnabled())
+     {
+	registerService(config.getConsoleName(), "peoplechat", /* Hack for now */
+			config.getConsoleHostname(),
+			config.getConsoleDescription());
+     }
+   Kine::langs().registerMap(Language::tagMap);
 }
 
-/* shutdown(String)
- *
- * Initiate a services shutdown with the given reason being
- * propagated accross the network
- *
- */
 
-void ServicesInternal::shutdown(String const &reason)
+ServicesInternal::~ServicesInternal(void)
 {
-   logLine("Services is shutting down " + reason,
+   logLine("Exordium is shutting down " /*+ reason*/,
 	   Log::Warning);
 
    // Stop and unload all the modules..
-   config.getModules().unloadAll(reason);
+   config.getModules().unloadAll(/*reason*/);
 
    // I do not like this.. oh well..  - pickle
    if (config.getConsoleEnabled())
@@ -256,7 +123,7 @@ void ServicesInternal::shutdown(String const &reason)
      }
 
    // Nasty hack for now.
-   String tofo = "\002Services shutting down\002 : " + reason;
+//   String tofo = "\002Services shutting down\002 : " + reason;
 //   queueAdd(":" + Kine::config().getOptionsServerName() +
 //	    " SQUIT " + Kine::config().getOptionsServerName() + " :" +
 //	    reason);

@@ -94,8 +94,6 @@ namespace Exordium {
 	{ 
           Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
         };
-      // Function Declrations below here.
-      virtual void shutdown(const AISutil::String &) = 0;
       
       // 'User' operability functions
       virtual User* const addUser(const AISutil::String& name,
