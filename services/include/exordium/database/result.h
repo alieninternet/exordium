@@ -29,17 +29,16 @@
 
 #include <aisutil/string/string.h>
 
-namespace Exordium 
-{
-   /* Base of Result class for SQL engine */
-   class CResult
-     {
-      public:
-	CResult();
-	
-	virtual ~CResult(void);
-     };
-   
+namespace Exordium {
+   // Base of Result class for SQL engine 
+   class CResult {
+    public:
+      CResult(void)
+	{};
+
+      virtual ~CResult(void)
+	{};
+   };
 };
 
 #endif

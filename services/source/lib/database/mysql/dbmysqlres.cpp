@@ -40,10 +40,9 @@
 using namespace Exordium;
 using AISutil::String;
 
-/* Constructor thingy ma bob */
+// Constructor thingy ma bob 
 CMySQLRes::CMySQLRes(MYSQL_RES &result)
 {
-   
       mysqlres = &result;
 }
 

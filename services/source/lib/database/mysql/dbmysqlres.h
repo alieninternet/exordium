@@ -36,21 +36,20 @@
 
 #include "dbmysql.h"
 
-namespace Exordium 
-{
-   
-   class CMySQLRes:public CResult
-     {
-      private:
-	MYSQL_RES *mysqlres;
-	MYSQL_RES mysqlrow;
-      public:
-	CMySQLRes(MYSQL_RES &result);
-	
-	~CMySQLRes();
-	
-	//functions.
-     };
+namespace Exordium {
+   class CMySQLRes : public CResult {
+    private:
+      MYSQL_RES *mysqlres;
+      MYSQL_RES mysqlrow;
+
+    public:
+      CMySQLRes(MYSQL_RES &result);
+      
+      ~CMySQLRes()
+	{};
+      
+      //functions.
+   };
 };
 
 #endif
