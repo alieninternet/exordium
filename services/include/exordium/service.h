@@ -153,7 +153,7 @@ namespace Exordium {
       
       // this needs to be removed 'cause it's broken
       Service(void)
-	: Kine::Service("nick", "host", Kine::daemon().getTime())
+	: Kine::Service("nick", "host", /*Kine::daemon().getTime()*/ AISutil::Time())
 	{};
       
       // Destructor
