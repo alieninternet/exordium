@@ -840,3 +840,29 @@ void Module::stop(const String& reason)
    Kine::langs().deregisterMap(Language::tagMap);
    services->serviceQuit(getNickname(), reason);
 }
+
+
+/** nickLinkAdd(String,String)
+ * 
+ * Add a link between the two nicknames.
+ * 
+ * 
+ */
+
+void Module::nickLinkAdd(String const &first, String const &second)
+{
+   services->getDatabase().dbInsert("nicklinks","'"+String::convert(services->getStatic().getRegisteredNickID(first))
+				   +"','"+String::convert(services->getStatic().getRegisteredNickID(second))+"'");
+}
+
+/** nickLinkDel(String,String)
+ * 
+ * Remove a link between the two nicknames.
+ * 
+ */
+
+void Module::nickLinkDel(String const &first, String const &second)
+{
+   services->getDatabase().dbDelete("nicklinks","fromnick='"+String::convert(services->getStatic().getRegisteredNickID(first))
+				   +"','"+String::convert(services->getStatic().getRegisteredNickID(second))+"'");
+}

@@ -350,16 +350,6 @@ void
    connected = false;
 }
 
-void
-  ServicesInternal::liveLog(const AISutil::String &line)
-{
-   if(connected)
-     {
-	if(line.length()>5)
-	  servicePrivmsg(line,"PeopleChat","#Debug");
-     }
-
-}
 /* connect()
  *
  * Connect to our uplink! Yeah!
@@ -399,28 +389,17 @@ bool ServicesInternal::connect (void)
    connected = true;
    logLine ("Beginning handshake with uplink");
    maxSock = socky.getFD() + 1;
-
-/* *Whistles* Config option */
-/* Whistle all you want, its done :c */
    queueAdd ("PASS "+config.getUplinkPass()+" :TS");
    queueAdd ("SVINFO 3 3 0 :"+String::convert(currentTime));
    queueAdd ("CAPAB TS3 SSJOIN NICKIP NOQUIT");
-
-   /* Jesus, so many hard coded stuff :( */
-/* It's okay, all the server connection stuff has a very very very limited
- * lifespan in anycase.. - pickle
- */
    queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
 	     Kine::config().getOptionsDescription());
-   // Do we have an underling?
    if (!config.getUnderlingHostname().empty())
      {
 	queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
      }
-
    queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
    queueAdd ("BURST");
-   //	queueFlush();
 
    // Start all the modules
    config.getModules().startAll(*this);
@@ -432,20 +411,12 @@ bool ServicesInternal::connect (void)
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
      }
-   std::cerr << "Registering The *core* language map" << std::endl;
    Kine::langs().registerMap(Language::tagMap);
-   std::cerr << "finished registering the core map" <<std::endl;
    int foofoo = 0;
    for (;;)
      {
-
-	std::cout << "TagMap " << foofoo << ": tag '" <<
-	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
-	  Language::tagMap[foofoo].tagID << std::endl;
-
 	if (Language::tagMap[++foofoo].tagName == 0)
 	  {
-
 	     break;
 	  }
 
@@ -517,20 +488,6 @@ void ServicesInternal::SynchTime(void)
    //	database.dbGetRow();
    //   }
    //
-}
-
-  
-void
-  ServicesInternal::nickLinkAdd(String const &first, String const &second)
-{
-
-   database.dbInsert("nicklinks","'"+String::convert(gstatic.getRegisteredNickID(first))+"','"+String::convert(gstatic.getRegisteredNickID(second))+"'");
-}
-
-void
-  ServicesInternal::nickLinkDel(String const &first, String const &second)
-{
-   database.dbDelete("nicklinks","fromnick='"+String::convert(gstatic.getRegisteredNickID(first))+"','"+String::convert(gstatic.getRegisteredNickID(second))+"'");
 }
 
 void

@@ -166,8 +166,6 @@ namespace Exordium {
       void sendEmail(AISutil::String const &, AISutil::String const &,
 		     AISutil::String const &);
 
-      void liveLog (AISutil::String const &);
-
       void servicePart (AISutil::String const &, AISutil::String const &);
       void queueAdd (const AISutil::String& line);
 

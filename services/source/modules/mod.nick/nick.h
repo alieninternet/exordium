@@ -71,7 +71,8 @@ namespace Exordium {
 	   {};
 	 
 	 void nickLinkAdd(AISutil::String const &, AISutil::String const &);
-
+	 void nickLinkDel(AISutil::String const &, AISutil::String const &);
+	 
 	 /* Our Event Handler(s) */
 	 void handleClientSignon(Exordium::User& origin);
 	 
