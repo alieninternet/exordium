@@ -310,7 +310,6 @@ void
         name + " -r");
    String togo = "This channel has been deregistered \002"+reason;
    services.serviceNotice(String(togo),"Chan",name);
-   services.servicePart("Chan",name);
 }
 
 /* Synch the network to what we think it should be like */
@@ -331,7 +330,6 @@ void
   Channel::synchChannel(String const &name, String const &topic, String const &modes)
 {
    //services.serviceJoin("Chan",name);
-   services.serverMode(name,"+o","Chan");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
 		     name + " +r");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
@@ -346,8 +344,6 @@ void
    services.getDatabase().dbInsert("chans", 
        "'','"+name+"','"+owner+"','This is a new channel','+nt','A new channel','www.ircdome.irg', 0"); 
    chanAddAccess(name,owner,"500");
-   services.serviceJoin("Chan",name);
-   services.serverMode(name,"+o","Chan");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
                      name + " +r");
 

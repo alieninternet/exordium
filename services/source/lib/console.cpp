@@ -97,6 +97,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
       services.getConfigInternal().getModules().unloadModule(name,
 							     origin +
 							     " unloaded me :(");
+      services.sendGOper("PeopleChat",origin+ " \002unloaded\002 module " + name);
       return;
    }
    
@@ -125,5 +126,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
       services.serviceNotice("Module loaded successfully",
 			     services.getConfigInternal().getConsoleName(),
 			     origin);
+      
+      services.sendGOper("PeopleChat",origin+" \002loaded\002 module " + filename);
    }
 }

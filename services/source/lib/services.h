@@ -215,8 +215,7 @@ namespace Exordium {
 			   AISutil::String const &host,
 			   AISutil::String const &realname)
 	{                               
-	   queueAdd ("NICK " + nick + " 1 " + 
-		     AISutil::String::convert(currentTime) + " +o " + user + 
+	   queueAdd ("NICK " + nick + " 1 1 +o " + user + 
 		     " " + host + " " + Kine::config().getOptionsServerName() +
 		     " 0 0 :" + realname);
         }; 

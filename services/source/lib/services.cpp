@@ -1322,7 +1322,7 @@ void ServicesInternal::validateOper(String &origin)
    if(axs>0)
      {
 	String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
-	logLine(tosend);
+	sendGOper("Oper",tosend);
 
 	if (!isOper(origin))
 	  addOper(origin, axs);

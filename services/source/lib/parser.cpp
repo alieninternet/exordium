@@ -532,10 +532,8 @@ void
   PARSER_FUNC (Parser::parseSQUIT)
 {
    String server = tokens.nextToken();
-
    services.getDatabase().dbDelete("nicksidentified", "identified.nick=onlineclients.id AND onlineclients.server='"+server+"'");
    services.getDatabase().dbDelete("onlineclients", "server='"+server+"'");
-
    services.DelOnlineServer(server);
 }
 void

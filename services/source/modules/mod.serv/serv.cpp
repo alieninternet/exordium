@@ -39,13 +39,12 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
-
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::ServModule;
 
-
-const Module::functionTableStruct Module::functionTable[] = {
+const Module::functionTableStruct Module::functionTable[] =
+{
      { "clist",		&Module::parseCLIST },
      { "delnick",	&Module::parseDELNICK },
      { "elist",		&Module::parseELIST },
@@ -60,6 +59,7 @@ const Module::functionTableStruct Module::functionTable[] = {
      { "setpass",	&Module::parseSETPASS },
      { "status",	&Module::parseSTATUS },
      { "commands",	&Module::parseCOMMANDS },
+     { "gethash",	&Module::parseGETHASH },
      { 0, 0}
 };
 
@@ -71,13 +71,21 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
      {
 	if (command == functionTable[i].command)
 	  {
+	     if(!origin.isIdentified(origin.getNickname()))
+	       {
+		  origin.sendMessage("You are not identified to services",getName());
+		  services->sendGOper(origin.getNickname()+" tried to use \002"+command+"\002 when not identified",getName());
+		  return;
+	       }
+	     
 	     int required = services->getRequiredAccess(getName(),command.toLower());
 	     int access = origin.getAccess(getName());
 	     if(required>access)
 	       {
 		  origin.sendMessage("You do not have enough access for that command",getName());
-		  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
+		  String togo = "\002 WARNING!\002 "+origin.getNickname()+" tried to use the \002"+command+"\002";
 		  services->logLine(togo, Log::Warning);
+		  services->sendGOper(getName(),togo);
 		  return;
 	       }
 
@@ -89,52 +97,46 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    origin.sendMessage ("Unrecognised Command", getName());
 }
 
-  SERV_FUNC (Module::parseSTATUS)
+SERV_FUNC (Module::parseSTATUS)
 {
-	origin.sendMessage("Exordium services status report",getName());
-	String togo = "Current build : \002" + String::convert(Services::buildNumber) + "\002";
-	origin.sendMessage(togo,getName());
-	long tx = services->getCountTx();
-        long rx = services->getCountRx();
-	String tofo = "Tx : \002" + String::convert(tx) + "\002 Rx : \002" + String::convert(rx) + "\002";
-
-	origin.sendMessage(tofo,getName());
+   origin.sendMessage("Exordium services status report",getName());
+   String togo = "Current build : \002" + String::convert(Services::buildNumber) + "\002";
+   origin.sendMessage(togo,getName());
+   long tx = services->getCountTx();
+   long rx = services->getCountRx();
+   String tofo = "Tx : \002" + String::convert(tx) + "\002 Rx : \002" + String::convert(rx) + "\002";
+   origin.sendMessage(tofo,getName());
 }
 
 SERV_FUNC (Module::parseCOMMANDS)
 {
-  String::size_type lineLength = 200;
-
-   // Send the banner (this shouldn't be hard-coded)
-  // sendMessage(origin, "Command list for " + getName() + ":");
-origin.sendMessage("Command list for " + getName() + ":",getName());
-   // Start formulating the data..
+   String::size_type lineLength = 200;
+   origin.sendMessage("Command list for " + getName() + ":",getName());
    std::ostringstream list(" -=>");
-   for (int i = 0; functionTable[i].command != 0; i++) {
-      // Add the command to the list
-      list << " " << functionTable[i].command;
+   for (int i = 0; functionTable[i].command != 0; i++)
+     {
+        list << " " << functionTable[i].command;
 
-   // How are we for size?
-      if (list.str().length() >= lineLength) {
-         // Dump it and reset the string stream thingy
-         origin.sendMessage(list.str(),getName());
-         list.str() = " -=>";
-      }
-   }
+	// How are we for size?
+	if (list.str().length() >= lineLength)
+	  {
+	     // Dump it and reset the string stream thingy
+	     origin.sendMessage(list.str(),getName());
+	     list.str() = " -=>";
+	  }
+     }
 
    // Anything left to send still?
-   if (list.str().length() > 4) {
-      origin.sendMessage(list.str(),getName());
-   }
+   if (list.str().length() > 4)
+     {
+	origin.sendMessage(list.str(),getName());
+     }
    // Send the footer (this shouldn't be hard-coded)
    origin.sendMessage("End of command list",getName());
 
-
-
-
 }
 
-  SERV_FUNC (Module::parseDIE)
+SERV_FUNC (Module::parseDIE)
 {
    String reason = tokens.rest();
    if(reason=="")
@@ -142,13 +144,39 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: die reason for shutdown here",getName());
 	return;
      }
+   String tofo = origin.getNickname()+" issued an immediate services \002shutdown\002 for \002"+reason;
 
+   services->sendGOper(getName(),tofo);
    String togo = "\002"+origin.getNickname()+"\002 - "+reason;
    services->shutdown(togo);
 }
+SERV_FUNC (Module::parseGETHASH)
+{
+   String who = tokens.nextToken();
+   if(who=="")
+     {
+	origin.sendMessage("Usage: gethash nickname",getName());
+        return;
+     }
+   if(!services->isNickRegistered(who))
+     {
+   	origin.sendMessage("Error: Nickname is not registered",getName());
+	return;
+     }
+   if(!services->getDatabase().dbSelect("id","nickspending","nickname='"+who+"'"))
+     {
+        origin.sendMessage("Error: That nickname is not in a pending status",getName());
+	return;
+     }
+   int nbRes = services->getDatabase().dbSelect("auth","nickspending","nickname='"+who+"'");
+   String auth = services->getDatabase().dbGetValue();
+   String togo = "The authorisation code is "+auth;
+   origin.sendMessage(togo,getName());
+   services->sendGOper(getName(),origin.getNickname()+" did a \002gethash\002 on "+who);
+   return;
+}
 
-
-  SERV_FUNC (Module::parseSETPASS)
+SERV_FUNC (Module::parseSETPASS)
 {
    String who = tokens.nextToken();
    String newpass = tokens.nextToken();
@@ -168,19 +196,19 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
    services->logLine(togo);
+   services->sendGOper(getName(),togo);
 }
 
-
-  SERV_FUNC (Module::parseRAW)
+SERV_FUNC (Module::parseRAW)
 {
    std::string c = tokens.rest();
    services->queueAdd(c);
    String togo = origin.getNickname()+" did \002RAW\002 - "+c;
    services->logLine(String(togo), Log::Warning);
+   services->sendGOper(getName(),togo);
 }
 
-
-  SERV_FUNC (Module::parseNEWS)
+SERV_FUNC (Module::parseNEWS)
 {
    String command = tokens.nextToken();
    if(command=="")
@@ -191,7 +219,11 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    if(command=="list")
      {
         int nbRes = services->getDatabase().dbSelect("news");
-
+	if(nbRes==0)
+	  {
+	     origin.sendMessage("No News found",getName());
+	     return;
+	  }
 	for(int i=0; i<nbRes; i++)
 	  {
 	     String id = services->getDatabase().dbGetValue(0);
@@ -214,6 +246,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	  }
         services->getDatabase().dbDelete("news", "id="+id);
 	origin.sendMessage("News has been deleted",getName());
+	services->sendGOper(getName(),origin.getNickname()+" \002deleted\002 news item "+id);
 	return;
      }
    if(command=="add")
@@ -235,12 +268,12 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	  }
         services->getDatabase().dbInsert("news", "'','"+type+"','"+String::convert(nexpires)+"','"+text+"'");
 	origin.sendMessage("New news item added successfully",getName());
+	services->sendGOper(getName(),"\002Added\002 a new news item");
      }
 
 }
 
-
-  SERV_FUNC (Module::parseCHAN)
+SERV_FUNC (Module::parseCHAN)
 {
    String command = tokens.nextToken();
    String channel = tokens.nextToken();
@@ -273,6 +306,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	services->getChannel().chanAddAccess(channel,newowner,"500");
         services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
 	services->log(origin,getName(),String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
+	services->sendGOper(getName(),origin.getNickname()+" \002Modified\002 channel ownedship of "+channel+" "+oldowner+"->"+newowner);
 	return;
      }
    if(command=="del")
@@ -283,10 +317,17 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	     origin.sendMessage("Usage: chan del #channel reason",getName());
 	     return;
 	  }
+	if(!services->getChannel().isChanRegistered(channel))
+	  {
+	     origin.sendMessage("That channel is not registered",getName());
+	     return;
+	  }
+	
 	String togo = origin.getNickname() + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
 	services->logLine(String(togo));
 	services->getChannel().deregisterChannel(channel,reason);
 	services->log(origin,getName(),String("Deregistered ")+channel+" for "+reason);
+	services->sendGOper(getName(),origin.getNickname()+" \002Deregistered\002 channel "+channel+" for "+reason);
 	return;
      }
    if(command=="add")
@@ -311,12 +352,12 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	services->logLine(String(togo));
 	services->getChannel().registerChannel(channel,thenick);
 	services->log(origin,getName(),String("Registered ")+channel+" to "+thenick);
+	services->sendGOper(getName(),origin.getNickname()+" \002Registered\002 "+channel+" to "+thenick);
 	return;
      }
 }
 
-
-  SERV_FUNC (Module::parseHELP)
+SERV_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
@@ -325,8 +366,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    services->log(origin,getName(),String(tolog));
 }
 
-
-  SERV_FUNC (Module::parseUSER)
+SERV_FUNC (Module::parseUSER)
 {
    String command = tokens.nextToken();
    String toadd = tokens.nextToken();
@@ -370,22 +410,24 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	  }
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+level;
 	services->logLine(togo);
+	services->sendGOper(getName(),togo);
         services->getDatabase().dbUpdate("access", "access='"+level+"'", "nickname='"+toadd+"'");
 	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
 	return;
      }
    if(command=="list")
      {
-        int nbRes = services->getDatabase().dbSelect("*", "access", "service='serv'", "id");
+        int nbRes = services->getDatabase().dbSelect("*", "access", "service='serv'");
+	CResult *myRes = services->getDatabase().dbGetResultSet();
 
 	for(int i=0; i<nbRes; i++)
 	  {
-	     String nickname = services->getDatabase().dbGetValue(1);
-	     String access = services->getDatabase().dbGetValue(3);
+	     String nickname = myRes->getValue(i,1);
+	     String access = myRes->getValue(i,3);
 	     String togo = "\002"+nickname+"\002 has level \002"+access;
 	     origin.sendMessage(String(togo),getName());
-             services->getDatabase().dbGetRow();
 	  }
+	delete myRes;
 	return;
      }
    if(command=="del")
@@ -414,6 +456,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	origin.sendMessage("Command complete",getName());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
 	services->logLine(String(togo), Log::Warning);
+	services->sendGOper(getName(),togo);
 	services->log(origin,getName(),"Deleted "+toadd+" from Serv");
 	return;
      }
@@ -455,6 +498,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	origin.sendMessage("Command completed",getName());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
 	services->logLine(String(togo), Log::Warning);
+	services->sendGOper(getName(),togo);
 	String tolog = "Added "+toadd+" to Serv with level "+toadd;
 	services->log(origin,getName(),String(tolog));
 	return;
@@ -463,16 +507,17 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    return;
 }
 
-
-  SERV_FUNC (Module::parseHELPON)
+SERV_FUNC (Module::parseHELPON)
 {
    int access = origin.getAccess(getName());
    if(access>50)
      {
-	origin.sendMessage("You are now an IRCDome services assistant",getName());
-	String tosend = ":services.peoplechat.org HELPER "+origin.getNickname()+" "+String::convert(access);
+	origin.sendMessage("You are now a PeopleChat services assistant",getName());
+	String tosend = ":services.peoplechat.org SVSMODE "+origin.getNickname()+" +gsao";
 	services->queueAdd(String(tosend));
-	services->log(origin,getName(),"Become a services helper at level "+String::convert(access));
+	services->log(origin,getName(),origin.getNickname()+ " became a services helper at level "+String::convert(access));
+	services->sendGOper(getName(),origin.getNickname() + " became a services helper at level "+String::convert(access));
+
 	return;
      }
    services->log(origin,"Serv","Failed to become a helper (not enough access)");
@@ -480,8 +525,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    services->logLine(tosend, Log::Warning);
 }
 
-
-  SERV_FUNC (Module::parseNLIST)
+SERV_FUNC (Module::parseNLIST)
 {
    String tomatch = tokens.nextToken();
    String dest = tokens.nextToken();
@@ -491,15 +535,15 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	return;
      }
    int nbRes = services->getDatabase().dbSelect("nickname,lasthost,email", "nicks", "lasthost like '"+tomatch+"'");
+   CResult *myRes = services->getDatabase().dbGetResultSet();
    int f=0;
    for(int i=0; i<nbRes; i++)
      {
 	f++;
-	String tnick = services->getDatabase().dbGetValue(0);
-	String thost = services->getDatabase().dbGetValue(1);
-	String temail = services->getDatabase().dbGetValue(2);
+	String tnick = myRes->getValue(i,0);
+	String thost = myRes->getValue(i,1);
+	String temail = myRes->getValue(i,2);
 	String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002 "+temail+"\002";
-        services->getDatabase().dbGetRow();
 	if(dest=="")
 	  {
 	     origin.sendMessage(String(tosend),getName());
@@ -509,13 +553,30 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	     services->serviceNotice(String(tosend),"Serv",dest);
 	  }
      }
+   if(nbRes==0)
+     {
+	origin.sendMessage("No Results found!",getName());
+     }
+
+   delete myRes;
    services->log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
-   String togo = origin.getNickname()+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
+   String togo;
+   if(dest=="")
+     {
+	togo = origin.getNickname()+" did a \002nlist\002 on "+
+	  tomatch+" "+String::convert(f)+" matches found";
+     }
+   else
+     {
+	togo = origin.getNickname()+" did a \002nlist\002 on "+tomatch+" "+
+	  String::convert(f)+" matches found and sent it to "+dest;
+     }
+
    services->logLine(togo);
+   services->sendGOper(getName(),togo);
 }
 
-
-  SERV_FUNC (Module::parseELIST)
+SERV_FUNC (Module::parseELIST)
 {
    String tomatch = tokens.nextToken();
    String dest = tokens.nextToken();
@@ -524,45 +585,47 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	origin.sendMessage("Usage: elist <match> <optional destination>",getName());
 	return;
      }
-   if(dest=="")
-     {
-	//Return to origin.
-        int nbRes = services->getDatabase().dbSelect("nickname, lasthost, email", "nicks", "email like '"+tomatch+"'");
-	for(int i=0; i<nbRes; i++)
-	  {
-	     String nickname = services->getDatabase().dbGetValue(0);
-	     String lasthost = services->getDatabase().dbGetValue(1);
-	     String email = services->getDatabase().dbGetValue(2);
-	     String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
-	     origin.sendMessage(tosend,getName());
-             services->getDatabase().dbGetRow();
-	  }
-	services->log(origin,"Serv","Did an elist on "+tomatch);
-	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch;
-	services->logLine(togo);
-	return;
-     }
-   //Else send to given client
-   /* This should proberly be wrapped up into one function, just checking
-    * for the correct place to send .. like above *points up* */
    int nbRes = services->getDatabase().dbSelect("nickname, lasthost, email", "nicks", "email like '"+tomatch+"'");
+   CResult *myRes = services->getDatabase().dbGetResultSet();
 
    for(int i=0; i<nbRes; i++)
      {
-        String nickname = services->getDatabase().dbGetValue(0);
-        String lasthost = services->getDatabase().dbGetValue(1);
-        String email = services->getDatabase().dbGetValue(2);
+	String nickname = myRes->getValue(i,0);
+	String lasthost = myRes->getValue(i,1);
+	String email = myRes->getValue(i,2);
 	String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
-	services->serviceNotice(tosend,getName(),dest);
+	if(dest=="")
+	  origin.sendMessage(tosend,getName());
+	else
+	  services->serviceNotice(String(tosend),"Serv",dest);
+
+	services->getDatabase().dbGetRow();
      }
-   services->log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
-   String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
-   services->logLine(togo);
+   if(nbRes==0)
+     {
+	origin.sendMessage("No Results found!",getName());
+     }
+
+   if(dest=="")
+     {
+	services->log(origin,"Serv","Did an elist on "+tomatch);
+	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch;
+	services->logLine(togo);
+	services->sendGOper(getName(),togo);
+     }
+   else
+     {
+
+	services->log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
+	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
+	services->logLine(togo);
+	services->sendGOper(getName(),togo);
+     }
+   delete myRes;
 
 }
 
-
-  SERV_FUNC (Module::parseDELNICK)
+SERV_FUNC (Module::parseDELNICK)
 {
    String who  = tokens.nextToken();
    String reason = tokens.rest();
@@ -579,12 +642,12 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
    services->logLine(togo, Log::Warning);
+   services->sendGOper(getName(),togo);
    services->getDatabase().dbDelete("nicks", "nickname='"+who+"'");
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
 
-
-  SERV_FUNC (Module::parseCLIST)
+SERV_FUNC (Module::parseCLIST)
 {
    String who = tokens.nextToken();
    String send = tokens.nextToken();
@@ -599,34 +662,59 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	origin.sendMessage("That nickname is not registered",getName());
 	return;
      }
-   if(send=="")
+   if(send!="")
      {
-	int totalc = services->getChannel().maxChannels();
-	int userc = services->getChannel().maxChannelsUser(who);
-	int totala = services->getChannel().maxChannelsAccess();
-	String togo = origin.getNickname() + " did a \002clist\002 on "+who+", "+String::convert(userc)+" matches found from "+String::convert(totalc)+" channels and "+String::convert(totala)+" access entries";
-	services->logLine(togo);
-	int theid = services->getRegisteredNickID(who);
-        int nbRes = services->getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");
 
-	for(int i=0; i<nbRes; i++)
+	User *ptr = services->findUser(send);
+	if(ptr==0)
 	  {
-	     String cname = services->getDatabase().dbGetValue(0);
-	     String caxs = services->getDatabase().dbGetValue(1);
-	     String ccname = services->getChannel().getChanName(cname.toInt());
-	     String tosend = ccname+" with "+caxs;
-	     origin.sendMessage(tosend,getName());
-             services->getDatabase().dbGetRow();
+	     origin.sendMessage("That nickname is not online",getName());
+	     return;
 	  }
-	services->log(origin,"Serv","Did a clist on "+who);
-	return;
-     }
-}
 
+     }
+
+   int totalc = services->getChannel().maxChannels();
+   int userc = services->getChannel().maxChannelsUser(who);
+   int totala = services->getChannel().maxChannelsAccess();
+   int theid = services->getRegisteredNickID(who);
+   int nbRes = services->getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");
+   String togo = origin.getNickname() + " did a \002clist\002 on "+who+", "
+     +String::convert(nbRes)+" matches found from "+String::convert(totalc)+
+     " channels and "+String::convert(totala)+" access entries";
+   if(send!="")
+     togo = togo + " and sent it to "+send;
+   services->sendGOper(getName(),togo);
+
+   CResult *myRes = services->getDatabase().dbGetResultSet();
+   if(send=="")
+     origin.sendMessage("Channel Access list for "+who,getName());
+   else
+     {
+	origin.sendMessage("Sending channel access list for "+who+" to "+send,getName());
+	services->serviceNotice("Channel access list for "+who+" sent by "+origin.getNickname(),getName(),send);
+     }
+
+   for(int i=0; i<nbRes; i++)
+     {
+	String cname = myRes->getValue(i,0);
+	String caxs = myRes->getValue(i,1);
+	String ccname = services->getChannel().getChanName(cname.toInt());
+	String tosend = "Channel: \002"+ccname+"\002 with level \002"+caxs;
+	if(send=="")
+
+	  origin.sendMessage(tosend,getName());
+	else
+	  services->serviceNotice(String(tosend),"Serv",send);
+	services->getDatabase().dbGetRow();
+     }
+   if(nbRes==0)
+     origin.sendMessage("No Results Found!",getName());
+   services->log(origin,"Serv","Did a clist on "+who);
+}
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 { return new Module(); }
-
 
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo =
@@ -636,26 +724,26 @@ const Module::moduleInfo_type Module::moduleInfo =
      Exordium::Service::moduleInfo_type::Events::NONE
 };
 
-
 // Start the service
 bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
-   
+
    // Attempt to affirm our database table..
-   if (!services->getDatabase().affirmTable(Tables::serverlistTable)) {
-      services->logLine("Unable to affirm mod_serv database table "
-			"'serverlist'",
-			Log::Fatality);
-      return false;
-   }
-   
+   if (!services->getDatabase().affirmTable(Tables::serverlistTable))
+     {
+	services->logLine("Unable to affirm mod_serv database table "
+			  "'serverlist'",
+			  Log::Fatality);
+	return false;
+     }
+
    // Register ourself to the network
    services->registerService(getName(), getName(),
 			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
-   
+
    // We started okay :)
    return true;
 }
