@@ -1194,14 +1194,6 @@ int
    // Saftey Check - Remove any special chars.
    String newnick = nick.IRCtoLower();
 
-   /* Fix for bug: cant find user on sjoin
-      Problem: I noticed that sometimes the nick arrives with a @, removing
-               it solves the problem.
-      -- PLV
-   */
-   //if (newnick[0]=='@')
-   //  newnick=newnick.substr(1, newnick.length()-1);
-
 
    String query = "select id from onlineclients where nickname='" + newnick + "'";
    MysqlRes res = database.query(query);
