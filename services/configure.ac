@@ -153,7 +153,7 @@ AC_DEFUN([AC_EXORDIUM_MODULE_CHECK],[
                 AC_HELP_STRING([--disable-$1-module],
 		               [Disable $2]),
    [
-    if test "$enableval" \!= "yes"; then
+    if test "$enableval" \!= "no"; then
       echo -n "$1 "
       AS_TR_SH(exordium_test_compile_$1_module)=yes
     fi
