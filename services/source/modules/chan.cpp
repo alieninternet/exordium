@@ -131,9 +131,7 @@ void
 	services.serviceNotice("Usage: seen #channel nickname","Chan",origin);
 	return;
      }
-   //Finish Me. :=>
-   String bob = "james";
-   services.clients.delUser(bob);
+
 }
 
 void

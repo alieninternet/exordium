@@ -15,8 +15,7 @@ SOURCES=\
 	parser.cpp \
 	services.cpp \
 	sql.cpp \
-	user.cpp \
-	userbase.cpp 
+	user.cpp 
 	
 INCLUDES=../../include
 

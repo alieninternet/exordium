@@ -180,7 +180,7 @@ namespace Exordium
 	  services.getDatabase().query (String ("insert into onlineclients values('','") + nick.toLower() +String ("','") + hops + String ("','") + timestamp +String ("','") + username + String ("','") + host + String ("','") + vwhost + String ("','") + server + String ("','") + modes + String ("','") + services.getDatabase().makeSafe(realname) +String ("')"));
 	  //Now retrieve that id that has just been given.....
 	  int foo = getOnlineNickID(nick);
-	  User *ptr = services.clients.addUser(nick,foo);
+	  User *ptr = services.addUser(nick,foo);
        }
 
    int

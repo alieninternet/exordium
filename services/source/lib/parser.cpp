@@ -66,7 +66,7 @@ void Parser::parseLine(const String& line)
 	origin = origin.IRCtoLower();
      }
    //Find the associated user for this origin...
-   User *ptr = services.clients.findUser(origin);
+   User *ptr = services.findUser(origin);
    String command = st.nextToken ();
    for (int i = 0; functionTable[i].command != 0; i++)
      {

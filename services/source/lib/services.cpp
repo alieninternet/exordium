@@ -86,16 +86,15 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 namespace Exordium
 {
 
-/* Services run 
- * 
+/* Services run
+ *
  * This is called from the module (loaded into kine) to begin
  * the operation of services.
- * 
+ *
  * original: James Wilkins
- * 
+ *
  */
 
-   
    void
      Services::run(void)
        {
@@ -214,9 +213,9 @@ namespace Exordium
    parser(*this),
    nickname(*this),
    channel(*this),
-   ircdome(*this),
-   clients(*this)
-    
+   ircdome(*this)
+
+
      {
 	sock = -1;
 	maxSock = -1;
@@ -272,14 +271,14 @@ namespace Exordium
      }
 
 /* HandleInput()
- * 
+ *
  * This handles the incoming data from our uplink, and hands it over
  * to our parser.
- * 
+ *
  * Original: James Wilkins
- * 
+ *
  */
-   
+
    bool Services::handleInput (void)
      {
 	std::stringstream bufferin;
@@ -297,11 +296,11 @@ namespace Exordium
      };
 
 /* disconnect()
- * 
+ *
  * (Uncleanly?) say bye bye to our uplink..
- * 
+ *
  */
-   
+
    void
      Services::disconnect (void)
        {
@@ -311,11 +310,11 @@ namespace Exordium
        }
 
 /* connect()
- * 
+ *
  * Connect to our uplink! Yeah!
- * 
+ *
  */
-   
+
    bool Services::connect (void)
      {
 	logger.logLine ("Attempting Connection to Uplink");
@@ -337,7 +336,7 @@ namespace Exordium
  * In all honesty, we should await some verification from the uplink
  * that it is ready to receive data, as opposed to just blinding throwing
  * everything at our uplink.. and possibly (at a later stage) filling
- * up our sendQ on the server 
+ * up our sendQ on the server
  */
 	connected = true;
 	logger.logLine ("Beginning handshake with uplink");
@@ -357,12 +356,12 @@ namespace Exordium
      };
 
 /* doBurst()
- * 
+ *
  * Load our modules... (move to a config option thingie)
  * and send our burst stuff to the uplink
- * 
+ *
  */
-   
+
    void
      Services::doBurst (void)
        {
@@ -385,13 +384,13 @@ namespace Exordium
 	  return;
        }
 /* getQuote(int)
- * 
+ *
  * This proberly doesn't belong here...
- * 
+ *
  * It fetches a quote from the database for the Game:: module
- * 
+ *
  */
-   
+
    String Services::getQuote(int const &number)
      {
 	MysqlRes res = database.query("SELECT body from fortunes where id='" + String::convert(number) + "'");
@@ -405,11 +404,11 @@ namespace Exordium
      }
 
 /* getLogCount()
- * 
+ *
  * Count the total number of log entries in our database..
- * 
+ *
  */
-   
+
    String Services::getLogCount(void)
      {
 	String query = "SELECT count(*) from log";
@@ -426,11 +425,11 @@ namespace Exordium
      }
 
 /* getNoteCount()
- * 
+ *
  * Count and return the total number of notes in our database
- * 
+ *
  */
-   
+
    String Services::getNoteCount(void)
      {
 	String query = "SELECT count(*) from notes";
@@ -446,11 +445,11 @@ namespace Exordium
 	return String("0");
      }
 /* getGlineCount()
- * 
+ *
  * Count and return the total number of glines in our database
- * 
+ *
  */
-   
+
    String Services::getGlineCount(void)
      {
 	String query = "SELECT count(*) from glines";
@@ -467,12 +466,12 @@ namespace Exordium
      }
 
 /* shutdown(String)
- * 
+ *
  * Initiate a services shutdown with the given reason being
  * propagated accross the network
- * 
+ *
  */
-   
+
    void Services::shutdown(String const &reason)
      {
 	helpme("Services is shutting down "+reason,"IRCDome");
@@ -491,13 +490,13 @@ namespace Exordium
      }
 
 /* SynchTime()
- * 
+ *
  * Perform various tasks that need doing on an ongoing basis
  * those being;
  * 	Expire any channel bans that need expiring
- * 
+ *
  */
-   
+
    void Services::SynchTime(void)
      {
 	//Undo any expired glines
@@ -519,14 +518,14 @@ namespace Exordium
      }
 
 /* expireRun()
- * 
+ *
  * Again, perform any tasks that need doing at a regular interval
- * 
+ *
  * These being expiring glines, and statistical counts for information
  * purposes
- * 
+ *
  */
-   
+
    void Services::expireRun(void)
      {
 	String nc = nickname.getRegNickCount();
@@ -542,11 +541,11 @@ namespace Exordium
      }
 
    /* AddOnlineServer(ServerName,Hops,Description)
-    * 
+    *
     * Add a server into our database thingie oo :((((
-    * 
+    *
     */
-   
+
    void
      Services::AddOnlineServer (String const &servername, String const &hops, String const &description)
        {
@@ -555,11 +554,11 @@ namespace Exordium
 	  database.query(query);
        }
 /* doPong(line)
- * 
+ *
  * Ping... Pong!
- * 
+ *
  */
-   
+
    void
      Services::doPong (String const &line)
        {
@@ -567,11 +566,11 @@ namespace Exordium
        }
 
 /* mode(String,String,String,String)
- * 
- * A messy way of sending a mode 
- * 
+ *
+ * A messy way of sending a mode
+ *
  */
-   
+
    void
      Services::mode (String const &who, String const &chan, String const &mode,
 		     String const &target)
@@ -579,9 +578,9 @@ namespace Exordium
 	  queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
        }
 /* doHelp(String,String,String,String)
- * 
+ *
  * Generate a help page from our dynamic help system
- * 
+ *
  */
    void
      Services::doHelp(String const &nick, String const &service,
@@ -631,12 +630,12 @@ namespace Exordium
 
        }
 /* sendEmail(String,String,String)
- * 
+ *
  * post an email into the database, which is polled later by a third party
  * utilite to send any pending emails
- * 
+ *
  */
-   
+
    void
      Services::sendEmail (String const &to, String const &subject, String const &text)
        {
@@ -645,12 +644,12 @@ namespace Exordium
        }
 
 /* parseHelp(In)
- * 
+ *
  * This parses our special codes in the help files
  * allowing for items such as bold, italics etc
- * 
+ *
  */
-   
+
    String
      Services::parseHelp (String const &instr)
        {
@@ -683,15 +682,15 @@ namespace Exordium
        }
 
 /* log(String,String,String)
- * 
+ *
  * Logs the given information into the database
  * which can later be accessed by staff and/or
  * the web interface
- * 
- * There are two versions, one for normal logs, and the other 
+ *
+ * There are two versions, one for normal logs, and the other
  * for channel based access.
  */
-   
+
    void
      Services::log (String const &nick, String const &service, String const &text, String const &cname)
        {
@@ -746,14 +745,14 @@ namespace Exordium
      }
 
    /* servicePart(String,String)
-    * 
+    *
     * Make a given service part a channel.
-    * 
+    *
     * Perhaps this should be handed over to each individual module
     * to control
-    * 
+    *
     */
-   
+
    void
      Services::servicePart(String const &service, String const &target)
        {
@@ -761,12 +760,12 @@ namespace Exordium
        }
 
    /* usePrivmsg(nick)
-    * 
-    * Figure out whether we should use the privmsg or 
+    *
+    * Figure out whether we should use the privmsg or
     * the notice interface to talk to a client.
-    * 
+    *
     */
-   
+
    bool
      Services::usePrivmsg (String const &nick)
        {
@@ -787,12 +786,12 @@ namespace Exordium
 	  return false;
        }
 /* unloadModule(String)
- * 
+ *
  * Unload the given module.
- * 
+ *
  *
  */
-   
+
    bool
      Services::unloadModule(String const &name)
        {
@@ -800,13 +799,13 @@ namespace Exordium
 	  serviceM.delModule(name);
 	  return true;
        }
-   
+
 /* loadModule(String,String)
- * 
+ *
  * Load the given module and initialise it.
- * 
+ *
  */
-   
+
    bool
      Services::loadModule (String const &name, String const &fileName)
        {
@@ -1021,24 +1020,64 @@ bool
 /* Ok, yes I know this is a duplication of Nickname's getOnlineID, but
  * this is used to save us iterating over our entire client map
  * when using Userbase::findUser - It seemed more logical to me
- * to retain this function, which simply does a SQL query to obtain 
+ * to retain this function, which simply does a SQL query to obtain
  * the clients unique ID, which in turn is the correct key to us
  * in the users map to obtain the User pointer!
  */
 
 int
   Services::locateID(String const &nick)
-{    
-  MysqlRes res = database.query("SELECT id from onlineclients where nickname='" + nick.IRCtoLower() + "'");
-  MysqlRow row;
-  while ((row = res.fetch_row()))
+{
+   MysqlRes res = database.query("SELECT id from onlineclients where nickname='" + nick.IRCtoLower() + "'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
      {
 	String id = row[0];
 	return id.toInt();
      }
-  //Otherwise return 0 - no match.
-  return 0;
+   //Otherwise return 0 - no match.
+   return 0;
 };
 
-   
-   
+User*
+  Services::addUser(Kine::String &name, int &oid)
+{
+   users[oid] = new User(name,oid,*this);
+   return users[oid];
+};
+
+User*
+  Services::findUser(Kine::String &name)
+{
+   int uid = locateID(name);
+   if(uid==0)
+     {
+	return 0;
+     }
+   User *ptr = users[uid];
+   return ptr;
+}
+
+bool
+  Services::delUser(Kine::String &name)
+{
+   for(user_map::iterator it = users.begin();
+       it != users.end(); it++)
+     {
+	int id = (*it).first;
+	User *ptr = (*it).second;
+	if(ptr->getNickname() == name)
+	  {
+
+	     //Found our record.. delete it based on its id
+	     delete ptr;
+	     users.erase(id);
+	     return true;
+	  }
+
+     }
+
+      /* If we get here .. we can't find the record they've asked for.. return fal$    * so they can deal with it how they choose... */
+
+   return false;
+};
