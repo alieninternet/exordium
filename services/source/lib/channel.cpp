@@ -36,11 +36,11 @@ namespace Exordium
      Channel::getChanCount(void)
        {
 	  String query = "SELECT count(*) from chans";
-	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String foo = ((std::string) row[0]).c_str();
+	       String foo = ((std::string) row[0]);
 	       res.free_result();
 	       return foo;
 	    }
@@ -87,12 +87,12 @@ namespace Exordium
      Channel::ChanLog(String const &channel)
        {
 	  String query = "SELECT clog from chanopts where name='"+channel.toLower()+"'";
-	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
 
-	       String foo = ((std::string) row[0]).c_str();
+	       String foo = ((std::string) row[0]);
 	       if(foo=="1")
 		 {
 
@@ -172,11 +172,11 @@ namespace Exordium
      Channel::getChanID(String const &name)
        {
 	  String query = "SELECT id from chans where name='"+name.toLower()+"'";
-	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String foo = ((std::string) row[0]).c_str();
+	       String foo = ((std::string) row[0]);
 	       res.free_result();
 	       return foo.toInt();
 	    }
@@ -189,11 +189,11 @@ namespace Exordium
      Channel::getOnlineChanID(String const &name)
        {
 	  String query = "SELECT id from onlinechan where name='"+name.toLower()+"'";
-	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String foo = ((std::string) row[0]).c_str();
+	       String foo = ((std::string) row[0]);
 	       res.free_result();
 	       return foo.toInt();
 	    }
@@ -210,7 +210,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String foo  = ((std::string) row[0]).c_str();
+	       String foo  = ((std::string) row[0]);
 	       res.free_result();
 	       if(foo.toInt() > 0)
 		 {
@@ -232,7 +232,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String foo = ((std::string) row[0]).c_str();
+	       String foo = ((std::string) row[0]);
 	       res.free_result();
 	       return foo.toInt();
 	    }
@@ -268,7 +268,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String max = ((std::string)row[0]).c_str();
+	       String max = ((std::string)row[0]);
 	       res.free_result();
 	       return max.toInt();
 	    }
@@ -285,7 +285,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String max = ((std::string)row[0]).c_str();
+	       String max = ((std::string)row[0]);
 	       res.free_result();
 	       return max.toInt();
 	    }
@@ -304,7 +304,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String max = ((std::string)row[0]).c_str();
+	       String max = ((std::string)row[0]);
 	       res.free_result();
 	       return max.toInt();
 	    }
@@ -322,7 +322,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String name = ((std::string) row[0]).c_str();
+	       String name = ((std::string) row[0]);
 	       res.free_result();
 	       return name;
 	    }
@@ -339,7 +339,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String name = ((std::string) row[0]).c_str();
+	       String name = ((std::string) row[0]);
 	       res.free_result();
 	       return name;
 	    }
@@ -378,7 +378,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String name = ((std::string) row[0]).c_str();
+	       String name = ((std::string) row[0]);
 	       res.free_result();
 	       return name;
 	    }
@@ -433,9 +433,9 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String name = ((std::string) row[0]).c_str();
-	       String topic = ((std::string) row[1]).c_str();
-	       String modes = ((std::string) row[2]).c_str();
+	       String name = ((std::string) row[0]);
+	       String topic = ((std::string) row[1]);
+	       String modes = ((std::string) row[2]);
 	       synchChannel(name,topic,modes);
 	    }
 	  res.free_result();
@@ -476,7 +476,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String number = ((std::string) row[0]).c_str();
+	       String number = ((std::string) row[0]);
 	       res.free_result();
 	       return number.toInt();
 	    }
@@ -502,7 +502,7 @@ namespace Exordium
 	  MysqlRow row;
 	  while ((row = res.fetch_row()))
 	    {
-	       String nid = ((std::string) row[0]).c_str();
+	       String nid = ((std::string) row[0]);
 	       int foo = nid.toInt();
 	       String tnick = services.getNickname().getOnlineNick(foo);
 	       String ident = services.getNickname().getIdent(tnick);

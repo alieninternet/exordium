@@ -71,9 +71,7 @@ void
 void
   BOT_FUNC (Bot::parseHELP)
 {
-   String word = tokens.nextToken();
-   String parm = tokens.nextToken();
-   services.doHelp(origin,"bot",word,parm);
+   services.doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION

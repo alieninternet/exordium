@@ -2,7 +2,7 @@ DEFINES=
 RM=@RM@
 CXX=@CXX@
 #CXXFLAGS=-g -Wall -Winline -Werror -pg -O0 -fmemoize-lookups
-CXXFLAGS=@CXXFLAGS@ -nostdlib -I/usr/local/ssl/include
+CXXFLAGS=@CXXFLAGS@ -nostdlib -I/usr/local/ssl/include -g3 -Wall -Werror -O0 -fpic -ggdb3 -pg -fno-rtti -fvtable-gc
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 

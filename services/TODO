@@ -14,3 +14,6 @@ user is opped!.
 
 Services needs to track AWAY status - and NOT op etc when an AWAY user 
 joins a channel
+
+Monitoring of uplink LAG - And adjust rate out of outgoing commands
+accordingly

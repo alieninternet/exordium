@@ -55,7 +55,7 @@ namespace Exordium {
    class Services
      {
       private:
-	String buffer;
+	const String buffer;
 	Kine::Daemon& daemon;
 	Log& logger;
 	Sql& database;
@@ -128,14 +128,6 @@ namespace Exordium {
 	  { return ircdome; };
 	
 	time_t currentTime;
-//	bool load_config();
-//	String logFileName;
-//	String mysqlHost;
-//	int mysqlPort;
-//	String mysqlDb;
-//	String mysqlUser;
-//	String mysqlPass;
-//	String UplinkHost;
   	void run (void);
 	bool handleInput (void);
 	bool SecurePrivmsg;

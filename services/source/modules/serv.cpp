@@ -85,6 +85,7 @@ namespace Exordium
 	    }
 
 	  String togo = "\002"+origin+"\002 - "+reason;
+	  exit(0);
 	  services.shutdown(togo);
        }
    void

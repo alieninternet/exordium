@@ -23,7 +23,8 @@ $(TARGET): $(OBJECTS)
 $(TARGET_MODULE): $(OBJECTS_MODULE)
 	$(CXX) -o $@ $(OBJECTS_MODULE) $(LIBS) -L/usr/local/mysql/lib/mysql \
 		$(LDFLAGS)  -L./lib/ -lservices \
-		-fPIC -shared
+		-fPIC -shared -g3 -Wall -Werror -O0 -fpic -ggdb3 -pg \
+		-fno-rtti -fvtable-gc
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(DEFINES) -I/usr/local/ssl/include -I$(INCLUDES) -I/usr/local/mysql/include/ -I../../kineircd/src/lib -I../../kineircd/include -I../include/  -c $< 

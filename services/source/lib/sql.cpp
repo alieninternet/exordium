@@ -60,8 +60,6 @@ MysqlRes Sql::query(const char* const query)
    if (mysql.query(query))
      {
 	logger.logLine(String("MySQL Error: ") + mysql.error());
-//	String toshout = (String("MySQL Error: ") + mysql.error());
-//	services.helpme(toshout, "Serv");
      }
 
    struct timeval finish;
@@ -70,9 +68,6 @@ MysqlRes Sql::query(const char* const query)
    String tolog = String("MySQL Query Took ") + String::convert(time) +
      " microseconds";
    logger.logLine(tolog);
-
-//   MysqlRes togo = mysql.store_result();
-
    return mysql.store_result();
 }
 
@@ -85,8 +80,6 @@ MysqlRes Sql::query(const String& query)
    if (mysql.query(query))
      {
 	logger.logLine(String("MySQL Error: ") + mysql.error());
-//	String toshout = (String("MySQL Error: ") + mysql.error());
-//	services.helpme(toshout, "Serv");
      }
 
    struct timeval finish;
@@ -95,9 +88,6 @@ MysqlRes Sql::query(const String& query)
    String tolog = String("MySQL Query Took ") + String::convert(time) +
      " microseconds";
    logger.logLine(tolog);
-
-//   MysqlRes togo = mysql.store_result();
-
    return mysql.store_result();
 }
 
@@ -132,7 +122,6 @@ String Sql::makeSafe(const String& line)
 
    String result(temp);
    delete(temp);
-
    return result;
 }
 
