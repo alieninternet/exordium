@@ -24,6 +24,7 @@
 # define __CHANNELGAME_H__
 
 # include <kineircd/str.h>
+# include <exordium/user.h>
 
 class ChannelGame;
 
@@ -31,7 +32,7 @@ class ChannelGame;
 
 # define CHANNEL_GAME_CREATOR_FUNC(x) \
      ChannelGame* x(Game& game, const Kine::String& channel, \
-		    const Kine::String& caller)
+		    Exordium::User& caller)
 
 class ChannelGame {
  protected:
@@ -62,18 +63,17 @@ class ChannelGame {
      {};
    
    // Our line parser - where channel commands for us are sent
-   virtual bool parseLine(const Kine::String& origin,
-			  Kine::StringTokens& tokens) 
-     = 0;
+   virtual bool parseLine(Exordium::User& origin,
+			  Kine::StringTokens& tokens) = 0;
    
    // Send a message to the channel
    void sendMessage(const Kine::String& message) const
      { game.getServices().servicePrivmsg(message, game.getName(), channel); };
 
    // Send a message to someone (specified)
-   void sendMessage(const Kine::String& nick, 
+   void sendMessage(Exordium::User& nick,
 		    const Kine::String& message) const
-     { game.getServices().serviceNotice(message, game.getName(), nick); };
+     { nick.sendMessage(message, game.getName()); };
 };
    
 #endif // __CHANNELGAME_H__

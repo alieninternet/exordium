@@ -35,8 +35,8 @@
 
 
 # define GAME_FUNC(x) \
-     void x(const Kine::String& origin, Kine::StringTokens& tokens, \
-	       const Kine::String& chan)
+     void x(Exordium::User& origin, Kine::StringTokens& line, \
+	    const Kine::String& channel)
 
 
 // Forward declarations
@@ -87,8 +87,8 @@ public:
      { return myName; };
    
    // Parser for incoming stuff
-   void parseLine(const Kine::String& line, const Kine::String& origin);
-   void parseLine(const Kine::String& line, const Kine::String& origin,
+   void parseLine(Kine::StringTokens& line, Exordium::User& origin);
+   void parseLine(Kine::StringTokens& line, Exordium::User& origin,
 		  const Kine::String& channel);
 };
 

@@ -33,7 +33,7 @@
 # include "cards/card.h"
 
 # define EXORDI8_FUNC(x) \
-     bool x(const Kine::String& origin, Kine::StringTokens& line)
+     bool x(Exordium::User& origin, Kine::StringTokens& line)
 
 
 class Exordi8 : public ChannelGame {
@@ -66,7 +66,7 @@ class Exordi8 : public ChannelGame {
    unsigned char nextSuit;
    
    // A list of players (the .front() is always the caller)
-   typedef std::pair <Kine::String, Cards::Hand> player_type;
+   typedef std::pair <Exordium::User*, Cards::Hand> player_type;
    typedef std::list <player_type> players_type;
    players_type players;
 
@@ -78,15 +78,15 @@ class Exordi8 : public ChannelGame {
    players_type::iterator currentPlayer;
 
    // Grab a player's details from our players list
-   const player_type* const getPlayer(const Kine::String& player) const;
-   player_type* const getPlayer(const Kine::String& player);
+   const player_type* const getPlayer(const Exordium::User& player) const;
+   player_type* const getPlayer(const Exordium::User& player);
    
    // Is a specific player playing?
-   bool isPlaying(const Kine::String& player) const
+   bool isPlaying(const Exordium::User& player) const
      { return (getPlayer(player) != 0); };
 
    // Check a player's player status (returning their info if possible)
-   player_type* const checkPlayerStatus(const Kine::String& player, 
+   player_type* const checkPlayerStatus(Exordium::User& player,
 					bool quiet = false);
    
    // Show a given players hand to them
@@ -107,16 +107,14 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Game& game, const Kine::String& channel,
-	   const Kine::String& caller);
+   Exordi8(Game& game, const Kine::String& channel, Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)
      { return new Exordi8(game, channel, caller); }
    
    // Parse a line..
-   bool parseLine(const Kine::String& origin,
-		  Kine::StringTokens& tokens);
+   bool parseLine(Exordium::User& origin, Kine::StringTokens& tokens);
 };
    
 #endif // __EXORDI8_H__

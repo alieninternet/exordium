@@ -36,7 +36,6 @@
 #include <map>
 
 #include "game.h"
-#include "exordi8.h"
 
 using Kine::String;
 using Kine::StringTokens;
@@ -78,8 +77,7 @@ Game::Game(Exordium::Services& s, const String& mn)
 /* parseLine - Parse an incoming message (which was sent to a channel)
  * Original 13/07/2002 james
  */
-void Game::parseLine(const String& line, const String& origin, 
-		     const String& channel)
+void Game::parseLine(StringTokens& line, User& origin, const String& channel)
 {
    StringTokens st(line);
    String command = st.nextToken().toLower();
@@ -99,7 +97,7 @@ void Game::parseLine(const String& line, const String& origin,
    
    if (game != channelGames.end()) {
       // Too lazy to work around the mess above
-      StringTokens tokens(line.substr(1));
+      StringTokens tokens(line.rest().substr(1));
       
       // If the parser returns false, it means we can leave the channel
       if (!(*game).second->parseLine(origin, tokens)) {
@@ -117,21 +115,20 @@ void Game::parseLine(const String& line, const String& origin,
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Game::parseLine(const String& line, const String& origin)
+void Game::parseLine(StringTokens& line, User& origin)
 {
-   StringTokens st (line);
-   String command = st.nextToken().toLower ();
+   String command = line.nextToken().toLower();
    
    for (int i = 0; commandTable[i].command != 0; i++) {
       // Does this match?
       if (command == commandTable[i].command) {
 	 // Run the command and leave
-	 (this->*(commandTable[i].handler))(origin, st, "");
+	 (this->*(commandTable[i].handler))(origin, line, "");
 	 return;
       }
    }
    
-   services.serviceNotice("Unrecognized Command", myName, origin);
+   origin.sendMessage("Unrecognized Command", myName);
 }
 
 
@@ -140,28 +137,28 @@ void Game::parseLine(const String& line, const String& origin)
  */
 GAME_FUNC(Game::handleHELP)
 {
-   String word = tokens.nextToken();
-   String parm = tokens.nextToken();
-   services.doHelp(origin, myName, word, parm);
+   services.doHelp(origin.getNickname(), myName, line.nextToken(),
+		   line.nextToken());
 }
 
 
-/* handleHELP - Parse the HELP command
+/* handleQUOTE - Parse the QUOTE command
  * Original 13/07/2002 james
+ * Note: Mess :(
  */
 GAME_FUNC(Game::handleQUOTE) 
 {
    return; // eek
    
-   String channel = "";
+   String chan = "";
    if(chan != "") {
-      channel = chan;
+      chan = channel;
    } else {
-      channel = tokens.nextToken();
+      chan = line.nextToken();
    }
    
    if(channel == "") {
-      services.serviceNotice("Usage: quote #channel",myName,origin);
+      origin.sendMessage("Usage: quote #channel", myName);
       return;
    }
    
@@ -183,7 +180,7 @@ GAME_FUNC(Game::handleQUOTE)
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services.servicePrivmsg(services.getDatabase().makeSafe(tq),"Game",channel);
+      services.servicePrivmsg(services.getDatabase().makeSafe(tq),"Game",chan);
       more = st.hasMoreTokens();
    }
    
@@ -194,34 +191,28 @@ GAME_FUNC(Game::handleQUOTE)
  */
 GAME_FUNC(Game::handleSTART)
 {
-   String channel = tokens.nextToken().IRCtoLower();
-   String game = tokens.nextToken().toLower();
+   String chan = line.nextToken().IRCtoLower();
+   String game = line.nextToken().toLower();
    
    // Check for the game
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
       // Does this match?
       if (game == ChannelGame::channelGameTable[i].game) {
 	 // Create a new game..
-	 channelGames[channel] =
-	   ChannelGame::channelGameTable[i].creator(*this, channel, origin);
+	 channelGames[chan] =
+	   ChannelGame::channelGameTable[i].creator(*this, chan, origin);
 	 
 	 // Join the channel and say hello
-	 services.serviceJoin(myName, channel);
-	 services.serverMode(channel, "+o", myName);
-	 services.serviceNotice("Hello " + channel + " (" + origin +
+	 services.serviceJoin(myName, chan);
+	 services.serverMode(chan, "+o", myName);
+	 services.serviceNotice("Hello " + chan + " (" + origin.getNickname() +
 				" wanted to play " + game + ')',
-				"Game", channel);
+				"Game", chan);
 	 
 	 // Leave the loop
 	 return;
       }
    }
-//   if (game == "EXORDI8") {
-//      channelGames[channel] = new Exordi8(*this, channel, origin);
-//   } else {
-//      // give them an error???!!
-//      return;
-//   }
 
    // give them an error???!!
 }
