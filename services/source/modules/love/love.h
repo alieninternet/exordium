@@ -34,12 +34,12 @@ class Love : public Exordium::Service {
       const char *command;		// Command name
       const short minParams;		// The minimum number of parameters
       const short maxParams;		// Maximum parameters (No limit = -1)
-      const handler_type *handler;	// The function (handler) to call
-      const int blahblahblahblahblah;	// For future use.. (padding for now)
+      const handler_type Love::*handler;// The function (handler) to call
+      const int blahblahblahblahblah;	// For future use..
    } static const commandTable[];
    
    // Our wonderful command handlers
-   static handler_type handleTEST;
+   handler_type handleTEST;
    
  public:
    // Our constructor

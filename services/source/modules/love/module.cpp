@@ -50,7 +50,7 @@ extern "C" Module *service_init(void) {
  */
 const Love::commandTable_type Love::commandTable[] = {
      { 
-	"test",		0,	0,	&handleTEST,
+	"test",		0,	0,	&Love::handleTEST,
 	  0 
      },
      { 0, 0, 0, 0, 0 }
@@ -82,7 +82,7 @@ void Love::parseLine(const String &line, const String &origin)
 #endif
 	 
 	 // Run the command and leave early
-	 commandTable[i].handler(origin, st);
+	 (this->*(commandTable[i].handler))(origin, st);
 	 return;
       }
    }
@@ -100,5 +100,6 @@ void Love::parseLine(const String &line, const String &origin)
 LOVE_FUNC(Love::handleTEST)
 {
    // something here.. other than this.. perhaps...
-   Services::servicePrivmsg("You rang?", "Love", origin);
+   Services::servicePrivmsg("It worked, AND I AM A MEMBER FUNCTION!!", 
+			    "Love", origin);
 }
