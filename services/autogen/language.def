@@ -796,20 +796,20 @@ langtag = {
 langtag = {
    name = "oper_JUPE_USAGE";
    component = "mod_oper";
-   data_en = "Usage: jupe <nickname|server> <reason>"
+   data_en = "Usage: jupe <nickname|server> <reason>";
 };
 
 langtag = {
    name = "oper_JUPE_SERVER_SUCCESS";
-   component = "mod_oper"
+   component = "mod_oper";
    data_en = "I have successfully juped the server %p0 (%p1)";
 };
 
 langtag = {
    name = "oper_JUPE_NICK_SUCCESS";
-   component = "mod_oper"
+   component = "mod_oper";
    data_en = "I have successfully juped the nickname %p0 (%p1)";
-}
+};
  
  
   
