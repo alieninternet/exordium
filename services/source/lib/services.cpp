@@ -657,17 +657,19 @@ if(!handle)
 	Debug("\002[\002Module Error\002]\002 dlError() returned: "+foo);
 	return false;
 }
-Module *(*initfunc)(String const &) =
-                (Module *(*)(String const &))dlsym(handle, "service_init");
-if (initfunc == 0) 
-		{
-			String togo = "\002[\002Module Error\002]\002 Module does not contain an init function";
-			Debug(togo);
-			return false;
-        	}
-        Module *modInfo = (*initfunc)(name);
-        serviceM.addModule(modInfo->modName, *modInfo->modService, handle);
-return true;
+   EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*initfunc)) =
+     ((EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*)))
+      (dlsym(handle, "service_init")));
+   
+   if (initfunc == 0) {
+      String togo = "\002[\002Module Error\002]\002 Module does not contain an init function";
+      Debug(togo);
+      return false;
+   }
+   
+   Module *modInfo = (*initfunc)(*this, name);
+   serviceM.addModule(modInfo->modName, *modInfo->modService, handle);
+   return true;
 }
 
 void

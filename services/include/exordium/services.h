@@ -45,8 +45,10 @@ extern "C" {
 #include "exordium/ircdome.h"
 
 // Maybe this is in the wrong place
+#define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
+   Module* x(Exordium::Services& services, const Kine::String& name)
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
-	extern "C" Module *service_init(String const &name) 
+   extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
 
 
 namespace Exordium {
