@@ -65,7 +65,7 @@ static const Kine::Module::basicInfo_type moduleInfo = {
     */ 
      
    // Flags.. ignore this for now
-   Kine::Module::basicInfo_type::FLAG_NONE,
+   Kine::Module::basicInfo_type::FLAG_UNIQUE_INSTANCE,
      
    // Our start and stop functions
    &moduleStart,
