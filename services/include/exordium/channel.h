@@ -4,50 +4,56 @@
 // $Id$
 
 #ifndef __CHANNEL_H_
-#define __CHANNEL_H_
+# define __CHANNEL_H_
 
-#include <kineircd/str.h>
-
-using Kine::String;
+# include <kineircd/str.h>
 
 namespace Exordium {
-	class Channel {
-		public:
-		 String getChanCount(void);
-	         void internalDeVoice(String const &, String const &);
-	         void internalDeOp(String const &, String const &);
-	         void internalVoice(String const &, String const &);
-	         void internalOp(String const &, String const &);
-	         void internalAdd(String const &, String const &);
-	         void internalDel(String const &, String const &);
-	         int getChanID(String const &);   
-	         int getOnlineChanID(String const &);  
-	         bool isChanRegistered(String const &);
- 	         int getChanAccess(String const &, String const &);
-	         bool ifChanExists(String const &);
-	         int maxChannels(void);
-	         int maxChannelsUser(String const &);
-	         int maxChannelsAccess(void);
-	         String getChanName(int const &);
-	         String getChanIDName(int const &);
-	         void setTopic(String const &,String const &);
-	         void updateTopic(String const &, String const &);
-	         String getChanOwner(int const &);
-	         void chanAddAccess(String const &,String const &,String const &);
-	         void chanDelAccess(String const &, String const &);
-	         void deregisterChannel(String const &, String const &reason);
-   	         void synchChannels(void);
-	         void synchChannel(String const &, String const &, String const &);
-	         void registerChannel(String const &, String const &);
-		 int ownedChannels(String const &); 
-		 void addChanBan(int const &,String const &,String const &,int const &,String const &);
-		 void banChan(String const &, String const &, String const &);
-		 void RemoveBan(String const &, String const &, String const &);
+   class Services;
+   
+   class Channel {
+    private:
+      Services& services;
+      
+    public:
+      Channel(Services& s)
+	: services(s)
+	{};
+      
+      Kine::String getChanCount(void);
+      void internalDeVoice(Kine::String const &, Kine::String const &);
+      void internalDeOp(Kine::String const &, Kine::String const &);
+      void internalVoice(Kine::String const &, Kine::String const &);
+      void internalOp(Kine::String const &, Kine::String const &);
+      void internalAdd(Kine::String const &, Kine::String const &);
+      void internalDel(Kine::String const &, Kine::String const &);
+      int getChanID(Kine::String const &);   
+      int getOnlineChanID(Kine::String const &);  
+      bool isChanRegistered(Kine::String const &);
+      int getChanAccess(Kine::String const &, Kine::String const &);
+      bool ifChanExists(Kine::String const &);
+      int maxChannels(void);
+      int maxChannelsUser(Kine::String const &);
+      int maxChannelsAccess(void);
+      Kine::String getChanName(int const &);
+      Kine::String getChanIDName(int const &);
+      void setTopic(Kine::String const &,Kine::String const &);
+      void updateTopic(Kine::String const &, Kine::String const &);
+      Kine::String getChanOwner(int const &);
+      void chanAddAccess(Kine::String const &,Kine::String const &,Kine::String const &);
+      void chanDelAccess(Kine::String const &, Kine::String const &);
+      void deregisterChannel(Kine::String const &, Kine::String const &reason);
+      void synchChannels(void);
+      void synchChannel(Kine::String const &, Kine::String const &, Kine::String const &);
+      void registerChannel(Kine::String const &, Kine::String const &);
+      int ownedChannels(Kine::String const &); 
+      void addChanBan(int const &,Kine::String const &,Kine::String const &,int const &,Kine::String const &);
+      void banChan(Kine::String const &, Kine::String const &, Kine::String const &);
+      void RemoveBan(Kine::String const &, Kine::String const &, Kine::String const &);
+   };
+}; // namespace Exordium
 
-
-	};
-
-
-};
+// Complete the forwarded definition
+# include "exordium/services.h"
 
 #endif
