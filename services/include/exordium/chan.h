@@ -1,3 +1,8 @@
+// This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+// $Author$                                                                                                        
+// $Date$                                                                                                          
+// $Id$
+
 #ifndef __CHAN_H_
 #define __CHAN_H_
 

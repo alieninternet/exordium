@@ -1,11 +1,9 @@
-/*
- * SQL.CPP - Database layer for IRCDome Network Services Version - 0.1
- * Date - 08 May 2002 Revisions - $Id: sql.cpp,v 1.1.1.1 2002/06/06
- * 19:25:23 jamesw Exp $
- * 
- * Copyright 2002 James Ian Wilkins <james@ircdome.org>
- * 
- */
+/*   
+ This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+ $Author$
+ $Date$
+ $Id$
+*/
 
 #include "exordium/sql.h"
 #include "exordium/mysql.h"

@@ -1,4 +1,9 @@
-$Id$
+# This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                             
+# $Author$        
+# $Date$                      
+# $Id$                                                                        
+
+
 
 This document will eventually contain a list of public functions, their syntax, and a brief example
 of each function.

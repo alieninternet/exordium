@@ -1,3 +1,10 @@
+/*   
+ This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+ $Author$
+ $Date$
+ $Id$
+*/
+
 #ifndef __MODULE_H
 #define __MODULE_H
 

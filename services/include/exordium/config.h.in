@@ -1,4 +1,10 @@
-/* $Id$ */
+/* 
+ This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+ $Author$                                                                                                        
+ $Date$                                                                                                          
+ $Id$
+*/
+
 /* You should not change this file, instead pass the appropiate options
    to configure in the base directory 
 */

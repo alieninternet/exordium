@@ -1,12 +1,9 @@
-/*
-    NOTE.CPP   - Main entry point for IRCDome Network Services
-    Version   - 0.1
-    Date      - 8th May 2002
-    Revisions - $Id$
-  
-    Copyright 2002 James Ian Wilkins <james@ircdome.org>
-
- */
+/*   
+ This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+ $Author$
+ $Date$
+ $Id$
+*/
 
 #include "exordium/note.h"
 #include "exordium/service.h"

@@ -1,3 +1,10 @@
+/*   
+ This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
+ $Author$
+ $Date$
+ $Id$
+*/
+
 #include "exordium/nickname.h"
 #include "kineircd/str.h"
 #include "exordium/services.h"
