@@ -94,7 +94,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
 
    // Grab the command
    String command = line.nextToken().toLower();
-   std::cout << "Am trying to pass " << command << std::endl;   
+
    // Run through the list of commands to find a match
    for (int i = 0; channelCommandTable[i].command != 0; i++) {
       // Does this match?
