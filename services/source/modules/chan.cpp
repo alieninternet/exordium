@@ -142,10 +142,12 @@ void
 		       services.serviceNotice("Channel logs have been disabled","Chan",origin);
 		       return;
 		    }
-		  
+		  services.serviceNotice("Value must be true or false","Chan",origin);
+		  return;
 		  
 	       }
-	     
+	     services.serviceNotice("Unsupported command","Chan",origin);
+	     return;
 	     
 	  }
 	

@@ -222,6 +222,8 @@ void
 	     services.serviceNotice(togo,"Nick",origin);
 	     return;
 	  }
+	services.serviceNotice("Error: Value must be true or false","Nick",origin);
+	return;
 	
      }
    
@@ -246,6 +248,8 @@ void
 	     services.serviceNotice(togo,"Nick",origin);
 	     return;
 	  }
+	services.serviceNotice("Error: Value must be true or false","Nick",origin);
+	return;
      }
    
 	if(command=="language")
@@ -262,6 +266,8 @@ void
 		  services.serviceNotice("Helpfiles interface has been changed to english","Nick",origin);
 		  return;
 	       }
+	     services.serviceNotice("Error: Unsupported Language!","nick",origin);
+	     return;
 
 	  }
 	if(command=="email")
@@ -375,8 +381,11 @@ void
 		  services.serviceNotice("I will now use the private message interface","Nick",origin);
 		  return;
 	       }
-
+	     services.serviceNotice("Error: Value must be on or off","Nick",origin);
+	     return;
 	  }
+   services.serviceNotice("Error: Unsupported command","Nick",origin);
+   return;
      }
 /* Access */
    void
