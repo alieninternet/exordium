@@ -31,10 +31,12 @@
 
 #include <aisutil/string/string.h>
 
-using namespace std;
 
 namespace Exordium {
-  
+
+   class Config;
+   class Log;
+   
   /*
    * Base class for all SQL servers
    *
@@ -43,8 +45,11 @@ namespace Exordium {
   class CBase
   { 
     public:
-      CBase(void)
-      { connected=false; }
+      CBase(Config& c, Log& l)
+       : connected(false),
+         config(c), 
+         logger(l)
+       {};
 
       // Virtual destructor
       virtual ~CBase(void) {}
@@ -73,16 +78,20 @@ namespace Exordium {
 
 
       // Are we connected?
-      bool isConnected()
-      { return connected; }
+      bool isConnected(void) const
+       { return connected; };
 
     protected:
       bool connected;
+      Config &config;
+      Log &logger;
 
   }; // class CBase
 
 }; // namespace Exordium
 
+# include <exordium/conf.h>
+# include <exordium/log.h>
 
 
 #endif // _BASE_H

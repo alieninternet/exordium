@@ -37,12 +37,11 @@
 #include <aisutil/string/string.h>
 
 #ifdef HAVE_LIBPQ_FE_H
-  #include <libpq-fe.h>
+# include <libpq-fe.h>
 #elif defined(HAVE_LIBPQ_INT_H)
-  #include <libpq-int.h>
+# include <libpq-int.h>
 #endif
 
-using AISutil::String;
 
 namespace Exordium {
 
@@ -54,8 +53,13 @@ namespace Exordium {
   class CPgSQL:public CBase
   { 
     public:
-      CPgSQL(Config &c, Log &l) : config(c), logger(l)
-      { pgopts=NULL; pgtty=NULL; pgres=NULL; clearres=false; }
+      CPgSQL(Config &c, Log &l) 
+       : CBase(c, l),
+         pgopts(0),
+         pgtty(0),
+         pgres(0),
+         clearres(false)
+       {};
 
       virtual ~CPgSQL(void);
 
@@ -84,9 +88,6 @@ namespace Exordium {
       virtual void dbUnlock(void) {}
 
     private:
-      Config &config;
-      Log &logger;
- 
       PGconn *pgconn;
       PGresult *pgres;
       char *pgopts;

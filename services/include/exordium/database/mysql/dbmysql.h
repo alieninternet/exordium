@@ -28,9 +28,7 @@
 #ifndef _DBMYSQL_H
 #define _DBMYSQL_H
 
-#include "exordium/database/base.h"
-#include "exordium/conf.h"
-#include "exordium/log.h"
+#include <exordium/database/base.h>
 
 #include <aisutil/string/string.h>
 
@@ -46,8 +44,11 @@ namespace Exordium {
   class CMySQL:public CBase
   { 
     public:
-      CMySQL(Config &c, Log &l) : config(c), logger(l)
-      { mysql = new MYSQL; mysqlres=NULL; }
+      CMySQL(Config &c, Log &l) 
+       : CBase(c, l),
+         mysql(new MYSQL),
+         mysqlres(0)
+       {};
 
       virtual ~CMySQL(void);
 
@@ -75,10 +76,7 @@ namespace Exordium {
 
 
     private:
-      Config &config;
-      Log &logger;
- 
-      MYSQL *mysql;
+      MYSQL* const mysql;
       MYSQL_RES *mysqlres;
       MYSQL_ROW mysqlrow;
 

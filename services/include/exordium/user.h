@@ -29,7 +29,7 @@
 
 # include <kineircd/str.h>
 # include <map>
-# include "exordium/services.h"
+# include <exordium/services.h>
 
 namespace Exordium {
    class Services;
@@ -227,10 +227,14 @@ namespace Exordium {
           services(s)// Gives us access to the full suite of services..
 	{};
 
+      // Destructor
+      ~User(void)
+	{};
+      
       // is equal to operator
       bool operator==(const User &u) const
 	{ return (onlineID == u.onlineID); };
    };
-}; // class Exordium
+}; // namespace Exordium
 
 #endif

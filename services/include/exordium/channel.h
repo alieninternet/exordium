@@ -40,6 +40,9 @@ namespace Exordium {
       Channel(Services& s)
 	: services(s)
 	{};
+
+      ~Channel(void)
+	{};
       
       AISutil::String getChanCount(void);
       void setChanLog(AISutil::String const &,bool const &);
@@ -79,6 +82,6 @@ namespace Exordium {
 }; // namespace Exordium
 
 // Complete the forwarded definition
-# include "exordium/services.h"
+# include <exordium/services.h>
 
 #endif

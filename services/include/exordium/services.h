@@ -55,14 +55,14 @@ extern "C" {
 # include "dmalloc.h"
 #endif
 
-#include "exordium/log.h"
-#include "exordium/service.h"
-#include "exordium/conf.h"
-#include "exordium/parser.h"
-#include "exordium/channel.h"
-#include "exordium/ircdome.h"
-#include "exordium/user.h"
-#include "exordium/dchan.h"
+#include <exordium/log.h>
+#include <exordium/service.h>
+#include <exordium/conf.h>
+#include <exordium/parser.h>
+#include <exordium/channel.h>
+#include <exordium/ircdome.h>
+#include <exordium/user.h>
+#include <exordium/dchan.h>
 
 
 namespace Exordium {
@@ -189,7 +189,7 @@ namespace Exordium {
 	void sendEmail(AISutil::String const &, AISutil::String const &, 
 		       AISutil::String const &);
 	void servicePart (AISutil::String const &, AISutil::String const &);
-	void test(void)
+	void test(void) const
 	  {
 	     std::cout << 
 	       "This is a simple test, proving we can access services" << 
@@ -357,7 +357,7 @@ namespace Exordium {
 	  {
 	     return countTx;
 	  };
-	AISutil::String getOnlineCount(void)
+	AISutil::String getOnlineCount(void) const
 	  {
 	     return AISutil::String::convert(users.size());
 	  };
@@ -408,6 +408,6 @@ namespace Exordium {
      };
 }; // namespace Exordium
 
-#include "exordium/database/database.h"
+#include <exordium/database/database.h>
 
 #endif

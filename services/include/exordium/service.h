@@ -93,7 +93,7 @@ namespace Exordium {
 	 static const AISutil::ConfigParser::defTable_type defaultDefinitions;
 	 
        protected:
-	 AISutil::String defDescription;			// Our description
+	 AISutil::String defDescription;		// Our description
 	 AISutil::String defHostname;			// Our hostname
 	 AISutil::String defName;			// Our name
 	 
@@ -168,8 +168,8 @@ namespace Exordium {
    };
 };
 
-#include "exordium/services.h"
-#include "exordium/user.h"
+#include <exordium/services.h>
+#include <exordium/user.h>
 
 #endif
 

@@ -36,11 +36,11 @@
 
 
 #ifdef HAVE_MYSQL
- #include "exordium/database/mysql/dbmysql.h"
+# include <exordium/database/mysql/dbmysql.h>
 #endif
 
 #ifdef HAVE_PGSQL
- #include "exordium/database/postgresql/dbpgsql.h"
+# include <exordium/database/postgresql/dbpgsql.h>
 #endif
 
 

@@ -50,12 +50,15 @@ namespace Exordium {
       IRCDome(Services& s)
 	: services(s)
 	{};
+
+      ~IRCDome(void)
+	{};
       
       void parseLine(const AISutil::String &, const AISutil::String &);
    };
 };
 
 // Complete the forwarded definition
-# include "exordium/services.h"
+# include <exordium/services.h>
 
 #endif
