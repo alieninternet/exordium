@@ -56,7 +56,7 @@ namespace Exordium {
 	 ~Module(void);
       };
 
-      typedef std::map <AISutil::String, Module *> modules_type;
+      typedef std::map <AIS::Util::String, Module *> modules_type;
       
     private:
       // The list of modules
@@ -71,43 +71,43 @@ namespace Exordium {
       ~Modules(void);
       /* Event handler(s) */
       
-      void handleAway(User&, const AISutil::String &);
+      void handleAway(User&, const AIS::Util::String &);
       void handleClientSignon(User&);
-      void handleTopic(const AISutil::String &origin, dChan& channel, const AISutil::String& newTopic);
+      void handleTopic(const AIS::Util::String &origin, dChan& channel, const AIS::Util::String& newTopic);
       void handleChannelJoin(User& origin, dChan& channel, const int& status);
       void handleChannelPart(User& origin, dChan& channel);
-      void handleChannelMode(dChan& channel, const AISutil::String& modes, const AISutil::String& target,
-                             const AISutil::String& source);
+      void handleChannelMode(dChan& channel, const AIS::Util::String& modes, const AIS::Util::String& target,
+                             const AIS::Util::String& source);
 
 
 
       // Add a module to the list
-      Service* const loadModule(const AISutil::String& fileName, 
-				AISutil::String& errString);
+      Service* const loadModule(const AIS::Util::String& fileName, 
+				AIS::Util::String& errString);
       
       // Remove a module from the list, and unload it
       void unloadModule(const Kine::Name& name, 
-			const AISutil::String& reason);
+			const AIS::Util::String& reason);
 
       // Start all modules in the list
       void startAll(Exordium::Services& services);
       
       // Stop and unload all the modules in the list
-      void unloadAll(const AISutil::String& reason);
+      void unloadAll(const AIS::Util::String& reason);
       
       // Check if a module exists
       bool exists(const Kine::Name& name) const;
       
       // Throw a line at the appropriate service (sent directly)
-      void throwLine(const Kine::Name& name, AISutil::StringTokens& line, 
+      void throwLine(const Kine::Name& name, AIS::Util::StringTokens& line, 
 		     User &origin, const bool safe);
       
       // Throw a line at the appropriate service (sent to a channel)
-      void throwLine(const Kine::Name& name, AISutil::StringTokens& line,
-		     User& origin, const AISutil::String& channel);
+      void throwLine(const Kine::Name& name, AIS::Util::StringTokens& line,
+		     User& origin, const AIS::Util::String& channel);
       
       // Dump a list of modules
-      AISutil::String dumpModules(void) const;
+      AIS::Util::String dumpModules(void) const;
    };
 }; // namespace Exordium
 

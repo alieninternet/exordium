@@ -52,9 +52,9 @@ namespace Exordium {
     public:
       struct moduleInfo_type {
 	 // Version information about the module
-	 const char* const fullName;
-	 const unsigned short versionMajor;
-	 const unsigned short versionMinor;
+//	 const char* const fullName;
+//	 const unsigned short versionMajor;
+//	 const unsigned short versionMinor;
 
 	 // Information about which events we want to receive
 	 struct Events { // Should be namespace, but g++ is dumb
@@ -199,19 +199,19 @@ namespace Exordium {
        */
 
       // Return the nickname of the module
-      const Kine::Name& getNickname(void) const
+      const Kine::ClientName& getNickname(void) const
 	{ return getConfigData().getName(); };
       
       // Return the username/identity of the service
-      const std::string& getUsername(void) const
+      const Kine::Name& getUsername(void) const
 	{ return getConfigData().getIdent(); };
 
       // Return the hostname of this service module
-      const std::string& getHostname(void) const
+      const Kine::Name& getHostname(void) const
 	{ return getConfigData().getHostname(); };
       
       // Return the description of this service module
-      const std::string& getDescription(void) const
+      const Kine::Name& getDescription(void) const
 	{ return getConfigData().getDescription(); };
       
       // Return the time this module was created/signed on to the network
