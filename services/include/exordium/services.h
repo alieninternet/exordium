@@ -38,6 +38,7 @@
 # include <exordium/dchan.h>
 # include <exordium/log.h>
 # include <exordium/static.h>
+# include <exordium/server.h>
 
 
 namespace Exordium {
@@ -108,6 +109,15 @@ namespace Exordium {
 				   const int oid) = 0;
       virtual bool delChan(Kine::Name &) = 0;
       virtual dChan* findChan(Kine::Name &) = 0;
+      
+      virtual Server* const addServer(const AISutil::String&,
+				      const int &,
+				      const AISutil::String &) = 0;
+      
+      virtual bool delServer(AISutil::String &) = 0;
+      
+      virtual Server* findServer(AISutil::String &)= 0;
+				      
       
       virtual void setNick(User &, Kine::Name &) = 0;
       

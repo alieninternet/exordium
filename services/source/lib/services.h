@@ -30,7 +30,8 @@
 # include <aisutil/socket/sockets.h>
 # include <kineircd/config.h>
 
-# include "exordium/services.h"
+# include <exordium/services.h>
+# include <exordium/server.h>
 # include "parser.h"
 # include "console.h"
 # include "config.h"
@@ -45,8 +46,11 @@ namespace Exordium {
 
       typedef std::map <AISutil::String, User *> user_map;
       typedef std::map <AISutil::String, dChan *> chan_map;
+      typedef std::map <AISutil::String, Server *> server_map;
+      
       user_map users;
       chan_map chans;
+      server_map servers;
       
       const AISutil::String buffer;
       int sock;
@@ -141,6 +145,13 @@ namespace Exordium {
       dChan* const addChan(const Kine::Name& name, const int oid);
       bool delChan(Kine::Name &);
       dChan* findChan(Kine::Name &);
+      
+      Server* const addServer(const AISutil::String&, const int&,
+			      const AISutil::String&);
+      bool delServer(AISutil::String &);
+      Server* findServer(AISutil::String &);
+      
+      
       
       void setNick(User &,Kine::Name &);
       
