@@ -782,6 +782,18 @@ langtag = {
    data_en = "I have left %p0 as requested";
 };
 
+langtag = {
+   name = "oper_USAGE_KILL";
+   component = "mod_oper";
+   data_en = "Usage: kill <nickname> <reason>
+};
+
+langtag = {
+   name = "oper_KILL_SUCCESS";
+   component = "mod_oper"
+   data_en = "I have killed %p0 as requested";
+}
+
 
    
 /*
