@@ -26,9 +26,9 @@
 
 #include "exordium/nickname.h"
 #include <kineircd/str.h>
+#include <kineircd/utils.h>
 #include "exordium/services.h"
 #include "exordium/sql.h"
-#include "exordium/utils.h"
 
 
 using namespace Exordium;
