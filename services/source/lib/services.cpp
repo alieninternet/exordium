@@ -25,7 +25,7 @@
  */
 
 #include "exordium/services.h"
-#include "exordium/dchan.h"
+#include "exordium/channel.h"
 #include "exordium/user.h"
 #include <queue>
 #include <map>
@@ -215,6 +215,7 @@ namespace Exordium
    database(db),
    config(c),
    parser(*this),
+   channel(*this),
    ircdome(*this)
      {
 	sock = -1;
@@ -256,21 +257,6 @@ namespace Exordium
 	  }
 	memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
 	addr.sin_port = htons (config.getUplinkPort());
-     }
-
-   bool Services::writeData (String & line)
-     {
-	if (!sock)
-	  {
-	     return false;
-	  }
-	countTx += line.length ();
-	if (::write (sock, line.c_str(), (int)line.length ()) +::
-	    write (sock, "\n", 1) != (int)line.length () + 1)
-	  {
-	     return false;
-	  }
-	return true;
      }
 
 Services::~Services()
@@ -519,7 +505,7 @@ Services::~Services()
    void Services::expireRun(void)
      {
 	String nc = getRegNickCount();
-	String cc = chans.size();
+	String cc = channel.getChanCount();
 	String oc = getOnlineCount();
 	String lc = getLogCount();
 	String gc = getGlineCount();
@@ -812,7 +798,7 @@ Services::~Services()
    bool
      Services::isOp(String const &nick, String const &chan)
        {
-	  int chanid = chans[chan].getOnlineID();
+	  int chanid = channel.getOnlineChanID(chan);
 	  int nickid = locateID(nick);
           if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1)
             return false;
@@ -826,7 +812,7 @@ Services::~Services()
    bool
      Services::isVoice(String const &nick, String const &chan)
        {
-          int chanid = chans[chan].getOnlineID();
+          int chanid = channel.getOnlineChanID(chan);
           int nickid = locateID(nick);
           if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1 )
             return false;

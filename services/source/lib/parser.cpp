@@ -37,7 +37,8 @@
 
 #include "exordium/parser.h"
 #include "exordium/services.h"
-#include "exordium/dchan.h"
+//#include "exordium/dchan.h"
+#include "exordium/channel.h"
 #include "exordium/log.h"
 #include <kineircd/str.h>
 #include "exordium/ircdome.h"
