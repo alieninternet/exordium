@@ -531,7 +531,9 @@ void
 	String user = tokens.nextToken();
 	StringTokens luser (user);
 	String foo = luser.nextColonToken();
-	User *ptr = services.findUser(foo);
+	String test = foo.trim();
+	
+	User *ptr = services.findUser(test);
 	if(foo[0]=='@')
 	  {
 	     op = true;
@@ -560,6 +562,11 @@ void
 	  }
 	if(normal)
 	  {
+	     if(ptr == 0)
+	       {
+		  return;
+	       }
+	     
 	     if(ptr->isIdentified(foo))
 	       {
 		  int access = services.getChannel().getChanAccess(chan,foo.trim());

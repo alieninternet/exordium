@@ -159,7 +159,8 @@ namespace Exordium
 				   disconnect ();
 				}
 			   }
-			 if(stopping)
+			
+			if(stopping)
 			   {
 			      if(stopTime < currentTime)
 				{
@@ -346,7 +347,8 @@ namespace Exordium
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
 	queueAdd (":services.ircdome.org EOB");
 	queueAdd ("BURST");
-	doBurst ();
+//	queueFlush();
+//	doBurst ();
 	queueAdd ("BURST 0");
 	return true;
      };
@@ -988,6 +990,7 @@ bool
 	  {
 	     if (socky.write (outputQueue.front ()))
 	       {
+		  std::cout << "DEBUG TX:" << outputQueue.front() << std::endl;
 		  outputQueue.pop ();
 		  return true;
 	       }
@@ -1038,6 +1041,11 @@ User*
   Services::findUser(Kine::String &name)
 {
    User *ptr = users[name.IRCtoLower()];
+   if(ptr == 0)
+     {
+	std::cout << "I could not find the user named :" << name << std::endl;
+     }
+   
    return ptr;
 }
 
