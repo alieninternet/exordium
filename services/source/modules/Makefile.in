@@ -13,7 +13,7 @@ INCLUDES=/../include
 SOURCES=\
 	bot.cpp \
 	chan.cpp \
-#	nick.cpp \
+	nick.cpp \
 #	note.cpp \
 #	oper.cpp \
 #	serv.cpp \

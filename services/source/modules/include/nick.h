@@ -31,7 +31,7 @@
 #include "exordium/service.h"
 #include <kineircd/str.h>
 
-# define NICK_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
+#define NICK_FUNC(x)           x(Exordium::User& origin, Kine::StringTokens &tokens)
 
 using Kine::String;
 
@@ -62,8 +62,8 @@ public:
    {
    };
 
-  void parseLine (String const &, String const &);
-  void parseLine (String const &, String const &, String const &);
+   void parseLine (Kine::StringTokens& line, Exordium::User& origin);
+   void parseLine (Kine::StringTokens& line, Exordium::User& origin,String const &);
 
 private:
 

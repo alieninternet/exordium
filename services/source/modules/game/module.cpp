@@ -88,7 +88,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
 
    // Grab the command
    String command = line.nextToken().toLower();
-   
+   std::cout << "Am trying to pass " << command << std::endl;   
    // Run through the list of commands to find a match
    for (int i = 0; channelCommandTable[i].command != 0; i++) {
       // Does this match?
@@ -122,7 +122,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
 void Game::parseLine(StringTokens& line, User& origin)
 {
    String command = line.nextToken().toLower();
-   
+   std::cout << "Trying to throw command to commandtable thingy" << command << std::endl;
    for (int i = 0; directCommandTable[i].command != 0; i++) {
       // Does this match?
       if (command == directCommandTable[i].command) {
@@ -197,6 +197,7 @@ GAME_FUNC(Game::handleSTART)
 {
    String chan = line.nextToken().IRCtoLower();
    String game = line.nextToken().toLower();
+   std::cout << "have been asked to start "<<game<< " in " << chan << std::endl;
    
    // Check for the game
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
