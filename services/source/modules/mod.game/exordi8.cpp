@@ -395,6 +395,8 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
  */
 EXORDI8_FUNC(Exordi8::parseDISCARD)
 {
+   Cards::Card cardToDiscard;
+
    // Check the player's info
    const player_type* player;
    if ((player = checkPlayerStatus(origin)) == 0)
@@ -423,8 +425,26 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	return true; // Keep the game alive
      }
 
-   // Okay, try to make a card which matches their description..
-   Cards::Card cardToDiscard(line.rest());
+   // Okay, try to make a card which matches their description or position num
+   String identifier = line.nextToken();
+
+   if(line.countTokens() > 1 && (line.nextToken() == "of"))
+   {
+      cardToDiscard = Cards::Card(identifier + " of " + line.rest());
+   }
+   else 
+   {
+      unsigned int idx = identifier.toInt();
+      if(idx <= 0)
+      {
+	 sendMessage(origin, "You must select a number higher than 0");
+	 return true; // Keep the game alive
+      }
+      
+      // Reduce by one since we count from zero not one
+      idx--;
+      cardToDiscard = (*currentPlayer).second.getCardAtIndex(idx);
+   }
 
    // Make sure that worked
    if (!cardToDiscard.isValid())

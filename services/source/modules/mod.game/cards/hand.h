@@ -58,6 +58,28 @@ namespace Cards {
       void addCard(const Card& card)
 	{ (void)cards.insert(card); };
 
+      // Return the card based on position
+      Cards::Card getCardAtIndex(unsigned int idx)
+        {
+           int i = 0;
+           cards_type::iterator iter;
+           if(cards.empty() || idx < 0 || idx > cards.size())
+             {
+               return NULL;
+             }
+
+	   for(iter = cards.begin(); iter != cards.end(); iter++)
+             {
+               if(i == idx)
+                 {
+                   return *iter;
+                 }
+
+               i++;
+             }
+           return NULL;
+        };
+
       // Remove a card from this hand
       Cards::Card removeCard(const Cards::Card& card)
 	{
