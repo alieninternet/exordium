@@ -861,7 +861,7 @@ langtag = {
 langtag = {
   name = "note_SEND_USER_SUCCESS";
   component = "mod_note";
-  data_en = "Your not was successfully sent to %p0";
+  data_en = "Your note was successfully sent to %p0";
 };
 
 /*
