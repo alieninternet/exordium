@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef _SOURCE_MODULES_NOTE_TABLES_H_
-# define _SOURCE_MODULES_NOTE_TABLES_H_ 1
+#ifndef _SOURCE_MODULES_LOVE_TABLES_H_
+# define _SOURCE_MODULES_LOVE_TABLES_H_ 1
 
 # ifdef HAVE_CONFIG_H
 #  include "autoconf.h"
@@ -35,11 +35,12 @@
 
 
 namespace Exordium {
-   namespace NoteModule {
+   namespace LoveModule {
       namespace Tables {
-	 extern const Exordium::DatabaseTable notesTable;
+	 // A list of tables, since we have many for this module
+	 extern const Exordium::DatabaseTable* const tables[];
       }; // namespace Tables
-   }; // namespace NoteModule
+   }; // namespace LoveModule
 }; // namespace Exordium
 
-#endif // _SOURCE_MODULES_NOTE_TABLES_H_
+#endif // _SOURCE_MODULES_LOVE_TABLES_H_

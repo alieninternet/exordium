@@ -29,52 +29,51 @@
 #endif
 
 #include "chan.h"
+#include "tables.h"
 #include <exordium/channel.h>
-#include <exordium/service.h>
-#include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
+
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::ChanModule;
 
-struct Chan::functionTableStruct const
-  Chan::functionTable[] =
+struct Module::functionTableStruct const
+  Module::functionTable[] =
 {
-     {"access", &Chan::parseACCESS},
-     {".access", &Chan::parseACCESS},
-     {"ban", &Chan::parseBAN},
-     {".ban", &Chan::parseBAN},
-     {".kick", &Chan::parseKICK},
-     {"kick", &Chan::parseKICK},
-     {".op", &Chan::parseOP},
-     {"op", &Chan::parseOP},
-     {".voice", &Chan::parseVOICE},
-     {"voice", &Chan::parseVOICE},
-     {"register", &Chan::parseREGISTER},
-     {"help", &Chan::parseHELP},
-     {"deop", &Chan::parseDEOP},
-     {".deop", &Chan::parseDEOP},
-     {"devoice", &Chan::parseDEVOICE},
-     {".devoice", &Chan::parseDEVOICE},
-     {"topic", &Chan::parseTOPIC},
-     {".topic", &Chan::parseTOPIC},
-     {"adduser", &Chan::parseADDUSER},
-     {".adduser", &Chan::parseADDUSER},
-     {"info", &Chan::parseINFO},
-     {".info", &Chan::parseINFO},
-     {"listban", &Chan::parseLISTBAN},
-     {".listban", &Chan::parseLISTBAN},
-     {".set", &Chan::parseSET},
-     {"set", &Chan::parseSET},
-     {"seen", &Chan::parseSEEN},
-     {".seen", &Chan::parseSEEN},
+     {"access", &Module::parseACCESS},
+     {".access", &Module::parseACCESS},
+     {"ban", &Module::parseBAN},
+     {".ban", &Module::parseBAN},
+     {".kick", &Module::parseKICK},
+     {"kick", &Module::parseKICK},
+     {".op", &Module::parseOP},
+     {"op", &Module::parseOP},
+     {".voice", &Module::parseVOICE},
+     {"voice", &Module::parseVOICE},
+     {"register", &Module::parseREGISTER},
+     {"help", &Module::parseHELP},
+     {"deop", &Module::parseDEOP},
+     {".deop", &Module::parseDEOP},
+     {"devoice", &Module::parseDEVOICE},
+     {".devoice", &Module::parseDEVOICE},
+     {"topic", &Module::parseTOPIC},
+     {".topic", &Module::parseTOPIC},
+     {"adduser", &Module::parseADDUSER},
+     {".adduser", &Module::parseADDUSER},
+     {"info", &Module::parseINFO},
+     {".info", &Module::parseINFO},
+     {"listban", &Module::parseLISTBAN},
+     {".listban", &Module::parseLISTBAN},
+     {".set", &Module::parseSET},
+     {"set", &Module::parseSET},
+     {"seen", &Module::parseSEEN},
+     {".seen", &Module::parseSEEN},
      {0, 0}
 };
 
 void
-  Chan::parseLine (StringTokens& line, User& origin
+  Module::parseLine (StringTokens& line, User& origin
 		   , const String& chan)
 {
    StringTokens& st = line;
@@ -95,7 +94,7 @@ void
 }
 
 void
-  Chan::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -112,8 +111,8 @@ void
      }
    origin.sendMessage("Unrecognized Command",getName());
 }
-void
-  CHAN_FUNC (Chan::parseSEEN)
+
+  CHAN_FUNC (Module::parseSEEN)
 {
    String channel = "";
    if(!chan.empty())
@@ -133,8 +132,8 @@ void
 
 }
 
-void
-  CHAN_FUNC (Chan::parseSET)
+
+  CHAN_FUNC (Module::parseSET)
 {
    String channel = "";
    if(!chan.empty())
@@ -195,8 +194,8 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseLISTBAN)
+
+  CHAN_FUNC (Module::parseLISTBAN)
 {
    String channel = "";
    if(!chan.empty())
@@ -239,8 +238,8 @@ void
 
    origin.sendMessage("\002[\002Ban List\002]\002 Finished",getName());
 }
-void
-  CHAN_FUNC (Chan::parseINFO)
+
+  CHAN_FUNC (Module::parseINFO)
 {
    String channel = "";
    if(!chan.empty())
@@ -274,8 +273,8 @@ void
    origin.sendMessage(tob,getName());
    origin.sendMessage(toc,getName());
 }
-void
-  CHAN_FUNC (Chan::parseADDUSER)
+
+  CHAN_FUNC (Module::parseADDUSER)
 {
    String channel = "";
    if(!chan.empty())
@@ -325,8 +324,8 @@ void
 	return;
      }
 }
-void
-  CHAN_FUNC (Chan::parseTOPIC)
+
+  CHAN_FUNC (Module::parseTOPIC)
 {
    String channel = "";
    if(chan!="")
@@ -361,16 +360,16 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseHELP)
+
+  CHAN_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
    services->doHelp(origin,getName(),word,parm);
 }
 
-void
-  CHAN_FUNC (Chan::parseBAN)
+
+  CHAN_FUNC (Module::parseBAN)
 {
    String channel = "";
    if(chan!="")
@@ -426,8 +425,8 @@ void
 
 }
 
-void
-  CHAN_FUNC (Chan::parseREGISTER)
+
+  CHAN_FUNC (Module::parseREGISTER)
 {
    String channel = tokens.nextToken();
    if (channel=="")
@@ -467,8 +466,8 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseOP)
+
+  CHAN_FUNC (Module::parseOP)
 {
    String channel = "";
    if(chan!="")
@@ -541,8 +540,8 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseDEOP)
+
+  CHAN_FUNC (Module::parseDEOP)
 {
    String channel = "";
    if(chan!="")
@@ -609,8 +608,8 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseVOICE)
+
+  CHAN_FUNC (Module::parseVOICE)
 {
    String channel = "";
    if(chan!="")
@@ -677,8 +676,8 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseDEVOICE)
+
+  CHAN_FUNC (Module::parseDEVOICE)
 {
    String channel = "";
    if(chan!="")
@@ -745,8 +744,8 @@ void
    return;
 }
 
-void
-  CHAN_FUNC (Chan::parseKICK)
+
+  CHAN_FUNC (Module::parseKICK)
 {
    String channel = "";
    if(chan!="")
@@ -791,8 +790,8 @@ void
    origin.sendMessage("You do not have the required access to perform that command",getName());
    return;
 }
-void
-  CHAN_FUNC (Chan::parseACCESS)
+
+  CHAN_FUNC (Module::parseACCESS)
 {
    String channel = "";
    if(chan!="")
@@ -835,12 +834,10 @@ void
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Chan();
-}
+{ return new Module(); }
 
 void
-  Chan::handleAway(Exordium::User& origin, const String &reason)
+  Module::handleAway(Exordium::User& origin, const String &reason)
 {
 
    if(reason=="")
@@ -870,7 +867,7 @@ void
 
 
 // Module information structure
-const Chan::moduleInfo_type Chan::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo = {
    "Channel Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY /* AWAY's */
@@ -878,10 +875,26 @@ const Chan::moduleInfo_type Chan::moduleInfo = {
 
 
 // Start the service
-void Chan::start(Exordium::Services& s)
+void Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
+   
+   // Attempt to affirm our database tables..
+   unsigned int i = 0;
+   while (Tables::tables[i] != 0) {
+      // Try to affirm this table..
+      if (!services->getDatabase().affirmTable(*(Tables::tables[i]))) {
+	 services->logLine(String("Unable to affirm mod_chan database "
+				  "table '") +
+			   Tables::tables[i]->name + "'",
+			   Log::Fatality); 
+	 return; // How do we tell services we did not start happily?!
+      }
+      
+      // Next table..
+      i++;
+   }
    
    // Register ourself to the network
    services->registerService(getName(), getName(), 
@@ -893,7 +906,7 @@ void Chan::start(Exordium::Services& s)
 
 
 // Stop the service - bye bye!
-void Chan::stop(const String& reason)
+void Module::stop(const String& reason)
 {
    // Yes, we would like to QUIT here properly.. :( This is dodgey  -pickle
    services->queueAdd(":" + getName() + " QUIT :" + reason);

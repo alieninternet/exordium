@@ -36,72 +36,65 @@
      void x(Exordium::User& origin, AISutil::StringTokens& line)
 
 
-// The class of lurrve
-class Love : public Exordium::Service {
- private:
-   // Our convenient type-definition of our handler functions
-   typedef LOVE_FUNC(handler_type);
-   
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
-   
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
-   
-   /* Each command gets a little descriptor with the following parameters.
-    * Note that in the future the padding field will be used, but for now
-    * it is there to make the structure even (4x4 bytes) as processors like
-    * to chew on nice neat evenly spaces arrays using some magical multiple
-    * of its natural word size (like 4).. Aren't we nice to succumb to its
-    * wishes? Well okay, I thought we were at least.. Stop looking at me like
-    * that.. Stop it! Stop it..... okay, OKAY - fine.. I'll go then. :(
-    */
-   struct commandTable_type {
-      const char* command;			// Command name
-      const unsigned short minParams;		// The min. number of params
-      const unsigned short maxParams;		// Maximum parameters
-      const static unsigned short MAX_PARAMS_UNLIMITED = 65535; // (any for ^^)
-      const handler_type Love::* const handler;	// The function (handler)
-      const int padding;			// For future use..
-   } static const commandTable[];
+namespace Exordium {
+   namespace LoveModule {
+      // The module of lurrve
+      class Module : public Exordium::Service {
+       private:
+	 // Our convenient type-definition of our handler functions
+	 typedef LOVE_FUNC(handler_type);
+	 
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct commandTable_type {
+	    const char* const command;			// Command name
+	    const handler_type Module::* const handler;	// The function
+	 } static const commandTable[];
 
-   // Our wonderful command handlers
-   handler_type handleCOMMANDS;
+	 // Our wonderful command handlers
+	 handler_type handleCOMMANDS;
 
-   // How to send private-messages (stepping-stone)
-   void sendMessage(Exordium::User& recipient, const AISutil::String& message)
-     { recipient.sendMessage(message, getName()); };
+	 // How to send private-messages (stepping-stone)
+	 void sendMessage(Exordium::User& recipient,
+			  const AISutil::String& message)
+	   { recipient.sendMessage(message, getName()); };
+	 
+       public:
+	 // Our constructor
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Love")
+	   {};
+	 
+	 // Our destructor
+	 ~Module(void) 
+	   {};
    
- public:
-   // Our constructor
-   Love(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Love")
-     {};
+	 // Start the module
+	 void start(Exordium::Services& s);
+	 
+	 // Parser for incoming stuff sent on a channel
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaHAEhaE!!! */ };
+	 
+	 // Parser for incoming stuff sent directly to us
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
 
-   // Our destructor
-   ~Love(void) 
-     {};
-   
-   // Start the module
-   void start(Exordium::Services& s);
-      
-   // Parser for incoming stuff sent on a channel
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-		  const AISutil::String& channel)
-     { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaehHAEhaE!!! */ };
-   
-   // Parser for incoming stuff sent directly to us
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
-
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
-};
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+      }; // class Module
+   }; // namespace LoveModule
+}; // namespace Exordium
 
 #endif // _SOURCE_MODULES_LOVE_LOVE_H_

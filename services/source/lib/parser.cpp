@@ -568,7 +568,7 @@ void
 {
    String server = tokens.nextToken();
  
-   services.getDatabase().dbDelete("identified", "identified.nick=onlineclients.id AND onlineclients.server='"+server+"'");
+   services.getDatabase().dbDelete("nicksidentified", "identified.nick=onlineclients.id AND onlineclients.server='"+server+"'");
    services.getDatabase().dbDelete("onlineclients", "server='"+server+"'");
 
    services.DelOnlineServer(server);
@@ -586,7 +586,7 @@ void
    services.delUser(OLDorigin); 
  
    
-   services.getDatabase().dbDelete("identified", "nick='"+String::convert(oid)+"'");
+   services.getDatabase().dbDelete("nicksidentified", "nick='"+String::convert(oid)+"'");
 
    //Store the quit reason here
    services.getDatabase().dbUpdate("nicks", "quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");

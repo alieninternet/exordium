@@ -33,52 +33,32 @@
 using namespace Exordium;
 
 
-// The 'notes' table fields
-static const Exordium::DatabaseTable::fields_type notesFields = {
+// The 'lovers' table fields
+static const Exordium::DatabaseTable::fields_type loversFields = {
      {
-	"id",
-	  DatabaseTable::Field::Type::UniqueSequence32,
+	"nick",
+	  DatabaseTable::Field::Type::UnsignedInteger32,
 	  11,
-	  0,
+	  "0",
 	  DatabaseTable::Field::Flags::PrimaryKey |
-	  DatabaseTable::Field::Flags::NotNull
-     },
-     {
-	"nfrom",
-	  DatabaseTable::Field::Type::VariableLengthString8,
-	  32,
-	  "",
-	  DatabaseTable::Field::Flags::NotNull
-     },
-     {
-	"nto",
-	  DatabaseTable::Field::Type::VariableLengthString8,
-	  32,
-	  "",
-	  DatabaseTable::Field::Flags::NotNull
-     },
-     {
-	"nsent",
-	  DatabaseTable::Field::Type::Timestamp,
-	  14,
-	  0,
-	  0
-     },
-     {
-	"note",
-	  DatabaseTable::Field::Type::VariableLengthString8,
-	  250,
-	  "",
 	  DatabaseTable::Field::Flags::NotNull
      },
      { 0, DatabaseTable::Field::Type::Void, 0, 0, 0 } // <=- Terminator
 };
 
-// The 'notes' table itself
-const Exordium::DatabaseTable Exordium::NoteModule::Tables::notesTable = {
+// The 'lovers' table itself
+static const Exordium::DatabaseTable loversTable = {
    // The name of the table
-   "notes",
+   "lovers",
    
    // The table's fields..
-   notesFields
+   loversFields
+};
+
+
+
+// The tables
+const Exordium::DatabaseTable* const Exordium::LoveModule::Tables::tables[] = {
+   &loversTable,
+   0
 };

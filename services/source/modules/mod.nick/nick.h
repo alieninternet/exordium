@@ -27,73 +27,74 @@
 #ifndef _SOURCE_MODULES_NICK_NICK_H_
 # define _SOURCE_MODULES_NICK_NICK_H_ 1
 
-#include <exordium/services.h>
-#include <exordium/service.h>
-#include <kineircd/str.h>
+# include <exordium/services.h>
+# include <exordium/service.h>
+# include <kineircd/str.h>
 
-#define NICK_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
+# define NICK_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
 
-class Nick : public Exordium::Service
-{
-private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
-   
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
+namespace Exordium {
+   namespace NickModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    NICK_FUNC((Module::* const function));
+	 } static const functionTable[];
 
-  struct functionTableStruct
-  {
-    char const *command;
-     void NICK_FUNC ((Nick::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
+	 void sendMessage(const AISutil::String& to,
+			  const AISutil::String& message)
+	   { services->serviceNotice(message,getName(),to); };
+	 
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Nick")
+	   {};
+	 
+	 ~Module(void)
+	   {};
 
-  void sendMessage(const AISutil::String &to, const AISutil::String &message)
-	{
-		services->serviceNotice(message,getName(),to);
-	}
-public:
-   Nick(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Nick")
-   {
-   };
+	 // Start the module
+	 void start(Exordium::Services& s);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			AISutil::String const &)
+	   {};
 
-  ~Nick(void)
-   {
-   };
-
-   // Start the module
-   void start(Exordium::Services& s);
-   
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin,AISutil::String const &);
-
-   /* Our Event Handler(s) */
-   void handleClientSignon(Exordium::User& origin);
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
-   
-private:
-
-  void NICK_FUNC (parseIDENTIFY);
-  void NICK_FUNC (parseHELP);
-  void NICK_FUNC (parseKILL);
-  void NICK_FUNC (parseREGISTER);
-  void NICK_FUNC (parseGHOST);
-  void NICK_FUNC (parseACCESS);
-  void NICK_FUNC (parseSET);
-  void NICK_FUNC (parseINFO);
-  void NICK_FUNC (parseAUTH);
-};
-
+	 /* Our Event Handler(s) */
+	 void handleClientSignon(Exordium::User& origin);
+	 
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+	 
+       private:
+	 NICK_FUNC(parseIDENTIFY);
+	 NICK_FUNC(parseHELP);
+	 NICK_FUNC(parseKILL);
+	 NICK_FUNC(parseREGISTER);
+	 NICK_FUNC(parseGHOST);
+	 NICK_FUNC(parseACCESS);
+	 NICK_FUNC(parseSET);
+	 NICK_FUNC(parseINFO);
+	 NICK_FUNC(parseAUTH);
+      }; // class Module
+   }; // namespace NickModule
+}; // namespace Exordium
 
 #endif // _SOURCE_MODULES_NICK_NICK_H_

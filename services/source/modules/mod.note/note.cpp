@@ -274,8 +274,8 @@ void Module::start(Exordium::Services& s)
    // Set the services field appropriately
    services = &s;
 
-   // Attempt to affirm our database tables..
-   if (!services->getDatabase().affirmTable(Tables::notes)) {
+   // Attempt to affirm our database table..
+   if (!services->getDatabase().affirmTable(Tables::notesTable)) {
       services->logLine("Unable to affirm mod_note database table 'notes'",
 			Log::Fatality);
       return; // How do we tell services we did not start happily?!

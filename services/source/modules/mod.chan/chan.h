@@ -27,77 +27,81 @@
 #ifndef _SOURCE_MODULES_CHAN_CHAN_H_
 # define _SOURCE_MODULES_CHAN_CHAN_H_ 1
 
-#include <exordium/service.h>
-#include <exordium/services.h>
-#include <exordium/user.h>
+# include <exordium/service.h>
+# include <exordium/services.h>
+# include <exordium/user.h>
 
-#include <kineircd/str.h>
+# include <kineircd/str.h>
 
-#define CHAN_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens, AISutil::String &chan)
+# define CHAN_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens, \
+	       AISutil::String &chan)
 
 
-class Chan : public Exordium::Service
-{
-private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
+namespace Exordium {
+   namespace ChanModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    CHAN_FUNC((Module::* const function));
+	 } static const functionTable[];
    
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Chan")
+	   {};
+	 
+	 ~Module(void)
+	   {};
+	 
+	 // Start the module
+	 void start(Exordium::Services& s);
    
-  struct functionTableStruct
-  {
-    char const *command;
-     void CHAN_FUNC ((Chan::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
-   
-public:
-   Chan(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Chan")
-	{
-	};
-  ~Chan(void)
-	{
-	};
-   // Start the module
-   void start(Exordium::Services& s);
-   
-   // Stop the module (called just before a module is unloaded)
-   void stop(const AISutil::String& reason);
-      
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin,AISutil::String const &);
-   void handleAway(Exordium::User& origin, const AISutil::String &reason);
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
+	 // Stop the module (called just before a module is unloaded)
+	 void stop(const AISutil::String& reason);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel);
+	 
+	 void handleAway(Exordium::User& origin, 
+			 const AISutil::String& reason);
+	 
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
 
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
-   
-private:
-   void CHAN_FUNC (parseHELP);
-   void CHAN_FUNC (parseACCESS);
-   void CHAN_FUNC (parseKICK);
-   void CHAN_FUNC (parseOP);
-   void CHAN_FUNC (parseVOICE);
-   void CHAN_FUNC (parseREGISTER);
-   void CHAN_FUNC (parseBAN);
-   void CHAN_FUNC (parseDEOP);
-   void CHAN_FUNC (parseTOPIC);
-   void CHAN_FUNC (parseDEVOICE);
-   void CHAN_FUNC (parseADDUSER);
-   void CHAN_FUNC (parseINFO);
-   void CHAN_FUNC (parseLISTBAN);
-void CHAN_FUNC (parseSET);
-void CHAN_FUNC (parseSEEN);
-};
-
-
-
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+	 
+       private:
+	 CHAN_FUNC(parseHELP);
+	 CHAN_FUNC(parseACCESS);
+	 CHAN_FUNC(parseKICK);
+	 CHAN_FUNC(parseOP);
+	 CHAN_FUNC(parseVOICE);
+	 CHAN_FUNC(parseREGISTER);
+	 CHAN_FUNC(parseBAN);
+	 CHAN_FUNC(parseDEOP);
+	 CHAN_FUNC(parseTOPIC);
+	 CHAN_FUNC(parseDEVOICE);
+	 CHAN_FUNC(parseADDUSER);
+	 CHAN_FUNC(parseINFO);
+	 CHAN_FUNC(parseLISTBAN);
+	 CHAN_FUNC(parseSET);
+	 CHAN_FUNC(parseSEEN);
+      }; // class Module
+   }; // namespace ChanModule
+}; // namespace Exordium
 
 #endif // _SOURCE_MODULES_CHAN_CHAN_H_

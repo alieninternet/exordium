@@ -29,35 +29,34 @@
 #endif
 
 #include "nick.h"
-#include <exordium/services.h>
+#include "tables.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
-#include <map>
 #include <sstream>
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::NickModule;
 
-struct Nick::functionTableStruct const
-  Nick::functionTable[] =
+struct Module::functionTableStruct const
+  Module::functionTable[] =
 {
-     {"auth", &Nick::parseAUTH},
-     {"identify", &Nick::parseIDENTIFY},
-     {"id", &Nick::parseIDENTIFY},
-     {"help", &Nick::parseHELP},
-     {"kill", &Nick::parseKILL},
-     {"ghost", &Nick::parseGHOST},
-     {"register", &Nick::parseREGISTER},
-     {"access", &Nick::parseACCESS},
-     {"set", &Nick::parseSET},
-     {"info", &Nick::parseINFO},
+     {"auth", &Module::parseAUTH},
+     {"identify", &Module::parseIDENTIFY},
+     {"id", &Module::parseIDENTIFY},
+     {"help", &Module::parseHELP},
+     {"kill", &Module::parseKILL},
+     {"ghost", &Module::parseGHOST},
+     {"register", &Module::parseREGISTER},
+     {"access", &Module::parseACCESS},
+     {"set", &Module::parseSET},
+     {"info", &Module::parseINFO},
      {0, 0}
 };
 
 /* Event Handlers */
 void
-  Nick::handleClientSignon(User& origin)
+  Module::handleClientSignon(User& origin)
 {
 
    if(services->isNickRegistered(origin.getNickname()))
@@ -74,16 +73,9 @@ void
    return;
 }
 
-/* Entry point for Nick:: - Parse the given line and decide what to do with it */
-void
-  Nick::parseLine (StringTokens& line, User& origin, String const &ch)
-{
-   /* Nick doesn't really take in channel commands..... */
-   return;
-}
 
 void
-  Nick::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -101,8 +93,8 @@ void
    return;
 }
 
-void
-  NICK_FUNC (Nick::parseAUTH)
+
+  NICK_FUNC (Module::parseAUTH)
 {
    String gauth = tokens.nextToken();
    if(!origin.isPending())
@@ -123,13 +115,13 @@ void
      {
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
 	origin.sendMessage("You may now identify your nickname as normal",getName());
-        services->getDatabase().dbDelete("pendingnicks", "nickname='"+origin.getNickname()+"'");
+        services->getDatabase().dbDelete("nickspending", "nickname='"+origin.getNickname()+"'");
      }
 }
 
+
 /* Info */
-void
-  NICK_FUNC (Nick::parseINFO)
+  NICK_FUNC (Module::parseINFO)
 {
    String who = tokens.nextToken().IRCtoLower();
    User *ptr = services->findUser(who);
@@ -235,9 +227,10 @@ void
    origin.sendMessage(toi,getName());
 
 }
+
+
 /* Set */
-void
-  NICK_FUNC (Nick::parseSET)
+  NICK_FUNC (Module::parseSET)
 {
    String command = tokens.nextToken();
    String value = tokens.nextToken();
@@ -444,14 +437,15 @@ void
    origin.sendMessage("Error: Unsupported command",getName());
    return;
 }
+
+
 /* Access */
-void
-  NICK_FUNC (Nick::parseACCESS)
+  NICK_FUNC (Module::parseACCESS)
 {
    String nickname = tokens.nextToken();
    if(nickname!="")
      {
-        int nbRes = services->getDatabase().dbSelect("idas", "identified", "nick='"+origin.getOnlineIDString()+"'");
+        int nbRes = services->getDatabase().dbSelect("idas", "nicksidentified", "nick='"+origin.getOnlineIDString()+"'");
 
 	int i=0;
         for (int j=0; j<nbRes; j++)
@@ -467,7 +461,7 @@ void
      }
    int onlineID = origin.getOnlineID();
    
-   int nbRes = services->getDatabase().dbSelect("idas", "identified", "nick='"+String::convert(onlineID)+"'");
+   int nbRes = services->getDatabase().dbSelect("idas", "nicksidentified", "nick='"+String::convert(onlineID)+"'");
 
    int i=0;
    for(int j=0; j<nbRes; j++)
@@ -482,9 +476,10 @@ void
      }
 
 }
+
+
 /* Register */
-void
-  NICK_FUNC (Nick::parseREGISTER)
+  NICK_FUNC (Module::parseREGISTER)
 {
    String password = tokens.nextToken();
    String email = tokens.nextToken();
@@ -528,9 +523,9 @@ void
    services->sendEmail(email,subject,emailtext);
 }
 
+
 /* Kill */
-void
-  NICK_FUNC (Nick::parseKILL)
+  NICK_FUNC (Module::parseKILL)
 {
    String tokill = tokens.nextToken();
    String password = tokens.nextToken();
@@ -574,18 +569,18 @@ void
      }
 }
 
+
 /* Do help... */
-   void
-     NICK_FUNC (Nick::parseHELP)
+     NICK_FUNC (Module::parseHELP)
        {
 	  String word = tokens.nextToken();
 	  String parm = tokens.nextToken();
 	  services->doHelp(origin,getName(), word, parm);
        }
 
+
 /* Ghost... */
-   void
-     NICK_FUNC (Nick::parseGHOST)
+     NICK_FUNC (Module::parseGHOST)
        {
 	  String toghost = tokens.nextToken();
 	  String password = tokens.nextToken();
@@ -611,10 +606,10 @@ void
 	  origin.sendMessage(tosend,getName());
 	  return;
        }
-/* Parse an identification request */
 
-   void
-     NICK_FUNC (Nick::parseIDENTIFY)
+
+/* Parse an identification request */
+     NICK_FUNC (Module::parseIDENTIFY)
        {
 	  String password = tokens.nextToken();
 	  if (origin.isPending())
@@ -642,7 +637,7 @@ void
 	       int oid = origin.getOnlineID();
 	       int nid = services->getRegisteredNickID(origin.getNickname());
 
-               services->getDatabase().dbInsert("identified", "'','"+String::convert(oid) + "','" + String::convert(nid) + "'");
+               services->getDatabase().dbInsert("nicksidentified", "'','"+String::convert(oid) + "','" + String::convert(nid) + "'");
                services->getDatabase().dbDelete("kills", "nick='"+origin.getNickname()+"'");
 
 	       services->modeIdentify(origin.getNickname());
@@ -668,29 +663,43 @@ void
 	  return;
        }
 
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Nick();
-     }
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
 
-   // Module information structure
-   const Nick::moduleInfo_type Nick::moduleInfo =
-     {
-	"Nickname Service",
-	  0, 0,
-	  Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON |
-	  Exordium::Service::moduleInfo_type::Events::CLIENT_NICKCHANGE
-     };
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo =
+{
+   "Nickname Service",
+     0, 0,
+     Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON |
+     Exordium::Service::moduleInfo_type::Events::CLIENT_NICKCHANGE
+};
 
-   // Start the service
-   void Nick::start(Exordium::Services& s)
-     {
-	// Set the services field appropriately
-	services = &s;
-	
-	// Register ourself to the network
-	services->registerService(getName(), getName(), 
-				 getConfigData().getHostname(), "+dz",
-				 getConfigData().getDescription());
-	services->serviceJoin(getName(),"#Debug");
-     }
+// Start the service
+void Module::start(Exordium::Services& s)
+{
+   // Set the services field appropriately
+   services = &s;
+   
+   // Attempt to affirm our database tables..
+   unsigned int i = 0;
+   while (Tables::tables[i] != 0) {
+      // Try to affirm this table..
+      if (!services->getDatabase().affirmTable(*(Tables::tables[i]))) {
+	 services->logLine(String("Unable to affirm mod_chan database "
+				  "table '") +
+			   Tables::tables[i]->name + "'",
+			   Log::Fatality); 
+	 return; // How do we tell services we did not start happily?!
+      }
+      
+      // Next table..
+      i++;
+   }
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
+			     getConfigData().getHostname(), "+dz",
+			     getConfigData().getDescription());
+   services->serviceJoin(getName(),"#Debug");
+}

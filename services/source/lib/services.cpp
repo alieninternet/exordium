@@ -117,7 +117,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	  logLine ("Cleaning out (any) stale entries from the DB");
 	  database.dbDelete("onlineclients");
 	  database.dbDelete("chanstatus");
-	  database.dbDelete("identified");
+	  database.dbDelete("nicksidentified");
 	  database.dbDelete("kills");
 	  database.dbDelete("onlineservers");
 	  database.dbDelete("onlinechan");
@@ -501,7 +501,7 @@ bool ServicesInternal::handleInput (void)
         // Clean up before we die
         database.dbDelete("onlineclients");
         database.dbDelete("chanstatus");
-        database.dbDelete("identified");
+        database.dbDelete("nicksidentified");
         database.dbDelete("kills");
         database.dbDelete("onlineservers");
         database.dbDelete("onlinechan");
@@ -1351,7 +1351,7 @@ String ServicesInternal::getOnlineNick(int const &id)
 
 String ServicesInternal::getpendingCode(String const &nick)
 {
-   if( database.dbSelect("auth", "pendingnicks", "nickname='"+nick+"'") < 1 )
+   if( database.dbSelect("auth", "nickspending", "nickname='"+nick+"'") < 1 )
      return "";
    else
      return database.dbGetValue();
@@ -1380,7 +1380,7 @@ void ServicesInternal::registerNick(String const &nick, String const &password,
 String ServicesInternal::genAuth(String const &nickname)
 {
    String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword("VIVA LA FRANCE :)",nickname),PasswordStrBase,PasswordStrBaseLongPad);
-   database.dbInsert("pendingnicks", "'','"+nickname+"','"+authcode+"'");
+   database.dbInsert("nickspending", "'','"+nickname+"','"+authcode+"'");
 #ifdef DEBUG
    logLine("New registration: "+nickname, Log::Debug);
 #endif

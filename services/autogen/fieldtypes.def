@@ -47,6 +47,14 @@ fieldtypes = {
 
 
 fieldtypes = {
+   name			= "Character1";
+   comment		= "Character (one byte)";
+   mysql_type		= "CHAR";
+   pgsql_type		= "CHAR";
+};
+
+
+fieldtypes = {
    name			= "FixedLengthBinaryData";
    comment		= "Fixed length of 8-bit binary data";
    mysql_type		= "VARCHAR";

@@ -275,7 +275,7 @@ String
 bool
   User::isIdentified(void)
 {
-   if( services.getDatabase().dbSelect("idas", "identified", "nick='"+getOnlineIDString()+"'") < 1 )
+   if( services.getDatabase().dbSelect("idas", "nicksidentified", "nick='"+getOnlineIDString()+"'") < 1 )
      return false;
 
    if( services.getDatabase().dbGetValue().toInt() > 0 )
@@ -293,7 +293,7 @@ bool
 bool
   User::isIdentified(String const &as)
 {
-   if( services.getDatabase().dbSelect("idas", "identified", "nick='"+getOnlineIDString()+"'") < 1 )
+   if( services.getDatabase().dbSelect("idas", "nicksidentified", "nick='"+getOnlineIDString()+"'") < 1 )
      return false;
 
    String temp = services.getDatabase().dbGetValue();
@@ -318,7 +318,7 @@ String
    String thelist = "";
    String idnick;
 
-   int nbRes = services.getDatabase().dbSelect("idas", "identified", "nick='"+getOnlineIDString()+"'");
+   int nbRes = services.getDatabase().dbSelect("idas", "nicksidentified", "nick='"+getOnlineIDString()+"'");
 
    for(int i=0; i<nbRes; i++)
    {
@@ -340,7 +340,7 @@ String
 bool
   User::isPending(void)
 {
-   if( services.getDatabase().dbSelect("id", "pendingnicks", "nickname='"+nickname+"'") < 1 )
+   if( services.getDatabase().dbSelect("id", "nickspending", "nickname='"+nickname+"'") < 1 )
      return false;
 
    if ( services.getDatabase().dbGetValue().toInt() > 0 )

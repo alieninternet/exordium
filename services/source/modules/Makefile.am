@@ -13,7 +13,7 @@ if EXORDIUM_COMPILE_GAME_MODULE
   EXORDIUM_TARGET_GAME_MODULE=mod.game
 endif
 if EXORDIUM_COMPILE_LOVE_MODULE
-  EXORDIUM_TARGET_LOVE_MODULE=mod.love
+  EXORDIUM_TARGET_LOVE_MODULE=mod_love.la
 endif
 if EXORDIUM_COMPILE_NICK_MODULE
   EXORDIUM_TARGET_NICK_MODULE=mod_nick.la
@@ -38,6 +38,7 @@ INCLUDES= -I../../include -I../../../kineircd/include -Iinclude/
 lib_LTLIBRARIES=\
 	$(EXORDIUM_TARGET_BOT_MODULE) \
 	$(EXORDIUM_TARGET_CHAN_MODULE) \
+	$(EXORDIUM_TARGET_LOVE_MODULE) \
 	$(EXORDIUM_TARGET_NICK_MODULE) \
 	$(EXORDIUM_TARGET_NOTE_MODULE) \
 	$(EXORDIUM_TARGET_OPER_MODULE) \
@@ -47,15 +48,44 @@ lib_LTLIBRARIES=\
 
 CPPFLAGS=
 LDFLAGS=
-mod_bot_la_SOURCES = mod.bot/bot.cpp
-mod_bot_la_LIBADD = ../libexordium.la
-mod_bot_la_LDFLAGS = -avoid-version -module
-mod_chan_la_SOURCES = mod.chan/chan.cpp
-mod_chan_la_LIBADD = ../libexordium.la
-mod_chan_la_LDFLAGS = -avoid-version -module
-mod_nick_la_SOURCES = mod.nick/nick.cpp
-mod_nick_la_LIBADD = ../libexordium.la
-mod_nick_la_LDFLAGS = -avoid-version -module
+
+mod_bot_la_LIBADD=\
+	../libexordium.la
+mod_bot_la_LDFLAGS=\
+	-avoid-version -module
+mod_bot_la_SOURCES=\
+	mod.bot/bot.cpp \
+	mod.bot/bot.h
+
+mod_chan_la_LIBADD=\
+	../libexordium.la
+mod_chan_la_LDFLAGS=\
+	-avoid-version -module
+mod_chan_la_SOURCES=\
+	mod.chan/chan.cpp \
+	mod.chan/chan.h \
+	mod.chan/tables.cpp \
+	mod.chan/tables.h
+
+mod_love_la_LIBADD=\
+	../libexordium.la
+mod_love_la_LDFLAGS=\
+	-avoid-version -module
+mod_love_la_SOURCED=\
+	mod.love/love.cpp \
+	mod.love/love.h \
+	mod.love/tables.cpp \
+	mod.love/tables.h
+
+mod_nick_la_LIBADD=\
+	../libexordium.la
+mod_nick_la_LDFLAGS=\
+	-avoid-version -module
+mod_nick_la_SOURCES=\
+	mod.nick/nick.cpp \
+	mod.nick/nick.h \
+	mod.nick/tables.cpp \
+	mod.nick/tables.h
 
 mod_note_la_LIBADD=\
 	../libexordium.la
@@ -63,22 +93,42 @@ mod_note_la_LDFLAGS=\
 	-avoid-version -module
 mod_note_la_SOURCES=\
 	mod.note/note.cpp \
-	mod.note/tables.cpp
+	mod.note/note.h \
+	mod.note/tables.cpp \
+	mod.note/tables.h
 
-mod_oper_la_SOURCES = mod.oper/oper.cpp
-mod_oper_la_LIBADD = ../libexordium.la
-mod_oper_la_LDFLAGS = -avoid-version -module
-mod_serv_la_SOURCES = mod.serv/serv.cpp
-mod_serv_la_LIBADD = ../libexordium.la
-mod_serv_la_LDFLAGS = -avoid-version -module
-mod_stats_la_SOURCES = mod.stats/stats.cpp
-mod_stats_la_LIBADD = ../libexordium.la
-mod_stats_la_LDFLAGS = -avoid-version -module
-mod_vote_la_SOURCES = mod.vote/vote.cpp
-mod_vote_la_LIBADD = ../libexordium.la
-mod_vote_la_LDFLAGS = -avoid-version -module
+mod_oper_la_LIBADD= \
+	../libexordium.la
+mod_oper_la_LDFLAGS= \
+	-avoid-version -module
+mod_oper_la_SOURCES= \
+	mod.oper/oper.cpp \
+	mod.oper/oper.h
+
+mod_serv_la_LIBADD= \
+	../libexordium.la
+mod_serv_la_LDFLAGS= \
+	-avoid-version -module
+mod_serv_la_SOURCES= \
+	mod.serv/serv.cpp \
+	mod.serv/serv.h
+
+mod_stats_la_LIBADD= \
+	../libexordium.la
+mod_stats_la_LDFLAGS= \
+	-avoid-version -module
+mod_stats_la_SOURCES= \
+	mod.stats/stats.cpp \
+	mod.stats/stats.h
+
+mod_vote_la_LIBADD= \
+	../libexordium.la
+mod_vote_la_LDFLAGS= \
+	-avoid-version -module
+mod_vote_la_SOURCES= \
+	mod.vote/vote.cpp \
+	mod.vote/vote.h
 
 SUBDIRS=\
 	$(EXORDIUM_TARGET_CREDITS_MODULE) \
-	$(EXORDIUM_TARGET_GAME_MODULE) \
-	$(EXORDIUM_TARGET_LOVE_MODULE)
+	$(EXORDIUM_TARGET_GAME_MODULE)

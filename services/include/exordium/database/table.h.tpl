@@ -41,7 +41,11 @@ namespace Exordium {
     */
    struct DatabaseTable {
       /* The name of the table, used to reference it. This should be considered
-       * case sensitive
+       * case sensitive. Each table name must be prefixed with the module name
+       * which uses it. For example, if module 'foo' needed a 'bah' table, the
+       * table should be 'foobah'. If 'foo' needed a 'foos' table, though,
+       * then 'foos' can be used, so long as the prefix can be destinguished
+       * (in this case 'foo').
        */
       const char* const name;
       
@@ -66,8 +70,10 @@ namespace Exordium {
 	 struct Type { // <=- should be namespace :(
 	    enum type {[+ FOR fieldtypes +]
 	       [+ (sprintf "%-27s // %s"
-	           (sprintf "%s," (get "name"))
-		   (get "comment"))
+	             (sprintf "%s%s"
+		        (get "name")
+		        (if (not (last-for?)) "," " "))	; no comma on last iter
+		     (get "comment"))
 		+][+ ENDFOR fieldtypes +]
 	    };
 	 };
@@ -81,13 +87,13 @@ namespace Exordium {
 	 
 	 // Flags to tighten the field's definition
 	 struct Flags { // <=- should be namespace too :(
-	    enum {[+ (define bitvalue 1) +][+ FOR fieldflags +]
-	       [+ (define bitvalue (* bitvalue 2))
-	          (sprintf "%-13s = 0x%08X, // %s"
-		   (get "name")
-		   (/ bitvalue 2)
-		   (get "comment"))
-                +][+ ENDFOR fieldtypes +]
+	    enum {[+ FOR fieldflags (define bitvalue 1) +]
+	       [+ (sprintf "%-13s = 0x%08X%s // %s"
+		     (get "name")
+		     (expt 2 (for-index))		; 2^i where i = iter #
+		     (if (not (last-for?)) "," " ")	; no comma on last iter
+		     (get "comment"))
+		+][+ ENDFOR fieldtypes +]
 	    };
 	 };
 	 const unsigned int flags;
