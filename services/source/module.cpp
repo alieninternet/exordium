@@ -62,9 +62,9 @@ namespace mod_exordium {
       "Exordium IRC Network Services", // long name of the module
       "Copyright (c) 2002 IRCDome Development Team", // Copyright information
       0, // Major version number
-      1, // Minor version number
-      2, // Patch-level (may be set to 0 if none)
-      ".beta", // extra information (may be set to null or 0 if none)
+      0, // Minor version number
+      0, // Patch-level (may be set to 0 if none)
+      ".pre-alpha", // extra information (may be set to null or 0 if none)
 
       /* Note that I set up the version numbers above on purpose to 
        * illustrate how the version fields come together. The above comes
