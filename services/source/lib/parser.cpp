@@ -294,16 +294,12 @@ void PARSER_FUNC (Parser::parseN)
 
         String newnick=tokens.nextToken();
 
-	origin->setNick(newnick);
+        services.setNick(*origin, newnick); 
+
 	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
 
-        // NOTE: This doesnt belong here, it'll be moved when User is complete
-        String queryupd="UPDATE onlineclients SET nickname='" + newnick + "', timestamp='" + services.toString(time(NULL)) + "' WHERE nickname='" + OLDorigin + "'";
-
-        services.getDatabase().query(queryupd);
-
-
+	
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
 	     if(!origin->isIdentified(origin->getNickname()))
@@ -502,14 +498,18 @@ void
      }
    query = "DELETE from onlineclients where server='"+server+"'";
    services.getDatabase().query(query);
+
+   services.DelOnlineServer(server);
 }
 void
   PARSER_FUNC (Parser::parseQUIT)
 {
    String reason = tokens.nextColonToken();
    int oid = services.locateID(OLDorigin);
-   String query = "DELETE from onlineclients where nickname='"+OLDorigin+"'";
-   services.getDatabase().query(query);
+
+   services.delUser(OLDorigin); 
+ 
+   String query;
    query = "DELETE from identified where nick='"+String::convert(oid)+"'";
    services.getDatabase().query(query);
    //Store the quit reason here

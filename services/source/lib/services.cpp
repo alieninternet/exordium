@@ -565,6 +565,21 @@ namespace Exordium
 	    servername + "','" + hops + "','" + description + "')";
 	  database.query(query);
        }
+
+   /* DelOnlineServer(ServerName)
+    *
+    * Del a server from our database
+    *
+    */
+
+   // NOTE: gotta recheck this up when more than 1 server is up, should compare ID instead.. maybe make a server map?
+   void
+     Services::DelOnlineServer (String const &name)
+       {
+          String query = "DELETE from onlineservers WHERE servername='" + name + "'";
+          database.query(query);
+       }
+
 /* doPong(line)
  *
  * Ping... Pong!
@@ -1072,6 +1087,10 @@ bool
   Services::delUser(String &name)
 {
    users.erase(name.IRCtoLower());
+
+   string querydel="DELETE from onlineclients WHERE nickname='" + name + "'";
+   getDatabase().query(querydel);
+
    return true;
 };
 
@@ -1089,6 +1108,9 @@ void
    users[newnick] = &who;
    who.setNick(newnick);
 
+   // Update nickname in table onlineclients
+   String queryupd="UPDATE onlineclients SET nickname='" + newnick + "' WHERE id=" + who.getOnlineIDString();
+   getDatabase().query(queryupd);
 };
 
 /* getRegNickCount()
@@ -1625,18 +1647,3 @@ String
    return "";
 }
 
-String
-  Services::toString(int i)
-{
-   std::stringstream ss;
-   ss << i;
-   return ss.str();
-}
-
-String
-  Services::toString(long l)
-{
-   std::stringstream ss;
-   ss << l;
-   return ss.str();
-}

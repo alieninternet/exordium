@@ -162,6 +162,8 @@ namespace Exordium {
 	void doBurst(void);
 	void AddOnlineServer(LibAIS::String const &, LibAIS::String const &, 
 			     LibAIS::String const &);
+        void DelOnlineServer(LibAIS::String const &);
+
 	void doPong(LibAIS::String const &);
 	bool queueFlush(void);
 	void mode (LibAIS::String const &, LibAIS::String const &, 
@@ -356,8 +358,6 @@ namespace Exordium {
 	  {
 	     return LibAIS::String::convert(users.size());
 	  };
-        String toString(int i);
-        String toString(long l);
 	bool usePrivmsg(LibAIS::String const &);
 	bool loadModule(const LibAIS::String &, const LibAIS::String &);
 	bool unloadModule(const LibAIS::String &);
