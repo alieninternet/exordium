@@ -48,6 +48,17 @@ language = {
 };
 
 
+
+/*
+ * Tags for all components
+ */
+langtag = {
+   name = "ERROR_UNKNOWN_COMMAND";
+   data_en = "Unrecognised Command :%p0";
+};
+
+
+
 /*
  * Tags for mod_nick
  */
@@ -177,12 +188,6 @@ langtag = {
    name = "nick_ERROR_PASSWORD_TOO_SHORT";
    component = "mod_nick";
    data_en = "Error: New password must be greater than %p0 letters";
-};
-
-langtag = {
-   name = "nick_ERROR_UNKNOWN_COMMAND";
-   component = "mod_nick";
-   data_en = "Unrecognised Command :%p0";
 };
 
 langtag = {

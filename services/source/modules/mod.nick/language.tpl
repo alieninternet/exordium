@@ -1,4 +1,17 @@
-[+ AutoGen5 template cpp h +]
+[+ AutoGen5 template cpp h +][+
+   ;;; Do we use the tag in the current scope?
+   (define (useThisTag?)
+      (or
+         ;; If 'component' doesn't exist, it is a tag that applies to all mods
+         (not
+            (exist? "component"))
+	    
+	 ;; Check if 'component' is the one for us
+         (string-ci=?
+            (get "component")
+            "mod_nick")))
+   
++]
 /* $Id$
  * 
  * Exordium Network Services
@@ -31,10 +44,7 @@
 #include "language.h"
 
 Kine::Languages::tagMap_type Exordium::NickModule::Language::tagMap = {[+ FOR langtag +][+ IF
-   (string-ci=?
-      (get "component")
-      "mod_nick")
- +]
+   (useThisTag?) +]
    { "[+
    (string-upcase
       (sprintf "%s%s"
@@ -53,11 +63,7 @@ namespace Exordium {
    namespace NickModule {
       struct Language { // <=- probably should be namespace too
          // Language tag look-up table (for our language map)
-         enum {[+ FOR langtag +][+ IF 
-   (string-ci=?
-      (get "component")
-      "mod_nick")
- +]
+         enum {[+ FOR langtag +][+ IF (useThisTag?) +]
 	    [+name+] = [+(for-index)+][+ IF 
    (not
       (last-for?))

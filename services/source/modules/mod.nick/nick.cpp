@@ -90,7 +90,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	 return;
       }
    }
-   origin.sendMessage(GETLANG(nick_ERROR_UNKNOWN_COMMAND, command),
+   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND, command),
 		      getName());
    return;
 }
@@ -140,7 +140,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
          return;
       }
    }
-   origin.sendMessage(GETLANG(nick_ERROR_UNKNOWN_COMMAND, command),
+   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND, command),
 		      getName());
    return;
 }
