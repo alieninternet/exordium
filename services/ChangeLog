@@ -1,3 +1,64 @@
+2003-03-13 09:28  ircdome
+
+	* source/: lib/console.cpp, modules/mod.chan/chan.cpp: 
+	
+	Fixed up the console service so it has the same security checks as
+	serv and oper.	Basically the following checks are done.
+	
+	1) Is the user identified? 2) Is the user listed in the access
+	table with access to this service? 3) Is the command they are
+	trying to do listed in the commands table? (and they have enough
+	access for it)
+	
+	Fixed up an if bug in the channel module which was causing it to
+	incorrectly complain about not having access on a parseOP
+
+2003-03-13 09:04  ircdome
+
+	* source/lib/services.cpp: 
+	
+	Changed the loop time from 360 seconds (5 minutes) to 3600 (one
+	hour).
+	
+	At a later stage I would like to move this to a configuration
+	option, either definable via the config file, or from the console
+	service.
+
+2003-03-13 09:00  ircdome
+
+	* source/modules/: mod.nick/nick.cpp, mod.oper/oper.cpp,
+	mod.oper/oper.h: 
+	
+	Some tidying up in mod.nick
+	
+	Added zline/qline/gline commands to mod.oper - nb these are
+	designed to work with the ircd we are developing with atm (being
+	bahamut), at a later stage these will need to be tweaked once the
+	appropiate protocol modules are available for kine.
+
+2003-03-13 07:29  pickle
+
+	* source/modules/mod.game/: README, README.Exordi8: Added docs that
+	got removed 5 months ago when the directory structure changed...
+	again... and these files got forgotten..... again....
+
+2003-03-12 22:42  ircdome
+
+	* ChangeLog: 
+	
+	Added the start of a ChangeLog file.
+	
+	This file is generated on the fly by a program called cvs2cl (see
+	http://www.red-bean.com/cvs2cl/)
+	
+	Everytime it is run (client side), it reviews cvs log messages and
+	creates the appropiate ChangeLog file to reflect those changes.
+	
+	I'll periodically run this file myself to keep the ChangeLog
+	uptodate, however if you are going to run it ensure you use the
+	--accum option to ensure it only adds what's needed, and doesn't
+	rewrite the whole file!
+
 2003-03-12 22:11  ircdome
 
 	* doc/example.conf, source/lib/config.cpp, source/lib/config.h,

@@ -1334,9 +1334,8 @@ void ServicesInternal::validateOper(String &origin)
 	 * >09:32:41< *** Quits: allan1 (Killed (Oper ()))
 	 * 
 	 * None of these users had usermode +o :-)
-	 *
-	 * killnick(origin, "Oper", reason);
 	 */
+	  killnick(origin, "Oper", reason);
 	return;
      }
    if(axs==-1)
