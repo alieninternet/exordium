@@ -206,7 +206,6 @@ bool
    while ((row = res.fetch_row()))
      {
 	String foo  = row[0];
-	res.free_result();
 	if(foo.toInt() > 0)
 	  {
 	     return true;
@@ -227,11 +226,9 @@ int
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String foo = ((std::string) row[0]);
-	res.free_result();
+	String foo = row[0];
 	return foo.toInt();
      }
-   res.free_result();
    return 0;
 }
 
@@ -239,18 +236,15 @@ int
 bool
   Channel::ifChanExists (String const &name)
 {
-   String query = "SELECT id from onlinechan where name='"+name+"'";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("SELECT id from onlinechan where name='"+name+"'");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
 	if((int) row[0]>0)
 	  {
-	     res.free_result();
 	     return true;
 	  }
      }
-   res.free_result();
    return false;
 }
 
@@ -258,16 +252,13 @@ bool
 int
   Channel::maxChannels(void)
 {
-   String query = "SELECT count(*) from chans";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("SELECT count(*) from chans");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String max = ((std::string)row[0]);
-	res.free_result();
+	String max = row[0];
 	return max.toInt();
      }
-   res.free_result();
    return 0;
 }
 
@@ -275,16 +266,13 @@ int
 int
   Channel::maxChannelsAccess(void)
 {
-   String query = "SELECT count(*) from chanaccess";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("SELECT count(*) from chanaccess");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String max = ((std::string)row[0]);
-	res.free_result();
+	String max = row[0];
 	return max.toInt();
      }
-   res.free_result();
    return 0;
 }
 
@@ -293,17 +281,14 @@ int
   Channel::maxChannelsUser(String const &nick)
 {
    int id = services.getNickname().getRegisteredNickID(nick);
-   String query = "SELECT count(*) from chanaccess where nickid='"
-     + String::convert(id)+"'";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("SELECT count(*) from chanaccess where nickid='"
+     + String::convert(id)+"'");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String max = ((std::string)row[0]);
-	res.free_result();
+	String max = row[0];
 	return max.toInt();
      }
-   res.free_result();
    return 0;
 }
 
@@ -311,34 +296,28 @@ int
 String
   Channel::getChanName(int const &number)
 {
-   String query = "SELECT name from chans where id="
-     + String::convert(number);
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabasE().query("SELECT name from chans where id="
+     + String::convert(number));
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String name = ((std::string) row[0]);
-	res.free_result();
+	String name = row[0];
 	return name;
      }
-   res.free_result();
    return String("");
 }
 
 String
   Channel::getChanIDName(int const &number)
 {
-   String query = "SELECT name from onlinechan where id="
-     + String::convert(number);
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabasE().query("SELECT name from onlinechan where id="
+     + String::convert(number));
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String name = ((std::string) row[0]);
-	res.free_result();
+	String name = row[0];
 	return name;
      }
-   res.free_result();
    return String("");
 }
 
