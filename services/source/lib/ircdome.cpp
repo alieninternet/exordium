@@ -15,14 +15,12 @@ using Kine::String;
 using Kine::StringTokens;
 using namespace Exordium;
 
-struct IRCDome::functionTableStruct const
-  IRCDome::functionTable[] = {
-  {"module", parseMODULE},
-  {0}
+const struct IRCDome::functionTableStruct IRCDome::functionTable[] = {
+     { "module", &IRCDome::parseMODULE },
+     { 0, 0 }
 };
 
-void 
-IRCDome::parseLine (String & line, String const &requestor)
+void IRCDome::parseLine(const String &line, const String &requestor)
 {   
   StringTokens st (line);
   String origin = requestor;
@@ -33,11 +31,11 @@ IRCDome::parseLine (String & line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st);
+          (this->*(functionTable[i].function))(origin, st);
           return;
         }
     }
-  Services::serviceNotice ("Unrecognized Command", "IRCDome", requestor);
+  services.serviceNotice ("Unrecognized Command", "IRCDome", requestor);
 }
 
 void
@@ -46,28 +44,28 @@ IRCDOME_FUNC (IRCDome::parseMODULE)
 String command = tokens.nextToken();
 if(command=="list")
 	{
-		String foo = Services::serviceM.dumpModules();
-		Services::serviceNotice("The currently loaded service modules are","IRCDome",origin);
-		Services::serviceNotice(foo,"IRCDome",origin);		
+		String foo = services.serviceM.dumpModules();
+		services.serviceNotice("The currently loaded service modules are","IRCDome",origin);
+		services.serviceNotice(foo,"IRCDome",origin);		
 		return;
 	}
 if(command=="unload")
 	{
 		String name = tokens.nextToken();
-		Services::serviceNotice("Unloading module "+name,"IRCDome",origin);
-		Services::unloadModule(name);
+		services.serviceNotice("Unloading module "+name,"IRCDome",origin);
+		services.unloadModule(name);
 	}
 if(command=="load")
 	{
 		String name = tokens.nextToken();
 		String filename = tokens.nextToken();
-		Services::serviceNotice("Attempting to load module","IRCDome",origin);
-		if(!Services::loadModule(name,filename))
+		services.serviceNotice("Attempting to load module","IRCDome",origin);
+		if(!services.loadModule(name,filename))
 		{
-			Services::serviceNotice("Error loading module","IRCDome",origin);
+			services.serviceNotice("Error loading module","IRCDome",origin);
 			return;
 		}
-		Services::serviceNotice("Module loaded successfully","IRCDome",origin);
+		services.serviceNotice("Module loaded successfully","IRCDome",origin);
 
 	}
 

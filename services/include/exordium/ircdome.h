@@ -10,40 +10,33 @@
 
 #include <kineircd/str.h>
 
-# define IRCDOME_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
+# define IRCDOME_FUNC(x) \
+     x(Kine::String &origin, Kine::StringTokens &tokens)
 
-using Kine::String;
-using namespace Exordium;
-
-class IRCDome
-{
-private:
-  struct functionTableStruct
-  {
-    char const *command;
-    void IRCDOME_FUNC ((*function));
-  };
-   struct functionTableStruct const functionTable[];
-   void IRCDOME_FUNC (parseMODULE);
-public: 
-   void parseLine( String &, String const &);
+namespace Exordium {
+   class Services;
+   
+   class IRCDome {
+    private:
+      Services& services;
+      
+      struct functionTableStruct {
+	 const char* command;
+	 const void IRCDOME_FUNC((IRCDome::* const function));
+      } static const functionTable[];
+      
+      void IRCDOME_FUNC(parseMODULE);
+      
+    public:
+      IRCDome(Services& s)
+	: services(s)
+	{};
+      
+      void parseLine(const String &, const String &);
+   };
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Complete the forwarded definition
+# include "exordium/services.h"
 
 #endif
