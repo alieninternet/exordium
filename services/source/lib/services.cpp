@@ -330,7 +330,8 @@ namespace Exordium
 
 	if(!socky.connect())
 	  {
-	     std::cout << "Socky.connect() returned an error" << std::endl;
+	     std::cout << "Socky.connect() returned an error: " <<
+	       socky.getErrorMessage() << std::endl;
 
 	  }
 /* I'm not particulary happy with how this is coded.
