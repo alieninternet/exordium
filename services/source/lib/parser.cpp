@@ -363,10 +363,13 @@ void PARSER_FUNC (Parser::parseN)
 
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
+	     std::cout << "Nick is registered" << std::endl;
 	     if(!origin->isIdentified(origin->getNickname()))
 	       {
+		  std::cout << "it isn't identified" << std::endl;
 		  if(!origin->isPending())
 		    {
+		       std::cout << "its not pending" << std::endl;
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
 		       /* He's an annoying little pratt isn't he?
@@ -374,12 +377,26 @@ void PARSER_FUNC (Parser::parseN)
 			*/
 		       if(origin->modNick())
 			 {
-			   
+			    std::cout << "they want modnick :-)" << std::endl;
 		       	   origin->addCheckIdentify();
+			 }
+		       else
+			 {
+			    std::cout << "they dont want modnick" << std::endl;
 			 }
 		       
 		    }
+		  else
+		    {
+		       std::cout << "its pending status" << std::endl;
+		    }
+		  
 	       }
+	     else
+	       {
+		  std::cout << "nick already identified" << std::endl;
+	       }
+	     
 	  }
 	return;
      }
@@ -417,9 +434,10 @@ void PARSER_FUNC (Parser::parseN)
    }
    
 
-
+   std::cout << "Going to see if " << newNick->getNickname() << "is registered" << std::endl;
    if(services.isNickRegistered(nick))
      {
+	std::cout << "yup its registered" << std::endl;
 	if(!newNick->isPending())
 	  {
 	     if(newNick->modNick())

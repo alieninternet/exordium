@@ -28,14 +28,14 @@
 #define __NOTE_H_
 
 #include <kineircd/str.h>
-# define NOTE_FUNC(x)           x(LibAIS::String &origin, LibAIS::StringTokens &tokens)
+#define NOTE_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens)
 
 #include "exordium/service.h"
 #include "exordium/services.h"
 
 namespace Exordium {
 
-class Note : public Service
+class Note : public Exordium::Service
 {
 private:
    // Module information structure
@@ -47,13 +47,11 @@ private:
      void NOTE_FUNC ((Note::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
    
 public:
    Note(Exordium::Services& s, const LibAIS::String& mn)
-   : Service(s, mn)
+   : Exordium::Service(s, mn)
    {
-	std::cout << "Hi im an instance. :(" << std::endl;
    };
   ~Note(void) 
    {
@@ -65,8 +63,8 @@ public:
    // Stop the module (called just before a module is unloaded)
    void stop(void) {};
       
-  void parseLine (LibAIS::String const &, LibAIS::String const &);
-  void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin, LibAIS::String const &);
    
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

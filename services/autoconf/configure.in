@@ -83,6 +83,7 @@ AC_CONFIG_FILES([source/Makefile
 		 source/modules/game/Makefile
 		 source/modules/game/cards/Makefile
 		 source/modules/love/Makefile
+		 utils/email-sender/Makefile
 		 Makefile
 		 ])
 AC_OUTPUT

@@ -28,7 +28,6 @@
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include "exordium/channel.h"
-#include "exordium/nickname.h"
 #include <kineircd/str.h>
 #include "exordium/sql.h"
 #include <map>
@@ -57,13 +56,13 @@ namespace Exordium
 	  String num = tokens.nextToken();
 	  if(num=="all")
 	    {
-	       String query = "DELETE from notes where nto='" + origin + "'";
+	       String query = "DELETE from notes where nto='" + origin.getNickname() + "'";
 	       services.getDatabase().query(query);
-	       services.serviceNotice("All notes erased.","Note",origin);
-	       services.log(origin,"Note","Erased all notes");
+	       origin.sendMessage("All notes erased.",myName);
+	       services.log(origin,myName,"Erased all notes");
 	       return;
 	    }
-	  String query = "SELECT id from notes where nto='" + origin + "'";
+	  String query = "SELECT id from notes where nto='" + origin.getNickname() + "'";
 	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  int j = 0;
@@ -73,7 +72,7 @@ namespace Exordium
 	       if(j==num.toInt())
 		 {
 		    String togo = String("Note #\002")+num+"\002 deleted";
-		    services.serviceNotice(togo,"Note",origin);
+		    origin.sendMessage(togo,myName);
 		    String ntext = ((std::string) row[0]).c_str();
 		    String query = "DELETE from notes where id='" + ntext + "'";
 		    services.getDatabase().query(query);
@@ -90,7 +89,7 @@ namespace Exordium
 	  String num = tokens.nextToken();
 	  if(num.toLower()=="all")
 	    {
-	       String query = "SELECT nfrom,nsent,note from notes where nto='" + origin + "'";
+	       String query = "SELECT nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
 	       MysqlRes res = services.getDatabase().query(query);
 	       MysqlRow row;
 	       int j = 0;
@@ -101,15 +100,15 @@ namespace Exordium
 		    String nsent = ((std::string) row[1]).c_str();
 		    String ntext = ((std::string) row[2]).c_str();
 		    String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-		    services.serviceNotice(togo,"Note",origin);
+		    origin.sendMessage(togo,myName);
 		    String tofo = ntext;
-		    services.serviceNotice(tofo,"Note",origin);
+		    origin.sendMessage(tofo,myName);
 		 }
 	       services.log(origin,"Note","Read all notes");
 	       res.free_result();
 	       return;
 	    }
-	  String query = "SELECT nfrom,nsent,note from notes where nto='" + origin + "'";
+	  String query = "SELECT nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
 	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  int j = 0;
@@ -122,22 +121,22 @@ namespace Exordium
 		    String nsent = ((std::string) row[1]).c_str();
 		    String ntext = ((std::string) row[2]).c_str();
 		    String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-		    services.serviceNotice(togo,"Note",origin);
+		    origin.sendMessage(togo,myName);
 		    String tofo = ntext;
-		    services.serviceNotice(tofo,"Note",origin);
+		    origin.sendMessage(tofo,myName);
 		    services.log(origin,"Note","Read a single note");
 		    res.free_result();
 		    return;
 		 }
 	    }
 	  res.free_result();
-	  services.serviceNotice("No such note!","Note",origin);
+	  origin.sendMessage("No such note!",myName);
 	  return;
        }
    void
      NOTE_FUNC (Note::parseLIST)
        {
-	  String query = "select nfrom,nsent,note from notes where nto='" + origin + "'";
+	  String query = "select nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
 	  MysqlRes res = services.getDatabase().query(query);
 	  MysqlRow row;
 	  int j = 0;
@@ -148,15 +147,15 @@ namespace Exordium
 	       String nsent = ((std::string) row[1]).c_str();
 	       String ntext = ((std::string) row[2]).c_str();
 	       String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-	       services.serviceNotice(togo,"Note",origin);
+	       origin.sendMessage(togo,myName);
 	    }
 	  if(j==0)
 	    {
-	       services.serviceNotice("You have no notes stored","note",origin);
+	       origin.sendMessage("You have no notes stored",myName);
 	       return;
 	    }
 	  String tofo = String("To read a note, type /msg Note read Number");
-	  services.serviceNotice(tofo,"Note",origin);
+	  origin.sendMessage(tofo,myName);
 	  services.log(origin, "Note", "Listed their notes");
 	  res.free_result();
        }
@@ -168,13 +167,13 @@ namespace Exordium
 	  if(nto=="")
 	    {
 	       String togo = String("Usage is: /msg note send Nickname/#Channel Your Message Here");
-	       services.serviceNotice(String(togo),"Serv",origin);
+	       origin.sendMessage(String(togo),myName);
 	       return;
 	    }
 	  if(note=="")
 	    {
 	       String togo = String("Usage is: /msg note send Nickname Your Message Here");
-	       services.serviceNotice(String(togo),"Serv",origin);
+	       origin.sendMessage(String(togo),myName);
 	       return;
 	    }
 	  String it = (nto[0]);
@@ -184,7 +183,7 @@ namespace Exordium
 	       if(!services.getChannel().isChanRegistered(nto))
 		 {
 		    String tofo = String("That channel is not registered");
-		    services.serviceNotice(String(tofo),"Note",origin);
+		    origin.sendMessage(String(tofo),myName);
 		    return;
 		 }
 	       int chanid = services.getChannel().getChanID(nto);
@@ -196,46 +195,45 @@ namespace Exordium
 		 {
 		    String nnid = ((std::string) row[0]).c_str();
 		    int nid = nnid.toInt();
-		    String nick = services.getNickname().getNick(nid);
-		    if(nick.toLower()!=origin.toLower())
+		    String nick = services.getNick(nid);
+		    if(nick.toLower()!=origin.getNickname().toLower())
 		      {
 			 j++;
 			 String txt = String("\002")+nto+"\002: "+note;
-			 services.sendNote(origin,nick,txt);
+			 services.sendNote(origin.getNickname(),nick,txt);
 		      }
 		 }
 	       String toao = String("Your note was successfully sent to \002")+String::convert(j)+"\002 people on "+nto;
-	       services.serviceNotice(String(toao),"Note",origin);
+	       origin.sendMessage(String(toao),myName);
 	       services.log(origin,"Note","Sent a channel note to "+nto);
 	       res.free_result();
 	       return;
 	    }
 
-	  if(!services.getNickname().isNickRegistered(nto))
+	  if(!services.isNickRegistered(nto))
 	    {
 	       String togo = String("Error: Destination nickname is not registered");
-	       services.serviceNotice(togo,"Serv",origin);
+	       origin.sendMessage(togo,myName);
 	       return;
 	    }
-	  services.sendNote(origin,nto,note);
-	  services.serviceNotice("Your note was successfully sent to \002"+nto+"\002","Note",origin);
+	  services.sendNote(origin.getNickname(),nto,note);
+	  origin.sendMessage("Your note was successfully sent to \002"+nto+"\002",myName);
 	  services.log(origin,"Note","Sent a private note to "+nto);
        }
 
    void
-     Note::parseLine (String const &line, String const &requestor, String const &ch)
+     Note::parseLine (StringTokens& line, User& origin, String const &ch)
        {
 	  return;
        }
 
    void
-     Note::parseLine (String const &line, String const &requestor)
+     Note::parseLine (StringTokens& line, User& origin)
        {
-	  StringTokens st (line);
-	  String origin = requestor;
-	  if(!services.getNickname().isIdentified(requestor,requestor))
+	  StringTokens& st = line;
+	  if(!origin.isIdentified(origin.getNickname()))
 	    {
-	       services.serviceNotice("Sorry - You must be identified to use this service","Note",origin);
+	       origin.sendMessage("Sorry - You must be identified to use this service",myName);
 	       return;
 	    }
 	  String command = st.nextToken ().toLower ();
@@ -249,12 +247,12 @@ namespace Exordium
 		    return;
 		 }
 	    }
-	  services.serviceNotice ("Unrecognized Command", "Note", requestor);
+	  origin.sendMessage ("Unrecognized Command",myName);
        }
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	return new Note(services);
+	return new Note(services,name);
      }
 
    // Module information structure
@@ -267,9 +265,9 @@ namespace Exordium
    // Start the service
    void Note::start(void)
      {
-	services.registerService(name,name,"ircdome.org","+dz",
+	services.registerService(myName,myName,"ircdome.org","+dz",
 				 "Note service thingy that James forgot :(");
-	services.serviceJoin(name,"#Debug");
+	services.serviceJoin(myName,"#Debug");
      }
 }
 
