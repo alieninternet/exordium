@@ -27,33 +27,38 @@
 #ifndef _SOURCE_MODULES_GAME_CONFIG_H_
 # define _SOURCE_MODULES_GAME_CONFIG_H_ 1
 
-# include <exordium/service.h>
+# include <kineircd/config.h>
+# include <exordium/module.h>
 
-namespace Game {
-   // Configuration data class (inherited from the primary module config)
-   class ConfigData : public Exordium::Service::ConfigData {
-    private:
-      // Configuration information
-      static const AISutil::ConfigParser::defTable_type defTable;
-      
-      const AISutil::String defModule;
-      static LIBAISUTIL_CONFIG_VARIABLE_HANDLER(varHandleModule);
-
-    public:
+namespace Exordium {
+   namespace GameModule {
+      // Configuration data class (inherited from the primary module config)
+      class ConfigData : public Exordium::Module::ConfigData {
+       private:
+	 // Configuration information
+	 static const AISutil::ConfigParser::defTable_type defTable;
+	 
+	 const AISutil::String defModule;
+	 static LIBAISUTIL_CONFIG_VARIABLE_HANDLER(varHandleModule);
+	 
+       public:
       // Constructor
-      ConfigData(const AISutil::String& d)
-	: Exordium::Service::ConfigData(d, "peoplechat.org", "Game", "game")
-	{};
-      
-      // Grab the configuration definition table (over-write the original)
-      const AISutil::ConfigParser::defTable_type& getDefinitions(void) const
-	{ return defTable; };
-      
-      const AISutil::String& getModule(void) const
-        { return defModule; };
+	 ConfigData(const char* const d, const char* const n)
+	   : Exordium::Module::ConfigData(d,
+					  Kine::config().getOptionsServerName(),
+					  n, n)
+	     {};
+	 
+	 // Grab the configuration definition table (over-write the original)
+	 const AISutil::ConfigParser::defTable_type& getDefinitions(void) const
+	   { return defTable; };
+	 
+	 const AISutil::String& getModule(void) const
+	   { return defModule; };
+      }; // class ConfigData
+   }; // namespace GameModule
+}; // namespace Exordium
 
-   };
-}; // namespace Game
 #endif // _SOURCE_MODULES_GAME_CONFIG_H_
 
 

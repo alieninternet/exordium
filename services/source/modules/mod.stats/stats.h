@@ -42,50 +42,34 @@
 
 namespace Exordium {
    namespace StatsModule {
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
-	 
 	 struct functionTableStruct {
 	    char const* const command;
-	    STATS_FUNC((Module::* const function));
+	    STATS_FUNC((Service::* const function));
 	 } static const functionTable[];
+
+	 Exordium::Services& services;
 	 
        public:
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Stats", "stats")
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
 	   {};
 	 
-	 ~Module(void)
+	 ~Service(void)
 	   {};
-   
-	 // Start the module
-	 bool start(Exordium::Services& s);
 	 
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const Kine::ChannelName& channel)
 	   {};
-   
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-   
-	 // Return an appropriate instance of a configuration data class
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
 	 
        private:
 	 STATS_FUNC(parseHELP);
-	 
-      }; // class Module
+      }; // class Service
    }; // namespace StatsModule
 }; // namespace Exordium
    

@@ -98,7 +98,8 @@ void CONSOLE_FUNC(Console::parseMODULE)
 			     services.getConfigInternal().getConsoleName(),
 			     origin);
       String reason = origin + " unloaded me :(";
-      services.getConfigInternal().getModules().unloadModule(name, &reason);
+      services.getConfigInternal().getModules().unloadModule(name.c_str(),
+							     &reason);
       services.sendGOper("PeopleChat",origin+ " \002unloaded\002 module " + name);
       return;
    }
@@ -111,11 +112,11 @@ void CONSOLE_FUNC(Console::parseMODULE)
 			     services.getConfigInternal().getConsoleName(),
 			     origin);
       String errString;
-      Service* const service = 
+      Module* const module =
 	services.getConfigInternal().getModules().loadModule(filename,
 							     errString);
       
-      if (service == 0) {
+      if (module == 0) {
 	 services.serviceNotice("Error loading module: " + errString,
 				services.getConfigInternal().getConsoleName(),
 				origin);
@@ -123,7 +124,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
       }
 	
       // Start the module, now that it has been loaded..
-      service->start(services);
+      module->start(services);
       
       services.serviceNotice("Module loaded successfully",
 			     services.getConfigInternal().getConsoleName(),

@@ -35,7 +35,7 @@ class ChannelGame;
 # include "game.h"
 
 # define CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN(x) \
-     ChannelGame* x(Exordium::GameModule::Module& module, \
+     ChannelGame* x(Exordium::GameModule::Service& module, \
 		    const AISutil::String& channel, Exordium::User& caller)
 
 # define CHANNEL_GAME_CREATOR_FUNCTION \
@@ -45,7 +45,7 @@ class ChannelGame;
 class ChannelGame {
  protected:
    // The game service (so we can send messages)
-   Exordium::GameModule::Module& module;
+   Exordium::GameModule::Service& module;
    
    // The channel we are playing on
    const AISutil::String channel;
@@ -61,7 +61,7 @@ class ChannelGame {
    } static const channelGameTable[];
 
    // Constructor
-   ChannelGame(Exordium::GameModule::Module& m, const AISutil::String& c)
+   ChannelGame(Exordium::GameModule::Service& m, const AISutil::String& c)
      : module(m),
        channel(c)
        {};

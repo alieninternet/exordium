@@ -41,34 +41,34 @@ using AISutil::StringTokens;
 using namespace Exordium::NoteModule;
 
 
-const Module::functionTableStruct Module::functionTable[] = {
-     { "send",		&Module::parseSEND },
-     { "list",		&Module::parseLIST },
-     { "read",		&Module::parseREAD },
-     { "del",		&Module::parseDEL },
-     { "delete",	&Module::parseDEL },
-     { "erase",		&Module::parseDEL },
+const Service::functionTableStruct Service::functionTable[] = {
+     { "send",		&Service::parseSEND },
+     { "list",		&Service::parseLIST },
+     { "read",		&Service::parseREAD },
+     { "del",		&Service::parseDEL },
+     { "delete",	&Service::parseDEL },
+     { "erase",		&Service::parseDEL },
      { 0, 0 }
 };
 
 
-NOTE_FUNC(Module::parseDEL)
+NOTE_FUNC(Service::parseDEL)
 {
    String num = tokens.nextToken();
    
    if (num == "all") {
-      services->getDatabase().dbDelete("notes",
+      services.getDatabase().dbDelete("notes",
 				       "nto='" + origin.getNickname() + "'");
       origin.sendMessage(GETLANG(note_DEL_NOTES_ERASED), getNickname());
-      services->log(origin,getNickname(),"Erased all notes");
+      services.log(origin,getNickname(),"Erased all notes");
       return;
    }
    
-   int nbRes = services->getDatabase().dbSelect("id", "notes",
+   int nbRes = services.getDatabase().dbSelect("id", "notes",
 						"nto='" + 
 						origin.getNickname() + "'");
    
-   CResult *myRes = services->getDatabase().dbGetResultSet();
+   CResult *myRes = services.getDatabase().dbGetResultSet();
    
    int j = 0;
    
@@ -79,8 +79,8 @@ NOTE_FUNC(Module::parseDEL)
 	 origin.sendMessage(GETLANG(note_DEL_NOTE_ERASED,num),
 			    getNickname());
 	 String ntext = myRes->getValue(i,0);
-	 services->getDatabase().dbDelete("notes", "id='" + ntext + "'");
-	 services->log(origin, "Note", "Deleted a single note");
+	 services.getDatabase().dbDelete("notes", "id='" + ntext + "'");
+	 services.log(origin, "Note", "Deleted a single note");
 	 return;
       }
    }
@@ -88,15 +88,15 @@ NOTE_FUNC(Module::parseDEL)
 }
 
 
-NOTE_FUNC(Module::parseREAD)
+NOTE_FUNC(Service::parseREAD)
 {
    String num = tokens.nextToken();
    
    if(num.toLower() == "all") {
-      int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes",
+      int nbRes = services.getDatabase().dbSelect("nfrom,nsent,note", "notes",
 						   "nto='" + 
 						   origin.getNickname() + "'");
-      CResult *myRes = services->getDatabase().dbGetResultSet();
+      CResult *myRes = services.getDatabase().dbGetResultSet();
       int j = 0;
       
       for (int i = 0; i < nbRes; i++) {
@@ -109,13 +109,13 @@ NOTE_FUNC(Module::parseREAD)
 				    nsent),getNickname());
 	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext), getNickname());
       }
-      services->log(origin, "Note", "Read all notes");
+      services.log(origin, "Note", "Read all notes");
       delete myRes;
       return;
    }
 
-   int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
-   CResult *myRes = services->getDatabase().dbGetResultSet();
+   int nbRes = services.getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
+   CResult *myRes = services.getDatabase().dbGetResultSet();
    int j = 0;
    for (int i = 0; i < nbRes; i++) {
       j++;
@@ -129,7 +129,7 @@ NOTE_FUNC(Module::parseREAD)
 			       nsent);
 	 origin.sendMessage(togo,getNickname());
 	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext),getNickname());
-	 services->log(origin, "Note", "Read a single note");
+	 services.log(origin, "Note", "Read a single note");
 	 return;
       }
    }
@@ -140,11 +140,11 @@ NOTE_FUNC(Module::parseREAD)
 }
 
 
-NOTE_FUNC(Module::parseLIST) {
-   int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes",
+NOTE_FUNC(Service::parseLIST) {
+   int nbRes = services.getDatabase().dbSelect("nfrom,nsent,note", "notes",
 						"nto='" + 
 						origin.getNickname() + "'");
-   CResult *myRes = services->getDatabase().dbGetResultSet();
+   CResult *myRes = services.getDatabase().dbGetResultSet();
    int j = 0;
    for(int i=0; i<nbRes; i++) {
       j++;
@@ -163,11 +163,11 @@ NOTE_FUNC(Module::parseLIST) {
       return;
    }
    origin.sendMessage(GETLANG(note_LIST_INSTRUCTIONS), getNickname());
-   services->log(origin, "Note", "Listed their notes");
+   services.log(origin, "Note", "Listed their notes");
 }
 
 
-NOTE_FUNC(Module::parseSEND) {
+NOTE_FUNC(Service::parseSEND) {
    String nto = tokens.nextToken();
    String note = tokens.rest();
    
@@ -179,53 +179,53 @@ NOTE_FUNC(Module::parseSEND) {
    String it = (nto[0]);
    if(nto[0] == '#') {
       //Channel Note
-      if(!services->getChannel().isChanRegistered(nto)) {
+      if(!services.getChannel().isChanRegistered(nto)) {
 	 origin.sendMessage(GETLANG(ERROR_CHANNEL_NOT_REGISTERED),getNickname());
 	 return;
       }
       
-      int chanid = services->getChannel().getChanID(nto);
+      int chanid = services.getChannel().getChanID(nto);
       
-      int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", 
+      int nbRes = services.getDatabase().dbSelect("nickid", "chanaccess", 
 						   "chanid='" + 
 						   String::convert(chanid) + 
  						   "'");
-      CResult *myRes = services->getDatabase().dbGetResultSet();
+      CResult *myRes = services.getDatabase().dbGetResultSet();
       
       int j = 0;
       for (int i = 0; i < nbRes; i++) {
 	 String nnid = myRes->getValue(i,0);
 	 int nid = nnid.toInt();
-	 String nick = services->getNick(nid);
+	 String nick = services.getNick(nid);
 	 
 	 if (nick.toLower() != origin.getNickname().toLower()) {
 	    j++;
 	    String txt = String("\002") + nto + "\002: " + note;
-	    services->sendNote(origin.getNickname(), nick, txt);
+	    services.sendNote(origin.getNickname(), nick, txt);
 	 }
 
       }
       
       origin.sendMessage(GETLANG(note_SEND_CHANNEL_SUCCESS,String::convert(j),nto), getNickname());
-      services->log(origin, "Note","Sent a channel note to " + nto);
+      services.log(origin, "Note","Sent a channel note to " + nto);
       delete myRes;
       return;
    }
    
-   if(!services->isNickRegistered(nto)) {
+   if(!services.isNickRegistered(nto)) {
       origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 			 getNickname());
       return;
    }
    
-   services->sendNote(origin.getNickname(), nto, note);
+   services.sendNote(origin.getNickname(), nto, note);
    origin.sendMessage(GETLANG(note_SEND_USER_SUCCESS,nto),
 		      getNickname());
-   services->log(origin, "Note", "Sent a private note to " + nto);
+   services.log(origin, "Note", "Sent a private note to " + nto);
 }
 
 
-void Module::parseLine(StringTokens& line, User& origin, const bool safe)
+void Service::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    if (!origin.isIdentified(origin.getNickname())) {
       origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),
@@ -245,52 +245,4 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    }
    
    origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND), getNickname());
-}
-
-
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
-   // Name
-   "Note Service",
-     
-   // Version (major, minor)
-   0, 0,
-     
-   // Event mask
-   Exordium::Service::moduleInfo_type::Events::NONE
-};
-
-
-// Start the service
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-
-   Kine::langs().registerMap(Language::tagMap);
-   // Attempt to affirm our database table..
-   if (!services->getDatabase().affirmTable(Tables::notesTable)) {
-      services->logLine("Unable to affirm mod_note database table 'notes'",
-			Log::Fatality);
-      return false;
-   }
-   
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(),
-			     getHostname(), getDescription());
-   
-   // We started okay :)
-   return true;
-}
-
-
-// Stop the service
-void Module::stop(const String* const reason)
-{
-   Kine::langs().deregisterMap(Language::tagMap);
-   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
 }

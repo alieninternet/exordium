@@ -40,13 +40,13 @@ using AISutil::StringTokens;
 using namespace Exordium::BotModule;
 
 
-const Module::functionTableStruct Module::functionTable[] = {
-     { "help",		&Module::parseHELP },
+const Service::functionTableStruct Service::functionTable[] = {
+     { "help",		&Service::parseHELP },
      { 0, 0 }
 };
 
 void
-  Module::parseLine (StringTokens& line, User& origin,
+  Service::parseLine (StringTokens& line, User& origin,
 		     const Kine::ChannelName& channel)
 {
    StringTokens& st = line;
@@ -67,7 +67,7 @@ void
 }
 
 void
-  Module::parseLine (StringTokens& line, User& origin, const bool safe)
+  Service::parseLine (StringTokens& line, User& origin, const bool safe)
 
 {
    StringTokens& st = line;
@@ -87,34 +87,7 @@ void
 }
 
 
-BOT_FUNC(Module::parseHELP)
+BOT_FUNC(Service::parseHELP)
 {
-   services->doHelp(origin,getNickname(),tokens.nextToken(),tokens.nextToken());
-}
-
-
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
-   "Bot Assistance Service",
-     0, 0,
-     Exordium::Service::moduleInfo_type::Events::NONE
-};
-
-
-// Start the service
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-   
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(), 
-			     getHostname(), getDescription());
-   
-   // We started okay :)
-   return true;
+   services.doHelp(origin,getNickname(),tokens.nextToken(),tokens.nextToken());
 }

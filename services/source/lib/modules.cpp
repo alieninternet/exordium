@@ -50,13 +50,13 @@ Modules::~Modules(void)
      }
 }
 
-/* ~Module - Delete the server and unload the module
+/* ~ModuleDescriptor - Delete the server and unload the module
  * Original 17/09/2002 pickle
  */
-Modules::Module::~Module(void)
+Modules::ModuleDescriptor::~ModuleDescriptor(void)
 {
    lt_dlclose(handle);
-   //   delete service; // this needs fixing :( is this being deleted before here?
+   //   delete module; // this needs fixing :( is this being deleted before here?
 };
 
 /* loadModule - Shut down all existing modules in the list
@@ -65,8 +65,8 @@ Modules::Module::~Module(void)
  * 18/09/2002 pickle - Merged with Services::loadModule()
  * Note: Some of the variables passed here are temporary...
  */
-Service* const Modules::loadModule(const String& fileName,
-				   String& errString)
+Module* const Modules::loadModule(const String& fileName,
+				  String& errString)
 {
    // Try to load the module
    lt_dlhandle handle; 
@@ -79,9 +79,9 @@ Service* const Modules::loadModule(const String& fileName,
    }
 
    // Locate the initialisation function
-   EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((* const initfunc)) =
-     ((EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*)))
-      (lt_dlsym(handle, "service_init")));
+   EXORDIUM_MODULE_INIT_FUNCTION_NO_EXTERN((* const initfunc)) =
+     ((EXORDIUM_MODULE_INIT_FUNCTION_NO_EXTERN((*)))
+      (lt_dlsym(handle, "exordium_module_init")));
 
    // Check if we could find the init function
    if (initfunc == 0) {
@@ -90,11 +90,11 @@ Service* const Modules::loadModule(const String& fileName,
       return 0;
    }
 
-   // Pull out the service data, this class contains all the other info we need
-   Service* const service = (*initfunc)();
+   // Pull out the module data, this class contains all the other info we need
+   Module* const module = (*initfunc)();
    
-   // Make sure the service was returned appropriately...
-   if (service == 0) {
+   // Make sure the module was returned appropriately...
+   if (module == 0) {
       errString = "Could not load " + fileName + 
 	": Module failed to initialise";
       return 0;
@@ -102,20 +102,18 @@ Service* const Modules::loadModule(const String& fileName,
 
 #ifdef DEBUG
    std::cout << "Loaded module '" <<
-     service->getModuleInfo().fullName << "' version " <<
-     service->getModuleInfo().versionMajor << '.' <<
-     service->getModuleInfo().versionMinor <<
+     module->getModuleInfo().fullName << "' version " <<
+     module->getModuleInfo().versionMajor << '.' <<
+     module->getModuleInfo().versionMinor <<
      std::endl;
 #endif
 
-   // Fix up the name, since we use it twice (may as well convert it once)
-   String moduleName = service->getNickname().IRCtoLower();
-
    // Make sure this does not exist..
-   if (!exists(moduleName)) {
+   if (!exists(module->getModuleInfo().shortName)) {
       // Add it, and return happy status
-      modules[moduleName] = new Module(service, handle);
-      return service;
+      modules[module->getModuleInfo().shortName] = 
+	new ModuleDescriptor(module, handle);
+      return module;
    }
 
    // Umm, we should delete and unload module here!
@@ -127,15 +125,15 @@ Service* const Modules::loadModule(const String& fileName,
 /* unloadModule - Remove a module from the list, and unload it
  * Original 07/06/2002 pickle
  */
-void Modules::unloadModule(const Kine::ClientName& name,
+void Modules::unloadModule(const char* const name,
 			   const String* const reason)
 {
    // Locate the module..
-   modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
+   modules_type::iterator moduleLocation = modules.find(name);
 
    // If the module exists then stop it, delete it, and erase it - bye bye!
    if (moduleLocation != modules.end()) {
-      (*moduleLocation).second->service->stop(reason);
+      (*moduleLocation).second->module->stop(reason);
       delete (*moduleLocation).second;
       modules.erase(moduleLocation);
       return;
@@ -159,7 +157,7 @@ struct startModule {
 
    // Operator which performs the starting
    inline void operator()(Modules::modules_type::value_type& modulesData)
-     { (void)modulesData.second->service->start(services); };
+     { (void)modulesData.second->module->start(services); };
 };
 
 /* startAll - Start all modules in the list
@@ -176,7 +174,7 @@ void Modules::startAll(Services& services)
 void Modules::unloadAll(const String* const reason)
 {
    while (!modules.empty()) {
-      (*modules.begin()).second->service->stop(reason);
+      (*modules.begin()).second->module->stop(reason);
       delete (*modules.begin()).second;
       modules.erase(modules.begin());
       return;
@@ -186,11 +184,10 @@ void Modules::unloadAll(const String* const reason)
 /* exists - Check if a module exists
  * Original 07/06/2002 james
  */
-bool Modules::exists(const Kine::ClientName& name) const
+bool Modules::exists(const char* const name) const
 {
    // Locate the module..
-   modules_type::const_iterator moduleLocation =
-     modules.find(name.IRCtoLower());
+   modules_type::const_iterator moduleLocation = modules.find(name);
 
    // If the module exists, be happy
    if (moduleLocation != modules.end()) {
@@ -201,35 +198,6 @@ bool Modules::exists(const Kine::ClientName& name) const
    return false;
 }
 
-/* throwLine - Throw a line at the appropriate service (sent directly)
- * Original 07/06/2002 pickle
- */
-void Modules::throwLine(const Kine::ClientName& name, StringTokens& line,
-			User& origin, const bool safe)
-{
-   // Locate the module..
-   modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
-
-   // If the module exists, throw the line at it
-   if (moduleLocation != modules.end()) {
-      (*moduleLocation).second->service->parseLine(line, origin, safe);
-   }
-}
-
-/* throwLine - Throw a line at the appropriate service (sent to a channel)
- * Original 07/06/2002 pickle
- */
-void Modules::throwLine(const Kine::ClientName& name, StringTokens& line,
-			User& origin, const String& channel)
-{
-   // Locate the module..
-   modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
-
-   // If the module exists, throw the line at it
-   if (moduleLocation != modules.end()) {
-      (*moduleLocation).second->service->parseLine(line, origin, channel);
-   }
-}
 
 /* handleClientSignon - Handle the signing on of a new client, and
  * pass the information to any modules that wish to know.
@@ -242,14 +210,14 @@ void
 	it != modules.end(); it++) {
       
       String tmp =  (*it).first;
-      if((*it).second->service->getModuleInfo().eventsMask &
-	 Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON) {
+      if((*it).second->module->getService()->getEventsMask() &
+	 Exordium::Service::Events::CLIENT_SIGNON) {
 	 
 	 /* Ok this module wants to know about signons */
 #ifdef DEBUG
 	 std::cout << tmp << " would like to know when someone signs on" << std::endl;
 #endif
-	 (*it).second->service->handleClientSignon(origin);
+	 (*it).second->module->getService()->handleClientSignon(origin);
       }
       
    }
@@ -266,13 +234,13 @@ void Modules::handleAway(User& origin, const AISutil::String &message) {
    for (modules_type::const_iterator it = modules.begin();
 	it != modules.end(); it++) {
       String tmp =  (*it).first;
-      if((*it).second->service->getModuleInfo().eventsMask &
-	 Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY) {
+      if((*it).second->module->getService()->getEventsMask() &
+	 Exordium::Service::Events::CLIENT_AWAY) {
 	 /* Ok this module wants to know about aways */
 #ifdef DEBUG
 	 std::cout << tmp << " would like to know when someone goes away" << std::endl;
 #endif
-	 (*it).second->service->handleAway(origin,message);
+	 (*it).second->module->getService()->handleAway(origin,message);
       }
       
    }
@@ -289,13 +257,13 @@ void Modules::handleTopic(const AISutil::String &origin, dChan& channel, const A
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {
       String tmp =  (*it).first;
-      if((*it).second->service->getModuleInfo().eventsMask &
-         Exordium::Service::moduleInfo_type::Events::CHANNEL_TOPIC) {
+      if((*it).second->module->getService()->getEventsMask() &
+         Exordium::Service::Events::CHANNEL_TOPIC) {
          /* Ok this module wants to know about TOPIC */
 #ifdef DEBUG
          std::cout << tmp << " would like to know when a TOPIC is received" << std::endl;
 #endif
-         (*it).second->service->handleTopic(origin,channel, newTopic);
+         (*it).second->module->getService()->handleTopic(origin,channel, newTopic);
       }
 
    }
@@ -309,13 +277,13 @@ void Modules::handleChannelJoin(User& origin, dChan &channel, const int& status)
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {
       String tmp =  (*it).first;
-      if((*it).second->service->getModuleInfo().eventsMask &
-         Exordium::Service::moduleInfo_type::Events::CHANNEL_JOIN) {
+      if((*it).second->module->getService()->getEventsMask() &
+         Exordium::Service::Events::CHANNEL_JOIN) {
          /* Ok this module wants to know about channel joins */
 #ifdef DEBUG
          std::cout << tmp << " would like to know when someone joins a channel" << std::endl;
 #endif
-         (*it).second->service->handleChannelJoin(origin,channel,status);
+         (*it).second->module->getService()->handleChannelJoin(origin,channel,status);
       }
 
    }
@@ -329,13 +297,13 @@ void Modules::handleChannelPart(User& origin, dChan &channel) {
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {
       String tmp =  (*it).first;
-      if((*it).second->service->getModuleInfo().eventsMask &
-         Exordium::Service::moduleInfo_type::Events::CHANNEL_PART) {
+      if((*it).second->module->getService()->getEventsMask() &
+         Exordium::Service::Events::CHANNEL_PART) {
          /* Ok this module wants to know about channel parts */
 #ifdef DEBUG
          std::cout << tmp << " would like to know when someone leaves a channel" << std::endl;
 #endif
-         (*it).second->service->handleChannelPart(origin,channel);
+         (*it).second->module->getService()->handleChannelPart(origin,channel);
       }
 
    }
@@ -350,13 +318,13 @@ void Modules::handleChannelMode(dChan &channel, const AISutil::String &modes, co
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {
       String tmp =  (*it).first;
-      if((*it).second->service->getModuleInfo().eventsMask &
-         Exordium::Service::moduleInfo_type::Events::CHANNEL_MODE) {
+      if((*it).second->module->getService()->getEventsMask() &
+         Exordium::Service::Events::CHANNEL_MODE) {
          /* Ok this module wants to know about channel modes */
 #ifdef DEBUG
          std::cout << tmp << " would like to know when a mode command is received for a channel" << std::endl;
 #endif
-         (*it).second->service->handleChannelMode(channel,modes,target,source);
+         (*it).second->module->getService()->handleChannelMode(channel,modes,target,source);
       }
 
    }

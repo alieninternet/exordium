@@ -38,25 +38,24 @@ extern "C" {
 namespace Exordium {
    class Services;
    class User;
-   class Service;
+   class Module;
    class dChan;
    
    class Modules {
     public:
       // Handy class for module information
-      class Module {
-       public:
-	 Service* const service;			// Service class
+      struct ModuleDescriptor {
+	 Module* const module;				// Module class
 	 lt_dlhandle handle;				// lt_dlopen() handle
 	 
-	 Module(Service* const s, lt_dlhandle& h)
-	   : service(s), handle(h)
+	 ModuleDescriptor(Module* const m, lt_dlhandle& h)
+	   : module(m), handle(h)
 	     {};
 	 
-	 ~Module(void);
+	 ~ModuleDescriptor(void);
       };
 
-      typedef std::map <AISutil::String, Module *> modules_type;
+      typedef std::map <const char* const, ModuleDescriptor *> modules_type;
       
     private:
       // The list of modules
@@ -82,11 +81,11 @@ namespace Exordium {
 
 
       // Add a module to the list
-      Service* const loadModule(const AISutil::String& fileName, 
-				AISutil::String& errString);
+      Module* const loadModule(const AISutil::String& fileName, 
+			       AISutil::String& errString);
       
       // Remove a module from the list, and unload it
-      void unloadModule(const Kine::ClientName& name,
+      void unloadModule(const char* const name,
 			const AISutil::String* const reason = 0);
 
       // Start all modules in the list
@@ -96,22 +95,14 @@ namespace Exordium {
       void unloadAll(const AISutil::String* const reason = 0);
       
       // Check if a module exists
-      bool exists(const Kine::ClientName& name) const;
-      
-      // Throw a line at the appropriate service (sent directly)
-      void throwLine(const Kine::ClientName& name, AISutil::StringTokens& line, 
-		     User &origin, const bool safe);
-      
-      // Throw a line at the appropriate service (sent to a channel)
-      void throwLine(const Kine::ClientName& name, AISutil::StringTokens& line,
-		     User& origin, const AISutil::String& channel);
+      bool exists(const char* const name) const;
       
       // Dump a list of modules
       AISutil::String dumpModules(void) const;
    };
 }; // namespace Exordium
 
-# include <exordium/service.h>
+# include <exordium/module.h>
 # include <exordium/user.h>
 
 #endif // _INCLUDE_EXORDIUM_MODULES_H_

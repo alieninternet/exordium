@@ -37,44 +37,30 @@
 
 namespace Exordium {
    namespace ServModule {
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
-	 
 	 struct functionTableStruct {
 	    char const* const command;
-	    SERV_FUNC((Module::* const function));
+	    SERV_FUNC((Service::* const function));
 	 } static const functionTable[];
+
+	 Exordium::Services& services;
 	 
        public:
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Serv", "serv")
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
 	   {};
 	 
-	 ~Module(void)
+	 ~Service(void)
 	   {};
 	 
-	 // Start the module
-	 bool start(Exordium::Services& s);
-
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const Kine::ChannelName& channel)
 	   {};
-
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
 	 
 	 // Public functions here please!.
 	 void addFreeze(Kine::ChannelName const &,AISutil::String const &,
@@ -101,7 +87,7 @@ namespace Exordium {
 	 SERV_FUNC(parseCOMMANDS);
 	 SERV_FUNC(parseGETHASH);
 	 SERV_FUNC(parseFREEZE);
-      }; // class Module
+      }; // class Service
    }; // class ServModule
 }; // namespace Exordium
 

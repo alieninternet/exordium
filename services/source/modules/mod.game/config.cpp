@@ -32,7 +32,7 @@
 #include "factory.h"
 
 // Game module configuration table
-const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
+const AISutil::ConfigParser::defTable_type Exordium::GameModule::ConfigData::defTable = {
      {
 	"DESCRIPTION", 4,
 	  (void *)&ConfigData::defDescription, &varHandleString,
@@ -61,7 +61,7 @@ const AISutil::ConfigParser::defTable_type Game::ConfigData::defTable = {
      { 0, 0, 0, 0, 0, 0 }
 };
 
-LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Game::ConfigData::varHandleModule)
+LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Exordium::GameModule::ConfigData::varHandleModule)
 {
    // Check if the first value is empty (the filename field)
    if (values.front().empty()) {

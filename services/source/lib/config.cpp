@@ -244,12 +244,12 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
    }
 
    // Attempt to open the module
-   Service* const service = 
+   Module* const module =
      ((dataClass.*((Modules ConfigData::*)dataVariable)).
       loadModule(values.front().trim(), errString));
    
    // Make sure the module was loaded
-   if (service == 0) {
+   if (module == 0) {
       return false;
    }
    
@@ -257,8 +257,8 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
    return
      AISutil::ConfigParser::parse(configData, position,
 				  ((void *)
-				   &(service->getConfigData().getDefinitions())),
-				  service->getConfigData());
+				   &(module->getConfigData().getDefinitions())),
+				  module->getConfigData());
 }
 
 

@@ -28,38 +28,36 @@
 # include "autoconf.h"
 #endif
 
-#include "help.h"
-#include <exordium/service.h>
-#include <exordium/services.h>
+#include "exordium/module.h"
 
-
-using AISutil::String;
-using AISutil::StringTokens;
-using namespace Exordium::HelpModule;
-
-
-const Service::functionTableStruct Service::functionTable[] =
-{
-     { "help",		&Service::parseHELP },
-     { 0, 0 }
-};
-
-void Service::parseLine(StringTokens& line, User& origin, const bool safe)
-{
-   String command = line.nextToken ().toLower ();
-   for (int i = 0; functionTable[i].command != 0; i++) {
-      // Does this match?
-      if (command == functionTable[i].command) {
-         (this->*(functionTable[i].function))(origin, line);
-         return;
-      }
-   }
-   origin.sendMessage("Unrecognised Command", getNickname());
-}
-
-HELP_FUNC(Service::parseHELP)
-{
-   String word = tokens.nextToken();
-   String parm = tokens.nextToken();
-   services.doHelp(origin,getNickname(),word,parm);
-}
+// Default configuration definition table (for uninherited ConfigData classes)
+const AISutil::ConfigParser::defTable_type
+  Exordium::Module::ConfigData::defaultDefinitions = {
+       {
+	  "DESCRIPTION", 4,
+	    (void *)&ConfigData::defDescription, &varHandleString,
+	    0, 0
+       },
+       {
+	  "DISTRIBUTION", 4,
+	    (void *)&ConfigData::defDistribution, &varHandleStringOneWord,
+	    0, 0
+       },
+       {
+	  "HOSTNAME", 4,
+	    (void *)&ConfigData::defHostname, &varHandleHostName,
+	    0, 0
+       },
+       {
+	  "NAME", 4,
+	    (void *)&ConfigData::defName, &varHandleStringOneWord,
+	    0, 0
+       },
+       {
+	  "IDENT", 5,
+	    (void *)&ConfigData::defIdent, &varHandleStringOneWord,
+	    0, 0
+       },
+     
+       { 0, 0, 0, 0, 0, 0 }
+  };

@@ -42,32 +42,24 @@
 
 namespace Exordium {
    namespace ChanModule {
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
-	 
 	 struct functionTableStruct {
 	    char const* const command;
-	    CHAN_FUNC((Module::* const function));
+	    CHAN_FUNC((Service::* const function));
 	 } static const functionTable[];
 	 CDatabase* db;
+	 Exordium::Services& services;
+
        public:
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Chan","chan")
-	   {};
-	 
-	 ~Module(void)
-	   {};
-	 
-	 // Start the module
-	 bool start(Exordium::Services& s);
-   
-	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String* const reason = 0);
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
+	   {
+	      // This should be internal :(
+//	      services.getChannel().synchChannels();
+	   };
 	 
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
@@ -85,17 +77,17 @@ namespace Exordium {
          void handleChannelMode( dChan &channel, const AISutil::String &modes,
                                  const AISutil::String &target, const AISutil::String &source );
 	 
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-
-	 // Return an appropriate instance of a configuration data class
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
-	 
-	 
+	 // Return our events mask (events we want to receive)
+	 const Events::lazy_type getEventsMask(void) const 
+	   {
+	      return 
+		Events::CLIENT_AWAY   |   /* AWAY's */
+		Events::CHANNEL_TOPIC |   /* Topic being changed */
+		Events::CHANNEL_JOIN  |   /* User joining the channel */
+		Events::CHANNEL_PART  |   /* User leaving a channel */
+		Events::CHANNEL_BAN   |   /* Channel ban activated */
+		Events::CHANNEL_MODE;     /* Channel mode applied */
+	   };
 	 
        private:
 	 CHAN_FUNC(parseHELP);
@@ -117,8 +109,7 @@ namespace Exordium {
          CHAN_FUNC(parseDROP);
 
 	 bool isFreezed(Kine::ChannelName const &);
-
-      }; // class Module
+      }; // class Service
    }; // namespace ChanModule
 }; // namespace Exordium
 

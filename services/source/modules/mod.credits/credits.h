@@ -42,23 +42,17 @@
 namespace Exordium {
    namespace CreditsModule {
       // The Credits module
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
 	 // Our convenient type-definition of our handler functions
 	 typedef CREDITS_FUNC(handler_type);
 	 
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-   
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
-	 
 	 // Our command table structure
 	 struct commandTable_type {
 	    const char* const command;                     // The command name
-	    handler_type Module::* const handler;    // The function
+	    handler_type Service::* const handler;    // The function
 	 };
-	 
+
 	 // Commands which are sent directly to us
 	 static const commandTable_type directCommandTable[];
 	 
@@ -67,41 +61,30 @@ namespace Exordium {
 	 
 	 // Bank 
 	 Exordium::Bank bank;
+
+	 // Services
+	 Exordium::Services& services;
 	 
 	 handler_type handleHELP;
 	 handler_type handleBALANCE;
    
        public:
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Credits","credits"),
-	     bank(*services) 
+	 Service(const Exordium::Module::ConfigData& config,
+		Exordium::Services& s)
+	   : Exordium::Service(config),
+	     bank(s),
+	     services(s)
 	   {};
 	 
-	 ~Module(void)
+	 ~Service(void)
 	   {};
-	 
-	 // Start the module
-	 bool start(Exordium::Services& s);
-	 
-	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String* const reason = 0);
 	 
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const Kine::ChannelName& channel)
 	   {};
-	 
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-	 
-	 // Return an appropriate instance of a configuration data class
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
-      }; // class Module
+      }; // class Service
    }; // namespace CreditsModule
 }; // namespace Exordium
 

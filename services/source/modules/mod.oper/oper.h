@@ -37,45 +37,30 @@
 
 namespace Exordium {
    namespace OperModule {
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
-	 
 	 struct functionTableStruct {
 	    char const* const command;
-	    OPER_FUNC((Module::* const function));
+	    OPER_FUNC((Service::* const function));
 	 } static const functionTable[];
 
+	 Exordium::Services& services;
+	 
        public:
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Oper", "oper")
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
 	   {};
 	 
-	 ~Module(void)
+	 ~Service(void)
 	   {};
-	 
-	 // Start the module
-	 bool start(Exordium::Services& s);
 	 
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const Kine::ChannelName& channel)
 	   {};
-	 
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-	 
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
 	 
        private:
 	 OPER_FUNC(parseHELP);
@@ -90,7 +75,7 @@ namespace Exordium {
 	 OPER_FUNC(parseKILL);
 	 OPER_FUNC(parseJUPE);
 	 OPER_FUNC(parseWHOIS);
-      }; // class Module
+      }; // class Service
    }; // namespace OperModule
 }; // namespace Exordium
 

@@ -38,32 +38,24 @@
 
 namespace Exordium {
    namespace NickModule {
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
+	 Exordium::Services& services;
 	 
 	 void sendMessage(const AISutil::String& to,
 			  const AISutil::String& message)
-	   { services->serviceNotice(message,getNickname(),to); };
+	   { services.serviceNotice(message,getNickname(),to); };
 	 
        public:
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Nick", "nick")
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
 	   {};
 	 
-	 ~Module(void)
+	 ~Service(void)
 	   {};
 
-	 // Start the module
-	 bool start(Exordium::Services& s);
-	 
-	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String* const reason = 0);
-	 
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
@@ -75,16 +67,15 @@ namespace Exordium {
 	 
 	 /* Our Event Handler(s) */
 	 void handleClientSignon(Exordium::User& origin);
-	 
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-	 
-	 // Return an appropriate instance of a configuration data class
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
+
+	 // Return our events mask (events we want to receive)
+	 const Events::lazy_type getEventsMask(void) const 
+	   {
+	      return 
+		Events::CLIENT_SIGNON |
+		Events::CLIENT_NICKCHANGE;
+	   };
+
 	 
 	 NICK_FUNC(parseIDENTIFY);
 	 NICK_FUNC(parseHELP);
@@ -97,7 +88,7 @@ namespace Exordium {
 	 NICK_FUNC(parseAUTH);
 	 NICK_FUNC(parseNICK);
 	 NICK_FUNC(parseCOMMANDS);
-      }; // class Module
+      }; // class Service
    }; // namespace NickModule
 }; // namespace Exordium
 

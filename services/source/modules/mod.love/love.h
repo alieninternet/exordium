@@ -39,22 +39,19 @@
 namespace Exordium {
    namespace LoveModule {
       // The module of lurrve
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
 	 // Our convenient type-definition of our handler functions
 	 typedef LOVE_FUNC(handler_type);
 	 
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data class
-	 Exordium::Service::ConfigData configData;
-	 
 	 struct commandTable_type {
 	    const char* const command;			// Command name
-	    handler_type Module::* const handler;	// The function
+	    handler_type Service::* const handler;	// The function
 	 } static const commandTable[];
 
+	 // Where is services? WHERE??!?!?!?!??!?! :(
+	 Exordium::Services& services;
+	 
 	 // Our wonderful command handlers
 	 handler_type handleCOMMANDS;
 
@@ -65,17 +62,16 @@ namespace Exordium {
 	 
        public:
 	 // Our constructor
-	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Love", "love")
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
 	   {};
 	 
 	 // Our destructor
-	 ~Module(void) 
+	 ~Service(void) 
 	   {};
    
-	 // Start the module
-	 bool start(Exordium::Services& s);
-	 
 	 // Parser for incoming stuff sent on a channel
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const Kine::ChannelName& channel)
@@ -84,17 +80,7 @@ namespace Exordium {
 	 // Parser for incoming stuff sent directly to us
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-	 
-	 // Return an appropriate instance of a configuration data class
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
-      }; // class Module
+      }; // class Service
    }; // namespace LoveModule
 }; // namespace Exordium
 

@@ -37,7 +37,7 @@ class ChannelGame;
 
 namespace Exordium {
   namespace GameModule {
-    typedef ChannelGame* (*GameCallback)(Exordium::GameModule::Module& module,
+    typedef ChannelGame* (*GameCallback)(Exordium::GameModule::Service& module,
         const AISutil::String& channel, Exordium::User& caller);
 
     class Factory {
@@ -121,7 +121,7 @@ namespace Exordium {
         };
 
         ChannelGame* createGame(const AISutil::String& name, 
-            Exordium::GameModule::Module& module, 
+            Exordium::GameModule::Service& module,
             const AISutil::String& channel, Exordium::User& caller)
         {
           CallbackMap::const_iterator iter = callbacks.find(name);

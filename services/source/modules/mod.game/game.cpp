@@ -43,83 +43,47 @@ using AISutil::StringTokens;
 using Exordium::Channel;
 using Exordium::User;
 
-
-/* service_init - Register ourselves to the core
- * Original 13/07/2002 james
- */
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
-   "Game Service",
-     0, 0 ,
-     Exordium::Service::moduleInfo_type::Events::NONE
-};
-
-
 // Our command table for directly sent commands (commands must be lower-case)
-const Module::commandTable_type Module::directCommandTable[] =
+const Service::commandTable_type Service::directCommandTable[] =
 {
-     { "quote",		&Module::handleQUOTE },
-     { "help",		&Module::handleHELP },
-     { "start",		&Module::handleSTART },
-     { "list",		&Module::handleLIST },
+     { "quote",		&Service::handleQUOTE },
+     { "help",		&Service::handleHELP },
+     { "start",		&Service::handleSTART },
+     { "list",		&Service::handleLIST },
      { 0, 0 }
 };
 
 
 // Our command table for channel commands (commands must be lower-case)
-const Module::commandTable_type Module::channelCommandTable[] =
+const Service::commandTable_type Service::channelCommandTable[] =
 {
-     { "quote",		&Module::handleQUOTE },
+     { "quote",		&Service::handleQUOTE },
      { 0, 0 }
 };
 
 
-/* start - Start the service
- * Original 17/09/2002 pickle
- */
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-   
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(), 
-			     getHostname(), getDescription());
-   
-   // We started okay :)
-   return true;
-}
-
-
-/* stop - Stop the service
- * Original 17/09/2002 pickle
- */
-void Module::stop(const String* const reason)
-{
-   // Leave all the channels we're on..
-   while (!channelGames.empty()) {
-      // Part the channel... In the future we should be able to give a reason
-      services->servicePart(getNickname(), 
-			    (*(channelGames.begin())).second->getChannel());
-      
-      // Delete this game..
-      delete (*(channelGames.begin())).second;
-      channelGames.erase(channelGames.begin());
-   }
-   
-   // Quit - bye bye!
-   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
-}
+///* stop - Stop the service
+// * Original 17/09/2002 pickle
+// */
+//void Service::stop(const String* const reason)
+//{
+//   // Leave all the channels we're on..
+//   while (!channelGames.empty()) {
+//      // Part the channel... In the future we should be able to give a reason
+//      services.servicePart(getNickname(), 
+//			    (*(channelGames.begin())).second->getChannel());
+//      
+//      // Delete this game..
+//      delete (*(channelGames.begin())).second;
+//      channelGames.erase(channelGames.begin());
+//   }
+//}
 
 
 /* parseLine - Parse an incoming message (which was sent to a channel)
  * Original 13/07/2002 james
  */
-void Module::parseLine(StringTokens& line__, User& origin,
+void Service::parseLine(StringTokens& line__, User& origin,
 		       const Kine::ChannelName& channel)
 {
    // dirty kludge.. at least until the core strips the char properly??
@@ -145,7 +109,7 @@ void Module::parseLine(StringTokens& line__, User& origin,
       // If the parser returns false, it means we can leave the channel
       if (!(*game).second->parseLine(origin, command, line)) {
 	 // Leave the channel and delete this game..
-	 services->servicePart(getNickname(), channel);
+	 services.servicePart(getNickname(), channel);
 	 delete (*game).second;
 	 channelGames.erase(game);
       }
@@ -158,7 +122,7 @@ void Module::parseLine(StringTokens& line__, User& origin,
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Module::parseLine(StringTokens& line, User& origin, const bool safe)
+void Service::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String command = line.nextToken().toLower();
 #ifdef DEBUG
@@ -181,9 +145,9 @@ std::endl;
 /* handleHELP - Parse the HELP command
  * Original 13/07/2002 james
  */
-GAME_FUNC(Module::handleHELP)
+GAME_FUNC(Service::handleHELP)
 {
-   services->doHelp(origin, getNickname(), line.nextToken(),
+   services.doHelp(origin, getNickname(), line.nextToken(),
 		    line.nextToken());
 }
 
@@ -192,7 +156,7 @@ GAME_FUNC(Module::handleHELP)
  * Original 13/07/2002 james
  * Note: Mess :(
  */
-GAME_FUNC(Module::handleQUOTE) 
+GAME_FUNC(Service::handleQUOTE) 
 {
    return; // eek
    
@@ -211,24 +175,24 @@ GAME_FUNC(Module::handleQUOTE)
    
    int j;
   
-   String numb = String::convert(services->getDatabase().dbCount("fortunes"));
+   String numb = String::convert(services.getDatabase().dbCount("fortunes"));
    j = Utils::random(numb.toInt());
 
    // Grab the quote
-   if (services->getDatabase().dbSelect("body", "fortunes", 
+   if (services.getDatabase().dbSelect("body", "fortunes", 
 					"id='" + String::convert(j) + 
 					"'") < 1) {
       return; // eek
    }
 
-   String thequote = services->getDatabase().dbGetValue();
+   String thequote = services.getDatabase().dbGetValue();
    StringTokens st (thequote);
    bool more = false;
    more = st.hasMoreTokens();
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services->servicePrivmsg(tq, getNickname(), chan);
+      services.servicePrivmsg(tq, getNickname(), chan);
       more = st.hasMoreTokens();
    }   
 }
@@ -236,7 +200,7 @@ GAME_FUNC(Module::handleQUOTE)
 /* handleSTART - Parse a 'start' command, to trigger the start of game
  * Original 29/08/2002 - pickle
  */
-GAME_FUNC(Module::handleSTART)
+GAME_FUNC(Service::handleSTART)
 {
    Kine::ChannelName chan = line.nextToken();
    chan = chan.IRCtoLower();
@@ -254,9 +218,9 @@ std::endl;
    {
      channelGames[chan] = chanGame;
      // Join the channel and say hello
-     services->serviceJoin(getNickname(), chan);
-     services->serverMode(chan, "+o", getNickname());
-     services->serviceNotice("Hello " + chan + " (" + origin.getNickname() + 
+     services.serviceJoin(getNickname(), chan);
+     services.serverMode(chan, "+o", getNickname());
+     services.serviceNotice("Hello " + chan + " (" + origin.getNickname() + 
          " wanted to play " + game + ')', "Game", chan);
    }
 
@@ -266,7 +230,7 @@ std::endl;
 /* handleSTART - Parse a 'list' command, to list all available games
  * Original 16/09/2002 - josullivan
  */
-GAME_FUNC(Module::handleLIST)
+GAME_FUNC(Service::handleLIST)
 {
    typedef std::list<AISutil::String> StringList;
    StringList::const_iterator iter;

@@ -45,31 +45,31 @@ using AISutil::StringTokens;
 using AISutil::Utils;
 using namespace Exordium::ChanModule;
 
-struct Module::functionTableStruct const
-  Module::functionTable[] =
+struct Service::functionTableStruct const
+  Service::functionTable[] =
 {
-     {"access", &Module::parseACCESS},
-     {"ban", &Module::parseBAN},
-     {"kick", &Module::parseKICK},
-     {"op", &Module::parseOP},
-     {"voice", &Module::parseVOICE},
-     {"register", &Module::parseREGISTER},
-     {"help", &Module::parseHELP},
-     {"deop", &Module::parseDEOP},
-     {"devoice", &Module::parseDEVOICE},
-     {"topic", &Module::parseTOPIC},
-     {"adduser", &Module::parseADDUSER},
-     {"info", &Module::parseINFO},
-     {"listban", &Module::parseLISTBAN},
-     {"set", &Module::parseSET},
-     {"seen", &Module::parseSEEN},
-     {"commands", &Module::parseCOMMANDS},
-     {"drop", &Module::parseDROP},
+     {"access", &Service::parseACCESS},
+     {"ban", &Service::parseBAN},
+     {"kick", &Service::parseKICK},
+     {"op", &Service::parseOP},
+     {"voice", &Service::parseVOICE},
+     {"register", &Service::parseREGISTER},
+     {"help", &Service::parseHELP},
+     {"deop", &Service::parseDEOP},
+     {"devoice", &Service::parseDEVOICE},
+     {"topic", &Service::parseTOPIC},
+     {"adduser", &Service::parseADDUSER},
+     {"info", &Service::parseINFO},
+     {"listban", &Service::parseLISTBAN},
+     {"set", &Service::parseSET},
+     {"seen", &Service::parseSEEN},
+     {"commands", &Service::parseCOMMANDS},
+     {"drop", &Service::parseDROP},
      {0, 0}
 };
 
 void
-  Module::parseLine (StringTokens& line, User& origin
+  Service::parseLine (StringTokens& line, User& origin
 		     , const Kine::ChannelName& chan)
 {
    StringTokens& st = line;
@@ -90,7 +90,7 @@ void
 }
 
 void
-  Module::parseLine (StringTokens& line, User& origin, const bool safe)
+  Service::parseLine (StringTokens& line, User& origin, const bool safe)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -109,7 +109,7 @@ void
    origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND,command),getNickname());
 }
 
-CHAN_FUNC (Module::parseCOMMANDS)
+CHAN_FUNC (Service::parseCOMMANDS)
 
 {
    String::size_type lineLength = 200;
@@ -133,13 +133,13 @@ CHAN_FUNC (Module::parseCOMMANDS)
 
 }
 
-CHAN_FUNC (Module::parseSEEN)
+CHAN_FUNC (Service::parseSEEN)
 {
    origin.sendMessage(GETLANG(ERROR_COMMAND_DISABLED),getNickname());
    return;
 }
 
-CHAN_FUNC (Module::parseSET)
+CHAN_FUNC (Service::parseSET)
 {
    Kine::ChannelName channel = tokens.nextToken();
    channel = channel.IRCtoLower();
@@ -155,7 +155,7 @@ CHAN_FUNC (Module::parseSET)
      }
    String command = tokens.nextToken();
    String value = tokens.nextToken();
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -416,7 +416,7 @@ CHAN_FUNC (Module::parseSET)
    return;
 }
 
-CHAN_FUNC (Module::parseLISTBAN)
+CHAN_FUNC (Service::parseLISTBAN)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel.empty())
@@ -424,7 +424,7 @@ CHAN_FUNC (Module::parseLISTBAN)
 	origin.sendMessage(GETLANG(chan_LISTBAN_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -446,7 +446,7 @@ CHAN_FUNC (Module::parseLISTBAN)
    return;
 }
 
-CHAN_FUNC (Module::parseINFO)
+CHAN_FUNC (Service::parseINFO)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel.empty())
@@ -454,7 +454,7 @@ CHAN_FUNC (Module::parseINFO)
 	origin.sendMessage(GETLANG(chan_INFO_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -505,7 +505,7 @@ CHAN_FUNC (Module::parseINFO)
 			      String::convert(ptr->getOnlineID())),getNickname());
 }
 
-CHAN_FUNC (Module::parseADDUSER)
+CHAN_FUNC (Service::parseADDUSER)
 {
    Kine::ChannelName channel = tokens.nextToken();
    String nickname = tokens.nextToken();
@@ -515,13 +515,13 @@ CHAN_FUNC (Module::parseADDUSER)
 	origin.sendMessage(GETLANG(chan_ADDUSER_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
-   if(!services->isNickRegistered(nickname))
+   if(!services.isNickRegistered(nickname))
      {
 	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getNickname());
 	return;
@@ -566,7 +566,7 @@ CHAN_FUNC (Module::parseADDUSER)
    return;
 }
 
-CHAN_FUNC (Module::parseTOPIC)
+CHAN_FUNC (Service::parseTOPIC)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel.empty())
@@ -574,7 +574,7 @@ CHAN_FUNC (Module::parseTOPIC)
 	origin.sendMessage(GETLANG(chan_TOPIC_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -607,11 +607,11 @@ CHAN_FUNC (Module::parseTOPIC)
    return;
 }
 
-CHAN_FUNC (Module::parseHELP)
+CHAN_FUNC (Service::parseHELP)
 {
 //   String word = tokens.nextToken();
 //   String parm = tokens.nextToken();
-//   services->doHelp(origin,getNickname(),word,parm);
+//   services.doHelp(origin,getNickname(),word,parm);
 
    // YES, THIS CODE COULD BE GENERALISED VERY EASILY!!! :(
 
@@ -677,7 +677,7 @@ CHAN_FUNC (Module::parseHELP)
    }
 }
 
-CHAN_FUNC (Module::parseBAN)
+CHAN_FUNC (Service::parseBAN)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -685,7 +685,7 @@ CHAN_FUNC (Module::parseBAN)
 	origin.sendMessage(GETLANG(chan_BAN_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -719,7 +719,7 @@ CHAN_FUNC (Module::parseBAN)
 
 }
 
-CHAN_FUNC (Module::parseREGISTER)
+CHAN_FUNC (Service::parseREGISTER)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if (channel=="")
@@ -732,7 +732,7 @@ CHAN_FUNC (Module::parseREGISTER)
 	origin.sendMessage(GETLANG(chan_REGISTER_NO_HASH),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
 
    if(ptr==0)
      {
@@ -750,7 +750,7 @@ CHAN_FUNC (Module::parseREGISTER)
 	origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getNickname());
 	return;
      }
-   int owned = services->getChannel().ownedChannels(origin.getNickname());
+   int owned = services.getChannel().ownedChannels(origin.getNickname());
    if(owned>0)
      {
 	origin.sendMessage(GETLANG(chan_REGISTER_GREEDY_USER,Kine::config().getNetworkName()),getNickname());
@@ -761,13 +761,13 @@ CHAN_FUNC (Module::parseREGISTER)
 	origin.sendMessage(GETLANG(chan_REGISTER_ALREADY),getNickname());
 	return;
      }
-   services->getChannel().registerChannel(channel,origin.getNickname());
+   services.getChannel().registerChannel(channel,origin.getNickname());
    origin.sendMessage(GETLANG(chan_REGISTER_SUCCESS),getNickname());
    ptr->log(origin, getNickname(),"Registered the channel",channel);
    return;
 }
 
-CHAN_FUNC (Module::parseOP)
+CHAN_FUNC (Service::parseOP)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -775,7 +775,7 @@ CHAN_FUNC (Module::parseOP)
 	origin.sendMessage(GETLANG(chan_OP_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -798,7 +798,7 @@ CHAN_FUNC (Module::parseOP)
 	if(ptr->getAccess(currnick)>99)
 	  {
 	     Kine::ClientName foo = tokens.nextToken();
-	     User *fptr = services->findUser(foo);
+	     User *fptr = services.findUser(foo);
 	     if(foo=="")
 	       {
 		  if(!ptr->isOp(origin.getNickname()))
@@ -827,7 +827,7 @@ CHAN_FUNC (Module::parseOP)
 		  if(!ptr->isOp(foo))
 		    {
 		       ptr->mode(getNickname(),"+o",foo);
-		       User *fptr = services->findUser(foo);
+		       User *fptr = services.findUser(foo);
 		       if(fptr==0)
 			 return;
 		       ptr->addUser(*fptr,2);
@@ -844,7 +844,7 @@ CHAN_FUNC (Module::parseOP)
    return;
 }
 
-CHAN_FUNC (Module::parseDEOP)
+CHAN_FUNC (Service::parseDEOP)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -852,7 +852,7 @@ CHAN_FUNC (Module::parseDEOP)
 	origin.sendMessage(GETLANG(chan_DEOP_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -885,7 +885,7 @@ CHAN_FUNC (Module::parseDEOP)
 		    }
 		  return;
 	       }
-	     User *fptr = services->findUser(foo);
+	     User *fptr = services.findUser(foo);
 	     if(fptr==0)
 	       return;
 	     if(ptr->isOp(foo))
@@ -899,7 +899,7 @@ CHAN_FUNC (Module::parseDEOP)
 	     while(more==true)
 	       {
 		  Kine::ClientName foo = tokens.nextToken();
-		  User *fptr = services->findUser(foo);
+		  User *fptr = services.findUser(foo);
 		  if(fptr==0)
 		    return;
 		  if(ptr->isOp(foo))
@@ -919,7 +919,7 @@ CHAN_FUNC (Module::parseDEOP)
    return;
 }
 
-CHAN_FUNC (Module::parseVOICE)
+CHAN_FUNC (Service::parseVOICE)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -927,7 +927,7 @@ CHAN_FUNC (Module::parseVOICE)
 	origin.sendMessage(GETLANG(chan_VOICE_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -960,7 +960,7 @@ CHAN_FUNC (Module::parseVOICE)
 		    }
 		  return;
 	       }
-	     User *fptr = services->findUser(foo);
+	     User *fptr = services.findUser(foo);
 	     if(fptr==0)
 	       return;
 	     if(!ptr->isVoice(foo))
@@ -974,7 +974,7 @@ CHAN_FUNC (Module::parseVOICE)
 	     while(more==true)
 	       {
 		  Kine::ClientName foo = tokens.nextToken();
-		  User *fptr = services->findUser(foo);
+		  User *fptr = services.findUser(foo);
 		  if(fptr==0)
 		    return;
 		  if(!ptr->isVoice(foo))
@@ -994,7 +994,7 @@ CHAN_FUNC (Module::parseVOICE)
    return;
 }
 
-CHAN_FUNC (Module::parseDEVOICE)
+CHAN_FUNC (Service::parseDEVOICE)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -1002,7 +1002,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 	origin.sendMessage(GETLANG(chan_DEVOICE_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -1035,7 +1035,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 		    }
 		  return;
 	       }
-	     User *fptr = services->findUser(foo);
+	     User *fptr = services.findUser(foo);
 	     if(fptr==0)
 	       return;
 	     if(ptr->isVoice(foo))
@@ -1049,7 +1049,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 	     while(more==true)
 	       {
 		  Kine::ClientName foo = tokens.nextToken();
-		  User *fptr = services->findUser(foo);
+		  User *fptr = services.findUser(foo);
 		  if(fptr==0)
 		    return;
 		  if(ptr->isVoice(foo))
@@ -1069,7 +1069,7 @@ CHAN_FUNC (Module::parseDEVOICE)
    return;
 }
 
-CHAN_FUNC (Module::parseKICK)
+CHAN_FUNC (Service::parseKICK)
 {
    Kine::ChannelName channel = tokens.nextToken();
    Kine::ClientName who = tokens.nextToken();
@@ -1079,7 +1079,7 @@ CHAN_FUNC (Module::parseKICK)
 	origin.sendMessage(GETLANG(chan_KICK_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -1107,7 +1107,7 @@ CHAN_FUNC (Module::parseKICK)
 	       }
 	     ptr->kick(getNickname(),who,"("+origin.getNickname()+"/"+currnick+") "+reason);
 	     ptr->log(origin,getNickname(),"Kicked "+who+" from the channel ("+reason+")",channel);
-	     User *fptr = services->findUser(who);
+	     User *fptr = services.findUser(who);
 	     if(fptr==0)
 	       return;
 	     ptr->delUser(*fptr);
@@ -1119,7 +1119,7 @@ CHAN_FUNC (Module::parseKICK)
    return;
 }
 
-CHAN_FUNC (Module::parseACCESS)
+CHAN_FUNC (Service::parseACCESS)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -1127,7 +1127,7 @@ CHAN_FUNC (Module::parseACCESS)
 	origin.sendMessage(GETLANG(chan_ACCESS_USAGE),getNickname());
 	return;
      }
-   dChan *ptr = services->findChan(channel);
+   dChan *ptr = services.findChan(channel);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -1149,11 +1149,11 @@ CHAN_FUNC (Module::parseACCESS)
 		      getNickname());
 
    int nbRes =
-     services->getDatabase().dbSelect("nickid,access", "chanaccess",
+     services.getDatabase().dbSelect("nickid,access", "chanaccess",
 				      "chanid=" +
 				      String::convert(ptr->getRegisteredID()));
 
-   CResult *myRes = services->getDatabase().dbGetResultSet();
+   CResult *myRes = services.getDatabase().dbGetResultSet();
 
    Kine::ClientName tnickid;
    String taccess;
@@ -1161,7 +1161,7 @@ CHAN_FUNC (Module::parseACCESS)
    for (int i = 0; i < nbRes; i++)
      {
 	int foo = myRes->getValue(i,0).toInt();
-	origin.sendMessage(services->getNick(myRes->getValue(i,0).toInt()) + " has level "
+	origin.sendMessage(services.getNick(myRes->getValue(i,0).toInt()) + " has level "
 			   +myRes->getValue(i,1)+" access",getNickname());
      }
    origin.sendMessage(GETLANG(chan_ACCESS_FINISH,channel),getNickname());
@@ -1170,7 +1170,7 @@ CHAN_FUNC (Module::parseACCESS)
    delete myRes;
 }
 
-CHAN_FUNC (Module::parseDROP)
+CHAN_FUNC (Service::parseDROP)
 {
    Kine::ChannelName channel = tokens.nextToken();
    String reason = tokens.rest();
@@ -1179,7 +1179,7 @@ CHAN_FUNC (Module::parseDROP)
         origin.sendMessage(GETLANG(chan_DROP_USAGE),getNickname());
         return;
      }
-   dChan *dptr = services->findChan(channel);
+   dChan *dptr = services.findChan(channel);
    if(dptr==0)
      {
         origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
@@ -1193,9 +1193,9 @@ CHAN_FUNC (Module::parseDROP)
 	     if(origin.isIdentified())
 	       {
 		  dptr->log(origin,getNickname(),"Deregistered the channel",channel);
-		  services->getChannel().deregisterChannel(channel);
+		  services.getChannel().deregisterChannel(channel);
 		  String togo = "This channel has been deregistered \002"+reason;
-		  services->serviceNotice(String(togo),getNickname(),channel);
+		  services.serviceNotice(String(togo),getNickname(),channel);
 		  origin.sendMessage(GETLANG(chan_DROP_SUCCESS),getNickname());
 	       }
 	     else
@@ -1215,11 +1215,8 @@ CHAN_FUNC (Module::parseDROP)
 
 }
 
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
 void
-  Module::handleAway(Exordium::User& origin, const String &reason)
+  Service::handleAway(Exordium::User& origin, const String &reason)
 {
 
    if(!origin.isIdentified(origin.getNickname()))
@@ -1234,14 +1231,14 @@ void
      }
    if(origin.deopAway())
      {
-	if(services->getDatabase().dbSelect("chanid","chanstatus",
+	if(services.getDatabase().dbSelect("chanid","chanstatus",
 					    "nickid="+origin.getOnlineIDString()+
 					    " AND status=2") > 0)
 	  {
-	     String foo = services->getDatabase().dbGetValue();
-	     String cname = services->getChannel().getChanIDName(foo.toInt());
+	     String foo = services.getDatabase().dbGetValue();
+	     String cname = services.getChannel().getChanIDName(foo.toInt());
 	     String cstr = origin.getNickname()+" "+origin.getNickname();
-	     services->serverMode(cname,"-o+v",cstr);
+	     services.serverMode(cname,"-o+v",cstr);
 
 	  }
 
@@ -1253,14 +1250,14 @@ void
 // Context: When we enter this method we know that the channel is valid
 // and that the channel is registered.
 void
-  Module::handleTopic(const Kine::ClientName& origin, Exordium::dChan& channel, const String &newTopic)
+  Service::handleTopic(const Kine::ClientName& origin, Exordium::dChan& channel, const String &newTopic)
 {
 
    // If the TOPIC was sent by myself(chan) we just return
    if( origin.toLower() == getNickname().toLower() )
      return;
 
-   User *source = services->findUser( (Kine::ClientName&) origin );
+   User *source = services.findUser( (Kine::ClientName&) origin );
 
    // In this case the TOPIC was sent by a server, for example returning from a netsplit.
    // Also, if the channel is freezed we revert back.
@@ -1287,7 +1284,7 @@ void
 }
 
 void
-  Module::handleChannelJoin( User &origin, dChan &channel, const int &status )
+  Service::handleChannelJoin( User &origin, dChan &channel, const int &status )
 {
    String msg = channel.getEntryMsg();
 
@@ -1323,7 +1320,7 @@ void
 }
 
 void
-  Module::handleChannelPart( User &origin, dChan &channel )
+  Service::handleChannelPart( User &origin, dChan &channel )
 {
    String msg = channel.getPartMsg();
 
@@ -1332,7 +1329,7 @@ void
 }
 
 void
-  Module::handleChannelMode( dChan &channel, const String &modes, const String &target, const String &source )
+  Service::handleChannelMode( dChan &channel, const String &modes, const String &target, const String &source )
 {
    bool add=false;
    bool take=false;
@@ -1385,7 +1382,7 @@ void
 
 		  std::cout << "Checking to see if " << targ << " has access in " << channel.getName() << std::endl;
 
-		  User *ptr = services->findUser( targ );
+		  User *ptr = services.findUser( targ );
 
 		  if(channel.isChanSecure())
 		    {
@@ -1416,7 +1413,7 @@ void
 		  if(targ.toLower()==getNickname().toLower())
 		    return;
 
-		  User *ptr = services->findUser( targ );
+		  User *ptr = services.findUser( targ );
 
 		  if(channel.isChanSecure())
 		    {
@@ -1451,7 +1448,7 @@ void
 
 		  if(targ.toLower()==getNickname().toLower())
 		    return;
-		  User *ptr = services->findUser( targ );
+		  User *ptr = services.findUser( targ );
 		  channel.addUser(*ptr,1);
 	       }
 	     if(take)
@@ -1460,7 +1457,7 @@ void
 
 		  if(targ.toLower()==getNickname().toLower())
 		    return;
-		  User *ptr = services->findUser( targ );
+		  User *ptr = services.findUser( targ );
 		  channel.addUser(*ptr,0);
 	       }
 	  }
@@ -1469,74 +1466,15 @@ void
 }
 
 //void
-//  Module::handleBan
-//
-//
-//
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo =
-{
-   "Channel Service",
-     0, 0,
-     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY   |   /* AWAY's */
-     Exordium::Service::moduleInfo_type::Events::CHANNEL_TOPIC |   /* Topic being changed */
-     Exordium::Service::moduleInfo_type::Events::CHANNEL_JOIN  |   /* User joining the channel */
-     Exordium::Service::moduleInfo_type::Events::CHANNEL_PART  |   /* User leaving a channel */
-     Exordium::Service::moduleInfo_type::Events::CHANNEL_BAN   |   /* Channel ban activated */
-     Exordium::Service::moduleInfo_type::Events::CHANNEL_MODE      /* Channel mode applied */
+//  Service::handleBan
 
-};
 
-// Start the service
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-
-   // Try and do a db thing?
-   db = new CDatabase(services->getDatabase());
-   // Attempt to affirm our database tables..
-   unsigned int i = 0;
-   while (Tables::tables[i] != 0)
-     {
-	// Try to affirm this table..
-	if (!services->getDatabase().affirmTable(*(Tables::tables[i])))
-	  {
-	     services->logLine(String("Unable to affirm mod_chan database "
-				      "table '") +
-			       Tables::tables[i]->name + "'",
-			       Log::Fatality);
-	     return false;
-	  }
-
-	// Next table..
-	i++;
-     }
-   Kine::langs().registerMap(Language::tagMap);
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(),
-			     getHostname(), getDescription());
-
-   // This should be internal :(
-   services->getChannel().synchChannels();
-
-   // We started okay :)
-   return true;
-}
-
-// Stop the service - bye bye!
-void Module::stop(const String* const reason)
-{
-   // Quit :(
-   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
-}
-
-bool Module::isFreezed(Kine::ChannelName const &chan)
+bool Service::isFreezed(Kine::ChannelName const &chan)
 {
 
-   if(services->getDatabase().dbSelect("id","chanfreeze","name='"
-				       +String::convert(services->getChannel().getChanID(chan.IRCtoLower()))
-				       +"' AND expires>"+String::convert(services->getCurrentTime())) < 1)
+   if(services.getDatabase().dbSelect("id","chanfreeze","name='"
+				       +String::convert(services.getChannel().getChanID(chan.IRCtoLower()))
+				       +"' AND expires>"+String::convert(services.getCurrentTime())) < 1)
      return false;
    else
      return true;

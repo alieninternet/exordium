@@ -45,10 +45,10 @@ using namespace Exordium::NickModule;
 
 /* Event Handlers */
 void
-  Module::handleClientSignon(User& origin)
+  Service::handleClientSignon(User& origin)
 {
 
-   if(services->isNickRegistered(origin.getNickname()))
+   if(services.isNickRegistered(origin.getNickname()))
      {
 	if(!origin.isPending())
 	  {
@@ -62,7 +62,7 @@ void
 }
 
 
-void Module::parseLine(StringTokens& line, User& origin, const bool safe)
+void Service::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String command = line.nextToken().toLower();
    
@@ -79,7 +79,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    return;
 }
 
-  NICK_FUNC (Module::parseCOMMANDS)
+  NICK_FUNC (Service::parseCOMMANDS)
 {
   // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength = 200;
@@ -112,7 +112,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 
 
 }
-  NICK_FUNC (Module::parseNICK)
+  NICK_FUNC (Service::parseNICK)
 
 {
    String command = tokens.nextToken().toLower();
@@ -130,7 +130,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 }
 
 /* This handles the AUTH command */
-NICK_FUNC (Module::parseAUTH)
+NICK_FUNC (Service::parseAUTH)
 {
    String gauth = tokens.nextToken();
    if(!origin.isPending())
@@ -160,7 +160,7 @@ NICK_FUNC (Module::parseAUTH)
 
 
 /* Info */
-  NICK_FUNC (Module::parseINFO)
+  NICK_FUNC (Service::parseINFO)
 {
    Kine::ClientName who = tokens.nextToken();
    who = who.IRCtoLower();
@@ -170,7 +170,7 @@ NICK_FUNC (Module::parseAUTH)
 				   getNickname());
 		return;
 	}
-   User *ptr = services->findUser(who);
+   User *ptr = services.findUser(who);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),
@@ -235,7 +235,7 @@ NICK_FUNC (Module::parseAUTH)
 
 
 /* Set */
-  NICK_FUNC (Module::parseSET)
+  NICK_FUNC (Service::parseSET)
 {
    String command = tokens.nextToken();
    String value = tokens.nextToken();
@@ -583,7 +583,7 @@ NICK_FUNC (Module::parseAUTH)
 
 
 /* Access */
-  NICK_FUNC (Module::parseACCESS)
+  NICK_FUNC (Service::parseACCESS)
 {
    Kine::ClientName nickname = tokens.nextToken();
    if(nickname=="")
@@ -592,7 +592,7 @@ NICK_FUNC (Module::parseAUTH)
 			   getNickname());
 	return;
      }
-   User *ptr = services->findUser(nickname);
+   User *ptr = services.findUser(nickname);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(nick_ERROR_NOT_ONLINE),
@@ -607,7 +607,7 @@ NICK_FUNC (Module::parseAUTH)
 
 
 /* Register */
-  NICK_FUNC (Module::parseREGISTER)
+  NICK_FUNC (Service::parseREGISTER)
 {
    String password = tokens.nextToken();
    String email = tokens.nextToken();
@@ -653,12 +653,12 @@ NICK_FUNC (Module::parseAUTH)
      "\n"
      "/msg nick AUTH "+authcode+"\n"
      "\n";
-   services->sendEmail(email,subject,emailtext);
+   services.sendEmail(email,subject,emailtext);
 }
 
 
 /* Kill */
-  NICK_FUNC (Module::parseKILL)
+  NICK_FUNC (Service::parseKILL)
 {
    Kine::ClientName tokill = tokens.nextToken();
    String password = tokens.nextToken();
@@ -668,7 +668,7 @@ NICK_FUNC (Module::parseAUTH)
 			   getNickname());
 	return;
      }
-   User *ptr = services->findUser(tokill);
+   User *ptr = services.findUser(tokill);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(nick_ERROR_NOT_ONLINE),
@@ -691,7 +691,7 @@ NICK_FUNC (Module::parseAUTH)
 	  }
 	if(ptr->getPass() == password)
 	  {
-	     services->killnick(tokill,getNickname(),"Kill requested by "+origin.getNickname());
+	     services.killnick(tokill,getNickname(),"Kill requested by "+origin.getNickname());
 	     origin.log(getNickname(),"Requested a kill on "+tokill);
 	     return;
 	  }
@@ -700,18 +700,18 @@ NICK_FUNC (Module::parseAUTH)
 //	int access = origin.getAccess("Serv");
 	if(ptr->getAccess("Serv")>0 || ptr->getAccess("Oper")>0)
 	  {
-	     services->sendHelpme(getNickname(),String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
+	     services.sendHelpme(getNickname(),String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
 	  }
      }
 }
 
 
 /* Do help... */
-NICK_FUNC (Module::parseHELP)
+NICK_FUNC (Service::parseHELP)
 {
 // String word = tokens.nextToken();
 // String parm = tokens.nextToken();
-// services->doHelp(origin,getNickname(), word, parm);
+// services.doHelp(origin,getNickname(), word, parm);
 
    String command = tokens.nextToken().toLower();
    
@@ -785,7 +785,7 @@ NICK_FUNC (Module::parseHELP)
 
 
 /* Ghost... */
-NICK_FUNC (Module::parseGHOST)
+NICK_FUNC (Service::parseGHOST)
 {
   String toghost = tokens.nextToken();
   String password = tokens.nextToken();
@@ -795,7 +795,7 @@ NICK_FUNC (Module::parseGHOST)
 			   getNickname());
 	return;
    }
-  if (!services->isNickRegistered( toghost))
+  if (!services.isNickRegistered( toghost))
     {
        origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),
 			  getNickname());
@@ -803,7 +803,7 @@ NICK_FUNC (Module::parseGHOST)
     }
    if(Utils::generatePassword(toghost,password) == password)
     {
-       services->registerService(toghost,"ghost","ghosts.peoplechat.org",
+       services.registerService(toghost,"ghost","ghosts.peoplechat.org",
 					"Ghosted by "+origin.getNickname());
        origin.sendMessage(GETLANG(nick_GHOST_SUCCESSFUL, toghost),
 			  getNickname());
@@ -818,7 +818,7 @@ NICK_FUNC (Module::parseGHOST)
 
 
 /* Parse an identification request */
-NICK_FUNC (Module::parseIDENTIFY)
+NICK_FUNC (Service::parseIDENTIFY)
 {
   String password = tokens.nextToken();
   if (origin.isPending())
@@ -853,74 +853,9 @@ NICK_FUNC (Module::parseIDENTIFY)
   origin.log(getNickname(),"Failed identify for nickname "+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
   if(origin.getAccess("Serv")>0 || origin.getAccess("Oper")>0)
     {
-       services->sendHelpme("Serv","Failed identify for nickname "+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
+       services.sendHelpme("Serv","Failed identify for nickname "+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
     }
   return;
-}
-
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo =
-{
-   "Nickname Service",
-     0, 0,
-     Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON |
-     Exordium::Service::moduleInfo_type::Events::CLIENT_NICKCHANGE
-};
-
-// Start the service
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-   
-   // Attempt to affirm our database tables..
-   unsigned int i = 0;
-   while (Tables::tables[i] != 0) {
-      // Try to affirm this table..
-      if (!services->getDatabase().affirmTable(*(Tables::tables[i]))) {
-	 services->logLine(String("Unable to affirm mod_chan database "
-				  "table '") +
-			   Tables::tables[i]->name + "'",
-			   Log::Fatality); 
-	 return false;
-      }
-      
-      // Next table..
-      i++;
-   }
-
-   // Register and process our language tag name -> tag ID map
-   Kine::langs().registerMap(Language::tagMap);
-   
-   // temporary debugging thing :(
-   int foofoo = 0;
-   for (;;) {
-      std::cout << "TagMap " << foofoo << ": tag '" <<
-	Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
-	Language::tagMap[foofoo].tagID << std::endl;
-      
-      if (Language::tagMap[++foofoo].tagName == 0) {
-	 break;
-      }
-   }
-   
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(), 
-			     getHostname(), getDescription());
-   
-   // We started okay :)
-   return true;
-}
-
-
-// Stop the service
-void Module::stop(const String* const reason)
-{
-   Kine::langs().deregisterMap(Language::tagMap);
-   services->serviceQuit(getNickname(), ((reason == 0) ? "" : *reason));
 }
 
 
@@ -931,10 +866,10 @@ void Module::stop(const String* const reason)
  * 
  */
 
-void Module::nickLinkAdd(String const &first, String const &second)
+void Service::nickLinkAdd(String const &first, String const &second)
 {
-   services->getDatabase().dbInsert("nicklinks","'"+String::convert(services->getStatic().getRegisteredNickID(first))
-				   +"','"+String::convert(services->getStatic().getRegisteredNickID(second))+"'");
+   services.getDatabase().dbInsert("nicklinks","'"+String::convert(services.getStatic().getRegisteredNickID(first))
+				   +"','"+String::convert(services.getStatic().getRegisteredNickID(second))+"'");
 }
 
 /** nickLinkDel(String,String)
@@ -943,8 +878,8 @@ void Module::nickLinkAdd(String const &first, String const &second)
  * 
  */
 
-void Module::nickLinkDel(String const &first, String const &second)
+void Service::nickLinkDel(String const &first, String const &second)
 {
-   services->getDatabase().dbDelete("nicklinks","fromnick='"+String::convert(services->getStatic().getRegisteredNickID(first))
-				   +"','"+String::convert(services->getStatic().getRegisteredNickID(second))+"'");
+   services.getDatabase().dbDelete("nicklinks","fromnick='"+String::convert(services.getStatic().getRegisteredNickID(first))
+				   +"','"+String::convert(services.getStatic().getRegisteredNickID(second))+"'");
 }

@@ -93,6 +93,7 @@ libexordium_la_SOURCES = \
 			include/exordium/database/table.h \
 			include/exordium/dchan.h \
 			include/exordium/log.h \
+			include/exordium/module.h \
 			include/exordium/server.h \
 			include/exordium/service.h \
 			include/exordium/services.h \
@@ -108,6 +109,7 @@ libexordium_la_SOURCES = \
 			source/lib/dchan.cpp \
 			source/lib/logger.cpp \
 			source/lib/logger.h \
+			source/lib/module.cpp \
 			source/lib/modules.cpp \
 			source/lib/server.cpp \
 			source/lib/service.cpp \
@@ -150,7 +152,9 @@ mod_bot_la_LDFLAGS=\
 		   -avoid-version -module
 mod_bot_la_SOURCES=\
 		   source/modules/mod.bot/bot.cpp \
-		   source/modules/mod.bot/bot.h
+		   source/modules/mod.bot/bot.h \
+		   source/modules/mod.bot/module.cpp
+		   
 # ***************** END of mod_bot ********************
 # ***************** START of mod_chan *****************
 mod_chan_la_LIBADD=\
@@ -163,7 +167,8 @@ mod_chan_la_SOURCES=\
 		   source/modules/mod.chan/chan.cpp \
 		   source/modules/mod.chan/chan.h \
 		   source/modules/mod.chan/tables.cpp \
-		   source/modules/mod.chan/tables.h
+		   source/modules/mod.chan/tables.h \
+		   source/modules/mod.chan/module.cpp
 
 source/modules/mod.chan/language.cpp source/modules/mod.chan/language.h: source/modules/mod.chan/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
@@ -184,7 +189,8 @@ mod_love_la_SOURCES=\
 		   source/modules/mod.love/love.cpp \
 		   source/modules/mod.love/love.h \
 		   source/modules/mod.love/tables.cpp \
-		   source/modules/mod.love/tables.h
+		   source/modules/mod.love/tables.h \
+		   source/modules/mod.love/module.cpp
 
 source/modules/mod.love/language.cpp source/modules/mod.love/language.h: source/modules/mod.love/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
@@ -206,7 +212,8 @@ mod_nick_la_SOURCES=\
 		    source/modules/mod.nick/nick.cpp \
 		    source/modules/mod.nick/nick.h \
 		    source/modules/mod.nick/tables.cpp \
-		    source/modules/mod.nick/tables.h
+		    source/modules/mod.nick/tables.h \
+		    source/modules/mod.nick/module.cpp
 
 source/modules/mod.nick/commands.cpp source/modules/mod.nick/commands.h: source/modules/mod.nick/commands.tpl source/modules/mod.nick/commands.def
 	$(AUTOGEN) \
@@ -232,7 +239,8 @@ mod_note_la_SOURCES=\
 		    source/modules/mod.note/note.cpp \
 		    source/modules/mod.note/note.h \
 		    source/modules/mod.note/tables.cpp \
-		    source/modules/mod.note/tables.h
+		    source/modules/mod.note/tables.h \
+		    source/modules/mod.note/module.cpp
 
 source/modules/mod.note/language.cpp source/modules/mod.note/language.h: source/modules/mod.note/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
@@ -249,6 +257,7 @@ mod_oper_la_LDFLAGS=\
 mod_oper_la_SOURCES=\
 		   source/modules/mod.oper/language.cpp \
 		   source/modules/mod.oper/language.h \
+		   source/modules/mod.oper/module.cpp \
 		   source/modules/mod.oper/oper.cpp \
 		   source/modules/mod.oper/oper.h
 
@@ -267,6 +276,7 @@ mod_serv_la_LDFLAGS=\
 mod_serv_la_SOURCES=\
 		     source/modules/mod.serv/language.cpp \
 		     source/modules/mod.serv/language.h \
+		     source/modules/mod.serv/module.cpp \
 		     source/modules/mod.serv/serv.cpp \
 		     source/modules/mod.serv/serv.h \
 		     source/modules/mod.serv/tables.cpp \
@@ -285,6 +295,7 @@ mod_stats_la_LIBADD=\
 mod_stats_la_LDFLAGS=\
 		     -avoid-version -module
 mod_stats_la_SOURCES=\
+		     source/modules/mod.stats/module.cpp \
 		     source/modules/mod.stats/stats.cpp \
 		     source/modules/mod.stats/stats.h \
 		     source/modules/mod.stats/tables.cpp \
@@ -296,6 +307,7 @@ mod_vote_la_LIBADD=\
 mod_vote_la_LDFLAGS=\
 		    -avoid-version -module
 mod_vote_la_SOURCES=\
+		     source/modules/mod.vote/module.cpp \
 		     source/modules/mod.vote/vote.cpp \
 		     source/modules/mod.vote/vote.h
 
@@ -307,14 +319,16 @@ mod_help_la_LDFLAGS=\
 		    -avoid-version -module
 mod_help_la_SOURCES=\
 		    source/modules/mod.help/help.cpp \
-		    source/modules/mod.help/help.h
+		    source/modules/mod.help/help.h \
+		    source/modules/mod.help/module.cpp
 
 # ***************** END of mod_help *******************
 # ***************** START of mod_credits **************
 mod_credits_la_SOURCES=\
 			source/modules/mod.credits/language.cpp \
 			source/modules/mod.credits/language.h \
-			source/modules/mod.credits/credits.cpp
+			source/modules/mod.credits/credits.cpp \
+			source/modules/mod.credits/module.cpp
 
 mod_credits_la_LIBADD=\
 		       libexordium_bank.la \
@@ -334,7 +348,8 @@ source/modules/mod.credits/language.cpp source/modules/mod.credits/language.h: s
 mod_game_la_SOURCES = \
 		    source/modules/mod.game/channelgame.cpp \
 		    source/modules/mod.game/config.cpp \
-		    source/modules/mod.game/game.cpp 
+		    source/modules/mod.game/game.cpp \
+		    source/modules/mod.game/module.cpp
 
 mod_game_la_LIBADD = \
 		    libexordium.la

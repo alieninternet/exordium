@@ -29,35 +29,3 @@
 #endif
 
 #include "exordium/service.h"
-
-// Default configuration definition table (for uninherited ConfigData classes)
-const AISutil::ConfigParser::defTable_type
-  Exordium::Service::ConfigData::defaultDefinitions = {
-       {
-	  "DESCRIPTION", 4,
-	    (void *)&ConfigData::defDescription, &varHandleString,
-	    0, 0
-       },
-       {
-	  "DISTRIBUTION", 4,
-	    (void *)&ConfigData::defDistribution, &varHandleStringOneWord,
-	    0, 0
-       },
-       {
-	  "HOSTNAME", 4,
-	    (void *)&ConfigData::defHostname, &varHandleHostName,
-	    0, 0
-       },
-       {
-	  "NAME", 4,
-	    (void *)&ConfigData::defName, &varHandleStringOneWord,
-	    0, 0
-       },
-       {
-	  "IDENT", 5,
-	    (void *)&ConfigData::defIdent, &varHandleStringOneWord,
-	    0, 0
-       },
-     
-       { 0, 0, 0, 0, 0, 0 }
-  };

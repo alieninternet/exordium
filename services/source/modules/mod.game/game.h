@@ -45,21 +45,15 @@ class ChannelGame;
 namespace Exordium {
    namespace GameModule {
       // The Game module
-      class Module : public Exordium::Service {
+      class Service : public Exordium::Service {
        private:
 	 // Our convenient type-definition of our handler functions
 	 typedef GAME_FUNC(handler_type);
 	 
-	 // Module information structure
-	 static const Exordium::Service::moduleInfo_type moduleInfo;
-	 
-	 // Configuration data
-	 Game::ConfigData configData;
-	 
 	 // Our command table structure
 	 struct commandTable_type {
 	    const char* const command;			// The command name
-	    handler_type Module::* const handler;	// The function
+	    handler_type Service::* const handler;	// The function
 	 };
 	 
 	 // Commands which are sent directly to us
@@ -67,6 +61,9 @@ namespace Exordium {
 	 
 	 // Commands which are sent to a channel we are on
 	 static const commandTable_type channelCommandTable[];
+
+	 // Where's services? Here, of course!
+	 Exordium::Services& services;
 	 
 	 // A list of channel games currently in progress
 	 typedef std::map < AISutil::String, ChannelGame* > channelGames_type;
@@ -80,40 +77,26 @@ namespace Exordium {
 	 
        public:
 	 // Our constructor
-	 Module(void)
-	   : configData(moduleInfo.fullName)
+	 Service(const Exordium::Module::ConfigData& config,
+		 Exordium::Services& s)
+	   : Exordium::Service(config),
+	     services(s)
 	   {};
       
 	 // Our destructor
-	 ~Module(void)
+	 ~Service(void)
 	   {};
 	 
 	 // Return the services thingy
 	 Exordium::Services& getServices(void)
-	   { return *services; };
+	   { return services; };
       
-	 // Start the module
-	 bool start(Exordium::Services& s);
-	 
-	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String* const reason = 0);
-	 
 	 // Parser for incoming stuff
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const Kine::ChannelName& channel);
-	 
-	 // Grab the information structure of a module
-	 virtual const moduleInfo_type& getModuleInfo(void) const
-	   { return moduleInfo; };
-	 
-	 // Return an appropriate instance of a configuration data class
-	 const Exordium::Service::ConfigData& getConfigData(void) const
-	   { return configData; };
-	 Exordium::Service::ConfigData& getConfigData(void)
-	   { return configData; };
-      }; // class Module
+      }; // class Service
    }; // namespace GameModule
 }; // namespace Exordium
    

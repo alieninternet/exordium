@@ -34,137 +34,68 @@
 # include <kineircd/clientname.h>
 # include <kineircd/channelname.h>
 # include <kineircd/service.h>
-
-
-// Definitions for the module init functions..
-#define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
-   Exordium::Service* x(void)
-
-#define EXORDIUM_SERVICE_INIT_FUNCTION \
-   extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
+# include <exordium/module.h>
 
 namespace Exordium {
-   class Services;
    class User;
    class dChan;
    
    class Service : public Kine::Service {
     public:
-      struct moduleInfo_type {
-	 // Version information about the module
-	 const char* const fullName;
-	 const unsigned short versionMajor;
-	 const unsigned short versionMinor;
-
-	 // Information about which events we want to receive
-	 struct Events { // Should be namespace, but g++ is dumb
-	    enum {
-	         NONE		    = 0x00000000,
-	         SERVER_NEW	    = 0x00000001,
-	         SERVER_QUIT	    = 0x00000002,
-	         SERVER_BURST	    = 0x00000004,
-	         SERVER_PASS        = 0x00000008,
-	         SERVER_SVINFO      = 0x00000010,
-		 CLIENT_SIGNON      = 0x00000020,
-		 CLIENT_SIGNOFF     = 0x00000040,
-		 CLIENT_MODE        = 0x00000080,
-		 CLIENT_AWAY        = 0x00000100,
-		 CLIENT_NICKCHANGE  = 0x00000200,
-		 CHANNEL_CREATE     = 0x00000400,
-		 CHANNEL_JOIN       = 0x00000800,
-		 CHANNEL_DESTROY    = 0x00001000,
-		 CHANNEL_TOPIC      = 0x00002000,
-		 CHANNEL_KICK       = 0x00004000,
-		 CHANNEL_OP         = 0x00008000,
-		 CHANNEL_DEOP       = 0x00010000,
-		 CHANNEL_VOICE      = 0x00020000,
-		 CHANNEL_DEVOICE    = 0x00040000,
-		 CHANNEL_HALFOP     = 0x00080000,
-		 CHANNEL_HALFDEOP   = 0x00100000,
-		 CHANNEL_BAN        = 0x00200000,
-		 CHANNEL_EXEMPT     = 0x00400000,
-		 CHANNEL_MODE       = 0x00800000,
-                 CHANNEL_PART       = 0x01000000,
-		 SERVER_MODE        = 0x02000000,
-	         ALL	            = 0xFFFFFFFF /* Psycho :-) */
-	    };
+      // Information about which events we want to receive
+      struct Events { // Should be namespace
+	 enum type {
+	    NONE		    	= 0x00000000,
+	    SERVER_NEW	    		= 0x00000001,
+	    SERVER_QUIT	    		= 0x00000002,
+	    SERVER_BURST	    	= 0x00000004,
+	    SERVER_PASS        		= 0x00000008,
+	    SERVER_SVINFO      		= 0x00000010,
+	    CLIENT_SIGNON      		= 0x00000020,
+	    CLIENT_SIGNOFF     		= 0x00000040,
+	    CLIENT_MODE        		= 0x00000080,
+	    CLIENT_AWAY        		= 0x00000100,
+	    CLIENT_NICKCHANGE  		= 0x00000200,
+	    CHANNEL_CREATE     		= 0x00000400,
+	    CHANNEL_JOIN       		= 0x00000800,
+	    CHANNEL_DESTROY    		= 0x00001000,
+	    CHANNEL_TOPIC      		= 0x00002000,
+	    CHANNEL_KICK       		= 0x00004000,
+	    CHANNEL_OP         		= 0x00008000,
+	    CHANNEL_DEOP       		= 0x00010000,
+	    CHANNEL_VOICE      		= 0x00020000,
+	    CHANNEL_DEVOICE    		= 0x00040000,
+	    CHANNEL_HALFOP     		= 0x00080000,
+	    CHANNEL_HALFDEOP   		= 0x00100000,
+	    CHANNEL_BAN    		= 0x00200000,
+	    CHANNEL_EXEMPT    		= 0x00400000,
+	    CHANNEL_MODE     		= 0x00800000,
+	    CHANNEL_PART       		= 0x01000000,
+	    SERVER_MODE			= 0x02000000,
+	    ALL				= 0xFFFFFFFF /* Psycho :-) */
 	 };
-	 const unsigned int eventsMask; // values OR'd from above
+	 
+	 typedef unsigned int lazy_type;
       };
-      unsigned int getEventsMask(void);
-
       
-      class ConfigData : public AISutil::ConfigData {
-       private:
-	 // Configuration information (this is a default list for this base)
-	 static const AISutil::ConfigParser::defTable_type defaultDefinitions;
-	 
-       protected:
-	 AISutil::String defDescription;		// Our description
-	 AISutil::String defDistribution;		// Our scope mask
-	 AISutil::String defHostname;			// Our hostname
-	 Kine::ClientName defName;			// Our name
-	 AISutil::String defIdent;			// Out ident
-	 
-       public:
-	 // Constructor
-	 ConfigData(const AISutil::String& d, const AISutil::String& h,
-		    const AISutil::String& n, const AISutil::String& u)
-	   : defDescription(d),
-	     defDistribution("*"), // <=- network-wide distribution scope
-	     defHostname(h),
-	     defName(n),
-	     defIdent(u)
-	   {};
-
-	 // Destructor
-	 virtual ~ConfigData(void)
-	   {};
-
-	 // Grab the configuration definition table
-	 virtual const AISutil::ConfigParser::defTable_type& 
-	   getDefinitions(void) const
-	   { return defaultDefinitions; };
-	 
-	 // Return variables..
-	 const AISutil::String& getDescription(void) const
-	   { return defDescription; };
-	 const AISutil::String& getDistribution(void) const
-	   { return defDistribution; };
-	 const AISutil::String& getHostname(void) const
-	   { return defHostname; };
-	 const Kine::Name& getName(void) const
-	   { return defName; };
-	 const AISutil::String& getIdent(void) const
-           { return defIdent; };
-      };
+    private:
+      const std::string& description;
+      const std::string& username;
       
     protected:
-      /* Where is services? This is a pointer because we will not know
-       * where services is upon initialisation of the class..
-       */
-      Exordium::Services* services;
+      // Constructor
+      Service(const Module::ConfigData& config)
+	: Kine::Service(config.getName(),
+			config.getHostname(),
+			Kine::daemon().getTime()),
+          description(config.getDescription()),
+          username(config.getIdent())
+	{};
       
     public:
-      // Constructor
-      Service(const Kine::ClientName& nick, const std::string& host)
-	: Kine::Service(nick, host, Kine::daemon().getTime())
-	{};
-      
-      // this needs to be removed 'cause it's broken
-      Service(void)
-	: Kine::Service("nick", "host", /*Kine::daemon().getTime()*/ AISutil::Time())
-	{};
-      
       // Destructor
       virtual ~Service() 
 	{};
-
-      // Start the module (return false if the module is unable to start)
-      virtual bool start(Exordium::Services& s) = 0;
-      
-      // Stop the module (called just before a module is unloaded)
-      virtual void stop(const AISutil::String* const reason = 0) {};
 
       // Parsers
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
@@ -173,6 +104,12 @@ namespace Exordium {
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
 			     const Kine::ChannelName& channel) = 0;
       
+      
+      // Return the events mask (the events we want to know about)
+      virtual const Events::lazy_type getEventsMask(void) const
+	{ return Events::NONE; };
+      
+      // Event handler things
       virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
       virtual void handleClientSignon(User& origin) {};
       virtual void handleTopic(const AISutil::String& origin, dChan& channel, const AISutil::String& newTopic) {};
@@ -182,28 +119,13 @@ namespace Exordium {
                                      const AISutil::String& target, const AISutil::String& source) {};
       
       
-      // Grab the information structure of a module
-      virtual const moduleInfo_type& getModuleInfo(void) const = 0;
-      
-      // Return an appropriate instance of a configuration data class
-      virtual const ConfigData& getConfigData(void) const = 0;
-      virtual ConfigData& getConfigData(void) = 0;
-
-      /*
-       * 
-       * The follow is defined as virtuals from Kine::Service and need to be
-       * here upon inheriting from Kine..
-       *						- pickle
-       * 
-       */
-
       // Return the username/identity of the service
       const std::string& getUsername(void) const
-	{ return getConfigData().getIdent(); };
+	{ return username; };
       
       // Return the description of this service module
       const std::string& getDescription(void) const
-	{ return getConfigData().getDescription(); };
+	{ return description; };
    };
 };
 

@@ -36,7 +36,7 @@ using namespace Exordium::NickModule;
    (string-downcase 
       (get "command"))
  +]",
-	  &Module::parse[+
+	  &Service::parse[+
    (string-upcase 
       (get "commandName"))
  +],
@@ -114,7 +114,7 @@ namespace Exordium {
          // The command table
          struct command_type {
 	    const char* const command;
-	    NICK_FUNC((Module::* const function));
+	    NICK_FUNC((Service::* const function));
 	    const subcommandTable_type* subcommands;
 	    const Kine::Languages::tagID_type* const help;
 	 };

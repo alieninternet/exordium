@@ -37,13 +37,13 @@ using AISutil::StringTokens;
 using namespace Exordium::StatsModule;
 
 
-const Module::functionTableStruct Module::functionTable[] = {
-     { "help",		&Module::parseHELP },
+const Service::functionTableStruct Service::functionTable[] = {
+     { "help",		&Service::parseHELP },
      { 0, 0 }
 };
 
 
-void Module::parseLine(StringTokens& line, User& origin, const bool safe)
+void Service::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String command = line.nextToken ().toLower ();
    for (int i = 0; functionTable[i].command != 0; i++) {
@@ -57,45 +57,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 }
    
 
-STATS_FUNC(Module::parseHELP)
+STATS_FUNC(Service::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services->doHelp(origin,getNickname(),word,parm);
+   services.doHelp(origin,getNickname(),word,parm);
    String tolog = "Did HELP on word " + word + " parm " + parm;
-   services->log(origin,getNickname(),String(tolog));
-}
-
-
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
-   "Statistics Service",
-   0, 0,
-   Exordium::Service::moduleInfo_type::Events::NONE
-};
-
-
-// Start the service
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-   
-   // Attempt to affirm our database table..
-   if (!services->getDatabase().affirmTable(Tables::statsTable)) {
-      services->logLine("Unable to affirm mod_stats database table 'stats'",
-			Log::Fatality);
-      return false;
-   }
-   
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(),
-			     getHostname(), getDescription());
-   
-   // We started okay :)
-   return true;
+   services.log(origin,getNickname(),String(tolog));
 }

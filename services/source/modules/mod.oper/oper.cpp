@@ -39,23 +39,23 @@ using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::OperModule;
 
-const Module::functionTableStruct Module::functionTable[] =
+const Service::functionTableStruct Service::functionTable[] =
 {
-     { "help",		&Module::parseHELP },
-     { "join",		&Module::parseJOIN },
-     { "part",		&Module::parsePART },
-     { "commands",	&Module::parseCOMMANDS },
-     { "zline",		&Module::parseZLINE },
-     { "qline",		&Module::parseQLINE },
-     { "mdeop",		&Module::parseMDEOP },
-     { "global",	&Module::parseGLOBAL },
-     { "kill",		&Module::parseKILL },
-     { "jupe",		&Module::parseJUPE },
-     { "whois",		&Module::parseWHOIS },
+     { "help",		&Service::parseHELP },
+     { "join",		&Service::parseJOIN },
+     { "part",		&Service::parsePART },
+     { "commands",	&Service::parseCOMMANDS },
+     { "zline",		&Service::parseZLINE },
+     { "qline",		&Service::parseQLINE },
+     { "mdeop",		&Service::parseMDEOP },
+     { "global",	&Service::parseGLOBAL },
+     { "kill",		&Service::parseKILL },
+     { "jupe",		&Service::parseJUPE },
+     { "whois",		&Service::parseWHOIS },
      { 0, 0 }
 };
 
-void Module::parseLine(StringTokens& line, User& origin, const bool safe)
+void Service::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -64,12 +64,12 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	// Does this match?
 	if (command == functionTable[i].command)
 	  {
-             int required = services->getRequiredAccess(getNickname(),command.toLower());
+             int required = services.getRequiredAccess(getNickname(),command.toLower());
              int access = origin.getAccess(getNickname());
              if(required>access)
                {
 		  origin.sendMessage(GETLANG(oper_NOT_ENOUGH_ACCESS),getNickname());
-                  services->logLine(origin.getNickname()+" tried to use \002"+command+"\002", Log::Warning);
+                  services.logLine(origin.getNickname()+" tried to use \002"+command+"\002", Log::Warning);
                   return;
                }
 
@@ -81,14 +81,14 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    origin.sendMessage (GETLANG(ERROR_UNKNOWN_COMMAND,command), getNickname());
 }
 
-OPER_FUNC(Module::parseHELP)
+OPER_FUNC(Service::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services->doHelp(origin,getNickname(),word,parm);
+   services.doHelp(origin,getNickname(),word,parm);
 }
 
-OPER_FUNC(Module::parseGLOBAL)
+OPER_FUNC(Service::parseGLOBAL)
 {
    String txt = tokens.rest();
    if(txt=="")
@@ -96,18 +96,18 @@ OPER_FUNC(Module::parseGLOBAL)
 	origin.sendMessage(GETLANG(oper_GLOBAL_USAGE),getNickname());
 	return;
      }
-   int nbRes = services->getDatabase().dbSelect("servername","onlineservers");
-   CResult *myRes = services->getDatabase().dbGetResultSet();
+   int nbRes = services.getDatabase().dbSelect("servername","onlineservers");
+   CResult *myRes = services.getDatabase().dbGetResultSet();
    for(int i=0;i<nbRes;i++)
      {
-//	services->queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
+//	services.queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
      }
 
-   services->sendGOper(getNickname(),origin.getNickname()+" sent a \002global\002 message ("+txt+")");
+   services.sendGOper(getNickname(),origin.getNickname()+" sent a \002global\002 message ("+txt+")");
 
 }
 
-OPER_FUNC(Module::parseMDEOP)
+OPER_FUNC(Service::parseMDEOP)
 {
    Kine::ChannelName channel = tokens.nextToken();
    if(channel=="")
@@ -115,10 +115,10 @@ OPER_FUNC(Module::parseMDEOP)
 	origin.sendMessage(GETLANG(oper_MDEOP_USAGE), getNickname());
 	return;
      }
-   int cid = services->getChannel().getOnlineChanID(channel);
-   int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
-   CResult *myRes = services->getDatabase().dbGetResultSet();
-   dChan *dptr = services->findChan(channel);
+   int cid = services.getChannel().getOnlineChanID(channel);
+   int nbRes = services.getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
+   CResult *myRes = services.getDatabase().dbGetResultSet();
+   dChan *dptr = services.findChan(channel);
    if(dptr==0)
      {
 	origin.sendMessage(GETLANG(oper_MDEOP_NOT_FOUND),getNickname());
@@ -127,21 +127,21 @@ OPER_FUNC(Module::parseMDEOP)
 
    for (int i=0; i<nbRes; i++)
      {
-	Kine::ClientName inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
+	Kine::ClientName inick = services.getOnlineNick(myRes->getValue(i,0).toInt());
 	std::cout << inick << std::endl;
-	services->mode(getNickname(),channel,"-ov",inick);
-	User *ptr = services->findUser(inick);
+	services.mode(getNickname(),channel,"-ov",inick);
+	User *ptr = services.findUser(inick);
 	dptr->delUser(*ptr);
 	dptr->addUser(*ptr,0);
 
      }
 
-   services->sendGOper(getNickname(),origin.getNickname()+" performed a \002massdeop\002 in "+channel);
+   services.sendGOper(getNickname(),origin.getNickname()+" performed a \002massdeop\002 in "+channel);
    delete dptr;
    delete myRes;
 
 }
-OPER_FUNC(Module::parseQLINE)
+OPER_FUNC(Service::parseQLINE)
 {
    String command = tokens.nextToken();
    if(command=="")
@@ -157,8 +157,8 @@ OPER_FUNC(Module::parseQLINE)
 	     origin.sendMessage(GETLANG(oper_QLINE_DEL_USAGE),getNickname());
 	     return;
 	  }
-	services->sendGOper(getNickname(),origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002");
-//	services->queueAdd("UNSQLINE 0 "+mask);
+	services.sendGOper(getNickname(),origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002");
+//	services.queueAdd("UNSQLINE 0 "+mask);
 	origin.sendMessage(GETLANG(oper_QLINE_DEL_SUCCESS,mask),getNickname());
      }
 
@@ -171,15 +171,15 @@ OPER_FUNC(Module::parseQLINE)
 	     origin.sendMessage(GETLANG(oper_QLINE_ADD_USAGE),getNickname());
 	     return;
 	  }
-	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)");
-//	services->queueAdd("SQLINE "+mask+" :"+reason);
+	services.sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)");
+//	services.queueAdd("SQLINE "+mask+" :"+reason);
 	origin.sendMessage(GETLANG(oper_QLINE_ADD_SUCCESS,mask,reason),getNickname());
 	return;
      }
 
 }
 
-OPER_FUNC(Module::parseZLINE)
+OPER_FUNC(Service::parseZLINE)
 {
    String command = tokens.nextToken();
    if(command=="")
@@ -196,8 +196,8 @@ OPER_FUNC(Module::parseZLINE)
 	     return;
 	  }
 	String togo = origin.getNickname() + " removed a net wide \002zline\002 on \002"+ip;
-	services->sendGOper(getNickname(),togo);
-//	services->queueAdd("UNSZLINE " + ip);
+	services.sendGOper(getNickname(),togo);
+//	services.queueAdd("UNSZLINE " + ip);
 	origin.sendMessage(GETLANG(oper_ZLINE_DEL_SUCCESS,ip),getNickname());
      }
 
@@ -213,15 +213,15 @@ OPER_FUNC(Module::parseZLINE)
 	  }
 
 	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
-	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002");
-//	services->queueAdd("SZLINE " + ip +" :"+reason);
+	services.sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002");
+//	services.queueAdd("SZLINE " + ip +" :"+reason);
 	origin.sendMessage(GETLANG(oper_ZLINE_ADD_SUCCESS,ip,reason),getNickname());
 	return;
      }
 
 }
 
-OPER_FUNC(Module::parseJOIN)
+OPER_FUNC(Service::parseJOIN)
 {
    Kine::ChannelName chan = tokens.nextToken();
    chan = chan.IRCtoLower();
@@ -237,14 +237,14 @@ OPER_FUNC(Module::parseJOIN)
      }
    else
      {
-	services->serviceJoin(getNickname(), chan);
-	services->serverMode(chan, "+o", getNickname());
-	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" join \002"+chan+"\002");
+	services.serviceJoin(getNickname(), chan);
+	services.serverMode(chan, "+o", getNickname());
+	services.sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" join \002"+chan+"\002");
 	origin.sendMessage(GETLANG(oper_JOIN_SUCCESS,chan),getNickname());
      }
 }
 
-OPER_FUNC(Module::parsePART)
+OPER_FUNC(Service::parsePART)
 {
    Kine::ChannelName chan = tokens.nextToken();
    chan = chan.IRCtoLower();
@@ -260,13 +260,13 @@ OPER_FUNC(Module::parsePART)
      }
    else
      {
-	services->servicePart(getNickname(), chan);
-	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" part \002"+chan+"\002");
+	services.servicePart(getNickname(), chan);
+	services.sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 made "+getNickname()+" part \002"+chan+"\002");
 	origin.sendMessage(GETLANG(oper_PART_SUCCESS,chan),getNickname());
      }
 }
 
-OPER_FUNC (Module::parseKILL)
+OPER_FUNC (Service::parseKILL)
 {
    Kine::ClientName tokill = tokens.nextToken();
    String reason = tokens.rest();
@@ -275,7 +275,7 @@ OPER_FUNC (Module::parseKILL)
 	origin.sendMessage(GETLANG(oper_KILL_USAGE),getNickname());
 	return;
      }
-   User *ptr = services->findUser(tokill);
+   User *ptr = services.findUser(tokill);
    if(ptr==0)
      {
 	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
@@ -283,14 +283,14 @@ OPER_FUNC (Module::parseKILL)
      }
    else
      {
-	services->killnick(tokill,getNickname(),reason);
+	services.killnick(tokill,getNickname(),reason);
 	origin.sendMessage(GETLANG(oper_KILL_SUCCESS,tokill),getNickname());
-	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
-	services->logLine("\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
+	services.sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
+	services.logLine("\002"+origin.getNickname()+"\002 requested a kill on \002"+tokill+"\002");
      }
 }
 
-OPER_FUNC (Module::parseJUPE)
+OPER_FUNC (Service::parseJUPE)
 {
    Kine::ClientName tojupe = tokens.nextToken();
    String reason = tokens.rest();
@@ -303,39 +303,39 @@ OPER_FUNC (Module::parseJUPE)
    int isserver = tojupe.find('.');
    if (isserver > 0)
      {
-	Server *sptr = services->findServer(tojupe);
+	Server *sptr = services.findServer(tojupe);
 	if (sptr==0)
 	  {
 	     origin.sendMessage(GETLANG(oper_JUPE_SERVER_ONLINE,tojupe),getNickname());
 	     return;
 	  }
-//	services->queueAdd("SERVER "+tojupe+" 2 :"+reason);
+//	services.queueAdd("SERVER "+tojupe+" 2 :"+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_SERVER_SUCCESS,tojupe,reason),getNickname());
-	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
-	services->logLine("\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
+	services.sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
+	services.logLine("\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
      }
    else
      {
-	User *ptr = services->findUser(tojupe);
+	User *ptr = services.findUser(tojupe);
 	Kine::ClientName who = origin.getNickname();
-	User *optr = services->findUser(who);
+	User *optr = services.findUser(who);
 	if (ptr != 0)
 	  {
-	     services->killnick(tojupe,getNickname(),reason);
+	     services.killnick(tojupe,getNickname(),reason);
 	  }
 /* lets not register it as a service for now until modes can be specified (dont want them looking like opers ;)
-	services->registerService(tojupe,"jupe",
-				  "jupes."+services->getConfig().getUnderlingHostname(),
+	services.registerService(tojupe,"jupe",
+				  "jupes."+services.getConfig().getUnderlingHostname(),
 				  "Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());*/
-//	services->queueAdd("NICK "+tojupe+" 2 1 +id jupe jupes."+services->getConfig().getUnderlingHostname()+" "+services->getConfig().getUnderlingHostname()+" 0 0 :Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());
-//	services->queueAdd(":"+tojupe+" AWAY : "+reason);
+//	services.queueAdd("NICK "+tojupe+" 2 1 +id jupe jupes."+services.getConfig().getUnderlingHostname()+" "+services.getConfig().getUnderlingHostname()+" 0 0 :Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());
+//	services.queueAdd(":"+tojupe+" AWAY : "+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_NICK_SUCCESS,tojupe,reason),getNickname());
-	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
-	services->logLine("\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
+	services.sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
+	services.logLine("\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
      }
 }
 
-OPER_FUNC (Module::parseWHOIS)
+OPER_FUNC (Service::parseWHOIS)
 {
    Kine::ClientName target = tokens.nextToken();
    target = target.IRCtoLower();
@@ -345,7 +345,7 @@ OPER_FUNC (Module::parseWHOIS)
 	origin.sendMessage(GETLANG(oper_WHOIS_USAGE),getNickname());
 	return;
      }
-   User *ptr = services->findUser(target);
+   User *ptr = services.findUser(target);
    if (ptr == 0)
      {
 	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
@@ -371,7 +371,7 @@ OPER_FUNC (Module::parseWHOIS)
  */
 }
 
-OPER_FUNC (Module::parseCOMMANDS)
+OPER_FUNC (Service::parseCOMMANDS)
 {
    // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength = 200;
@@ -403,48 +403,4 @@ OPER_FUNC (Module::parseCOMMANDS)
 
    // Send the footer (this shouldn't be hard-coded)
    origin.sendMessage(GETLANG(COMMAND_LIST_END),getNickname());
-}
-
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo =
-{
-   "Operator Service",
-     0, 0,
-     Exordium::Service::moduleInfo_type::Events::NONE
-};
-
-// Start the service
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-
-   // Register and process our language tag name -> tag ID map
-   Kine::langs().registerMap(Exordium::OperModule::Language::tagMap);
-
-   int foofoo = 0;
-   for (;;)
-     {
-
-//	std::cout << "TagMap " << foofoo << ": tag '" <<
-//	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
-//	  Language::tagMap[foofoo].tagID << std::endl;
-
-	if (Language::tagMap[++foofoo].tagName == 0)
-	  {
-
-	     break;
-	  }
-
-     }
-
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(),
-			     getHostname(), getDescription());
-
-   // We started okay :)
-   return true;
 }

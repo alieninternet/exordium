@@ -42,67 +42,26 @@ using AISutil::StringTokens;
 using Exordium::User;
 
 
-/* service_init - Register ourselves to the core
- * Original 13/07/2002 james
- */
-EXORDIUM_SERVICE_INIT_FUNCTION
-{ return new Module(); }
-
-
-// Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
-  "Credits Service", 
-    0, 0,
-    Exordium::Service::moduleInfo_type::Events::NONE
-};
-
-
 // Our command table for directly sent commands (commands must be lower-case)
-const Module::commandTable_type Module::directCommandTable[] =
+const Service::commandTable_type Service::directCommandTable[] =
 {
-     { "help",          &Module::handleHELP },
-     { "balance",       &Module::handleBALANCE },
+     { "help",          &Service::handleHELP },
+     { "balance",       &Service::handleBALANCE },
      { 0, 0 }
 };
 
 
 // Our command table for channel commands (commands must be lower-case)
-const Module::commandTable_type Module::channelCommandTable[] =
+const Service::commandTable_type Service::channelCommandTable[] =
 {
      { 0, 0 }
 };
 
 
-/* start - Start the service
- * Original 17/09/2002 pickle
- */
-bool Module::start(Exordium::Services& s)
-{
-   // Set the services field appropriately
-   services = &s;
-   
-   // Register ourself to the network
-   services->registerService(getNickname(), getUsername(),
-			     getHostname(), getDescription());
-   
-   // We started okay :)
-   return true;
-}
-
-
-/* stop - Stop the service
- * Original 17/09/2002 pickle
- */
-void Module::stop(const String* const reason)
-{
-   // Umm, we should QUIT from the network here.. but how?
-}
-
-
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Module::parseLine(StringTokens& line, User& origin, const bool safe)
+void Service::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String command = line.nextToken().toLower();
 #ifdef DEBUG
@@ -125,17 +84,17 @@ std::endl;
 /* handleHELP - Parse the HELP command
  * Original 13/07/2002 james
  */
-CREDITS_FUNC(Module::handleHELP)
+CREDITS_FUNC(Service::handleHELP)
 {
-   services->doHelp(origin, getNickname(), line.nextToken(),
-		    line.nextToken());
+   services.doHelp(origin, getNickname(), line.nextToken(),
+		   line.nextToken());
 }
 
 
 /* handleBALANCE - Parse a 'balance' command, returns the users current balance
  * Original 20/10/2002 - josullivan
  */
-CREDITS_FUNC(Module::handleBALANCE)
+CREDITS_FUNC(Service::handleBALANCE)
 {
   int balance = bank.getBalance(origin);
   if(balance > 0)
