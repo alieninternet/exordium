@@ -74,8 +74,8 @@ Love::Love(Exordium::Services& s, const String& mn)
   : services(s),
     myName(mn)
 {
-   services.registerService(myName, myName, "ircdome.org", "+dz",
-			    "Your local love slave");
+//   services.registerService(myName, myName, "ircdome.org", "+dz",
+//			    "Your local love slave");
 }
 
 

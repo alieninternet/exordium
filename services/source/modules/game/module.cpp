@@ -25,7 +25,6 @@
  */
 
 #include <exordium/channel.h>
-#include <exordium/nickname.h>
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <exordium/module.h>
@@ -74,8 +73,8 @@ Game::Game(Exordium::Services& s, const String& mn)
   : services(s), 
     myName(mn)
 {
-   services.registerService(myName, myName, "ircdome.org", "+dz", 
-			    "Network Games!");
+//   services.registerService(myName, myName, "ircdome.org", "+dz", 
+//			    "Network Games!");
 }
 
 

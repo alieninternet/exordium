@@ -351,7 +351,7 @@ namespace Exordium
 	queueAdd (":services.ircdome.org EOB");
 	queueAdd ("BURST");
 //	queueFlush();
-//	doBurst ();
+	doBurst ();
 	queueAdd ("BURST 0");
 	return true;
      };
@@ -378,6 +378,14 @@ namespace Exordium
 	  loadModule("vote","./modules/vote.so");
 	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			  "The service James forgot :(");
+	  registerService("bot","bot","ircdome.org", "+dz",
+	                            "Bot Interface to Services");
+	  registerService("game", "game", "ircdome.org", "+dz",
+	                            "Network Games!");
+	  registerService("love", "love", "ircdome.org", "+dz",
+	                           "Your local love slave");
+	  
+	  serviceJoin("bot","#Debug");
 	  serviceJoin ("IRCDome", "#debug");
 	  serviceJoin ("IRCDome", "#Exordium");
 	  connected = true;
