@@ -30,7 +30,7 @@
 
 
 #include <exordium/database/base.h>
-#include <exordium/conf.h>
+#include <exordium/config.h>
 
 
 #include <aisutil/string/string.h>
