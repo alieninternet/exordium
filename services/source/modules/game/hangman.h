@@ -51,7 +51,7 @@ class Hangman : public ChannelGame {
    static const unsigned int maxPlayers = 50;
 
    // The number of wrong guesses that can be made before the game ends
-   static const unsigned int maxWrongGuesses = 5;
+   static const unsigned int maxWrongGuesses = 10;
    
    // Is the game in play or still seeking players?
    bool playing;
@@ -78,8 +78,8 @@ class Hangman : public ChannelGame {
    // Jump to the next player, telling the channel why
    void nextPlayer(const LibAIS::String& why, bool withMatchNotify = true);
 
-   // Read in a random word depending on the level set
-   bool getLevelData(int level);
+   // Read in a random word depending on the number of chars set
+   bool getLevelData(unsigned int numChars);
 
    // Display the hangman
    void showWord(const Exordium::User& player);
