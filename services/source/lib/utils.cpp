@@ -28,6 +28,7 @@
 # include "autoconf.h"
 #endif
 
+#include <aisutil/sha1.h>
 #include <kineircd/password.h>
 
 #include "exordium/utils.h"
@@ -81,10 +82,10 @@ std::cout << "GeneratePassword(): Nickname :"<<nickname<<": Password :"
 password << ":" << std::endl;
 
 
-  static const Kine::Utils::base_type PasswordStrBase = 85;
+  static const unsigned char PasswordStrBase = 85;
    static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
 String pass =
-Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
+AISutil::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
 std::cout << "GeneratePassword() :" << pass << ":" << std::endl;
 return pass;
 //
