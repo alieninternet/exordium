@@ -174,21 +174,6 @@ void CMySQL::dbUnlock(void)
    dbQuery("UNLOCK TABLES");
 }
 
-void CMySQL::dbBeginTrans(void)
-{
-   dbQuery("BEGIN");
-}
-
-void CMySQL::dbCommit(void)
-{
-   dbQuery("COMMIT");
-}
-
-void CMySQL::dbRollback(void)
-{
-   dbQuery("ROLLBACK");
-}
-
 CResult* CMySQL::dbGetResultSet(void)
 {
 
