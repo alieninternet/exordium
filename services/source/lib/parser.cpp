@@ -295,7 +295,11 @@ void
 	if(!services.getNickname().isPending(nick))
 	  {
 	     if(services.getNickname().modNick(nick))
+	       {
+		  
 	  services.getNickname().addCheckidentify(nick);
+	       }
+	     
 	  }
 	
      }
