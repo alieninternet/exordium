@@ -125,6 +125,7 @@ namespace Exordium
 	  fd_set inputSet, outputSet;
 	  struct timeval timer;
 	  disconnectTime = 0;
+	  
 	  connected = false;
 	  srand(time(NULL));
 	  logger.logLine ("Entering main loop...");
@@ -247,6 +248,8 @@ namespace Exordium
 	stopping = false;
 	burstOk = false;
 	SecurePrivmsg = false;
+	countTx = 0;
+	countRx = 0;
 	logger.logLine("Setting up signal handlers");
 	getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
 	getDaemon().getSignals().addHandler(&Death,
@@ -280,7 +283,9 @@ namespace Exordium
 	     return false;
 	  }
 	countTx += line.length ();
-
+	std::cout << countTx << std::endl;
+	std::cout << line.length() << std::endl;
+	std::cout << countTx << std::endl;
 	if (::write (sock, line.c_str(), (int)line.length ()) +::
 	    write (sock, "\n", 1) != (int)line.length () + 1)
 	  {
@@ -299,6 +304,7 @@ namespace Exordium
 	  {
 	     std::getline(bufferin,line);
 	     logger.logLine("RX: "+line);
+	     countRx += line.length();
 	     parser.parseLine(line);
 	  }
 

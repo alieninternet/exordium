@@ -105,7 +105,7 @@ namespace Exordium {
 	bool stopping;
 	bool sendPing;
 	bool burstOk;
-	unsigned long countTx;
+        unsigned long countTx;
 	unsigned long countRx;
 	unsigned long remoteAddress;
 	std::queue < String > outputQueue;
@@ -301,6 +301,7 @@ namespace Exordium {
 	       {
 		  logger.logLine(String("TX: ")+line);
 		  outputQueue.push (line + "\r\n");
+		  countTx += line.length();
 	       }
 	     else
 	       {

@@ -296,7 +296,7 @@ int
 String
   Channel::getChanName(int const &number)
 {
-   MysqlRes res = services.getDatabasE().query("SELECT name from chans where id="
+   MysqlRes res = services.getDatabase().query("SELECT name from chans where id="
      + String::convert(number));
    MysqlRow row;
    while ((row = res.fetch_row()))
@@ -310,7 +310,7 @@ String
 String
   Channel::getChanIDName(int const &number)
 {
-   MysqlRes res = services.getDatabasE().query("SELECT name from onlinechan where id="
+   MysqlRes res = services.getDatabase().query("SELECT name from onlinechan where id="
      + String::convert(number));
    MysqlRow row;
    while ((row = res.fetch_row()))
