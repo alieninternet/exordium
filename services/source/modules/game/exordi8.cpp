@@ -76,7 +76,7 @@ bool Exordi8::parseLine(Kine::String& origin, Kine::StringTokens& tokens)
       // Is this a match?
       if (command == functionTable[i].command) {
 	 // Run the function handler, and leave
-	 (this->*(functionTable[i].function))(origin, tokens);
+	 return (this->*(functionTable[i].function))(origin, tokens);
 	 break;
       }
    }
@@ -239,7 +239,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
       sendMessage(origin,
 		  "Only " + players.front().first + " can deal, since " +
 		  players.front().first + " is the dealer!!");
-      return;
+      return true; // Keep the game alive
    }
    
    // Make sure we aren't already playing
@@ -247,7 +247,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
       sendMessage(origin,
 		  "The game is already in play, there is no point in dealing "
 		  "again!");
-      return;
+      return true; // Keep the game alive
    }
    
    // Check there are enough players..
@@ -255,7 +255,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
       sendMessage(origin,
 		  "There aren't enough players - you need at least two "
 		  "players to play Exordi8.");
-      return;
+      return true; // Keep the game alive
    }
    
    // Okay!! Let's start playing!
@@ -325,6 +325,8 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 
    // Send the message..
    sendMessage(out.str());
+   
+   return true;
 }
 
 
@@ -336,7 +338,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
    // Check the player's info
    const player_type* player;
    if ((player = checkPlayerStatus(origin.IRCtoLower())) == 0) {
-      return;
+      return true; // Keep the game alive
    }
 
    // Make sure this player is the current player..
@@ -344,7 +346,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
       sendMessage(origin, 
 		  "It's not your turn, it's " + (*currentPlayer).first +
 		  "'s turn");
-      return;
+      return true; // Keep the game alive
    }
 
    /* Make sure this player has not already put down a card (an 8 to be
@@ -355,7 +357,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
       sendMessage(origin,
 		  "You cannot drop another card - you must now select a "
 		  "suit for the next player to play.");
-      return;
+      return true; // Keep the game alive
    }
    
    // Okay, try to make a card which matches their description..
@@ -364,7 +366,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
    // Make sure that worked
    if (!cardToDiscard.isValid()) {
       sendMessage(origin, "I don't know what card you mean");
-      return;
+      return true; // Keep the game alive
    }
    
    // Okay, make sure the player actually HAS this card first..
@@ -372,7 +374,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
       sendMessage(origin,
 		  Kine::String("You don't have a ") + 
 		  cardToDiscard.getName() + " to discard!");
-      return;
+      return true; // Keep the game alive
    }
    
    /* Make sure they are able to drop this card following the rules. Any
@@ -399,7 +401,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 					"(") +
 			   Cards::Card::nameSuit(nextSuit) + 
 			   ") or take a card.");
-	       return;
+	       return true; // Keep the game alive
 	    }
 	 } else {
 	    /* Check the suits OR the ranks match. However, if the card is
@@ -417,7 +419,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 			   lastDiscardedCard.getName() + 
 			   (stock.empty() ? 
 			    ") or drop a card" : ") or take a card."));
-	       return;
+	       return true; // Keep the game alive
 	    }
 	 }
       }
@@ -428,7 +430,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	 sendMessage(origin, 
 		     "You cannot discard the Queen of Hearts on the game's "
 		     "first move, sorry.");
-	 return;
+	 return true; // Keep the game alive
       }
    }
    
@@ -480,7 +482,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
    if ((*currentPlayer).second.isEmpty()) {
       sendMessage(origin + " has no more cards left, and is the winner!!");
       playing = false;
-      return;
+      return false; // End the game!
    }
    
    // If trump cards still exist, do their thing..
@@ -498,7 +500,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 		     "You have discarded an 8, you must specify which suit "
 		     "the next player must discard.");
 	 
-	 return;
+	 return true; // Keep the game alive
       }
    
       // If the card is an ace, reverse the play.. if it matters..
@@ -508,7 +510,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	 nextPlayer(Kine::String("has discarded the ") + 
 		    cardToDiscard.getName() +
 		    " - the direction of play has been reversed");
-	 return;
+	 return true; // Keep the game alive
       }
       
       // If the card is the queen of hearts, the player gets another go.
@@ -516,7 +518,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	  (cardToDiscard.getIndex() == Cards::Card::Rank::Queen)) {
 	 sendMessage(origin + " has discarded the " + cardToDiscard.getName() +
 		     " and gets another turn.");
-	 return;
+	 return true; // Keep the game alive
       }
       
       // If we are in a sequent and this card is the '8', reward the player
@@ -524,12 +526,14 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	 sequentTrick = false;
 	 sendMessage(origin + " has completed the sequent and gets another "
 		     "turn");
-	 return;
+	 return true; // Keep the game alive
       }
    }
 
    // If we got here, do a standard message..
    nextPlayer(Kine::String("has discarded the ") + cardToDiscard.getName());
+   
+   return true;
 }
 
 
@@ -541,7 +545,7 @@ EXORDI8_FUNC(Exordi8::parsePASS)
    // Check the player's info
    const player_type* player;
    if ((player = checkPlayerStatus(origin.IRCtoLower())) == 0) {
-      return;
+      return true; // Keep the game alive
    }
 
    // Make sure this player is the current player..
@@ -549,7 +553,7 @@ EXORDI8_FUNC(Exordi8::parsePASS)
       sendMessage(origin, 
 		  "It's not your turn, it's " + (*currentPlayer).first +
 		  "'s turn");
-      return;
+      return true; // Keep the game alive
    }
    
    // Make sure the stock isn't empty
@@ -558,11 +562,13 @@ EXORDI8_FUNC(Exordi8::parsePASS)
 		  "You cannot pass a play while the stock is not empty. If "
 		  "you cannot discard a card, you must take a card from the "
 		  "stock pile.");
-      return;
+      return true; // Keep the game alive
    }
    
    // Move to the next player (pass the move)
    nextPlayer("passes");
+   
+   return true;
 }
 
 
@@ -574,7 +580,7 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
    // Check the player's info
    const player_type* player;
    if ((player = checkPlayerStatus(origin.IRCtoLower())) == 0) {
-      return;
+      return true; // Keep the game alive
    }
 
    // Make sure this player is the current player..
@@ -582,7 +588,7 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
       sendMessage(origin, 
 		  "It's not your turn, it's " + (*currentPlayer).first +
 		  "'s turn");
-      return;
+      return true; // Keep the game alive
    }
    
    // Make sure the stock isn't empty
@@ -590,7 +596,7 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
       sendMessage(origin,
 		  "The stock is empty, you can't pick up a card. If you "
 		  "cannot discard a card, you may pass");
-      return;
+      return true; // Keep the game alive
    }
    
    // Okay, it must be the current player.. Pick up a card for them
@@ -604,6 +610,8 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
    } else {
       nextPlayer("picks up a card");
    }
+   
+   return true;
 }
 
 
@@ -616,14 +624,14 @@ EXORDI8_FUNC(Exordi8::parsePLAY)
    if (playing) {
       sendMessage(origin,
 		  "You cannot join the game in the middle of play, sorry");
-      return;
+      return true; // Keep the game alive
    }
    
    // Make sure there aren't TOO MANY players!
    if (players.size() >= maxPlayers) {
       sendMessage(origin,
 		  "Sorry, there are too many players in this game!");
-      return;
+      return true; // Keep the game alive
    }
    
    // Convert the nickname over to be more usable
@@ -632,7 +640,7 @@ EXORDI8_FUNC(Exordi8::parsePLAY)
    // Check if the user is already playing the game
    if (isPlaying(nick)) {
       sendMessage(origin, "You are already registered to play the game!");
-      return;
+      return true; // Keep the game alive
    }
    
    // Add them..
@@ -648,6 +656,8 @@ EXORDI8_FUNC(Exordi8::parsePLAY)
 		  "Exordi8 - No more players can join the game. You must "
 		  "deal the cards now to begin the game.");
    }
+   
+   return true;
 }
 
 
@@ -660,17 +670,19 @@ EXORDI8_FUNC(Exordi8::parseSHOWHAND)
       sendMessage(origin, 
 		  players.front().first + " needs to deal before you have a "
 		  "hand to look at!");
-      return;
+      return true; // Keep the game alive
    }
    
    // Check the player's info
    const player_type* player;
    if ((player = checkPlayerStatus(origin.IRCtoLower())) == 0) {
-      return;
+      return true; // Keep the game alive
    }
    
    // OKAY... now show the player their cards
    showHand(*player);
+   
+   return true;
 }
 
 
@@ -684,7 +696,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
       sendMessage(origin,
 		  "The game has not begun yet - " + players.front().first +
 		  " must deal to begin the game.");
-      return;
+      return true; // Keep the game alive
    }
    
    // Grab the player's info
@@ -708,7 +720,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
 	 // If the line is too long, send what we have and clear it
 	 if (out.str().length() > 300) {
 	    sendMessage(origin, out.str());
-	    out.str() = "";
+	    out.str() = ""; // this will not work!
 	 }
       }
    }
@@ -716,7 +728,6 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
    // If there is anything left to send, send it
    if (!out.str().empty()) {
       sendMessage(origin, out.str());
-      out.str() = "";
    }
    
    // If this person is a player, show their current hand as well
@@ -725,21 +736,24 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
    }
    
    // Tell them a bit more information
-   out << "It's " << (*currentPlayer).first;
+   std::ostringstream out2;
+   out2 << "It's " << (*currentPlayer).first;
    if ((*currentPlayer).first[(*currentPlayer).first.length() - 1] == 's') {
-      out << "' turn. ";
+      out2 << "' turn. ";
    } else {
-      out << "'s turn. ";
+      out2 << "'s turn. ";
    }
    
    if (stock.empty()) {
-      out << "The stock is empty.";
+      out2 << "The stock is empty.";
    } else {
-      out << "There are " << stock.size() << " cards left in the stock.";
+      out2 << "There are " << stock.size() << " cards left in the stock.";
    }
 
    // Send the last bit of information..
-   sendMessage(origin, out.str());
+   sendMessage(origin, out2.str());
+   
+   return true;
 }
 
 
@@ -751,7 +765,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
    // Check the player's info
    const player_type* player;
    if ((player = checkPlayerStatus(origin.IRCtoLower())) == 0) {
-      return;
+      return true; // Keep the game alive
    }
 
    // Make sure this player is the current player..
@@ -759,7 +773,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
       sendMessage(origin, 
 		  "It's not your turn, it's " + (*currentPlayer).first +
 		  "'s turn");
-      return;
+      return true; // Keep the game alive
    }
    
    // Make sure an 8 has been dropped
@@ -767,7 +781,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
       sendMessage(origin,
 		  "You need to discard a card with a face-value of '8' before "
 		  "you can select a suit for the next player to play");
-      return;
+      return true; // Keep the game alive
    }
    
    // Okay, try to comprehend what suit they wanted
@@ -775,7 +789,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
       sendMessage(origin,
 		  "I don't know what suit you meant. It must be either "
 		  "Clubs, Spades, Hearts or Diamonds.");
-      return;
+      return true; // Keep the game alive
    }
    
    // Next player!!
@@ -785,4 +799,6 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
    sendMessage((*currentPlayer).first,
 	       Kine::String("You need to use a card of the suit ") +
 	       Cards::Card::nameSuit(nextSuit) + ", or take a card.");
+   
+   return true;
 }

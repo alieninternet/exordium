@@ -56,7 +56,14 @@ namespace Exordium
 	  if (channelGames.find(chan.IRCtoLower()) != channelGames.end()) {
 	     // Too lazy to work around the mess above
 	     StringTokens tokens(line.substr(1));
-	     channelGames[chan]->parseLine(origin, tokens);
+	     
+	     // If the parser returns false, it means we can leave the channel
+	     if (!channelGames[chan]->parseLine(origin, tokens)) {
+		// Leave the channel and delete this game..
+		services.servicePart(myName, chan);
+		delete channelGames[chan];
+		channelGames.erase(chan);
+	     }
 	  }
 	  
 	  return;
@@ -149,7 +156,7 @@ namespace Exordium
 	     return;
 	  }
 	  
-	  services.serviceJoin("game", channel);
+	  services.serviceJoin(myName, channel);
 	  services.serviceNotice("Hello " + channel + " (" + origin + " wanted to play " + game + ')', "Game", channel);
 	  
        }

@@ -33,7 +33,7 @@
 # include "cards/card.h"
 
 # define EXORDI8_FUNC(x) \
-     void x(const Kine::String& origin, Kine::StringTokens& line)
+     bool x(const Kine::String& origin, Kine::StringTokens& line)
 
 
 class Exordi8 : public ChannelGame {
