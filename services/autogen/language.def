@@ -183,6 +183,17 @@ langtag = {
 };
 
 langtag = {
+   name = "ERROR_NO_HELP_TOPIC";
+   data_en = "Unknown help topic '%p0', sorry buddy :(";
+};
+
+langtag = {
+   name = "ERROR_NO_HELP_BASE_DATA";
+   data_en = "Sorry, no help for this service. Try asking for help on an "
+             "individual command instead?";
+};
+
+langtag = {
    name = "COMMAND_LIST_START";
    data_en = "Command list for %p0 :";
    data_no = "Kommandoliste for %p0 :";

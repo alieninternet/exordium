@@ -34,6 +34,7 @@
 
 #include <exordium/channel.h>
 #include <kineircd/config.h>
+#include <kineircd/languages.h>
 #include <exordium/dchan.h>
 #include <exordium/database/base.h>
 #include <exordium/database/database.h>
@@ -608,9 +609,72 @@ CHAN_FUNC (Module::parseTOPIC)
 
 CHAN_FUNC (Module::parseHELP)
 {
-   String word = tokens.nextToken();
-   String parm = tokens.nextToken();
-   services->doHelp(origin,getNickname(),word,parm);
+//   String word = tokens.nextToken();
+//   String parm = tokens.nextToken();
+//   services->doHelp(origin,getNickname(),word,parm);
+
+   // YES, THIS CODE COULD BE GENERALISED VERY EASILY!!! :(
+
+   // Hmm, save the help topic first, we may need it..
+   String helpTopic = tokens.rest();
+
+   // Work out the language tag we're support to look for
+   std::ostringstream tagName;
+   tagName << "exordium_chan_HELP";
+   
+   while (!tokens.hasMoreTokens()) {
+      tagName << '_' << tokens.nextToken();
+   }
+
+   // this should be elsewhere.. this does the sending stuff..
+   struct Callout : public Kine::Languages::callFunction_type {
+      Exordium::User& origin;
+      const String& nick;
+      
+      bool operator()(const std::string& text)
+	{
+	   origin.sendMessage(text, nick);
+	   return true;
+	};
+      
+      Callout(Exordium::User& o, const String& n)
+	: origin(o), nick(n)
+	{};
+   };
+   
+   // Try to find this mysterious tag in kine's tag dictionary
+   Kine::Languages::tagID_type tagID;
+
+   // Yes, btw, the getTagID() routine is case-insensitive!
+   if ((tagID = Kine::langs().getTagID(tagName.str())) != 
+       Kine::Languages::unknownTagID) {
+      // Okay, kine knows the tag! Output the help appropriately..
+	 
+      // this also should be elsewhere. or better yet, 'done smarter' :)
+      Callout callout(origin, getNickname());
+      
+      // Wee, send the help data..
+      Kine::langs().get(origin.getLanguage(), tagID, callout);
+      
+      // Bye bye.. all done..
+      return;
+   }
+   
+   /* Oh, no help data.. time to get upset and pout, just like james does when
+    * he's coding..
+    * 
+    * What's happening here? Well, if the topic is empty (i.e. the user did not
+    * specify a topic) then we could not find the base help data. That's bad,
+    * and is a pretty dumb thing to let happen :) But, it's quite possible..
+    */
+   if (helpTopic.empty()) {
+      origin.sendMessage(GETLANG(ERROR_NO_HELP_BASE_DATA),
+			 getNickname());
+   } else {
+      origin.sendMessage(GETLANG(ERROR_NO_HELP_TOPIC,
+				 helpTopic),
+			 getNickname());
+   }
 }
 
 CHAN_FUNC (Module::parseBAN)
