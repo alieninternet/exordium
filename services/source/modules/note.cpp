@@ -224,7 +224,7 @@ Note::parseLine (String const &line, String const &requestor)
 }
 
 
-extern "C" Module *service_init(void) {
+EXORDIUM_SERVICE_INIT_FUNCTION {
    return new Module("note", new Note());
 }
 

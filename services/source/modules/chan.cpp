@@ -676,7 +676,7 @@ CHAN_FUNC (Chan::parseACCESS)
 	Services::log(origin,"Chan","Did a channel access",channel);
 }
 
-extern "C" Module *service_init(void) {
+EXORDIUM_SERVICE_INIT_FUNCTION {
    return new Module("chan", new Chan());
 }
 

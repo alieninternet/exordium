@@ -456,7 +456,7 @@ if(send=="")
 	}
 }
 
-extern "C" Module *service_init(void) {
+EXORDIUM_SERVICE_INIT_FUNCTION {
    return new Module("serv", new Serv());
 }
 

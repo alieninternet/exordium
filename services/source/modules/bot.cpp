@@ -83,7 +83,7 @@ BOT_FUNC (Bot::parseHELP)
 	Services::doHelp(origin,"bot",word,parm);
 }
 
-extern "C" Module *service_init(void) {
+EXORDIUM_SERVICE_INIT_FUNCTION {
    return new Module("bot", new Bot());
 }
 

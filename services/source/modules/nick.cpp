@@ -519,7 +519,7 @@ return;
 
 
 
-extern "C" Module *service_init(void) {
+EXORDIUM_SERVICE_INIT_FUNCTION {
    return new Module("nick", new Nick());
 }
 

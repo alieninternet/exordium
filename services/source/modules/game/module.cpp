@@ -125,8 +125,8 @@ GAME_FUNC (Game::parseQUOTE)
 	}
 
 }
-extern "C" Module *service_init(String const &name) 
-{
+
+EXORDIUM_SERVICE_INIT_FUNCTION {
    cout << "I am called " << name << endl;
    Game::me = name;
    Services::registerService(Game::me,Game::me,"ircdome.org", "+dz", "Network Games!");
