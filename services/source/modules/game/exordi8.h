@@ -107,9 +107,13 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Game& game, const Kine::String& channel, 
+   Exordi8(Game& game, const Kine::String& channel,
 	   const Kine::String& caller);
-
+   
+   // Handy creation function
+   static CHANNEL_GAME_CREATOR_FUNC(createGame)
+     { return new Exordi8(game, channel, caller); }
+   
    // Parse a line..
    bool parseLine(const Kine::String& origin,
 		  Kine::StringTokens& tokens);

@@ -29,6 +29,10 @@ class ChannelGame;
 
 # include "game.h"
 
+# define CHANNEL_GAME_CREATOR_FUNC(x) \
+     ChannelGame* x(Game& game, const Kine::String& channel, \
+		    const Kine::String& caller)
+
 class ChannelGame {
  protected:
    // The game service (so we can send messages)
@@ -38,6 +42,15 @@ class ChannelGame {
    const Kine::String channel;
    
  public:
+   // Our convenient type-definition of a creator function
+   typedef CHANNEL_GAME_CREATOR_FUNC(creator_type);
+   
+   // Our channel game table structure
+   struct channelGameTable_type {
+      const char* const game;			// The channel game name
+      const creator_type* const creator;	// The creator function
+   } static const channelGameTable[];
+
    // Constructor
    ChannelGame(Game& g, const Kine::String& c)
      : game(g), 

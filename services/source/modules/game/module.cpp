@@ -195,17 +195,33 @@ GAME_FUNC(Game::handleQUOTE)
 GAME_FUNC(Game::handleSTART)
 {
    String channel = tokens.nextToken().IRCtoLower();
-   String game = tokens.nextToken().toUpper();
+   String game = tokens.nextToken().toLower();
    
-   // Check for exordi8
-   if (game == "EXORDI8") {
-      channelGames[channel] = new Exordi8(*this, channel, origin);
-   } else {
-      // give them an error???!!
-      return;
+   // Check for the game
+   for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
+      // Does this match?
+      if (game == ChannelGame::channelGameTable[i].game) {
+	 // Create a new game..
+	 channelGames[channel] =
+	   ChannelGame::channelGameTable[i].creator(*this, channel, origin);
+	 
+	 // Join the channel and say hello
+	 services.serviceJoin(myName, channel);
+	 services.serverMode(channel, "+o", myName);
+	 services.serviceNotice("Hello " + channel + " (" + origin +
+				" wanted to play " + game + ')',
+				"Game", channel);
+	 
+	 // Leave the loop
+	 return;
+      }
    }
-   
-   services.serviceJoin(myName, channel);
-   services.serverMode(channel, "+o", myName);
-   services.serviceNotice("Hello " + channel + " (" + origin + " wanted to play " + game + ')', "Game", channel);
+//   if (game == "EXORDI8") {
+//      channelGames[channel] = new Exordi8(*this, channel, origin);
+//   } else {
+//      // give them an error???!!
+//      return;
+//   }
+
+   // give them an error???!!
 }
