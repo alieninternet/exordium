@@ -72,7 +72,13 @@ namespace Exordium {
       
       void handleAway(User&, const AISutil::String &);
       void handleClientSignon(User&);
-      void handleTopic(const AISutil::String &, dChan&, const AISutil::String &);
+      void handleTopic(const AISutil::String &origin, dChan& channel, const AISutil::String& newTopic);
+      void handleChannelJoin(User& origin, dChan& channel, const int& status);
+      void handleChannelPart(User& origin, dChan& channel);
+      void handleChannelMode(dChan& channel, const AISutil::String& modes, const AISutil::String& target,
+                             const AISutil::String& source);
+
+
 
       // Add a module to the list
       Service* const loadModule(const AISutil::String& fileName, 

@@ -163,118 +163,9 @@ void
    if(dest[0]=='#')
      {
 	String modes = tokens.nextColonToken();
-	int length = modes.length();
 	dChan *dptr = services.findChan(dest);
-	for (i = 0; i!=length; i++)
-	  {
-	     if (modes[i] == '+')
-	       {
-		  add = true;
-		  take = false;
-                  continue;
-	       }
-	     if (modes[i] == '-')
-	       {
-		  add = false;
-		  take = true;
-                  continue;
-	       }
 
-/*
-             if(add)
-             {
-                pos = currentmodes.find(modes[i]);
-
-                // If mode is not already set
-                if(pos == -1)
-                  currentmodes.push_back(modes[i]);
-             }
-             else
-              if(take)
-               {
-                 pos = currentmodes.find(modes[i]);
-
-                 // If mode is already set
-                 if(pos != -1)
-                   currentmodes.erase(pos, 1);
-               }
-*/
-
-	     if(modes[i]=='b')
-	       {
-		  if(add)
-		    {
-		       String target = tokens.nextToken();
-		       std::cout << "New Channel ban set by : " << OLDorigin << " on " << target << std::endl;
-		       if(dptr==0)
-			 continue;
-		       
-		    }
-		  if(take)
-		    {
-		       String target = tokens.nextToken();
-		       std::cout << "New Channel ban removed by : " << OLDorigin << " on " << target << std::endl;
-		    }
-	       }
-	     if(modes[i] == 'o')
-	       {
-		  if(add)
-		    {
-		       String target = tokens.nextToken();
-		       if(target.toLower()=="chan")
-			 return;
-		       std::cout << "Checking to see if " << target << " has access in " << dest << std::endl;
-		       User *ptr = services.findUser(target);
-		       if(dptr->isChanSecure())
-			 {
-			    std::cout << "  ^- Secire is enabled" << std::endl;
-			    /* Channel has SECURE enabled */
-			    int axs = dptr->getAccess(target);
-			    std::cout << "  ^- " << target << " has level " << axs << std::endl;
-			    if(axs<100)
-			      {
-				 std::cout << " ^- Deop the bitch" << std::endl;
-				 /* Hey not allowed to be opped!! */
-				 dptr->mode("Chan","-o",target);
-				 /* Tell origin off! */
-			
-			      }
-			 }
-
-		       dptr->addUser(*ptr,2);
-		    }
-		  if(take)
-		    {
-		       String target = tokens.nextToken();
-		       if(target.toLower()=="chan")
-			 return;
-		       User *ptr = services.findUser(target);
-		       dptr->addUser(*ptr,0);
-		    }
-	       }
-	     if(modes[i] == 'v')
-	       {
-		  if(add)
-		    {
-		       String target = tokens.nextToken();
-		       if(target.toLower()=="chan")
-			 return;
-		       User *ptr = services.findUser(target);
-		       dptr->addUser(*ptr,1);
-		    }
-		  if(take)
-		    {
-		       String target = tokens.nextToken();
-		       if(target.toLower()=="chan")
-			 return;
-		       User *ptr = services.findUser(target);
-		       dptr->addUser(*ptr,0);
-		    }
-	       }
-	  }
-
-        // Update modes in table chans
-        //services.getDatabase().dbUpdate("chans", "modes='"+currentmodes+"'", "id="+channel.getChanIDString(dest));
+        services.getConfigInternal().getModules().handleChannelMode( *dptr, modes, tokens.nextToken(), OLDorigin );
 
 	return;
      }
@@ -356,6 +247,9 @@ void
    String channel = tokens.nextToken();
    dChan *ptr = services.findChan(channel);
    User  *uptr = services.findUser(OLDorigin);
+
+   services.getConfigInternal().getModules().handleChannelPart( *uptr, *ptr );
+
    ptr->delUser(*uptr);
    if(ptr->getCount()==0)
      {
@@ -606,6 +500,7 @@ void
    std::cout << "parseSJOIN() - " << ts1 << " : " << chan << " : " << modes <<std::endl;
    std::cout << "parseSJOIN() - " << OLDorigin << std::endl;
    User *musr = services.findUser(OLDorigin);
+
    if(musr==0)
      {
 	// Do nothing
@@ -614,17 +509,9 @@ void
    else
      {
 
-	if(musr->isIdentified(musr->getNickname()))
-	  {
-	     if(dptr->getAccess(OLDorigin)>99)
-	       {
-		  dptr->mode("Chan","+o",OLDorigin);
-		  dptr->addUser(*musr,2);
-		  dptr->log(*musr,"Chan","Autoopped on join",chan);
-		  return; // break
-	       }
-
-	  }
+        if(!more)
+           services.getConfigInternal().getModules().handleChannelJoin( *musr, *dptr, 0 );
+        
      }
 
    while(more)
@@ -709,20 +596,10 @@ void
 	  {
                 /* Safety Check......... */
 	     dptr->addUser(*ptr,status);
-	        /* Now lets see if they want opping.... */
-	     if(dptr->getAccess(ptr->getNickname())>99)
-	       {
-		  /* But only if they are identified.. nearly forgot this one  */
-		  if(ptr->isIdentified(ptr->getNickname()))
-		    {
+          }
 
-		       dptr->mode("Chan","+o",ptr->getNickname());
-		       dptr->addUser(*ptr,2);
-		    }
+          services.getConfigInternal().getModules().handleChannelJoin( *ptr, *dptr, status );
 
-	       }
-
-	  }
      }
 
    more = tokens.hasMoreTokens();

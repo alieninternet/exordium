@@ -250,7 +250,7 @@ services.serviceKick(name,user.getNickname(),reason);
 
 bool const dChan::getTrackTopics()
 {
-   if( services.getDatabase().dbSelect("tracktopics", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+   if( services.getDatabase().dbSelect("tracktopics", "chanopts", "name='"+name.toLower()+"'") > 0 )
    {
       if( services.getDatabase().dbGetValue().toInt() == 1 )
          return true;
@@ -264,14 +264,14 @@ bool const dChan::getTrackTopics()
 
 void const dChan::setTrackTopics( bool Value )
 {
-   services.getDatabase().dbUpdate("chans","tracktopics='"+String::convert(Value)
-                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+   services.getDatabase().dbUpdate("chanopts","tracktopics='"+String::convert(Value)
+                                   +"'", "name='"+name.toLower()+"'");
 }
 
 
 bool const dChan::getEnforceBans()
 {
-   if( services.getDatabase().dbSelect("enforcebans", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+   if( services.getDatabase().dbSelect("enforcebans", "chanopts", "name='"+name.toLower()+"'") > 0 )
    {
       if( services.getDatabase().dbGetValue().toInt() == 1 )
          return true;
@@ -285,6 +285,79 @@ bool const dChan::getEnforceBans()
 
 void const dChan::setEnforceBans( bool Value )
 {
-   services.getDatabase().dbUpdate("chans","enforcebans='"+String::convert(Value)
+   services.getDatabase().dbUpdate("chanopts","enforcebans='"+String::convert(Value)
+                                   +"'", "name='"+name.toLower()+"'");
+}
+
+
+
+bool const dChan::getModeLock()
+{
+   if( services.getDatabase().dbSelect("modelock", "chanopts", "name='"+name.toLower()+"'") > 0 )
+   {
+      if( services.getDatabase().dbGetValue().toInt() == 1 )
+         return true;
+      else
+         return false;
+   }
+   else
+      return false;
+}
+
+
+
+void const dChan::setModeLock( bool Value )
+{
+   services.getDatabase().dbUpdate("chanopts","modelock='"+String::convert(Value)
+                                   +"'", "name='"+name.toLower()+"'");
+}
+
+
+String const dChan::getChannelModes()
+{
+   if( services.getDatabase().dbSelect("modes", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}
+
+
+void const dChan::setChannelModes( const String &modes )
+{
+      services.getDatabase().dbUpdate("chans","modes='"+modes
                                    +"'", "id='"+String::convert(getRegisteredID())+"'");
 }
+
+
+
+String const dChan::getEntryMsg()
+{
+   if( services.getDatabase().dbSelect("entrymsg", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}
+
+
+void const dChan::setEntryMsg( const String &entrymsg )
+{
+      services.getDatabase().dbUpdate("chans","entrymsg='"+entrymsg
+                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+}
+
+
+String const dChan::getPartMsg()
+{
+   if( services.getDatabase().dbSelect("partmsg", "chans", "id='"+String::convert(getRegisteredID())+"'") > 0 )
+      return services.getDatabase().dbGetValue();
+   else
+      return "";
+}
+
+
+void const dChan::setPartMsg( const String &partmsg )
+{
+      services.getDatabase().dbUpdate("chans","partmsg='"+partmsg
+                                   +"'", "id='"+String::convert(getRegisteredID())+"'");
+}
+

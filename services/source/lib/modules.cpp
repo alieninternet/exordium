@@ -302,6 +302,67 @@ void Modules::handleTopic(const AISutil::String &origin, dChan& channel, const A
 }
 
 
+void Modules::handleChannelJoin(User& origin, dChan &channel, const int& status)
+{
+
+   for (modules_type::const_iterator it = modules.begin();
+        it != modules.end(); it++) {
+      String tmp =  (*it).first;
+      if((*it).second->service->getModuleInfo().eventsMask &
+         Exordium::Service::moduleInfo_type::Events::CHANNEL_JOIN) {
+         /* Ok this module wants to know about channel joins */
+#ifdef DEBUG
+         std::cout << tmp << " would like to know when someone joins a channel" << std::endl;
+#endif
+         (*it).second->service->handleChannelJoin(origin,channel,status);
+      }
+
+   }
+
+}
+
+
+
+void Modules::handleChannelPart(User& origin, dChan &channel) {
+
+   for (modules_type::const_iterator it = modules.begin();
+        it != modules.end(); it++) {
+      String tmp =  (*it).first;
+      if((*it).second->service->getModuleInfo().eventsMask &
+         Exordium::Service::moduleInfo_type::Events::CHANNEL_PART) {
+         /* Ok this module wants to know about channel parts */
+#ifdef DEBUG
+         std::cout << tmp << " would like to know when someone leaves a channel" << std::endl;
+#endif
+         (*it).second->service->handleChannelPart(origin,channel);
+      }
+
+   }
+
+}
+
+
+
+void Modules::handleChannelMode(dChan &channel, const AISutil::String &modes, const AISutil::String &target,
+                                const AISutil::String& source) {
+
+   for (modules_type::const_iterator it = modules.begin();
+        it != modules.end(); it++) {
+      String tmp =  (*it).first;
+      if((*it).second->service->getModuleInfo().eventsMask &
+         Exordium::Service::moduleInfo_type::Events::CHANNEL_MODE) {
+         /* Ok this module wants to know about channel modes */
+#ifdef DEBUG
+         std::cout << tmp << " would like to know when a mode command is received for a channel" << std::endl;
+#endif
+         (*it).second->service->handleChannelMode(channel,modes,target,source);
+      }
+
+   }
+
+}
+
+
 
 
 /* dumpModules - Dump a list of modules
