@@ -420,9 +420,9 @@ void
 			   config.getConsoleHostname(),
 			   config.getConsoleDescription());
 	   // I smell a configuration variable.. *sniff sniff* can you?
-	   serviceJoin(config.getConsoleName(), "#Debug");
-	   mode("PeopleChat","#Debug","+o","PeopleChat");
-	   setMode("PeopleChat","+oz");
+	   serviceJoin(config.getConsoleName(), "#Exordium");
+	   mode(config.getConsoleName(),"#Exordium","+o",config.getConsoleName());
+	   setMode(config.getConsoleName(),"+oz");
 	   
 
 	}
@@ -451,21 +451,14 @@ void
 	
 	// I do not like this.. oh well..  - pickle
 	if (config.getConsoleEnabled()) {
-	   queueAdd(":PeopleChat QUIT :"+reason);
+	   queueAdd(config.getConsoleName()+" QUIT :"+reason);
 	}
 
 	// Nasty hack for now.
 	String tofo = "\002Services shutting down\002 : " + reason;
-	queueAdd(":PeopleChat QUIT :"+tofo);
-	queueAdd(":Chan QUIT :"+tofo);
-	queueAdd(":Nick QUIT :"+tofo);
-	queueAdd(":Oper QUIT :"+tofo);
-	queueAdd(":Game QUIT :"+tofo);
-		
-//	queueAdd(":" + Kine::config().getOptionsServerName() +
-//		 " SQUIT " + Kine::config().getOptionsServerName() + " :" +
-//		 reason);
-	queueAdd(":services.peoplechat.org SQUIT :dev-1.plethoric.net : "+tofo);
+	queueAdd(":" + Kine::config().getOptionsServerName() +
+		 " SQUIT " + Kine::config().getOptionsServerName() + " :" +
+		 reason);
 
 	stopping = true;
 	stopTime = currentTime + 5;
@@ -495,7 +488,7 @@ void
 	//Undo any expired channel bans
 	String ctime = String::convert(currentTime);
 	sendGOper("Oper","Performing net-wide time synch to "+ctime);
-	queueAdd(":services.peoplechat.org SETTIME "+ctime+" *");
+	queueAdd(Kine::config().getOptionsServerName() + " SETTIME "+ctime+" *");
         int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
         for(int i=0; i<nbRes; i++)
 	  {
@@ -631,7 +624,7 @@ ServicesInternal::sendHelpme(String const &from, String const &text)
 void
 ServicesInternal::setMode(String const &who, String const &mode)
 {
-queueAdd(":services.peoplechat.org MODE "+who+" "+mode);
+queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
 
 }
 /* parseHelp(In)
