@@ -47,18 +47,21 @@ class Love : public Exordium::Service {
    const String myName;
    
    // Our wonderful command handlers
+   handler_type handleCOMMANDS;
    handler_type handleTEST;
 
    // How to send private-messages (stepping-stone)
    void sendMessage(const String& recipient, const String& message)
      {
 	// This name should not be hard-coded - icky
+	// 
 	// It isn't anymore! (ner :( ) - init_func can now take another
 	// parm, being a String containing your name. (as defined by
 	// loadModule)
+	// 
+	// Oh wonderful James :) I suppose this comment is now redundant? :(
 	services.serviceNotice(message, myName, recipient);
      };
-
    
  public:
    // Our constructor

@@ -45,7 +45,11 @@ EXORDIUM_SERVICE_INIT_FUNCTION {
  * command will be converted to lower-case..
  */
 const Love::commandTable_type Love::commandTable[] = {
-     { 
+     {
+	"commands",	0,	0,	&Love::handleCOMMANDS,
+	  0
+     },
+     {
 	"test",		0,	0,	&Love::handleTEST,
 	  0 
      },
@@ -114,6 +118,44 @@ void Love::parseLine(const String& line, const String& origin)
    
    // Bitch and moan.. bitch and moan..
    sendMessage(origin, "Unrecognised Command");
+}
+
+
+/* handleCOMMANDS - Throw a quick 'n' dirty list of available commands out
+ * Original 20/08/2002 simonb
+ * Notes: Probably better to move this to the base class, along with myName
+ *        and services..
+ */
+LOVE_FUNC(Love::handleCOMMANDS)
+{
+   // Work out the line length, we subtract 20 to be safe :)
+   String::size_type lineLength = 
+     services.getDaemon().getConfig().getOptionsLimitsMaxMessageLength() - 20;
+
+   // Send the banner (this shouldn't be hard-coded)
+   sendMessage(origin, "Command list for " + myName + ":");
+
+   // Start formulating the data..
+   std::ostringstream list(" -=>");
+   for (int i = 0; commandTable[i].command != 0; i++) {
+      // Add the command to the list
+      list << " " << commandTable[i].command;
+      
+      // How are we for size?
+      if (list.str().length() >= lineLength) {
+	 // Dump it and reset the string stream thingy
+	 sendMessage(origin, list.str());
+	 list.str() = " -=>";
+      }
+   }
+   
+   // Anything left to send still?
+   if (list.str().length() > 4) {
+      sendMessage(origin, list.str());
+   }
+      
+   // Send the footer (this shouldn't be hard-coded)
+   sendMessage(origin, "End of command list");
 }
 
 
