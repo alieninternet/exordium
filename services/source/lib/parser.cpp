@@ -1,20 +1,20 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
  *
  * This file is a part of Exordium.
- * 
+ *
  * Exordium is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Exordium is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -25,14 +25,14 @@
  */
 /*
  *                   THIS  FILE  IS  TEMPORARY !!
- * 
- *   The ultimate goal of linking with KineIRCd is to eliminate the 
+ *
+ *   The ultimate goal of linking with KineIRCd is to eliminate the
  *   focus on protocols. In fact, not even KineIRCd alone will know
  *   how to talk to other IRC servers - that is handled by protocol
  *   modules. Anything within this file should be considered a 'hack'
  *   until such time as KineIRCd has a suitable core and protocol
  *   module to carry on the work done here.
- *    
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -84,21 +84,21 @@ void Parser::parseLine(const String& line)
 	origin = origin.IRCtoLower();
      }
    //Find the associated user for this origin...
-//   User *ptr = services.findUser(origin);
+   //   User *ptr = services.findUser(origin);
    String command = st.nextToken ();
-//   if (ptr != 0) {
-      for (int i = 0; functionTable[i].command != 0; i++)
-	{
-	   // Does this match?
-	   if (command == functionTable[i].command)
-	     {
+   //   if (ptr != 0) {
+   for (int i = 0; functionTable[i].command != 0; i++)
+     {
+	// Does this match?
+	if (command == functionTable[i].command)
+	  {
 	     // Run the command and leave *dodgey*
-		(this->*(functionTable[i].function))(origin, st);
-		return;
-	     }
-	}
-  // }
-
+	     (this->*(functionTable[i].function))(origin, st);
+	     return;
+	  }
+     }
+   // }
+   //
    services.logLine("Unparsed Input!: " + line,
 		    Log::Debug);
 };
@@ -120,13 +120,14 @@ void
    String serverName = tokens.nextToken ();
    String hops = tokens.nextToken ();
    String description = tokens.rest();
-   if (!services.isAuthorised (serverName)) {
-      services.queueAdd(":" + Kine::config().getOptionsServerName() + 
-			" SQUIT " + serverName + 
-			" :Unauthorised Links are not permitted on PeopleChat "
-			"- The network administration has been notified");
-      return;
-   }
+   if (!services.isAuthorised (serverName))
+     {
+	services.queueAdd(":" + Kine::config().getOptionsServerName() +
+			  " SQUIT " + serverName +
+			  " :Unauthorised Links are not permitted on PeopleChat "
+			  "- The network administration has been notified");
+	return;
+     }
    services.AddOnlineServer (serverName, hops, description);
 }
 
@@ -206,8 +207,8 @@ void
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
-			User *ptr = services.findUser(target);
-			dptr->addUser(*ptr,0);
+		       User *ptr = services.findUser(target);
+		       dptr->addUser(*ptr,0);
 		    }
 	       }
 	     if(modes[i] == 'v')
@@ -230,7 +231,7 @@ void
 		    }
 	       }
 	  }
-       
+
         // Update modes in table chans
         //services.getDatabase().dbUpdate("chans", "modes='"+currentmodes+"'", "id="+channel.getChanIDString(dest));
 
@@ -261,41 +262,37 @@ void
 	  }
 
         if(add)
-        {
-           pos = currentmodes.find(modes[i]);
+	  {
+	     pos = currentmodes.find(modes[i]);
 
-           // If mode is not already set
-           if(pos == -1)
-             currentmodes.push_back(modes[i]);
-        }
+	     // If mode is not already set
+	     if(pos == -1)
+	       currentmodes.push_back(modes[i]);
+	  }
         else
-         if(take)
-         {            
-            pos = currentmodes.find(modes[i]);
+	  if(take)
+	    {
+	       pos = currentmodes.find(modes[i]);
 
-            // If mode is already set
-            if(pos != -1)
-             currentmodes.erase(pos, 1);
-         }       
-
-
-        
+	       // If mode is already set
+	       if(pos != -1)
+		 currentmodes.erase(pos, 1);
+	    }
 
 	if(modes[i]=='o')
 	  {
 	     if(add)
 	       {
-                   services.validateOper(OLDorigin);
+		  services.validateOper(OLDorigin);
 	       }
-               else if(take)
+	     else if(take)
                {
-                   if(services.isOper(OLDorigin))
-                     services.delOper(OLDorigin);
+		  if(services.isOper(OLDorigin))
+		    services.delOper(OLDorigin);
                }
 
 	  }
      }
-
 
    // Update modes in table onlineusers
    services.getDatabase().dbUpdate("onlineclients", "modes='"+currentmodes+"'", "id="+origin->getOnlineIDString());
@@ -320,19 +317,19 @@ void
    User  *uptr = services.findUser(OLDorigin);
    ptr->delUser(*uptr);
    if(ptr->getCount()==0)
-   {
+     {
         services.logLine(channel + " has 0 members.  Deleting");
 	services.delChan(channel);
-   }
+     }
 }
 
 void PARSER_FUNC (Parser::parseN)
 {
-   
+
    if(tokens.countTokens() < 9)
      {
 /* Client Nickname Change */
-	String tempString = OLDorigin.trim().IRCtoLower();	
+	String tempString = OLDorigin.trim().IRCtoLower();
         User *origin = services.findUser(tempString);
 	if(origin==0)
 	  {
@@ -340,9 +337,9 @@ void PARSER_FUNC (Parser::parseN)
 	     services.logLine("Parser::parseN This is a bad error, should be able to find any user on a parm<11 count");
 	     return;
 	  }
-	
+
         String newnick=tokens.nextToken().trim();
-        services.setNick(*origin, newnick); 
+        services.setNick(*origin, newnick);
         services.getDatabase().dbDelete("kills", "nick='"+OLDorigin+"'");
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
@@ -357,7 +354,7 @@ void PARSER_FUNC (Parser::parseN)
 			*/
 		       if(origin->modNick())
 			 {
-		       	   origin->addCheckIdentify();
+			    origin->addCheckIdentify();
 			 }
 		    }
 	       }
@@ -377,26 +374,26 @@ void PARSER_FUNC (Parser::parseN)
    String realname = tokens.nextColonToken();
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
 				      vwhost, server, modes, realname);
-   if (newNick == 0) {
-      services.logLine("Parser::ParseN couldn't create a new user record for ");
-      services.logLine("Parser::ParseN "+nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+vwhost+" "+server+" "+modes+" "+realname);
-      return;
-   }
+   if (newNick == 0)
+     {
+	services.logLine("Parser::ParseN couldn't create a new user record for ");
+	services.logLine("Parser::ParseN "+nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+vwhost+" "+server+" "+modes+" "+realname);
+	return;
+     }
 
    services.getConfigInternal().getModules().handleClientSignon(*newNick);
 /*   if (modes.find("o"))
      services.validateOper(nick);
 */
 
-   
    int num = newNick->countHost();
- 
-   int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
-   for (int i=0; i<nbRes; i++)
-   {
-      newNick->sendMessage("\002[\002PeopleChat Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
-      services.getDatabase().dbGetRow();
-   }
+
+   //int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
+   //for (int i=0; i<nbRes; i++)
+   //{
+   //   newNick->sendMessage("\002[\002PeopleChat Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
+   //   services.getDatabase().dbGetRow();
+   //}
 
    if(num>2)
      {
@@ -412,17 +409,18 @@ void
    User *origin = services.findUser(OLDorigin);
 
    // preserve sanity
-   if (origin == 0) {
+   if (origin == 0)
+     {
 #ifdef DEBUG
-      std::cout << "privmsg from non-user or something: " << OLDorigin << 
-	std::endl;
+	std::cout << "privmsg from non-user or something: " << OLDorigin <<
+	  std::endl;
 #endif
-      return;
-   }
-   
+	return;
+     }
+
    String OLDoriginl = OLDorigin.IRCtoLower();
    String target = tokens.nextToken ();
-   
+
    // fix me. urgh.
    String message(tokens.nextColonToken());
 
@@ -434,7 +432,7 @@ void
 	// Check what kind of CTCP this is
 	if (CTCPcommand == "PING")
 	  {
-	     services.queueAdd(":" + target + " NOTICE " + OLDorigin + 
+	     services.queueAdd(":" + target + " NOTICE " + OLDorigin +
 			       " :\001PING " + CTCPtokens.rest() + "\001");
 	     return;
 	  }
@@ -447,7 +445,7 @@ void
 	  }
 	return;
      }
-   if ((target.IRCtoLower ()) == 
+   if ((target.IRCtoLower ()) ==
        services.getConfigInternal().getConsoleName().IRCtoLower())
      {
 	services.getConsole().parseLine(message,OLDoriginl);
@@ -465,16 +463,16 @@ void
 	     services.serviceNotice(String(togo),target,OLDoriginl);
 	     return;
 	  }
-	
+
 	// dodgey? YES.. YES IT IS.. :(
-//	services.getConfigInternal().getModules().throwLine("chan",message,OLDoriginl,target);
-//	services.getConfigInternal().getModules().throwLine("game",message,OLDoriginl,target);
+	//	services.getConfigInternal().getModules().throwLine("chan",message,OLDoriginl,target);
+	//	services.getConfigInternal().getModules().throwLine("game",message,OLDoriginl,target);
 	StringTokens dodgeydodgeydodgey(message);
 	services.getConfigInternal().getModules().throwLine("chan", dodgeydodgeydodgey, *origin,
-				    target);
+							    target);
 	StringTokens dodgeydodgeydodgeyAGAIN(message);
 	services.getConfigInternal().getModules().throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
-				    target);
+							    target);
 	return;
      }
    if(target.toLower()=="chan@services.peoplechat.org")
@@ -489,9 +487,7 @@ void
 	services.getConfigInternal().getModules().throwLine("chan",too,*origin,true);
 	return;
      }
-   
-	
-	
+
    //Hard check for nick if its @ircdome.org ......
    if(target.toLower()=="nick@services.peoplechat.org")
      {
@@ -536,7 +532,7 @@ void
   PARSER_FUNC (Parser::parseSQUIT)
 {
    String server = tokens.nextToken();
- 
+
    services.getDatabase().dbDelete("nicksidentified", "identified.nick=onlineclients.id AND onlineclients.server='"+server+"'");
    services.getDatabase().dbDelete("onlineclients", "server='"+server+"'");
 
@@ -552,17 +548,16 @@ void
    if(services.isOper(OLDorigin))
      services.delOper(OLDorigin);
 
-   services.delUser(OLDorigin); 
- 
-   
+   services.delUser(OLDorigin);
+
    services.getDatabase().dbDelete("nicksidentified", "nick='"+String::convert(oid)+"'");
 
    //Store the quit reason here...
    // but only if its registered!
    if(services.isNickRegistered(OLDorigin))
-   {
-     services.getDatabase().dbUpdate("nicks", "quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
-   }
+     {
+	services.getDatabase().dbUpdate("nicks", "quitmsg='"+reason+"'", "nickname='"+OLDorigin+"'");
+     }
 }
 
 void
@@ -579,17 +574,41 @@ void
    bool more;
    more = tokens.hasMoreTokens();
 
- if(!services.getChannel().ifChanExists(chan.toLower()))
+   if(!services.getChannel().ifChanExists(chan.toLower()))
      {
         services.getDatabase().dbInsert("onlinechan", "'','"+chan+"'");
      }
-     dChan *dptr = services.findChan(chan);
-     if(dptr==0)
-	{
+   dChan *dptr = services.findChan(chan);
+   if(dptr==0)
+     {
 	/* We have no record for this channel, make it. */
 	std::cout << "Channel record being made for " << chan << std::endl;
 	dptr = services.addChan(chan.IRCtoLower(),services.getOnlineChanID(chan));
-	}
+     }
+
+   std::cout << "parseSJOIN() - " << ts1 << " : " << chan << " : " << modes <<std::endl;
+   std::cout << "parseSJOIN() - " << OLDorigin << std::endl;
+   User *musr = services.findUser(OLDorigin);
+   if(musr==0)
+     {
+	// Do nothing
+	//
+     }
+   else
+     {
+
+	if(musr->isIdentified(musr->getNickname()))
+	  {
+	     if(dptr->getAccess(OLDorigin)>99)
+	       {
+		  dptr->mode("Chan","+o",OLDorigin);
+		  dptr->addUser(*musr,2);
+		  dptr->log(*musr,"Chan","Autoopped on join",chan);
+		  return; // break
+	       }
+
+	  }
+     }
 
    while(more)
      {
@@ -598,116 +617,129 @@ void
 	String foo = luser.nextColonToken();
 	String username = foo.trim();
 	status = 0;
-
+	std::cout << "parseSjoin() " << user << " : " << foo << std::endl;
         // First check if both @ and + are there
         if ((username[1]=='@') || (username[1]=='+'))
-           username=username.substr(2, username.length()-2);
+	  username=username.substr(2, username.length()-2);
         else
-         {
-            // Strip leading @ or + if there is one
-            if ((username[0]=='@') || (username[0]=='+'))
-              username=username.substr(1, username.length()-1);
-         }
-
-
+	  {
+	     // Strip leading @ or + if there is one
+	     if ((username[0]=='@') || (username[0]=='+'))
+	       username=username.substr(1, username.length()-1);
+	  }
 
         /******* NOTE
          Bug fixed: leading @ or + was causing user not found errors.
-         Solution: foo is only used to toggle the booleans, username 
+         Solution: foo is only used to toggle the booleans, username
                    contains the nick without leading @ or +.
                    Thus when we need to pass the nick we use username.
          -- PLV
         *******/
 
-
         User *ptr = services.findUser(username);
 	if(ptr==0)
-	{
-		std::cout << "User doesn't exist (" << username << ") aborting" << std::endl;
-		return;
-	}
+	  {
+	     std::cout << "User doesn't exist (" << username << ") aborting" << std::endl;
+	     return;
+	  }
+	std::cout << "Ok! found the user" << std::endl;
         if(foo[0]=='@' && foo[1]=='+')
-	  {
-	    op = true;
-	    voice = true;
-	    normal = false;
-	  }
-	if(foo[0]=='@' && foo[1]!='+')
-	  {
-	     op = true;
-	     voice = false;
-	     normal = false;
-	  }
-	if(foo[0]=='+' && foo[1]=='@')
 	  {
 	     op = true;
 	     voice = true;
 	     normal = false;
 	  }
-	if(foo[0]=='+' && foo[1]!='@')
+	else if(foo[0]=='@' && foo[1]!='+')
+	  {
+	     op = true;
+	     voice = false;
+	     normal = false;
+	  }
+	else if(foo[0]=='+' && foo[1]=='@')
+	  {
+	     op = true;
+	     voice = true;
+	     normal = false;
+	  }
+	else if(foo[0]=='+' && foo[1]!='@')
 	  {
 	     op = false;
 	     voice = true;
              normal = false;
           }
-	if(foo[0]!='@' && foo[0]!='+')
+	else if(foo[0]!='@' && foo[0]!='+')
 	  {
 	     op = false;
 	     voice = false;
 	     normal = true;
 	  }
+	else
+	  {
+	     op = false;
+	     voice = false;
+	     normal = true;
+	  }
+
 	/* Voice = 1 | Op = 2 */
 	if(op)
 	  {
-		 status = status +2;
+	     status = status +2;
                 /* Safety Check......... */
-		dptr->addUser(*ptr,status);
+	     dptr->addUser(*ptr,status);
 
 	  }
 	if(voice)
 	  {
-		 status++;
+	     status++;
                 /* Safety Check......... */
-		dptr->addUser(*ptr,status);
+	     dptr->addUser(*ptr,status);
 
 	  }
 	if(normal)
 	  {
                 /* Safety Check......... */
-		dptr->addUser(*ptr,status);
+	     dptr->addUser(*ptr,status);
+	        /* Now lets see if they want opping.... */
+	     if(dptr->getAccess(ptr->getNickname())>99)
+	       {
+		  /* But only if they are identified.. nearly forgot this one  */
+		  if(ptr->isIdentified(ptr->getNickname()))
+		    {
+
+		       dptr->mode("Chan","+o",ptr->getNickname());
+		       dptr->addUser(*ptr,2);
+		    }
+
+	       }
+
 	  }
-	more = tokens.hasMoreTokens();
      }
+
+   more = tokens.hasMoreTokens();
+
+
 }
-
-
-
-
 
 void
   PARSER_FUNC (Parser::parseKICK)
 {
 
-
 }
-
-
 
 void
   PARSER_FUNC (Parser::parseKILL)
-{ 
-  String who = tokens.nextToken();
-  String reason = tokens.rest();
-  int oid = services.locateID(who);
-  if(services.isOper(who))
+{
+   String who = tokens.nextToken();
+   String reason = tokens.rest();
+   int oid = services.locateID(who);
+   if(services.isOper(who))
      services.delOper(who);
-   
-  services.delUser(who);
-   
-  services.getDatabase().dbDelete("nicksidentified","nick='"+String::convert(oid)+"'");
-  if(services.isNickRegistered(who))
-     services.getDatabase().dbUpdate("nicks","quitmsg='"+reason+"'", "nickname='"+who+"'");
 
+   services.delUser(who);
+
+   services.getDatabase().dbDelete("nicksidentified","nick='"+String::convert(oid)+"'");
+   if(services.isNickRegistered(who))
+     services.getDatabase().dbUpdate("nicks","quitmsg='"+reason+"'", "nickname='"+who+"'");
 
 }
 
@@ -717,12 +749,9 @@ void
 {
    User *origin = services.findUser(OLDorigin);
 
-   
    origin->sendMessage("Exordium Network Services - (c)2002,2003 Exordium Development Team",
 		       Kine::config().getOptionsServerName(),
 		       false);
    origin->sendMessage("Please see http://sf.net/projects/exordium for details on the project",Kine::config().getOptionsServerName(),false);
 }
-
-
 

@@ -106,15 +106,17 @@ void const dChan::sendBans(String &dest, String const &from)
      return;
    ptr->sendMessage("Ban List for "+name,from);
    int nbRes = services.getDatabase().dbSelect("*","chanbans","chan='"+String::convert(getRegisteredID())+"'");
+   CResult *myRes = services.getDatabase().dbGetResultSet();
    for (int i=0; i<nbRes; i++)
      {
-	ptr->sendMessage("["+String::convert(i)+"] Mask "+services.getDatabase().dbGetValue(2)+
-			 "SetBy "+services.getDatabase().dbGetValue(3)+
-			 "Date "+services.getDatabase().dbGetValue(4)+
-			 "Expires "+services.getDatabase().dbGetValue(5),from);
-	ptr->sendMessage("Reason "+services.getDatabase().dbGetValue(6),from);
-	services.getDatabase().dbGetRow();
+	ptr->sendMessage("["+String::convert(i)+"] Mask "+myRes->getValue(i,2)+
+			 " SetBy "+myRes->getValue(i,3)+
+			 " Date "+myRes->getValue(i,4)+
+			 " Expires "+myRes->getValue(i,5),from);
+	ptr->sendMessage("Reason "+myRes->getValue(i,6),from);
      }
+   delete(myRes);
+   
 }
 
 String const dChan::getOwner(void)
@@ -198,13 +200,15 @@ void const dChan::kick(String const &service,String const &nick,String const &re
    
 }
 
-void const dChan::ban(User &user, String const &service, String const &reason)
+void const dChan::ban(User &user, String const &service, String const &reason, String const &setby)
 {
-String host = user.getHost();
+String host = "*!*@"+user.getHost();
 int expire = services.currentTime + 3600;
-services.queueAdd(":"+service+" MODE "+name+" +b *!*@"+host);
-//String query = "'','"+String::convert(getRegisteredID())+"','"+host+"',NOW(),'"+String::convert(expire)+"','"+reason"'";
-//services.getDatabase().dbInsert("chanbans",query);
+services.queueAdd(":"+service+" MODE "+name+" +b "+host);
+String query = "'','"+String::convert(getRegisteredID())+
+               "','"+host+"','"+setby+"',NOW(),'"+
+               String::convert(expire)+"','"+reason+"'";
+services.getDatabase().dbInsert("chanbans",query);
 services.serviceKick(name,user.getNickname(),reason);
 
    
