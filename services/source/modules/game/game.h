@@ -26,26 +26,28 @@ private:
   struct functionTableStruct
   {
     char const *command;
-    void GAME_FUNC ((*function));
+     void GAME_FUNC ((Game::* const function));
   };
   static struct functionTableStruct const functionTable[];
 
+   Exordium::Services& services;
+   
 public:
-  Game(void)
-	: Service()
+   Game(Exordium::Services& s)
+	: Service(), services(s)
 	{
 		std::cout << "Game" << std::endl;
 	};
   ~Game(void)
 	{
-		Services::queueAdd(":Game QUIT :Module unloaded");
+		services.queueAdd(":Game QUIT :Module unloaded");
 	};
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
   static String me;
 private:
-   static void GAME_FUNC (parseHELP);
-   static void GAME_FUNC (parseQUOTE);
+   void GAME_FUNC (parseHELP);
+   void GAME_FUNC (parseQUOTE);
 };
 
 

@@ -25,10 +25,10 @@ namespace Exordium {
 
 struct Game::functionTableStruct const
   Game::functionTable[] = {
-  {"quote", parseQUOTE},
-  {".quote", parseQUOTE},
-  {"help", parseHELP},
-  {0}
+       {"quote", &Game::parseQUOTE},
+       {".quote", &Game::parseQUOTE},
+       {"help", &Game::parseHELP},
+  {0, 0}
 };
 
 void
@@ -44,7 +44,7 @@ for (int i = 0; functionTable[i].command != 0; i++)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st, ch);
+          (this->*(functionTable[i].function))(origin, st, ch);
           return;
         }
     }
@@ -65,11 +65,11 @@ Game::parseLine (String const &line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st, ch);
+          (this->*(functionTable[i].function))(origin, st, ch);
           return;
         }
     }
-  Services::serviceNotice ("Unrecognized Command", "Game", requestor);
+  services.serviceNotice ("Unrecognized Command", "Game", requestor);
 }
 
 void
@@ -77,7 +77,7 @@ GAME_FUNC (Game::parseHELP)
 {
 	String word = tokens.nextToken();
 	String parm = tokens.nextToken();
-	Services::doHelp(origin,"game",word,parm);
+	services.doHelp(origin,"game",word,parm);
 }
 
 void
@@ -95,27 +95,27 @@ GAME_FUNC (Game::parseQUOTE)
 
 	if(channel=="")
 	{
-		Services::serviceNotice("Usage: quote #channel","Game",origin);
+		services.serviceNotice("Usage: quote #channel","Game",origin);
 		return;
 	}
 	String query = "SELECT count(*) from fortunes";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = services.getDatabase().query(query);
 	MysqlRow row;
 	int j;
 	while ((row = res.fetch_row()))
 	{
 		String numb = ((std::string) row[0]).c_str();
-		j = Services::random(numb.toInt());
+		j = services.random(numb.toInt());
 	}
 	res.free_result();
-	String thequote = Services::getQuote(j);
+	String thequote = services.getQuote(j);
 	StringTokens st (thequote);
 	bool more = false;
 	more = st.hasMoreTokens();
 	while(more==true)
 	{
 	String tq = st.nextToken('\n');
-	Services::servicePrivmsg(Sql::makeSafe(tq),"Game",channel);
+	services.servicePrivmsg(services.getDatabase().makeSafe(tq),"Game",channel);
 	more = st.hasMoreTokens();
 	}
 
@@ -123,10 +123,9 @@ GAME_FUNC (Game::parseQUOTE)
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
    std::cout << "I am called " << name << std::endl;
-   Services::registerService("game","game","ircdome.org", "+dz", "Network Games!");
-   Services::serviceJoin("game", "#Debug");
-   return new Module("game", new Game()
-);
+   services.registerService("game","game","ircdome.org", "+dz", "Network Games!");
+   services.serviceJoin("game", "#Debug");
+   return new Module("game", new Game(services));
 
 }
 
