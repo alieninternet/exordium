@@ -72,11 +72,6 @@ void
 	       }
 	  }
      }
-   
-/* this would be horrible on a live network :) If this is indeed only for
- * debugging, it should be removed entirely.
- */
-//   services->queueAdd(":"+getName()+" WALLOPS :New User Signon by the name of "+origin.getNickname());
    return;
 }
 
@@ -104,8 +99,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    String::size_type lineLength = 200;
 
    // Send the banner (this shouldn't be hard-coded)
-  // sendMessage(origin, "Command list for " + getName() + ":");
-origin.sendMessage("Command list for " + getName() + ":",getName());
+   origin.sendMessage("Command list for " + getName() + ":",getName());
    // Start formulating the data..
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++) {
@@ -142,12 +136,10 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
          return;
       }
    }
-
    origin.sendMessage("Unrecognised Command", getName());
    return;
-
-
 }
+
   NICK_FUNC (Module::parseAUTH)
 {
    String gauth = tokens.nextToken();
@@ -170,6 +162,13 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
 	origin.sendMessage("You may now identify your nickname as normal",getName());
         services->getDatabase().dbDelete("nickspending", "nickname='"+origin.getNickname()+"'");
+	return;
+     }
+     else
+     {
+	origin.sendMessage("Error: The auth code you gave does not match our records",getName());
+	origin.sendMessage("Please re-check the email you received from services",getName());
+	return;
      }
 }
 
@@ -181,7 +180,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
    User *ptr = services->findUser(who);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Could not locate that user (possible bug)",getName());
+	origin.sendMessage("Error: Could not locate that user",getName());
 	return;
      }
 

@@ -46,6 +46,10 @@ const Module::functionTableStruct Module::functionTable[] =
      { "join",		&Module::parseJOIN },
      { "part",		&Module::parsePART },
      { "commands",	&Module::parseCOMMANDS },
+     { "zline",		&Module::parseZLINE },
+     { "gline",		&Module::parseGLINE },
+     { "qline",		&Module::parseQLINE },
+     { "mdeop",		&Module::parseMDEOP },
      { 0, 0 }
 };
 
@@ -58,6 +62,16 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	// Does this match?
 	if (command == functionTable[i].command)
 	  {
+             int required = services->getRequiredAccess(getName(),command.toLower());
+             int access = origin.getAccess(getName());
+             if(required>access)
+               {
+ origin.sendMessage("You do not have enough access for that command",getName());
+  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
+                  services->logLine(togo, Log::Warning);
+                  return;
+               }
+
 	     // Run the command and leave
 	     (this->*(functionTable[i].function))(origin, st);
 	     return;
@@ -74,7 +88,172 @@ OPER_FUNC(Module::parseHELP)
    services->doHelp(origin,getName(),word,parm);
 }
 
+OPER_FUNC(Module::parseMDEOP)
+{
+String channel = tokens.nextToken();
+if(channel=="")
+{
+	origin.sendMessage("Usage: mdeop #channel", getName());
+	return;
+}
 
+	/* Get the id.. */
+	int cid = services->getChannel().getOnlineChanID(channel);
+	services->serviceJoin(getName(),channel);
+	services->mode(getName(),channel,"+o",getName());
+	/* Iterate over members.. */
+
+	int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
+	for (int i=0; i<nbRes; i++)
+	{
+		
+		int nid = services->getDatabase().dbGetValue().toInt();
+		std::cout << "GetValue gave me " << nid << std::endl;
+		if(nid==0)
+		{
+			std::cout << "Uhh, somethings fucked because dbGetValue gave me a 0 :(" << std::endl;
+			return;
+		}
+		String tnick = services->getOnlineNick(nid);
+		services->mode(getName(),channel,"-o",tnick);
+		services->getChannel().internalDeOp(tnick,channel);
+		services->getDatabase().dbGetRow();
+	}
+	String togo = origin.getNickname() + " did a \002massdeop\002 of \002"+channel+"\002 ("+String::convert(nbRes)+")";
+	services->sendGOper(getName(),togo);
+	origin.sendMessage("Massdeop complete",getName());
+	String topic = "\002Mass-Deop\002 performed by "+origin.getNickname();
+	services->getChannel().setTopic(channel,topic);
+	services->servicePart(getName(),channel);
+		
+
+}
+OPER_FUNC(Module::parseQLINE)
+{
+String command = tokens.nextToken();
+if(command=="")
+{
+	origin.sendMessage("Usage: qline add/del", getName());
+	return;
+}
+if(command=="del")
+{
+	String mask = tokens.nextToken();
+	if(mask=="")
+	{
+		origin.sendMessage("Usage: qline del mask (either channel/nick mask)",getName());
+		return;
+	}
+	String togo = origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002";
+	services->sendGOper("Oper",togo);
+	services->queueAdd("UNSQLINE 0 "+mask);
+	origin.sendMessage("qline removed",getName());
+}
+
+if(command=="add")
+{
+	String mask = tokens.nextToken();
+	String reason = tokens.rest();
+	if(mask=="" | reason=="")
+	{
+		origin.sendMessage("Usage: qline add mask reason",getName());
+		return;
+	}
+	String togo = origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)";
+	services->sendGOper("Oper",togo);
+	services->queueAdd("SQLINE "+mask+" :"+reason);
+	origin.sendMessage("Gline added",getName());
+	return;
+}
+
+
+
+
+}
+OPER_FUNC(Module::parseGLINE)
+{
+String command = tokens.nextToken();
+if(command=="")
+{
+	origin.sendMessage("Usage: gline add/del", getName());
+	return;
+}
+if(command=="del")
+{
+	String mask = tokens.nextToken();
+	if(mask=="")
+	{
+		origin.sendMessage("Usage: gline del mask",getName());
+		return;
+	}
+	String togo = origin.getNickname() + " removed a net wide \002gline\002 on \002"+mask+"\002";
+	services->sendGOper("Oper",togo);
+	services->queueAdd("GLINE 0 -"+mask);
+	origin.sendMessage("Gline removed",getName());
+}
+
+if(command=="add")
+{
+	String mask = tokens.nextToken();
+	String expire = tokens.nextToken();
+	String reason = tokens.rest();
+	if(mask=="" | expire=="" | reason=="")
+	{
+		origin.sendMessage("Usage: gline add mask expire reason",getName());
+		return;
+	}
+	String togo = origin.getNickname() + " placed a net wide \002gline\002 on \002"+mask+"\002 expiring in \002"+expire+"\002 seconds (\002"+reason+"\002)";
+	services->sendGOper("Oper",togo);
+	services->queueAdd("GLINE 0 +"+mask+" "+expire+" :"+reason);
+	origin.sendMessage("Gline added",getName());
+	return;
+}
+
+}
+
+
+
+OPER_FUNC(Module::parseZLINE)
+{
+String command = tokens.nextToken();
+if(command=="")
+{
+	origin.sendMessage("Usage: zline add/del", getName());
+	return;
+}
+if(command=="del")
+{
+	String ip = tokens.nextToken();
+	if(ip=="")
+	{
+		origin.sendMessage("Usage: zline del IP",getName());
+		return;
+	}
+	String togo = origin.getNickname() + " removed a net wide \002zline\002 on \002"+ip;
+	services->sendGOper("Oper",togo);
+	services->queueAdd("UNSZLINE " + ip);
+	origin.sendMessage("Zline removed",getName());
+}
+
+if(command=="add")
+{
+	String ip = tokens.nextToken();
+	String reason = tokens.rest();
+	
+	if(ip=="" | reason=="")
+	{
+		origin.sendMessage("Usage: zline add IP Reason",getName());
+		return;
+	}
+
+	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
+	services->sendGOper("Oper",togo);
+	services->queueAdd("SZLINE " + ip +" :"+reason);
+	origin.sendMessage("Zline added",getName());
+	return;
+}
+
+}
 OPER_FUNC(Module::parseJUPE)
 {
    String command = tokens.nextToken();
