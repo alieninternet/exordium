@@ -826,10 +826,6 @@ void
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   services.registerService(name,name,"ircdome.org","+dz",
-			    "Channel Registration Services");
-   services.serviceJoin(name,"#Debug");
-   services.getChannel().synchChannels();
    return new Chan(services, name);
 }
 
@@ -841,3 +837,11 @@ const Chan::moduleInfo_type Chan::moduleInfo = {
 };
 
 
+// Start the service
+void Chan::start(void)
+{
+   services.registerService(myName,myName,"ircdome.org","+dz",
+			    "Channel Registration Services");
+   services.serviceJoin(myName,"#Debug");
+   services.getChannel().synchChannels();
+}

@@ -72,14 +72,13 @@ const Love::commandTable_type Love::commandTable[] =
 };
 
 
-/* Love - Our constructor, mainly gets us ready to spread our loving..
- * Original 26/07/2002 simonb
+/* start - Start the service
+ * Original 17/09/2002 simonb
  */
-Love::Love(Exordium::Services& s, const String& mn)
-  : Exordium::Service(s, mn)
+void Love::start(void)
 {
-//   services.registerService(myName, myName, "ircdome.org", "+dz",
-//			    "Your local love slave");
+   services.registerService(myName, myName, "ircdome.org", "+dz",
+			    "Your local love slave");
 }
 
 

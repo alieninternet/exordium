@@ -66,6 +66,12 @@ namespace Exordium {
       virtual ~Service() 
 	{};
 
+      // Start the module
+      virtual void start(void) = 0;
+      
+      // Stop the module (called just before a module is unloaded)
+      virtual void stop(void) = 0;
+      
       // Parsers
       virtual void parseLine(LibAIS::StringTokens& line, User& origin) = 0;
       

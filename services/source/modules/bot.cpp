@@ -93,9 +93,6 @@ void
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-//   services.registerService(name,name,"ircdome.org", "+dz",
-//			    "Bot Interface to Services");
-//   services.serviceJoin(name,"#Debug");
    return new Bot(services, name);
 }
 
@@ -107,3 +104,10 @@ const Bot::moduleInfo_type Bot::moduleInfo = {
 };
 
 
+// Start the service
+void Bot::start(void)
+{
+   services.registerService(myName,myName,"ircdome.org", "+dz",
+			    "Bot Interface to Services");
+   services.serviceJoin(myName,"#Debug");
+}

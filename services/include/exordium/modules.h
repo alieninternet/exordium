@@ -42,21 +42,20 @@ namespace Exordium {
    class Modules {
     private:
       // Handy class for module information
-      class ServiceModule {
+      class Module {
        public:
 	 Service* const service;			// Service class
 	 void* const handle;				// dlopen() handle
 	 
-	 ServiceModule(Service* const s, void* const h)
+	 Module(Service* const s, void* const h)
 	   : service(s), handle(h)
 	     {};
 	 
-	 ~ServiceModule(void) 
-	   { dlclose(handle); };
+	 ~Module(void);
       };
 
       // The list of modules
-      typedef std::map <LibAIS::String, ServiceModule *> modules_type;
+      typedef std::map <LibAIS::String, Module *> modules_type;
       modules_type modules;
 
     public:

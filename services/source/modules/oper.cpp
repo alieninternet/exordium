@@ -117,9 +117,6 @@ void
 }
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   services.registerService(name,name,"ircdome.org", "+dz",
-			    "IRC Operator Services");
-   services.serviceJoin(name,"#Debug");
    return new Oper(services, name);
 }
 
@@ -128,3 +125,12 @@ const Oper::moduleInfo_type Oper::moduleInfo = {
    "Operator Service",
      0, 0
 };
+
+
+// Start the service
+void Oper::start(void)
+{
+   services.registerService(name,name,"ircdome.org", "+dz",
+			    "IRC Operator Services");
+   services.serviceJoin(name,"#Debug");
+}

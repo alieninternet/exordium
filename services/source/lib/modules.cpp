@@ -46,6 +46,16 @@ Modules::~Modules(void)
 }
 
 
+/* ~Module - Delete the server and unload the module
+ * Original 17/09/2002 simonb
+ */
+Modules::Module::~Module(void) 
+{ 
+   dlclose(handle);
+//   delete service; // this needs fixing :( is this being deleted before here?
+};
+
+
 /* addModule - Shut down all existing modules in the list
  * Original 17/09/2002 simonb
  * 17/09/2002 simonb - Added checking to confirm the module is not already open
@@ -58,7 +68,7 @@ bool Modules::addModule(Service& s, void* const h)
    // Make sure this does not exist..
    if (!exists(name)) {
       // Add it, and return happy status
-      modules[name] = new ServiceModule(&s,h);
+      modules[name] = new Module(&s, h);
       return true;
    };
 
@@ -74,8 +84,9 @@ void Modules::delModule(const String& name) {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
    
-   // If the module exists, delete it - bye bye!
+   // If the module exists then stop it, delete it, and erase it - bye bye!
    if (moduleLocation != modules.end()) {
+      (*moduleLocation).second->service->stop();
       delete (*moduleLocation).second;
       modules.erase(moduleLocation);
       return;

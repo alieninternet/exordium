@@ -73,14 +73,33 @@ const Game::commandTable_type Game::channelCommandTable[] =
 };
 
 
-/* Game - Our constructor which joined appropriate channels, etc.
- * Original 11/09/2002
+/* start - Start the service
+ * Original 17/09/2002 simonb
  */
-Game::Game(Exordium::Services& s, const String& mn)
-  : Exordium::Service(s, mn)
+void Game::start(void)
 {
-//   services.registerService(myName, myName, "ircdome.org", "+dz", 
-//			    "Network Games!");
+   services.registerService(myName, myName, "ircdome.org", "+dz", 
+			    "Network Games!");
+}
+
+
+/* stop - Stop the service
+ * Original 17/09/2002 simonb
+ */
+void Game::stop(void)
+{
+   // Leave all the channels we're on..
+   while (!channelGames.empty()) {
+      // Part the channel...
+      services.servicePart(myName, 
+			   (*(channelGames.begin())).second->getChannel());
+   
+      // Delete this game..
+      delete (*(channelGames.begin())).second;
+      channelGames.erase(channelGames.begin());
+   }
+   
+   // Umm, we should QUIT from the network here.. but how?
 }
 
 

@@ -71,12 +71,21 @@ class Love : public Exordium::Service {
    
  public:
    // Our constructor
-   Love(Exordium::Services& s, const LibAIS::String& mn);
+   Love(Exordium::Services& s, const LibAIS::String& mn)
+     : Exordium::Service(s, mn)
+     {};
 
    // Our destructor
    ~Love(void) 
      {};
    
+   // Start the module
+   void start(void);
+   
+   // Stop the module (called just before a module is unloaded)
+   void stop(void) 
+     {};
+      
    // Parser for incoming stuff sent on a channel
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
 		  const LibAIS::String& channel)

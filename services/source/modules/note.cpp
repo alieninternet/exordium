@@ -254,9 +254,6 @@ namespace Exordium
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	services.registerService(name,name,"ircdome.org","+dz",
-				 "Note service thingy that James forgot :(");
-	services.serviceJoin(name,"#Debug");
 	return new Note(services);
      }
 
@@ -267,5 +264,12 @@ namespace Exordium
    };
 
 
+   // Start the service
+   void Note::start(void)
+     {
+	services.registerService(name,name,"ircdome.org","+dz",
+				 "Note service thingy that James forgot :(");
+	services.serviceJoin(name,"#Debug");
+     }
 }
 

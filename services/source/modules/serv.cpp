@@ -603,9 +603,6 @@ namespace Exordium
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	services.registerService(name,name,"ircdome.org","+dz",
-				 "\037Serv\037ice :)");
-	services.serviceJoin(name,"#Debug");
 	return new Serv(services);
      }
 
@@ -616,3 +613,11 @@ namespace Exordium
    };
 };
 
+
+// Start the service
+void Serv::start(void)
+{
+   services.registerService(name,name,"ircdome.org","+dz",
+			    "\037Serv\037ice :)");
+   services.serviceJoin(name,"#Debug");
+}

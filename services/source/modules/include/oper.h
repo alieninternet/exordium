@@ -61,6 +61,12 @@ public:
 	{
 		std::cout << "Dead Oper" << std::endl;
 	};
+   // Start the module
+   void start(void);
+   
+   // Stop the module (called just before a module is unloaded)
+   void stop(void) {};
+      
   void parseLine (LibAIS::String const &, LibAIS::String const &);
   void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
    

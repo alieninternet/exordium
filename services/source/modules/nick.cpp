@@ -651,9 +651,6 @@ void
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	services.registerService(name,name,"ircdome.org", "+dz",
-				 "Nickname Registration Services");
-	services.serviceJoin(name,"#Debug");
 	return new Nick(services, name);
      }
 
@@ -666,3 +663,10 @@ const Nick::moduleInfo_type Nick::moduleInfo = {
 
 
 	  
+// Start the service
+void Nick::start(void)
+{
+   services.registerService(name,name,"ircdome.org", "+dz",
+			    "Nickname Registration Services");
+   services.serviceJoin(name,"#Debug");
+}

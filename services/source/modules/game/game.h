@@ -75,7 +75,9 @@ class Game : public Exordium::Service {
    
 public:
    // Our constructor
-   Game(Exordium::Services& s, const LibAIS::String& mn);
+   Game(Exordium::Services& s, const LibAIS::String& mn)
+     : Exordium::Service(s, mn)
+     {};
 
    // Our destructor
    ~Game(void)
@@ -85,6 +87,12 @@ public:
    Exordium::Services& getServices(void)
      { return services; };
    
+   // Start the module
+   void start(void);
+   
+   // Stop the module (called just before a module is unloaded)
+   void stop(void);
+      
    // Parser for incoming stuff
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,

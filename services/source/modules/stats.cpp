@@ -81,9 +81,6 @@ namespace Exordium
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	services.registerService(name,name,"ircdome.org","+z",
-				 "Statistics Collection Service");
-	services.serviceJoin(name,"#Debug");
 	return new Stats(services);
      }
 
@@ -94,3 +91,11 @@ namespace Exordium
    };
 };
 
+
+// Start the service
+void Stats::start(void)
+{
+   services.registerService(name,name,"ircdome.org","+z",
+			    "Statistics Collection Service");
+   services.serviceJoin(name,"#Debug");
+}

@@ -70,6 +70,10 @@ class ChannelGame {
    // Our line parser - where channel commands for us are sent
    virtual bool parseLine(Exordium::User& origin, LibAIS::String& command,
 			  LibAIS::StringTokens& tokens) = 0;
+
+   // Grab the channel this channel game is on
+   const LibAIS::String& getChannel(void) const
+     { return channel; };
    
    // Send a message to the channel
    void sendMessage(const LibAIS::String& message) const

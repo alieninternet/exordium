@@ -385,14 +385,14 @@ namespace Exordium
 	  loadModule("vote","./modules/vote.so");
 	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			  "The service James forgot :(");
-	  registerService("bot","bot","ircdome.org", "+dz",
-	                            "Bot Interface to Services");
-	  registerService("game", "game", "ircdome.org", "+dz",
-	                            "Network Games!");
-	  registerService("love", "love", "ircdome.org", "+dz",
-	                           "Your local love slave");
+//	  registerService("bot","bot","ircdome.org", "+dz",
+//	                            "Bot Interface to Services");
+//	  registerService("game", "game", "ircdome.org", "+dz",
+//	                            "Network Games!");
+//	  registerService("love", "love", "ircdome.org", "+dz",
+//	                           "Your local love slave");
 	  
-	  serviceJoin("bot","#Debug");
+//	  serviceJoin("bot","#Debug");
 	  serviceJoin ("IRCDome", "#debug");
 	  serviceJoin ("IRCDome", "#Exordium");
 	  connected = true;
@@ -887,6 +887,8 @@ namespace Exordium
 	    service->getModuleInfo().fullName << "' version " <<
 	    service->getModuleInfo().versionMajor << '.' <<
 	    service->getModuleInfo().versionMinor << std::endl;
+	  
+	  service->start();
 	  
 	  serviceM.addModule(*service, handle);
 	  return true;
