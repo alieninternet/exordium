@@ -98,28 +98,6 @@ void PARSER_FUNC (Parser::parseAWAY)
    /* From here on i'm fiddling with away */
    services.getConfig().getModules().handleAway(*origin,reason);
 
-   
-/*   if(origin->deopAway())
-     {
-	if(reason=="")
-	  {
-	     //Don't do anything user is coming back
-	     return;
-	  }
-	else
-	  {
-             if( services.getDatabase().dbSelect("chanid", "chanstatus", "nickid="+origin->getOnlineIDString()+" AND status=2") > 0 )
-             {
-               String foo = services.getDatabase().dbGetValue();
-               String cname = services.getChannel().getChanIDName(foo.toInt());
-	       String cstr = OLDorigin+" "+OLDorigin;
-	       services.serverMode(cname,"-o+v",cstr);
-	       services.getChannel().internalVoice(OLDorigin,cname);
-	       services.getChannel().internalDeOp(OLDorigin,cname);
-             }
-	  }
-     }
- */
 }
 void
   PARSER_FUNC (Parser::parseS)
@@ -397,8 +375,6 @@ void PARSER_FUNC (Parser::parseN)
 	return;
      }
    String nick = tokens.nextToken();
-   std::cout << "NEW CLIENT:" << nick << std::endl;
-
    String hops = tokens.nextToken();
    String timestamp = tokens.nextToken();
    String modes = tokens.nextToken();
@@ -406,70 +382,42 @@ void PARSER_FUNC (Parser::parseN)
    String host = tokens.nextToken();
    String vwhost = tokens.nextToken();
    String server = tokens.nextToken();
-
-  //Don't want the next two.
    (void)tokens.nextToken();
    (void)tokens.nextToken();
-   
    String realname = tokens.rest();
-
-   // Strip the heading +
-   //if(modes[0]=='+')
-   //  modes=modes.substr(1, modes.length()-1);
-
-   
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
 				      vwhost, server, modes, realname);
-
    if (newNick == 0) {
       std::cout << "That client wasn't such a nice fellow afterall :(" << 
 	std::endl;
       return;
    }
-   
 
-   std::cout << "Going to see if " << newNick->getNickname() << "is registered" << std::endl;
-   if(services.isNickRegistered(nick))
-     {
-	std::cout << "yup its registered" << std::endl;
-	if(!newNick->isPending())
-	  {
-	     if(newNick->modNick())
-	       {
-		  
-		  newNick->addCheckIdentify();
-	       }
-	     
-	  }
-	
-     }
-
-
-   // Applicate specific mode validation
-   if (modes.find("o"))
+   services.getConfig().getModules().handleClientSignon(*newNick);
+/*   if (modes.find("o"))
      services.validateOper(nick);
+*/
 
-
-   
-   int num = newNick->countHost();
-
-   int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
-
-   // NOTE: hardcoded bot nick?
-   for (int i=0; i<nbRes; i++)
-   {
-      newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfig().getConsoleName());
-      services.getDatabase().dbGetRow();
-   }
-
-   services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
-   if(num>2)
-     {
-	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
-	services.globop(alert,"Oper");
-	//Add gline.
-     }
-
+/*   
+*   int num = newNick->countHost();
+*
+*   int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
+*
+*   // NOTE: hardcoded bot nick?
+*   for (int i=0; i<nbRes; i++)
+*   {
+*      newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfig().getConsoleName());
+*      services.getDatabase().dbGetRow();
+*   }
+*
+*   services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
+*   if(num>2)
+*     {
+*	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
+*	services.globop(alert,"Oper");
+*	//Add gline.
+*     }
+*/
 }
 void
   PARSER_FUNC (Parser::parsePRIVMSG)

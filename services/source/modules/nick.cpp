@@ -51,6 +51,25 @@ struct Nick::functionTableStruct const
      {0, 0}
 };
 
+/* Event Handlers */
+void
+  Nick::handleClientSignon(User& origin)
+{
+
+   if(services->isNickRegistered(origin.getNickname()))
+     {
+	if(!origin.isPending())
+	  {
+	     if(origin.modNick())
+	       {
+		  origin.addCheckIdentify();
+	       }
+	  }
+     }
+   services->queueAdd(":"+getName()+" WALLOPS :New User Signon by the name of "+origin.getNickname());
+   return;
+}
+
 /* Entry point for Nick:: - Parse the given line and decide what to do with it */
 void
   Nick::parseLine (StringTokens& line, User& origin, String const &ch)
@@ -649,7 +668,7 @@ void
      {
 	"Nickname Service",
 	  0, 0,
-	  Exordium::Service::moduleInfo_type::Events::NONE
+	  Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON
      };
 
    // Start the service

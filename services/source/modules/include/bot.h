@@ -76,7 +76,6 @@ public:
    void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 		  const AISutil::String& channel);
    
-   void handleAway(Exordium::User& origin, const AISutil::String& reason);
 
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const

@@ -70,6 +70,8 @@ public:
    void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
    void parseLine (AISutil::StringTokens& line, Exordium::User& origin,AISutil::String const &);
 
+   /* Our Event Handler(s) */
+   void handleClientSignon(Exordium::User& origin);
    // Grab the information structure of a module
    virtual const moduleInfo_type& getModuleInfo(void) const
      { return moduleInfo; };

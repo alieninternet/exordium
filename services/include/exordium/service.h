@@ -152,6 +152,8 @@ namespace Exordium {
 			     const AISutil::String& channel) = 0;
       
       virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
+      virtual void handleClientSignon(User& origin) {};
+      
       
       // Grab the information structure of a module
       virtual const moduleInfo_type& getModuleInfo(void) const = 0;

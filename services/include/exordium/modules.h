@@ -67,8 +67,10 @@ namespace Exordium {
       
       // Destructor (unload all modules)
       ~Modules(void);
+      /* Event handler(s) */
       
       void handleAway(User&, const AISutil::String &);
+      void handleClientSignon(User&);
       // Add a module to the list
       Service* const loadModule(const AISutil::String& fileName, 
 				AISutil::String& errString);
