@@ -29,7 +29,6 @@
 
 # include <exordium/service.h>
 # include <exordium/services.h>
-# include <kineircd/str.h>
 # include <map>
 
 # include "config.h"

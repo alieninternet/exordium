@@ -90,6 +90,9 @@ bool Module::start(Exordium::Services& s)
 			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
    
+#ifdef DEBUG
+   std::cout << "Module found " << configData.getModule() << std::endl;
+#endif
    // We started okay :)
    return true;
 }

@@ -28,7 +28,6 @@
 #ifndef _SOURCE_MODULES_GAME_CHANNELGAME_H_
 # define _SOURCE_MODULES_GAME_CHANNELGAME_H_ 1
 
-# include <kineircd/str.h>
 # include <exordium/user.h>
 
 class ChannelGame;

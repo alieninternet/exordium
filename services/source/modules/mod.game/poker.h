@@ -28,7 +28,6 @@
 #ifndef _SOURCE_MODULES_GAME_POKER_H_
 # define _SOURCE_MODULES_GAME_POKER_H_ 1
 
-# include <kineircd/str.h>
 # include <utility>
 # include <list>
 # include <stack>

@@ -27,7 +27,6 @@
 #ifndef _SOURCE_MODULES_GAME_CONFIG_H_
 # define _SOURCE_MODULES_GAME_CONFIG_H_ 1
 
-# include <kineircd/str.h>
 # include <exordium/service.h>
 
 namespace Game {
@@ -36,10 +35,10 @@ namespace Game {
     private:
       // Configuration information
       static const AISutil::ConfigParser::defTable_type defTable;
-
-      // An example string (proof of concept). This is temporary.
-      AISutil::String defExample;
       
+      const AISutil::String defModule;
+      static LIBAISUTIL_CONFIG_VARIABLE_HANDLER(varHandleModule);
+
     public:
       // Constructor
       ConfigData(const AISutil::String& d)
@@ -50,12 +49,11 @@ namespace Game {
       const AISutil::ConfigParser::defTable_type& getDefinitions(void) const
 	{ return defTable; };
       
-      // Return variables..
-      const AISutil::String& getExample(void) const
-	{ return defExample; };
+      const AISutil::String& getModule(void) const
+        { return defModule; };
+
    };
 }; // namespace Game
-
 #endif // _SOURCE_MODULES_GAME_CONFIG_H_
 
 
