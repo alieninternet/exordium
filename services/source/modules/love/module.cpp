@@ -60,10 +60,6 @@ const Love::commandTable_type Love::commandTable[] =
 	"commands",	0,	0,	&Love::handleCOMMANDS,
 	  0
      },
-     {
-	"test",		0,	0,	&Love::handleTEST,
-	  0
-     },
      { 0, 0, 0, 0, 0 }
 };
 
@@ -159,16 +155,4 @@ LOVE_FUNC(Love::handleCOMMANDS)
    
    // Send the footer (this shouldn't be hard-coded)
    sendMessage(origin, "End of command list");
-}
-
-
-/* handleTEST - Test thingy, temporary :)
- * Original 14/07/2002 simonb
- */
-LOVE_FUNC(Love::handleTEST)
-{
-   // something here.. other than this.. perhaps...
-   sendMessage(origin,
-	       "It worked, and it's a member function, and it's calling a "
-	       "mate of his which is also a member function!");
 }

@@ -63,7 +63,6 @@ class Love : public Exordium::Service {
    
    // Our wonderful command handlers
    handler_type handleCOMMANDS;
-   handler_type handleTEST;
 
    // How to send private-messages (stepping-stone)
    void sendMessage(Exordium::User& recipient, const String& message)
