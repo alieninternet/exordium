@@ -94,15 +94,15 @@ mod_nick_la_SOURCES=\
 	mod.nick/tables.h
 
 mod.nick/language.cpp: mod.nick/language.tpl $(top_builddir)/autogen/language.def
-	autogen \
+	$(AUTOGEN) \
 		-b $(basename $@) \
-		-T $< \
+		-T mod.nick/language.tpl \
 		$(top_builddir)/autogen/language.def
 
 mod.nick/language.h: mod.nick/language.tpl $(top_builddir)/autogen/language.def
-	autogen \
+	$(AUTOGEN) \
 		-b $(basename $@) \
-		-T $< \
+		-T mod.nick/language.tpl \
 		$(top_builddir)/autogen/language.def
 
 
