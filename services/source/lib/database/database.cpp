@@ -49,13 +49,15 @@ CDatabase::CDatabase(Config &c) : config(c)
 
      if(db_supported_engines.mysql == false)
       {
+#ifdef DEBUG
          std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
+#endif
          exit(1); // YUK, gotta find a way to exit more nicely
       }      
 
-     #ifdef HAVE_MYSQL
+#ifdef HAVE_MYSQL
       database =(CBase*) new CMySQL(config);
-     #endif
+#endif
 
      db_engines = db_mysql;
    }
@@ -66,25 +68,27 @@ CDatabase::CDatabase(Config &c) : config(c)
 
      if(db_supported_engines.pgsql == false)
       {
+#ifdef DEBUG
          std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
+#endif
          exit(1); // YUK, gotta find a way to exit more nicely
       }
-
-     #ifdef HAVE_PGSQL
-       database =(CBase*) new CPgSQL(config);
-     #endif
+      
+#ifdef HAVE_PGSQL
+      database =(CBase*) new CPgSQL(config);
+#endif
 
      db_engines = db_pgsql;
    }
-
   else 
    
    {
+#ifdef DEBUG
      std::cout << "No Database engine selected! Please add engine=<myengine> to ircd.conf!" << std::endl;
+#endif
      exit(1);
    
    }
-
 }
 
 

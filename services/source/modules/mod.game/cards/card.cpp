@@ -25,6 +25,7 @@
  *
  */
 
+#include <exordium/config.h>
 #include <kineircd/str.h>
 
 #include "card.h"
@@ -242,11 +243,15 @@ const char* Cards::Card::nameSuit(const unsigned char suit)
  */
 void Cards::Card::populate(cards_type& cards)
 {
+#ifdef DEBUG
    std::cerr << "TEST8\n";
+#endif
    // Run through and populate the pack (yes, rank is sorted DOWNWARDS)
    for (register unsigned int suit = 1; suit != 5; suit++) {
       for (register unsigned int index = 14; --index;) {
+#ifdef DEBUG
          std::cerr << "Pushing (suit, index) ( " << suit << ", " << index << ")\n";
+#endif
          cards.push_back(Cards::Card(suit, index));
       }
    }

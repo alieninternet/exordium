@@ -24,6 +24,7 @@
  *
  */
 
+#include "exordium/config.h"
 #include "exordium/channel.h"
 #include <kineircd/str.h>
 #include "exordium/services.h"
@@ -321,11 +322,15 @@ void
 {
    int nbRes = services.getDatabase().dbSelect("name,topic,modes", "chans");
 
+#ifdef DEBUG
    std::cout << "nbRes:" << String::convert(nbRes) << std::endl;
+#endif
 
    for(int i=0; i<nbRes; i++)
    {
+#ifdef DEBUG
      std::cout << "inside FOR!!!!!!" << std::endl;
+#endif
      synchChannel(services.getDatabase().dbGetValue(0), services.getDatabase().dbGetValue(1), 
                   services.getDatabase().dbGetValue(2));
      services.getDatabase().dbGetRow();

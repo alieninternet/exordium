@@ -35,6 +35,7 @@
  *    
  */
 
+#include "exordium/config.h"
 #include "exordium/parser.h"
 #include "exordium/services.h"
 //#include "exordium/dchan.h"
@@ -103,7 +104,9 @@ void PARSER_FUNC (Parser::parseAWAY)
    User *origin = services.findUser(OLDorigin);
    if(origin == 0)
      {
+#ifdef DEBUG
 	std::cout << "Our pointer is null." << std::endl;
+#endif
 	return;
      }
  
@@ -296,8 +299,10 @@ void
                {
                    if(services.isOper(OLDorigin))
                      services.delOper(OLDorigin);
+#ifdef DEBUG
                    else
                      std::cout << "Warning: inconsistency in parsem: oper is not in onlineopers!" << std::endl;
+#endif
 
                }
 
@@ -338,24 +343,34 @@ void PARSER_FUNC (Parser::parseN)
         User *origin = services.findUser(tempString);
 	if(origin==0)
 	  {
+#ifdef DEBUG
 	     std::cout << "ParseN:  could not find the user named " << OLDorigin << std::endl;
 	     std::cout << "ParseN:  this is a fatal error - bailing ;-)" << std::endl;
+#endif
 	     exit(1);
 	  }
 	
         String newnick=tokens.nextToken().trim();
+#ifdef DEBUG
 	std::cout << "ParseN:" << newnick << std::endl;
+#endif
         services.setNick(*origin, newnick); 
         services.getDatabase().dbDelete("kills", "nick='"+OLDorigin+"'");
 	if(services.isNickRegistered(origin->getNickname()))
 	  {
+#ifdef DEBUG
 	     std::cout << "Nick is registered" << std::endl;
+#endif
 	     if(!origin->isIdentified(origin->getNickname()))
 	       {
+#ifdef DEBUG
 		  std::cout << "it isn't identified" << std::endl;
+#endif
 		  if(!origin->isPending())
 		    {
+#ifdef DEBUG
 		       std::cout << "its not pending" << std::endl;
+#endif
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
 		       /* He's an annoying little pratt isn't he?
@@ -363,25 +378,33 @@ void PARSER_FUNC (Parser::parseN)
 			*/
 		       if(origin->modNick())
 			 {
+#ifdef DEBUG
 			    std::cout << "they want modnick :-)" << std::endl;
+#endif
 		       	   origin->addCheckIdentify();
 			 }
+#ifdef DEBUG
 		       else
 			 {
 			    std::cout << "they dont want modnick" << std::endl;
 			 }
+#endif
 		       
 		    }
+#ifdef DEBUG
 		  else
 		    {
 		       std::cout << "its pending status" << std::endl;
 		    }
+#endif
 		  
 	       }
+#ifdef DEBUG
 	     else
 	       {
 		  std::cout << "nick already identified" << std::endl;
 	       }
+#endif
 	     
 	  }
 	return;
@@ -400,8 +423,10 @@ void PARSER_FUNC (Parser::parseN)
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
 				      vwhost, server, modes, realname);
    if (newNick == 0) {
+#ifdef DEBUG
       std::cout << "That client wasn't such a nice fellow afterall :(" << 
 	std::endl;
+#endif
       return;
    }
 
@@ -438,8 +463,10 @@ void
 
    // preserve sanity
    if (origin == 0) {
+#ifdef DEBUG
       std::cout << "privmsg from non-user or something: " << OLDorigin << 
 	std::endl;
+#endif
       return;
    }
    
@@ -474,7 +501,9 @@ void
 	services.getIRCDome().parseLine(message,OLDoriginl);
 	return;
      }
+#ifdef DEBUG
    std::cout << '\'' << target << '\'' << std::endl;
+#endif
    if(target[0]=='#')
      {
 	//Oke channel msg :>

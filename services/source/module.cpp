@@ -24,8 +24,11 @@
  *
  */
 
+#include <exordium/config.h>
 #include <iostream>
-#include <cassert>
+#ifdef DEBUG
+# include <cassert>
+#endif
 #include <exordium/conf.h>
 #include <exordium/services.h>
 #include <exordium/database/database.h>
@@ -115,11 +118,15 @@ namespace {
 	   
 	 // Create new database Instance
 	 db = new CDatabase(config);
+#ifdef DEBUG
 	 assert(db != 0);
+#endif
 	 
 	 // Create the new services instance - Passing sql YAY :|
 	 services = new Services(daemon, config, *db);
+#ifdef DEBUG
 	 assert(services != 0);
+#endif
 
 #ifdef DEBUG
 	 std::clog << "Services started, beginning initalisation" << std::endl;

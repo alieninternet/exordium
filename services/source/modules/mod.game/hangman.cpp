@@ -25,6 +25,8 @@
  *
  */
 
+#include <exordium/config.h>
+
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -257,7 +259,9 @@ bool Hangman::getLevelData(unsigned int numChars)
    std::ifstream words("/usr/share/dict/words");
    if(words.fail())
    {
+#ifdef DEBUG
       std::cout << "File /usr/share/dict/words does not exist\n";
+#endif
       return false;
    }
 
@@ -276,8 +280,10 @@ bool Hangman::getLevelData(unsigned int numChars)
 
    int id = (int)(((float)wordList.size()+1.0) * rand() / RAND_MAX);
 
+#ifdef DEBUG
    std::cerr << "ID = " << id << std::endl;
    std::cerr << "SIZE = " << wordList.size() << std::endl;
+#endif
    word = wordList[id].toLower();
 
    return true;
@@ -352,7 +358,9 @@ EXORDI8_FUNC(Hangman::parseSTART)
 
    if(!getLevelData(level))
    {
+#ifdef DEBUG
       std::cerr << "Error couldn't load dictionary\n";
+#endif
       return false;
    }
 
@@ -422,8 +430,10 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    else
    {
       int idx = word.find(guess[0]);
+#ifdef DEBUG
       std::cout << "Index = " << idx << " of letter " << guess[0] << 
         " in word " << word << std::endl;
+#endif
 
       if(idx < 0)
       {
@@ -503,8 +513,10 @@ void Hangman::showWord(const Exordium::User& player)
    for(unsigned int i = 0; i < word.length(); i++)
    {
       int idx = correctGuesses.find(word[i]);
+#ifdef DEBUG
       std::cout << "Index = " << idx << " of letter " << word[i] << 
          " in correctGuesses " << correctGuesses << std::endl;
+#endif
 
       if(idx < 0)
       {
@@ -527,7 +539,9 @@ void Hangman::showWord(const Exordium::User& player)
  */
 void Hangman::showHangman(const Exordium::User& player)
 {
+#ifdef DEBUG
    std::cout << "Wrong guesses" << numWrongGuesses << std::endl;
+#endif
    if(numWrongGuesses > 0)
    {
       for(int i = 0; i < 7; i++)

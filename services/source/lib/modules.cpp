@@ -24,11 +24,11 @@
  *
  */
 
+#include "exordium/config.h"
 #include <sstream>
 #include <algorithm>
 #include <iomanip>
 #include "exordium/modules.h"
-#include "exordium/config.h"
 
 using namespace Exordium;
 using AISutil::String;
@@ -100,11 +100,13 @@ Service* const Modules::loadModule(const String& fileName,
 	return 0;
      }
 
+#ifdef DEBUG
    std::cout << "Loaded module '" <<
      service->getModuleInfo().fullName << "' version " <<
      service->getModuleInfo().versionMajor << '.' <<
      service->getModuleInfo().versionMinor <<
      std::endl;
+#endif
 
    // Fix up the name, since we use it twice (may as well convert it once)
    String moduleName = service->getName().IRCtoLower();
@@ -251,7 +253,9 @@ void
 	  {
 
 	     /* Ok this module wants to know about signons */
+#ifdef DEBUG
 	     std::cout << tmp << " would like to know when someone signs on" << std::endl;
+#endif
 	     (*it).second->service->handleClientSignon(origin);
 	  }
 
@@ -275,7 +279,9 @@ void
 	   Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY)
 	  {
 	     /* Ok this module wants to know about aways */
+#ifdef DEBUG
 	     std::cout << tmp << " would like to know when someone goes away" << std::endl;
+#endif
 	     (*it).second->service->handleAway(origin,message);
 	  }
 
@@ -290,7 +296,9 @@ void
  */
 String Modules::dumpModules(void) const
 {
+#ifdef DEBUG
    std::cout << "Modules loaded: ";
+#endif
    std::ostringstream tmp;
 
    // Iterate through the module list
@@ -300,9 +308,11 @@ String Modules::dumpModules(void) const
 	tmp << (*it).first << ' ';
      }
 
+#ifdef DEBUG
    // output it to stdout.. temporary??
    std::cout << tmp.str() << std::endl;
-
+#endif
+   
    // Return the list
    return tmp.str();
 }

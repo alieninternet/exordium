@@ -56,12 +56,16 @@ void CMySQL::dbConnect()
       }
       else
       {
+#ifdef DEBUG
          std::cout << "Error connecting to database: " << mysql_error(mysql) << std::endl;
+#endif
          exit(1); // should find a better way
       }
    }
+#ifdef DEBUG
   else
      std::cout << "WARNING: Tried to connect to DB while already connected!" << std::cout;
+#endif
 }
 
 
@@ -72,8 +76,10 @@ void CMySQL::dbDisconnect()
     mysql_close(mysql);   
     connected=false;
   }
+#ifdef DEBUG
   else
     std::cout << "WARNING: Tried to disconnect from DB while not connected!" << std::cout;
+#endif
 }
 
 
@@ -104,12 +110,13 @@ int CMySQL::dbQuery(String const &query)
      else
        return 0;
    }
+#ifdef DEBUG
   else
    {
      std::cout << "Warning: CMySQL::dbQuery returned an error!" << std::endl;
      std::cout << mysql_error(mysql) << std::endl;
    }
-
+#endif
 }
 
 
@@ -146,8 +153,11 @@ void CMySQL::dbClearRes(void)
 
 void CMySQL::dbSelectDB(String const &dbName)
 {
-  if (mysql_select_db(mysql, dbName.c_str()) != 0)
-    std::cout << "ERROR: Failed to select database: " << dbName << std::endl; 
+  if (mysql_select_db(mysql, dbName.c_str()) != 0) {
+#ifdef DEBUG
+    std::cout << "ERROR: Failed to select database: " << dbName << std::endl;
+#endif
+  }
 }
 
 

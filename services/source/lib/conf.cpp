@@ -27,7 +27,9 @@
 #include "exordium/config.h"
 #include "exordium/conf.h"
 
-#include <cassert>
+#ifdef DEBUG
+# include <cassert>
+#endif
 
 using namespace Exordium;
 
@@ -216,7 +218,10 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleDatabase)
       return false;
    }
    
+#ifdef DEBUG
+   // This is temporary. Database engine selection will replace this..
    std::cout << "Database engine wanted was " << values.front() << std::endl;
+#endif
    
    errString = "Coming soon :) Please use the sql {} config class instead, for now";
    return false;
@@ -229,8 +234,10 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleDatabase)
  */
 LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleModule)
 {
+#ifdef DEBUG
    // Preserve sanity..
    assert(dataVariable != 0);
+#endif
 
    // Check if the first value is empty (the filename field)
    if (values.front().empty()) {
@@ -268,8 +275,10 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleModule)
  */
 LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
 {
+#ifdef DEBUG
    // Preserve sanity..
    assert(dataVariable != 0);
+#endif
 
    // Check if the first value is empty (the filename field)
    if (values.front().empty()) {

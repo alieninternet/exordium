@@ -27,6 +27,7 @@
 #ifndef __SERVICES_H
 #define __SERVICES_H
 
+#include <exordium/config.h>
 #include <kineircd/str.h>
 #include <queue>
 #include <map>
@@ -191,9 +192,11 @@ namespace Exordium {
 	void servicePart (AISutil::String const &, AISutil::String const &);
 	void test(void) const
 	  {
+#ifdef DEBUG
 	     std::cout << 
 	       "This is a simple test, proving we can access services" << 
 	       std::endl;
+#endif
 	  };
 	//Inline Functions Below here.
 	void killnick (AISutil::String const &target,

@@ -51,14 +51,18 @@ void CPgSQL::dbConnect()
 
       if(PQstatus(pgconn) == CONNECTION_BAD)
       {  
+#ifdef DEBUG
         std::cout << "Error connecting to database: " << String::convert(PQerrorMessage(pgconn)) << std::endl;
+#endif
         exit(1); // This is rash, but what can we do if we cant connect to DB
       }
       else
          connected = true;
    }
+#ifdef DEBUG
   else
      std::cout << "WARNING: Tried to connect to DB while already connected!" << std::endl;
+#endif
 }
 
 
@@ -69,8 +73,10 @@ void CPgSQL::dbDisconnect()
      PQfinish(pgconn); 
      connected=false;
   }
+#ifdef DEBUG
   else
     std::cout << "WARNING: Tried to disconnect from DB while not connected!" << std::cout;
+#endif
 }
 
 

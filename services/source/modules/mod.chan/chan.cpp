@@ -24,6 +24,7 @@
  *
  */
 
+#include <exordium/config.h>
 #include "chan.h"
 #include <exordium/channel.h>
 #include <exordium/service.h>
@@ -482,9 +483,13 @@ void
 	return;
      }
    String la = origin.getIDList();
+#ifdef DEBUG
    std::cout << "parseOP(); la is " << la << std::endl;
+#endif
    StringTokens st (la);
+#ifdef DEBUG
    std::cout << "ParseOP(); st is " << st << std::endl;
+#endif
    bool more = false;
    more = st.hasMoreTokens();
    while(more==true)

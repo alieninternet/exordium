@@ -24,6 +24,7 @@
  *
  */
 
+#include "exordium/config.h"
 #include "exordium/services.h"
 #include "exordium/channel.h"
 #include "exordium/user.h"
@@ -126,10 +127,12 @@ namespace Exordium
 			 FD_SET (socky.getFD(), &outputSet);
 		      }
 		 }
+#ifdef DEBUG		 
 	       else
 		 {
 		    std::cout << "not connected..." << std::endl;
 		 }
+#endif
 
 	       switch (select (maxSock, &inputSet, &outputSet, NULL, &timer))
 		 {
@@ -197,13 +200,17 @@ namespace Exordium
 			 ModequeueFlush();
 		      }
 		 }
+#ifdef DEBUG
 	       if(!connected)
 		 {
 		    std::cout << "Not connected" << std::endl;
 		 }
+#endif
 	       if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
 		 {
+#ifdef DEBUG
 		    std::cout << "Beginning Connect Attempt" << std::endl;
+#endif
 		    connect ();
 		 }
 	    }
@@ -248,8 +255,10 @@ namespace Exordium
 	  }
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
+#ifdef DEBUG
 	std::cout << config.getUplinkHost() << std::endl;
 	std::cout << config.getUplinkPort() << std::endl;
+#endif
 	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
 	     logger.logLine ("Fatal Error: Error resolving uplinkhost");
@@ -327,8 +336,10 @@ Services::~Services()
 
 	if(!socky.connect())
 	  {
+#ifdef DEBUG
 	     std::cout << "Socky.connect() returned an error: " <<
 	       socky.getErrorMessage() << std::endl;
+#endif
 
 	  }
 /* I'm not particulary happy with how this is coded.
@@ -887,7 +898,9 @@ Services::checkpoint(void)
 		    User *ptr = findUser(tomod);
 		    if(ptr==0)
 		      {
+#ifdef DEBUG
 			 std::cout << "I could not find the users record.. hence i can't change their nick " << tomod << std::endl;
+#endif
 			 return;
 		      }
 
@@ -925,7 +938,9 @@ bool
 	  {
 	     if (socky.write (outputQueue.front ()))
 	       {
+#ifdef DEBUG
 		  std::cout << "DEBUG TX:" << outputQueue.front() << std::endl;
+#endif
 		  outputQueue.pop ();
 		  return true;
 	       }
@@ -944,7 +959,9 @@ bool
 	  }
 	else
 	  {
+#ifdef DEBUG
 	     std::cout << "Socky is dead" << std::endl;
+#endif
 	     connected = false;
 	     return false;
 	  }
@@ -953,7 +970,9 @@ bool
      }
    else
      {
+#ifdef DEBUG
 	std::cout << "Trying to queueflush when disconnected ?!" << std::endl;
+#endif
 	return false;
      }
 };
@@ -985,11 +1004,15 @@ User* const Services::addUser(const String& name, const int oid)
 User*
   Services::findUser(String &name)
 {
+#ifdef DEBUG
    std::cout << "findUser() - Looking for " << name.IRCtoLower().trim() << std::endl;
+#endif
    User *ptr = users[name.IRCtoLower().trim()];
    if(ptr == 0)
      {
+#ifdef DEBUG
 	std::cout << "findUser() - I could not find the user named :" << name << std::endl;
+#endif
 	return 0;
      }
 
@@ -1004,11 +1027,15 @@ User*
 dChan*
   Services::findChan(String &name)
 {
+#ifdef DEBUG
    std::cout << "findChan() - Looking for " << name.IRCtoLower().trim() << std::endl;
+#endif
    dChan *ptr = chans[name.IRCtoLower().trim()];
    if(ptr==0)
      {
+#ifdef DEBUG
 	std::cout << "findChan() - I could not find the channel" << std::endl;
+#endif
 	return 0;
      }
    return ptr;
@@ -1051,7 +1078,9 @@ bool
 void
   Services::setNick(User &who, String &newnick)
 {
+#ifdef DEBUG
    std::cout << "setNick: " << newnick << std::endl;
+#endif
    user_map::iterator user = users.find(who.getNickname().IRCtoLower());
    users.erase(user);
    users[newnick] = &who;
@@ -1210,7 +1239,9 @@ String
    else
    {
      String ret(database.dbGetValue().data(),(String::size_type)20);
+#ifdef DEBUG
       std::cout << "Pass DEBUG: Size of return is" << ret.length() << std::endl;
+#endif
      return ret;
    }
 
@@ -1580,10 +1611,12 @@ void
 
 	if (!isOper(origin))
 	  addOper(origin, axs);
+#ifdef DEBUG
 	else
 	  {
 	     std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << std::endl;
 	  }
+#endif
 
 	return;
      }
@@ -1611,7 +1644,9 @@ int
      return 0;
    else
    {
+#ifdef DEBUG
      std::cout << "AXS:" << database.dbGetValue() << std::endl;
+#endif
      return database.dbGetValue().toInt();
    }
 }

@@ -24,6 +24,7 @@
  *
  */
 
+#include <exordium/config.h>
 #include <exordium/channel.h>
 #include <exordium/service.h>
 #include <exordium/services.h>
@@ -155,8 +156,10 @@ channel)
 void Module::parseLine(StringTokens& line, User& origin)
 {
    String command = line.nextToken().toLower();
+#ifdef DEBUG
    std::cout << "Trying to throw command to commandtable thingy" << command <<
 std::endl;
+#endif
    for (int i = 0; directCommandTable[i].command != 0; i++) {
       // Does this match?
       if (command == directCommandTable[i].command) {
@@ -226,8 +229,10 @@ GAME_FUNC(Module::handleSTART)
 {
    String chan = line.nextToken().IRCtoLower();
    String game = line.nextToken().toLower();
+#ifdef DEBUG
    std::cout << "have been asked to start "<<game<< " in " << chan <<
 std::endl;
+#endif
    
    // Check for the game
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {

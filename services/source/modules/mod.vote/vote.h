@@ -27,6 +27,7 @@
 #ifndef __VOTE_H_
 #define __VOTE_H_
 
+#include <exordium/config.h>
 #include <kineircd/str.h>
 
 # define VOTE_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)
@@ -52,11 +53,15 @@ public:
    Vote(Exordium::Services& s, const AISutil::String& mn)
      : Service(s, mn)
 	{
-		std::cout << "Vote New()" << std::endl;
+#ifdef DEBUG
+	   std::cout << "Vote New()" << std::endl;
+#endif
 	};
 	~Vote(void)
 	{
-		std::cout << "Vote Deadeded" << std::endl;
+#ifdef DEBUG
+	   std::cout << "Vote Deadeded" << std::endl;
+#endif
 	};
    // Start the module
    void start(void);

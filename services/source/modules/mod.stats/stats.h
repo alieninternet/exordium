@@ -27,6 +27,7 @@
 #ifndef __STATS_H_
 #define __STATS_H_
 
+#include <exordium/config.h>
 #include <kineircd/str.h>
 
 # define STATS_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)
@@ -52,11 +53,15 @@ public:
    Stats(Exordium::Services& s, const AISutil::String& mn)
      : Service(s, mn)
 	{
+#ifdef DEBUG
 		std::cout << "Stats New()" << std::endl;
+#endif
 	};
 	~Stats(void)
 	{
+#ifdef DEBUG
 		std::cout << "Stats Deadeded" << std::endl;
+#endif
 	};
    // Start the module
    void start(void);

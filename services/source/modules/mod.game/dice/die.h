@@ -28,8 +28,11 @@
 #ifndef __DIE_H__
 # define __DIE_H__
 
+# include <exordium/config.h>
 # include <cstdlib>
-# include <cassert>
+# ifdef DEBUG
+#  include <cassert>
+# endif
 
 namespace Dice {
    /* The die class. Each die takes up two bytes of memory, and can be from
@@ -62,7 +65,11 @@ namespace Dice {
 	: faces(f),
           alphabetical(a),
           value(NO_ROLL_YET)
-	{ assert((f >= 2) && (f < 127)); };
+	{
+# ifdef DEBUG
+	   assert((f >= 2) && (f < 127));
+# endif
+	};
       
       // Copy constructor
       Die(const Die& d)

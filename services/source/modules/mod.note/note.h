@@ -27,6 +27,7 @@
 #ifndef __NOTE_H_
 #define __NOTE_H_
 
+#include <exordium/config.h>
 #include <kineircd/str.h>
 #define NOTE_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
 
@@ -56,8 +57,10 @@ public:
    };
   ~Note(void) 
    {
+#ifdef DEBUG
 	std::cout << "YOU BASTARD, YOU KILLED NOTE" << std::endl;
       // Hey, that was a little rude :(  -pickle
+#endif
    };   
    // Start the module
    void start(Exordium::Services& s);
