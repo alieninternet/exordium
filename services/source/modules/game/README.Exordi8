@@ -1,0 +1,119 @@
+
+Exordia8 card game information
+------------------------------
+This is a crappy game designed as proof of concept for an idea totally
+unrelated to anything but the internal structure of the Cards:: functions.
+It was designed to be a simple to program (and simple to play) proof of
+functionality of the Cards:: set of classes, and therefore also proof of
+concept for the Cards:: classes. While being simple to program, it was also
+intended to at least be somewhat enjoyable to play. Who knows if it really
+is. The rules are intended to be balanced in such case as this game becomes
+a regular feature of Exordium.
+
+This game is based on as much as can be remembered of a drunked card game
+marathon one night a few years ago at my holiday house... Needless to say,
+the game is original, however there are enough variations on "eights" for it
+to be easily confused with something similar. I don't know of any game based
+on eights which uses the joker, though.
+
+You're free to use it where-ever you like, but not to claim credit for it.
+Not that I care, really.. I just don't want to meet someone in a few years
+time who tells me his mate invented this game called 'Exordia-Eight' and
+then attempts to teach me the rules.
+
+
+Exordia8 playing rules
+----------------------
+This information should be within the help files so people using Exordium can
+work out how to play this!
+
+This game is based on the "eights" series of card games, but has been
+adapted to be slightly more exciting (to be honest, the original eights card
+game is pretty dim). I did only say slightly, I take no responsibility for
+anymore boredom ensued from playing the game.
+
+This game requires at least 2 players, and can be played by an unlimited
+number of players. However in Exordium's implementation it may be wise to
+limit the number of players both for sanity and to avoid a denial of service
+attack. Let's say, 50 players maximum (but this should be configurable!!)
+
+A standard pack is used, as well as the joker card (53 cards per pack). In
+the event of a large number of players, more packs will be used shuffled
+together to form essentially a larger pack. This will also mean a larger
+number of jokers (more than one), however given the number of players it
+would probably be benificial. To determine how many packs are necessary,
+there should be a maximum of 6 players to a pack to allow for an ample stock.
+
+For the first game, anyone can be the dealer. After each game, the winner
+becomes the dealer.
+
+After shuffling the stock, each player is dealt 5 cards each, one at a
+time, with the dealer retreiving the cards from the top and bottom of the
+stock per card dealing. The balance of the stock remains on the table, face
+down as not to reveal any of the cards within it.
+
+At any time a player may leave the game. All cards in that player's hand are
+forfeited (removed from play entirely).
+
+The dealer is always the first to play his or her hand. Play always begins
+in a clock-wise direction. In the Exordium implementation, clock-wise is
+defined as running through each player in the order that they registered to
+play the game in.
+
+Each play MUST either be a card being put down on the discard pile, or a
+card being taken from the top of the stock pile. Only if the stock pile is
+empty, a player may elect to skip their play.
+
+Each card being placed on the discard pile MUST be of either the same rank 
+(face value) or suit value as the card already on the top of the discard pile. 
+For example, if the last card put on the discard pile was the King of Hearts, 
+any card from the Hearts suit, or any King would be acceptable.
+
+However, the following cards have special meanings:
+
+ - Any '8': These cards are allowed to be placed on any card regardless of
+   suit or rank on the discard pile. Any player placing an 8 on the discard
+   pile must select a suit. The next player must discard a card of that
+   suit, or pick up a card from the stock. If there are no cards left in the
+   stock, then the player has the ability to discard any card they have in
+   their hand - effectivly turning the 8 into a wild-card. When used wisely
+   this play can force a player into having to pick up a card.
+   
+ - Jokers: When discarded, the joker reverses the game play (the last player
+   plays again, and play heads in that direction instead), and requires the
+   next player to pick up three cards from the top of the stock pile. However
+   if the stock pile is empty then the next player is able to hand the person
+   who discarded the joker up to three cards. This play is dangerous, and
+   anyone who has a joker card would be wise to discard it before the stock
+   pile is gone. Having said that, this play can also be used to your
+   advantage if you need to slow someone down.
+   
+ - Jacks: When discarded, the next player may put down any card of a matching
+   suit colour. For example, if the Jack of Hearts was on the top of the
+   discard pile, any card from the Hearts or Diamonds suits would be allowed
+   to be discarded.
+   
+ - Aces: When discarded, the direction of play is reversed.
+ 
+ - Queen of Hearts: When discarded, the person who discarded the card must
+   play another hand. This card cannot be played during the first play.
+
+ - Queen of Spades: If on the top of the discard pile, any card may be placed
+   on top of it - a sort of 'wild card'. However, any card with a special
+   meaning placed on the top of this card will lose its trump status.
+
+ - Any '2': When discarded it might be the starting point of a "sequent". The
+   next player can spark it by discarding a card with the face value of '3'
+   which has the same suit as the discarded '2'. Doing so requires the next
+   player to continue, putting down a '4' of the same suit, and the next
+   player after that will have to put down a '5' etc. If this continues in
+   sequential order to '8', the person discarding the '8' is able to discard
+   two more cards following the '8'. When the sequent is in play (triggered
+   by the '2' followed by a '3' event), anyone who cannot continue it must
+   break the sequent and pick up two cards from the stock (if any) and skip a
+   turn.
+
+
+Exordia8 author
+---------------
+Simon Butcher <simonb@alien.net.au>
