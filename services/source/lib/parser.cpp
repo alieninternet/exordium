@@ -775,6 +775,11 @@ void
   String channel = tokens.nextToken();
   String source = tokens.nextToken();
 
+  // Skip timestamp
+  tokens.nextToken();
+
+  String newTopic = tokens.nextColonToken();
+
   dChan *chan = services.findChan( channel );
 
   if( chan == 0 )
@@ -785,5 +790,5 @@ void
 
   // We only care if the channel is registered
   if( chan->isRegistered() )
-     services.getConfigInternal().getModules().handleTopic( source, *chan );
+     services.getConfigInternal().getModules().handleTopic( source, *chan, newTopic );
 }
