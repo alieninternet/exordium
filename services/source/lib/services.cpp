@@ -52,14 +52,14 @@ using namespace Exordium;
 #define UPLINK "services-hub.ircdome.org"
 
 
-static SIGNAL_HANDLER_FUNC(Rehash)
+static KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
 	Services::helpme("Services received rehash signal","Serv");
 }
 
 Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH};
 
-static SIGNAL_HANDLER_FUNC(Death)
+static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
 	Services::helpme("Services received " + String(sys_siglist[signal]) + " Shutting down", "Serv");
 	exit(0);
