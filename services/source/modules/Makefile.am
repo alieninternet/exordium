@@ -26,4 +26,4 @@ mod_serv_la_LDFLAGS = -avoid-version -module
 mod_oper_la_SOURCES = mod.oper/oper.cpp
 mod_oper_la_LIBADD = ../libexordium.la
 mod_oper_la_LDFLAGS = -avoid-version -module
-SUBDIRS=mod.game mod.love
+SUBDIRS=mod.game mod.love mod.credits

@@ -31,5 +31,5 @@ libexordium_la_SOURCES = lib/conf.cpp \
 			 $(EXORDIUM_TARGET_DB_PGSQL)
 
 			 
-SUBDIRS=. modules
+SUBDIRS=. libbank modules
 

@@ -142,10 +142,12 @@ AC_SUBST(PGSQL_INCDIR)
 AC_SUBST(PGSQL_LDFLAGS)
 
 AC_CONFIG_FILES([source/Makefile
+		 source/libbank/Makefile
 		 source/modules/Makefile
 		 source/modules/mod.game/Makefile
 		 source/modules/mod.game/cards/Makefile
 		 source/modules/mod.love/Makefile
+		 source/modules/mod.credits/Makefile
 		 Makefile
 		 ])
 AC_OUTPUT
