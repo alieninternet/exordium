@@ -33,7 +33,10 @@ endif
 if EXORDIUM_COMPILE_VOTE_MODULE
   EXORDIUM_TARGET_VOTE_MODULE=mod_vote.la
 endif
-  
+if EXORDIUM_COMPILE_HELP_MODULE
+  EXORDIUM_TARGET_HELP_MODULE=mod_help.la
+endif
+
 INCLUDES= -I../../include -I../../../kineircd/include -Iinclude/
 lib_LTLIBRARIES=\
 	$(EXORDIUM_TARGET_BOT_MODULE) \
@@ -44,7 +47,8 @@ lib_LTLIBRARIES=\
 	$(EXORDIUM_TARGET_OPER_MODULE) \
 	$(EXORDIUM_TARGET_SERV_MODULE) \
 	$(EXORDIUM_TARGET_STATS_MODULE) \
-	$(EXORDIUM_TARGET_VOTE_MODULE)
+	$(EXORDIUM_TARGET_VOTE_MODULE) \
+	$(EXORDIUM_TARGET_HELP_MODULE)
 
 CPPFLAGS=
 LDFLAGS=
@@ -132,6 +136,15 @@ mod_vote_la_LDFLAGS= \
 mod_vote_la_SOURCES= \
 	mod.vote/vote.cpp \
 	mod.vote/vote.h
+
+mod_help_la_LIBADD= \
+	../libexordium.la
+mod_help_la_LDFLAGS= \
+	-avoid-version -module
+mod_help_la_SOURCES= \
+	mod.help/help.cpp \
+	mod.help/help.h
+	
 
 SUBDIRS=\
 	$(EXORDIUM_TARGET_CREDITS_MODULE) \

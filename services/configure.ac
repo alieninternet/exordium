@@ -181,7 +181,7 @@ AC_EXORDIUM_MODULE_CHECK([oper], [the IRC operator module])
 AC_EXORDIUM_MODULE_CHECK([serv], [the service service module :)])
 AC_EXORDIUM_MODULE_CHECK([stats], [the statistics module])
 AC_EXORDIUM_MODULE_CHECK([vote], [the voting module])
-
+AC_EXORDIUM_MODULE_CHECK([help], [the help module])
 dnl finish off the line
 echo
 
