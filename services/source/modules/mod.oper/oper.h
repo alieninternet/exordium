@@ -88,6 +88,7 @@ namespace Exordium {
 	 OPER_FUNC(parseGLINE);
 	 OPER_FUNC(parseQLINE);
 	 OPER_FUNC(parseMDEOP);
+	 OPER_FUNC(parseGLOBAL);
       }; // class Module
    }; // namespace OperModule
 }; // namespace Exordium

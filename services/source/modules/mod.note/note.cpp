@@ -35,6 +35,8 @@
 #include <exordium/database/base.h>
 #include <kineircd/str.h>
 
+#include "language.h"
+
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::NoteModule;
@@ -58,7 +60,7 @@ NOTE_FUNC(Module::parseDEL)
    if (num == "all") {
       services->getDatabase().dbDelete("notes",
 				       "nto='" + origin.getNickname() + "'");
-      origin.sendMessage("All notes erased.", getName());
+      origin.sendMessage(GETLANG(note_DEL_NOTES_ERASED), getName());
       services->log(origin,getName(),"Erased all notes");
       return;
    }
@@ -66,22 +68,24 @@ NOTE_FUNC(Module::parseDEL)
    int nbRes = services->getDatabase().dbSelect("id", "notes",
 						"nto='" + 
 						origin.getNickname() + "'");
+   
+   CResult *myRes = services->getDatabase().dbGetResultSet();
+   
    int j = 0;
    
    for (int i = 0; i < nbRes; i++) {
       j++;
       
       if (j == num.toInt()) {
-	 origin.sendMessage(String("Note #\002") + num + "\002 deleted",
+	 origin.sendMessage(GETLANG(note_DEL_NOTE_ERASED,num),
 			    getName());
-	 String ntext = services->getDatabase().dbGetValue();
+	 String ntext = myRes->getValue(i,0);
 	 services->getDatabase().dbDelete("notes", "id='" + ntext + "'");
 	 services->log(origin, "Note", "Deleted a single note");
 	 return;
       }
-      
-      services->getDatabase().dbGetRow();
    }
+   delete myRes;
 }
 
 
@@ -101,11 +105,10 @@ NOTE_FUNC(Module::parseREAD)
 	 String nfrom = myRes->getValue(i,0);
 	 String nsent = myRes->getValue(i,1);
 	 String ntext = myRes->getValue(i,2);
-	 origin.sendMessage("Note #\002" + String::convert(j) + 
-			    "\002 From: \002" + nfrom + "\002 Sent: \002" + 
-			    nsent + "\002",
-			    getName());
-	 origin.sendMessage("\002Message\002: "+ntext, getName());
+	 origin.sendMessage(GETLANG(note_READ_NOTE_ONE,String::convert(j),
+				    nfrom,
+				    nsent),getName());
+	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext), getName());
       }
       services->log(origin, "Note", "Read all notes");
       delete myRes;
@@ -121,18 +124,20 @@ NOTE_FUNC(Module::parseREAD)
 	 String nfrom = myRes->getValue(i,0);
 	 String nsent = myRes->getValue(i,1);
 	 String ntext = myRes->getValue(i,2);
-	 String togo = String("Note #\002") + String::convert(j) + 
-	   "\002 From: \002" + nfrom + "\002 Sent: \002" + nsent + "\002";
+	 String togo = GETLANG(note_READ_NOTE_ONE,
+			       String::convert(j),
+			       nfrom,
+			       nsent);
 	 origin.sendMessage(togo,getName());
-	 String tofo = ntext;
-	 origin.sendMessage("\002Message\002:"+tofo,getName());
+	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext),getName());
 	 services->log(origin, "Note", "Read a single note");
 	 return;
       }
    }
    
-   origin.sendMessage("No such note!", getName());
+   origin.sendMessage(GETLANG(note_READ_NOTE_NO_SUCH_NOTE), getName());
    return;
+
 }
 
 
@@ -140,26 +145,25 @@ NOTE_FUNC(Module::parseLIST) {
    int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes",
 						"nto='" + 
 						origin.getNickname() + "'");
-   
+   CResult *myRes = services->getDatabase().dbGetResultSet();
    int j = 0;
    for(int i=0; i<nbRes; i++) {
       j++;
-      String nfrom = services->getDatabase().dbGetValue(0);
-      String nsent = services->getDatabase().dbGetValue(1);
-      String ntext = services->getDatabase().dbGetValue(2);
-      String togo = String("Note #\002") + String::convert(j) + 
-	"\002 From: \002" + nfrom + "\002 Sent: \002" + nsent + "\002";
-      origin.sendMessage(togo, getName());
-      services->getDatabase().dbGetRow();
+      String nfrom = myRes->getValue(i,0);
+      String nsent = myRes->getValue(i,1);
+      String ntext = myRes->getValue(i,2);
+      String togo = GETLANG(note_READ_NOTE_ONE,
+			    String::convert(j),
+			    nfrom,
+			    nsent);
+       origin.sendMessage(togo, getName());
    }
-   
+   delete myRes;
    if(j == 0) {
-      origin.sendMessage("You have no notes stored", getName());
+      origin.sendMessage(GETLANG(note_LIST_NOTES_NO_NOTES), getName());
       return;
    }
-   
-   String tofo = String("To read a note, type /msg Note read Number");
-   origin.sendMessage(tofo, getName());
+   origin.sendMessage(GETLANG(note_LIST_INSTRUCTIONS), getName());
    services->log(origin, "Note", "Listed their notes");
 }
 
@@ -168,16 +172,8 @@ NOTE_FUNC(Module::parseSEND) {
    String nto = tokens.nextToken();
    String note = tokens.rest();
    
-   if (nto == "") {
-      origin.sendMessage("Usage is: /msg note send Nickname/#Channel Your "
-			 "Message Here",
-			 getName());
-      return;
-   }
-   
-   if(note == "") {
-      origin.sendMessage("Usage is: /msg note send Nickname Your Message Here",
-			 getName());
+   if (nto == "" || note=="") {
+      origin.sendMessage(GETLANG(note_SEND_USAGE),getName());
       return;
    }
    

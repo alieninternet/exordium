@@ -50,6 +50,7 @@ const Module::functionTableStruct Module::functionTable[] =
      { "gline",		&Module::parseGLINE },
      { "qline",		&Module::parseQLINE },
      { "mdeop",		&Module::parseMDEOP },
+     { "global",	&Module::parseGLOBAL },
      { 0, 0 }
 };
 
@@ -86,6 +87,27 @@ OPER_FUNC(Module::parseHELP)
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
    services->doHelp(origin,getName(),word,parm);
+}
+
+OPER_FUNC(Module::parseGLOBAL)
+{
+   String txt = tokens.rest();
+   if(txt=="")
+     {
+	origin.sendMessage("Usage: global Your global here",getName());
+	return;
+     }
+   
+   /* And goo.... */
+   int nbRes = services->getDatabase().dbSelect("servername","onlineservers");
+   CResult *myRes = services->getDatabase().dbGetResultSet();
+   for(int i=0;i<nbRes;i++)
+     {
+	services->queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
+     }
+
+   services->sendGOper("Oper",origin.getNickname()+" sent a \002global\002 message ("+txt+")");
+   
 }
 
 OPER_FUNC(Module::parseMDEOP)

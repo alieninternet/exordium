@@ -124,10 +124,24 @@ mod_note_la_LIBADD=\
 mod_note_la_LDFLAGS=\
 	-avoid-version -module
 mod_note_la_SOURCES=\
+	mod.note/language.cpp \
+	mod.note/language.h \
 	mod.note/note.cpp \
 	mod.note/note.h \
 	mod.note/tables.cpp \
 	mod.note/tables.h
+
+mod.note/language.cpp: mod.note/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T mod.note/language.tpl \
+		$(top_builddir)/autogen/language.def
+		
+mod.note/language.h: mod.note/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T mod.note/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 mod_oper_la_LIBADD= \
 	../libexordium.la

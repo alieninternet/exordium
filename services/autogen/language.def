@@ -138,6 +138,58 @@ langtag = {
 };
 
 /*
+ * Tags for mod_note
+ */
+
+langtag = {
+   name = "note_DEL_NOTES_ERASED";
+   component = "mod_note";
+   data_en = "Success! All notes have been erased";
+};
+
+langtag = {
+   name = "note_DEL_NOTE_ERASED";
+   component = "mod_note";
+   data_en = "Success! Note #%p0 has been deleted!";
+};
+
+langtag = {
+   name = "note_READ_NOTE_ONE";
+   component = "mod_note";
+   data_en = "Note \\b#%p0\\b From: \\b%p1\\b Sent: \\b%p2\\b";
+};
+
+langtag = {
+   name = "note_READ_NOTE_TWO";
+   component = "mod_note";
+   data_en = "\\bMessage\\b: %p0";
+};
+
+langtag = {
+   name = "note_READ_NOTE_NO_SUCH_NOTE";
+   component = "mod_note";
+   data_en = "No such note!";
+};
+
+langtag = {
+   name = "note_LIST_NOTES_NO_NOTES";
+   component = "mod_note";
+   data_en = "You have no notes stored!";
+};
+
+langtag = {
+  name = "note_LIST_INSTRUCTIONS";
+  component = "mod_note";
+  data_en = "To read a note, type /msg note read number";
+};
+
+langtag = {
+  name = "note_SEND_USAGE";
+  component = "mod_note";
+  data_en = "Usage: send nickname/#channel Message here";
+};
+
+/*
  * Tags for mod_chan
  */
 langtag = {
