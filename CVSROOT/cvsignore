@@ -45,3 +45,4 @@ test
 .libs
 *.lock
 Makefile.in
+.deps
