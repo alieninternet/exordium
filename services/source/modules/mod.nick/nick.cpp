@@ -680,6 +680,8 @@ NICK_FUNC (Module::parseIDENTIFY)
    if(Utils::generatePassword(origin.getNickname(),password) == origin.getPass())
     {
        origin.updateIdentified();
+       std::cout << "Tag thing: " << Language::tagMap[Language::nick_IDENTIFY_SUCCESSFUL].tagID << std::endl;
+       
        origin.sendMessage(GETLANG(nick_IDENTIFY_SUCCESSFUL),
 			  getName());
        return;
@@ -730,6 +732,18 @@ bool Module::start(Exordium::Services& s)
 
    // Register and process our language tag name -> tag ID map
    Kine::langs().registerMap(Language::tagMap);
+   
+   // temporary debugging thing :(
+   int foofoo = 0;
+   for (;;) {
+      std::cout << "TagMap " << foofoo << ": tag '" <<
+	Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
+	Language::tagMap[foofoo].tagID << std::endl;
+      
+      if (Language::tagMap[++foofoo].tagName == 0) {
+	 break;
+      }
+   }
    
    // Register ourself to the network
    services->registerService(getName(), getName(), 

@@ -98,6 +98,7 @@ langtag = {
    name = "nick_COMMAND_LIST_END";
    component = "mod_nick";
    data_en = "End of command list";
+   data_de = "Ende der command liste";
 };
 
 langtag = {
@@ -232,6 +233,7 @@ langtag = {
    name = "nick_IDENTIFY_SUCCESSFUL";
    component = "mod_nick";
    data_en = "You have been successfully identified to services";
+   data_de = "(German) Jah Jah ";
 };
 
 langtag = {

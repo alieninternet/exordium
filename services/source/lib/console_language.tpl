@@ -1,4 +1,19 @@
-[+ AutoGen5 template cpp h +]
+[+ AutoGen5 template cpp h +][+
+   ;;; Do we use the tag in the current scope?
+   (define (useThisTag?)
+      (or
+         ;; If 'component' doesn't exist, it is a tag that applies to all mods
+         (not
+            (exist? "component"))
+	    
+	 ;; Check if 'component' is the one for us
+         (string-ci=?
+            (get "component")
+            "lib_console")))
+	    
+   ;;; Define our dodgy counting thingy
+   (define counter 0)
++]
 /* $Id$
  * 
  * Exordium Network Services
@@ -31,10 +46,7 @@
 #include "console_language.h"
 
 Kine::Languages::tagMap_type Exordium::Language::tagMap = {[+ FOR langtag +][+ IF
-   (string-ci=?
-      (get "component")
-      "lib_console")
- +]
+   (useThisTag?) +]
    { "[+
    (string-upcase
       (sprintf "%s%s"
@@ -44,23 +56,33 @@ Kine::Languages::tagMap_type Exordium::Language::tagMap = {[+ FOR langtag +][+ I
    { 0 }
 };
 [+ == h +]
-#ifndef _SOURCE_LIB_LANGUAGE_H_
-# define _SOURCE_LIB_LANGUAGE_H_ 1
+#ifndef _SOURCE_CONSOLE_LANGUAGE_H_
+# define _SOURCE_CONSOLE_LANGUAGE_H_ 1
 
 # include <kineircd/languages.h>
 
 namespace Exordium {
       struct Language { // <=- probably should be namespace too
          // Language tag look-up table (for our language map)
-         enum {[+ FOR langtag +][+ IF 
-   (string-ci=?
-      (get "component")
-      "lib_console")
- +]
-	    [+name+] = [+(for-index)+][+ IF 
+         enum {[+ FOR langtag +][+ IF (useThisTag?) +][+ IF
+   (and
+      (not
+         (first-for?))
+      (> counter 0))
+ +],[+ ENDIF +]
+	    [+name+] = [+
+   ;; Output the counter..	    
+   (. counter)
+ +][+
+ 
+   ;; counter++
+   (set!
+      counter
+      (+ counter 1))
+ +][+ IF 
    (not
       (last-for?))
- +],[+ ENDIF +][+ ENDIF +][+ ENDFOR +]
+ +][+ ENDIF +][+ ENDIF +][+ ENDFOR +]
 	 };
 	 
 	 // The language map
@@ -76,5 +98,5 @@ namespace Exordium {
                      ##__VA_ARGS__)
 
 
-#endif // _SOURCE_LIB_LANGUAGE_H_
+#endif // _SOURCE_CONSOLE_LANGUAGE_H_
 [+ ESAC +]
