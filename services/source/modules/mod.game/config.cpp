@@ -24,6 +24,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include "config.h"
 
 

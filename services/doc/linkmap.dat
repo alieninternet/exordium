@@ -3,130 +3,140 @@
  * Linkage map to show how libraries and modules link within Exordium 
  * and KineIRCd (roughly).
  *
- * Boxes for binaries, diamonds for libraries and ellipses for modules..
+ * Boxes for binaries, diamonds for libraries and ellipses for modules. Black
+ * solid lines for required library links, black dashed lines for optional
+ * library links, blue lines for dynamic modules.
  *
  * This can be generated into a neat little picture using the AT&T GraphViz
  * utilities (found at http://www.research.att.com/sw/tools/graphviz/).
  *
  * eg.
- *   neato -Tpng -o linkmap.png linkmap.dat
+ *   dot -Tpng -o linkmap.png linkmap.dat
  *
  * Note: 
  *  This graph probably needs link-ranks and graph page size to be defined to
- *  make it a lot easier to read...
+ *  make it a lot easier to read. Where possible, things are listed in
+ *  alphabetical order to make things easier to maintain.
  */
 
 digraph intranet_map {
+  graph [splines=true,overlap=false];
   node [style=filled];
+  decorate=true;
+  sep=0.1;
 
   // Binaries
   node [shape=box,color=indianred1];
-  "KineIRCd"
+  {  rank=min;
+     "KineIRCd";
+  };
   
-  // Libraries
+  // External/System Libraries
+//  subgraph "syslibs" {
+//     label="External/System Libraries";
+//     color=black;
+  
+     node [shape=diamond,color=lightblue];
+     "libaisutil";
+     "libdl";
+     "libmysqlclient";
+     "libpq"; // postgresql
+     "libssl";
+//  };
+
+  // KineIRCd library
   node [shape=diamond,color=lightblue];
-  "libais";
-  "libdl";
   "libkineircd";
-  "libmysqlclient";
-  "libservices";
-  "libsnmp";
-  "libssl";
-  "libxml2";
-
-  // KineIRCd module libraries
-  "libkineircd_irc2";
-
-  // Exordium module libraries
-  "libexordium_game";
-
-  // KineIRCd modules
-  node [shape=ellipse,color=lightgoldenrod];
-  "mod_exordium";
-  "mod_http";
-  "mod_iirc1";
-  "mod_irc2server";
-  "mod_irc2user";
-  "mod_snmp";
-
-  // Exordium modules
-  node [shape=ellipse,color=palegreen];
-  "mod_bot.so";
-  "mod_chan.so";
-  "mod_game.so";
-  "mod_love.so";
-  "mod_nick.so";
-  "mod_note.so";
-  "mod_oper.so";
-  "mod_serv.so";
-  "mod_stats.so";
-  "mod_vote.so";
-
-  // Exordium game module modules
-  node [shape=ellipse,color=turquoise];
-  "game_exordi8.so";
-
-  // Linkage map
-  "KineIRCd" -> "libais";
-  "KineIRCd" -> "libkineircd";
-  "libkineircd" -> "mod_exordium" [dir=both];
-  "libkineircd" -> "mod_http" [dir=both];
-  "libkineircd" -> "mod_iirc1" [dir=both];
-  "libkineircd" -> "mod_irc2server" [dir=both];
-  "libkineircd" -> "mod_irc2user" [dir=both];
-  "libkineircd" -> "mod_snmp" [dir=both];
-  "libkineircd" -> "libais";
-  "libkineircd" -> "libdl";
-  "libkineircd" -> "libssl";
-  "mod_http" -> "libais";
-  "mod_http" -> "libxml2";
-  "mod_iirc1" -> "libais";
-  "mod_irc2server" -> "libais";
-  "mod_irc2server" -> "libkineircd_irc2";
-  "mod_irc2user" -> "libais";
-  "mod_irc2user" -> "libkineircd_irc2";
-  "mod_snmp" -> "libais";
-  "mod_snmp" -> "libsnmp";
-  "libkineircd_irc2" -> "libais";
-  "libkineircd_irc2" -> "libkineircd";
   
-  subgraph exordium {
-     bgcolor=snow2;
+  // Linkage map
+  "KineIRCd" -> "libaisutil";
+  "KineIRCd" -> "libkineircd";
+  "libkineircd" -> "mod_exordium" [color=blue,dir=both];
+  "libkineircd" -> "libaisutil";
+  "libkineircd" -> "libdl";
+  "libkineircd" -> "libssl" [style=dashed];
+
+  subgraph "exordium" {
      label="Exordium Network Services";
-     
-     "mod_exordium" -> "libais";
-     "mod_exordium" -> "libdl";
-     "mod_exordium" -> "libservices";
-     "libservices" -> "libais";
-     "libservices" -> "libkineircd";
-     "libservices" -> "libmysqlclient";
-     "libservices" -> "mod_bot.so" [dir=both];
-     "libservices" -> "mod_chan.so" [dir=both];
-     "libservices" -> "mod_game.so" [dir=both];
-     "libservices" -> "mod_love.so" [dir=both];
-     "libservices" -> "mod_nick.so" [dir=both];
-     "libservices" -> "mod_note.so" [dir=both];
-     "libservices" -> "mod_oper.so" [dir=both];
-     "libservices" -> "mod_serv.so" [dir=both];
-     "libservices" -> "mod_stats.so" [dir=both];
-     "libservices" -> "mod_vote.so" [dir=both];
-     "libexordium_game" -> "libais";
+     color=black;
+
+     // The KineIRCd module (Exordium)
+     node [shape=ellipse,color=lightgoldenrod];
+     "mod_exordium";
+  
+     // Exordium library
+     node [shape=diamond,color=lightblue];
+     "libexordium";
+  
+     // Exordium modules
+     node [shape=ellipse,color=palegreen];
+     {  rank=same;
+        "mod_bot.so";
+        "mod_chan.so";
+        "mod_credits.so";
+        "mod_game.so";
+        "mod_love.so";
+        "mod_nick.so";
+        "mod_note.so";
+        "mod_oper.so";
+        "mod_serv.so";
+        "mod_stats.so";
+        "mod_vote.so";
+     };
+
+     // Exordium module libraries
+     node [shape=diamond,color=lightblue];
+     {  rank=same;
+        "libexordium_game";
+        "libexordium_bank";
+     }
+
+     // Exordium game module modules
+     node [shape=ellipse,color=turquoise];
+     {  rank=same;
+        "game_exordi8.so";
+        "game_hangman.so";
+     };
+
+     // Linkage map..
+     "mod_exordium" -> "libaisutil";
+     "mod_exordium" -> "libexordium";
+     "libexordium" -> "libaisutil";
+     "libexordium" -> "libdl";
+     "libexordium" -> "libkineircd";
+     "libexordium" -> "libmysqlclient" [style=dashed];
+     "libexordium" -> "libpq" [style=dashed];
+     "libexordium" -> "mod_bot.so" [color=blue,dir=both];
+     "libexordium" -> "mod_chan.so" [color=blue,dir=both];
+     "libexordium" -> "mod_credits.so" [color=blue,dir=both];
+     "libexordium" -> "mod_game.so" [color=blue,dir=both];
+     "libexordium" -> "mod_love.so" [color=blue,dir=both];
+     "libexordium" -> "mod_nick.so" [color=blue,dir=both];
+     "libexordium" -> "mod_note.so" [color=blue,dir=both];
+     "libexordium" -> "mod_oper.so" [color=blue,dir=both];
+     "libexordium" -> "mod_serv.so" [color=blue,dir=both];
+     "libexordium" -> "mod_stats.so" [color=blue,dir=both];
+     "libexordium" -> "mod_vote.so" [color=blue,dir=both];
+     "libexordium_bank" -> "libexordium";
+     "libexordium_game" -> "libaisutil";
      "libexordium_game" -> "libdl";
-     "libexordium_game" -> "libservices";
-     "libexordium_game" -> "mod_game";
-     "mod_bot.so" -> "libais";
-     "mod_chan.so" -> "libais";
-     "mod_game.so" -> "game_exordi8.so";
-     "mod_game.so" -> "libais";
-     "mod_game.so" -> "libexordium_game";
-     "mod_love.so" -> "libais";
-     "mod_nick.so" -> "libais";
-     "mod_note.so" -> "libais";
-     "mod_oper.so" -> "libais";
-     "mod_serv.so" -> "libais";
-     "mod_stats.so" -> "libais";
-     "mod_vote.so" -> "libais";
-     "game_exordi8.so" -> "libexordium_game" [dir=both];
-     "game_exordi8.so" -> "mod_game";
+     "libexordium_game" -> "libexordium";
+     "libexordium_game" -> "libexordium_bank";
+     "libexordium_game" -> "game_exordi8.so" [color=blue,dir=both];
+     "libexordium_game" -> "game_hangman.so" [color=blue,dir=both];
+     "libexordium_game" -> "game_poker.so" [color=blue,dir=both];
+     "mod_bot.so" -> "libaisutil";
+     "mod_chan.so" -> "libaisutil";
+     "mod_credits.so" -> "libaisutil";
+     "mod_credits.so" -> "libexordium_bank";
+     "mod_game.so" -> "libaisutil";
+     "mod_game.so" -> "libexordium_game" [dir=both];
+     "mod_love.so" -> "libaisutil";
+     "mod_nick.so" -> "libaisutil";
+     "mod_note.so" -> "libaisutil";
+     "mod_oper.so" -> "libaisutil";
+     "mod_serv.so" -> "libaisutil";
+     "mod_stats.so" -> "libaisutil";
+     "mod_vote.so" -> "libaisutil";
   };
 };

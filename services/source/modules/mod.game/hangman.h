@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __HANGMAN_H__
-# define __HANGMAN_H__
+#ifndef _SOURCE_MODULES_GAME_HANGMAN_H_
+# define _SOURCE_MODULES_GAME_HANGMAN_H_ 1
 
 # include <kineircd/str.h>
 # include <utility>
@@ -85,6 +85,9 @@ class Hangman : public ChannelGame {
    void showWord(const Exordium::User& player);
    void showHangman(const Exordium::User& player);
    
+   // Temporary list of words selected from
+   typedef std::vector <AISutil::String> WordList;
+
    // Function handlers
    EXORDI8_FUNC(parsePLAY);
    EXORDI8_FUNC(parseSTART);
@@ -100,10 +103,13 @@ class Hangman : public ChannelGame {
    AISutil::String wrongGuesses;
    AISutil::String correctGuesses;
 
+   // Number of wrong guesses
+   unsigned int numWrongGuesses;
+
  public:
    // Constructor
-   Hangman(Game::Module& module, const AISutil::String& channel,
-Exordium::User& caller);
+   Hangman(Exordium::GameModule::Module& module,
+	   const AISutil::String& channel, Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)
@@ -114,6 +120,6 @@ Exordium::User& caller);
 		  AISutil::StringTokens& tokens);
 };
    
-#endif // __HANGMAN_H__
+#endif // _SOURCE_MODULES_GAME_HANGMAN_H_
 
 

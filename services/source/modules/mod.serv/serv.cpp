@@ -24,41 +24,40 @@
  *
  */
 
-#include "include/serv.h"
-#include "exordium/services.h"
-#include "exordium/channel.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
+#include "serv.h"
+#include "tables.h"
+#include <exordium/services.h>
+#include <exordium/channel.h>
 #include <kineircd/str.h>
-#include <sys/time.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::ServModule;
 
-struct Serv::functionTableStruct const
-  Serv::functionTable[] =
-{
-     {"clist", &Serv::parseCLIST},
-     {"delnick", &Serv::parseDELNICK},
-     {"elist", &Serv::parseELIST},
-     {"nlist", &Serv::parseNLIST},
-     {"helpon", &Serv::parseHELPON},
-     {"help", &Serv::parseHELP},
-     {"user", &Serv::parseUSER},
-     {"raw", &Serv::parseRAW},
-     {"chan", &Serv::parseCHAN},
-     {"die", &Serv::parseDIE},
-     {"news", &Serv::parseNEWS},
-     {"setpass", &Serv::parseSETPASS},
-     {0, 0}
+
+const Module::functionTableStruct Module::functionTable[] = {
+     { "clist",		&Module::parseCLIST },
+     { "delnick",	&Module::parseDELNICK },
+     { "elist",		&Module::parseELIST },
+     { "nlist",		&Module::parseNLIST },
+     { "helpon",	&Module::parseHELPON },
+     { "help",		&Module::parseHELP },
+     { "user",		&Module::parseUSER },
+//     { "raw",		&Module::parseRAW },
+     { "chan",		&Module::parseCHAN },
+     { "die",		&Module::parseDIE },
+     { "news",		&Module::parseNEWS },
+     { "setpass",	&Module::parseSETPASS },
+     { 0, 0}
 };
-void
-  Serv::parseLine (StringTokens& line, User& origin, String const &ch)
-{
-   return;
-}
+
 
 void
-  Serv::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -72,7 +71,7 @@ void
 	       {
 		  origin.sendMessage("You do not have enough access for that command",getName());
 		  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
-		  services->helpme(togo,getName());
+		  servicesFwd.logLine(togo, Log::Warning);
 		  return;
 	       }
 
@@ -83,8 +82,9 @@ void
      }
    origin.sendMessage ("Unrecognised Command", getName());
 }
-void
-  SERV_FUNC (Serv::parseDIE)
+
+
+  SERV_FUNC (Module::parseDIE)
 {
    String reason = tokens.rest();
    if(reason=="")
@@ -94,11 +94,11 @@ void
      }
 
    String togo = "\002"+origin.getNickname()+"\002 - "+reason;
-   services->shutdown(togo);
+   servicesFwd.shutdown(togo);
 }
 
-void
-  SERV_FUNC (Serv::parseSETPASS)
+
+  SERV_FUNC (Module::parseSETPASS)
 {
    String who = tokens.nextToken();
    String newpass = tokens.nextToken();
@@ -108,28 +108,35 @@ void
 	origin.sendMessage(togo,getName());
 	return;
      }
-   if(!services->isNickRegistered(who))
+   if(!regUserListFwd.isRegistered(who))
      {
-
 	origin.sendMessage("Error: Nickname is not registered",getName());
 	return;
      }
-   String epass =  String::convert(services->generatePassword(who,newpass));
-   services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
-   String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
-   services->helpme(togo,getName());
+   String epass =  String::convert(servicesFwd.generatePassword(who,newpass));
+
+   RegisteredUser *u=regUserListFwd.getRegisteredNick(who);
+
+   if(u!=NULL)
+   {
+     u->setPass(epass);  
+     String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
+     servicesFwd.logLine(togo);
+   }
+
 }
 
-void
-  SERV_FUNC (Serv::parseRAW)
-{
-   std::string c = tokens.rest();
-   services->queueAdd(c);
-   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
-   services->helpme(String(togo),getName());
-}
-void
-  SERV_FUNC (Serv::parseNEWS)
+
+//  SERV_FUNC (Module::parseRAW)
+//{
+//   std::string c = tokens.rest();
+//   services->queueAdd(c);
+//   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
+//   services->logLine(String(togo), Log::Warning);
+//}
+
+
+  SERV_FUNC (Module::parseNEWS)
 {
    String command = tokens.nextToken();
    if(command=="")
@@ -187,8 +194,9 @@ void
      }
 
 }
-void
-  SERV_FUNC (Serv::parseCHAN)
+
+
+  SERV_FUNC (Module::parseCHAN)
 {
    String command = tokens.nextToken();
    String channel = tokens.nextToken();
@@ -216,7 +224,7 @@ void
 	int chanid = services->getChannel().getChanID(channel);
 	String oldowner = services->getChannel().getChanOwner(chanid);
 	String togo = origin.getNickname()+" changed \002ownership\002 of "+channel+" "+oldowner+"->"+newowner;
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo));
 	services->getChannel().chanDelAccess(channel,oldowner);
 	services->getChannel().chanAddAccess(channel,newowner,"500");
         services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
@@ -232,7 +240,7 @@ void
 	     return;
 	  }
 	String togo = origin.getNickname() + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo));
 	services->getChannel().deregisterChannel(channel,reason);
 	services->log(origin,getName(),String("Deregistered ")+channel+" for "+reason);
 	return;
@@ -256,14 +264,15 @@ void
 	     return;
 	  }
 	String togo = origin.getNickname() + "\002 registered\002 " + channel + " to "+thenick;
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo));
 	services->getChannel().registerChannel(channel,thenick);
 	services->log(origin,getName(),String("Registered ")+channel+" to "+thenick);
 	return;
      }
 }
-void
-  SERV_FUNC (Serv::parseHELP)
+
+
+  SERV_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
@@ -272,8 +281,8 @@ void
    services->log(origin,getName(),String(tolog));
 }
 
-void
-  SERV_FUNC (Serv::parseUSER)
+
+  SERV_FUNC (Module::parseUSER)
 {
    String command = tokens.nextToken();
    String toadd = tokens.nextToken();
@@ -307,7 +316,7 @@ void
 	  {
 	     origin.sendMessage("Error: That person has higher access than you",getName());
 	     String togo = origin.getNickname()+" tried to modify access for a higher user than themselves ("+toadd+")";
-	     services->helpme(String(togo),getName());
+	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
 	if(taccess==access)
@@ -316,7 +325,7 @@ void
 	     return;
 	  }
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+level;
-	services->helpme(togo,getName());
+	services->logLine(togo);
         services->getDatabase().dbUpdate("access", "access='"+level+"'", "nickname='"+toadd+"'");
 	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
 	return;
@@ -354,13 +363,13 @@ void
 	  {
 	     origin.sendMessage("You do not have enough access to perform that operation on a staff nickname",getName());
 	     String togo = origin.getNickname() + " tried to use \002userdel\002 on a \002staff\002 nickname";
-	     services->helpme(String(togo),getName());
+	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
         services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
 	origin.sendMessage("Command complete",getName());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo), Log::Warning);
 	services->log(origin,getName(),"Deleted "+toadd+" from Serv");
 	return;
      }
@@ -401,7 +410,7 @@ void
         services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
 	origin.sendMessage("Command completed",getName());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo), Log::Warning);
 	String tolog = "Added "+toadd+" to Serv with level "+toadd;
 	services->log(origin,getName(),String(tolog));
 	return;
@@ -409,8 +418,9 @@ void
    origin.sendMessage("Uncognised sub-command",getName());
    return;
 }
-void
-  SERV_FUNC (Serv::parseHELPON)
+
+
+  SERV_FUNC (Module::parseHELPON)
 {
    int access = origin.getAccess(getName());
    if(access>50)
@@ -423,10 +433,11 @@ void
      }
    services->log(origin,"Serv","Failed to become a helper (not enough access)");
    String tosend = origin.getNickname()+" failed to become a helper - Not enough access";
-   services->helpme(tosend,getName());
+   services->logLine(tosend, Log::Warning);
 }
-void
-  SERV_FUNC (Serv::parseNLIST)
+
+
+  SERV_FUNC (Module::parseNLIST)
 {
    String tomatch = tokens.nextToken();
    String dest = tokens.nextToken();
@@ -456,10 +467,11 @@ void
      }
    services->log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
    String togo = origin.getNickname()+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
-   services->helpme(togo,"Serv");
+   services->logLine(togo);
 }
-void
-  SERV_FUNC (Serv::parseELIST)
+
+
+  SERV_FUNC (Module::parseELIST)
 {
    String tomatch = tokens.nextToken();
    String dest = tokens.nextToken();
@@ -483,7 +495,7 @@ void
 	  }
 	services->log(origin,"Serv","Did an elist on "+tomatch);
 	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch;
-	services->helpme(togo,"Serv");
+	services->logLine(togo);
 	return;
      }
    //Else send to given client
@@ -501,11 +513,12 @@ void
      }
    services->log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
    String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
-   services->helpme(togo,"Serv");
+   services->logLine(togo);
 
 }
-void
-  SERV_FUNC (Serv::parseDELNICK)
+
+
+  SERV_FUNC (Module::parseDELNICK)
 {
    String who  = tokens.nextToken();
    String reason = tokens.rest();
@@ -521,13 +534,13 @@ void
      }
 
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
-   services->helpme(togo,"Serv");
+   services->logLine(togo, Log::Warning);
    services->getDatabase().dbDelete("nicks", "nickname='"+who+"'");
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
 
-void
-  SERV_FUNC (Serv::parseCLIST)
+
+  SERV_FUNC (Module::parseCLIST)
 {
    String who = tokens.nextToken();
    String send = tokens.nextToken();
@@ -548,7 +561,7 @@ void
 	int userc = services->getChannel().maxChannelsUser(who);
 	int totala = services->getChannel().maxChannelsAccess();
 	String togo = origin.getNickname() + " did a \002clist\002 on "+who+", "+String::convert(userc)+" matches found from "+String::convert(totalc)+" channels and "+String::convert(totala)+" access entries";
-	services->helpme(togo,"Serv");
+	services->logLine(togo);
 	int theid = services->getRegisteredNickID(who);
         int nbRes = services->getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");
 
@@ -566,24 +579,39 @@ void
      }
 }
 
+
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Serv();
-}
+{ return new Module(); }
+
 
 // Module information structure
-const Serv::moduleInfo_type Serv::moduleInfo =
+const Module::moduleInfo_type Module::moduleInfo =
 {
    "Service Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::NONE
 };
 
+
 // Start the service
-void Serv::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
+   // Set the services field appropriately
    services = &s;
-   services->registerService(getName(),getName(),"ircdome.org","+dz",
-			    "\037Serv\037ice :)");
-   services->serviceJoin(getName(),"#Debug");
+   
+   // Attempt to affirm our database table..
+   if (!services->getDatabase().affirmTable(Tables::serverlistTable)) {
+      services->logLine("Unable to affirm mod_serv database table "
+			"'serverlist'",
+			Log::Fatality);
+      return false;
+   }
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }

@@ -28,7 +28,7 @@
 # include "autoconf.h"
 #endif
 
-#include "config.h"
+#include "exordium/config.h"
 
 #ifdef DEBUG
 # include <cassert>
@@ -38,7 +38,7 @@ using namespace Exordium;
 
 
 // Information used by the configuration parser
-const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
+const AISutil::ConfigParser::defTable_type Config::definitionTable =
 {
      {
 	"CONSOLE", 7,
@@ -47,22 +47,22 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
      },
      {
 	"DATABASE", 4,
-	  (void *)&ConfigInternal::defDatabase, 0,
+	  0, 0,
 	  0, &classHandleDatabase
      },
      {
 	"MODULE", 3,
-	  (void *)&ConfigInternal::defModules, &varHandleModule,
+	  (void *)&Config::defModules, &varHandleModule,
 	  0, &classHandleModule
      },
      { // This should be temporary, being a server is Kine's job
         "SERVICESDESCRIPTION", 12,
-          (void *)&ConfigInternal::defServicesDescription, &varHandleString,
+          (void *)&Config::defServicesDescription, &varHandleString,
           0, 0
      },
      { // This should be temporary, being a server is Kine's job
         "SERVICESHOSTNAME", 12,
-          (void *)&ConfigInternal::defServicesHostname, &varHandleHostName,
+          (void *)&Config::defServicesHostname, &varHandleHostName,
           0, 0
      },
      {
@@ -72,7 +72,7 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
      },
      {
 	"UNDERLINGDESCRIPTION", 13,
-	  (void *)&ConfigInternal::defUnderlingDescription, &varHandleString,
+	  (void *)&Config::defUnderlingDescription, &varHandleString,
 	  0, 0
      },
      {
@@ -82,12 +82,12 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
      },
      { // This should be temporary, being a server is Kine's job
 	"UPLINKHOST", 10,
-	  (void *)&ConfigInternal::defUplinkHost, &varHandleHostName,
+	  (void *)&Config::defUplinkHost, &varHandleHostName,
 	  0, 0
      },
      { // This should be temporary, being a server is Kine's job
         "UPLINKPORT", 10,
-          (void *)&ConfigInternal::defUplinkPort, &varHandleUnsignedShortNoZero,
+          (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
           0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
@@ -95,26 +95,26 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
 
 
 // 'CONSOLE' class definition table
-const AISutil::ConfigParser::defTable_type ConfigInternal::defClassConsole =
+const AISutil::ConfigParser::defTable_type Config::defClassConsole =
 {
      {
         "DESCRIPTION", 4,
-          (void *)&ConfigInternal::defConsoleDescription, &varHandleString,
+          (void *)&Config::defConsoleDescription, &varHandleString,
           0, 0
      },
      {
         "ENABLED", 6,
-          (void *)&ConfigInternal::defConsoleEnabled, &varHandleBoolean,
+          (void *)&Config::defConsoleEnabled, &varHandleBoolean,
           0, 0
      },
      {
         "HOSTNAME", 4,
-          (void *)&ConfigInternal::defConsoleHostname, &varHandleHostName,
+          (void *)&Config::defConsoleHostname, &varHandleHostName,
           0, 0
      },
      {
         "NAME", 4,
-          (void *)&ConfigInternal::defConsoleName, &varHandleStringOneWord,
+          (void *)&Config::defConsoleName, &varHandleStringOneWord,
           0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
@@ -122,7 +122,7 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::defClassConsole =
 
 
 // 'SQL' class definition table
-const AISutil::ConfigParser::defTable_type ConfigInternal::defClassSql =
+const AISutil::ConfigParser::defTable_type Config::defClassSql =
 {
      {
         "DATABASE", 8,
@@ -158,28 +158,15 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::defClassSql =
 };
 
 
-/* Config - Constructor to set up defaults, mainly. These defaults are dopey :(
+
+/* Config - Constructor
  * Original 25/07/2002 pickle
  */
 Config::Config(void)
-  : defUnderlingHostname(/* intentionally empty */),
-
-    // 'SQL' class
-    defSqlDatabase("services"),
-    defSqlHostname("localhost"),
-    defSqlPassword(""),
-    defSqlPort(3306), // mysql port, as assigned by the iana
-    defSqlUsername("root")
-{}
-
-
-/* ConfigInternal - Constructor
- * Original 25/07/2002 pickle
- */
-ConfigInternal::ConfigInternal(void)
   : defServicesDescription("Exordium Network Services"), // temporary
     defServicesHostname("services.exordium.somewhere"), // temporary
     defUnderlingDescription(/* intentionally empty */),
+    defUnderlingHostname(/* intentionally empty */),
     defUplinkHost("irc.somenetwork.somewhere"), // temporary
     defUplinkPort(6667), // temporary
 
@@ -189,30 +176,32 @@ ConfigInternal::ConfigInternal(void)
     defConsoleHostname("somewhere.org"),
     defConsoleName("Exordium"),
 
-    // 'DATABASE' class
-    defDatabase(0)
+
+    // 'SQL' class
+    defSqlDatabase("services"),
+    defSqlHostname("localhost"),
+    defSqlPassword(""),
+    defSqlPort(3306), // mysql port, as assigned by the iana
+    defSqlUsername("root")
+
 {}
 
 
-/* ~ConfigInternal - Destructor
+/* ~Config - Destructor
  * Original 03/10/2002 pickle
  */
-ConfigInternal::~ConfigInternal(void)
+Config::~Config(void)
 {
-   // Delete the database engine
-   if (defDatabase != 0) {
-      delete defDatabase;
-   }
 }
 
 
 /* checkConfig - Check the configuration has been done correctly (fail-safe)
  * Original 03/10/2002 pickle
  */
-const bool ConfigInternal::checkConfig(void) const
+const bool Config::checkConfig(void) const
 {
    // If the database engine has not been initialised, we are broken
-   if (defDatabase == 0) {
+   if (defDatabase == "") {
       return false;
    }
    
@@ -224,14 +213,15 @@ const bool ConfigInternal::checkConfig(void) const
 /* classHandleDatabase - Handle a database{}; configuration class
  * Original ...
  */
-LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleDatabase)
+LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleDatabase)
 {
    // Check if the first value is empty (the database engine type field)
    if (values.empty() || values.front().empty()) {
       errString = "No engine specified";
       return false;
    }
-   
+
+
 #ifdef DEBUG
    // This is temporary. Database engine selection will replace this..
    std::cout << "Database engine wanted was " << values.front() << std::endl;
@@ -246,7 +236,7 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleDatabase)
  * Original 21/07/2002 pickle
  * 18/09/2002 pickle - Modified to suit Exordium
  */
-LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
+LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleModule)
 {
 #ifdef DEBUG
    // Preserve sanity..
@@ -287,7 +277,7 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
  *       the AISutil::ConfigParser routines are designed to be totally 
  *       passive..
  */
-LIBAISUTIL_CONFIG_VARIABLE_HANDLER(ConfigInternal::varHandleModule)
+LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
 {
 #ifdef DEBUG
    // Preserve sanity..

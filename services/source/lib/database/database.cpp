@@ -1,4 +1,4 @@
-/*
+/* $Id$
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -24,142 +24,141 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 
 #include <exordium/database/database.h>
+#include <exordium/config.h>
 
-using namespace Exordium;
+using AISutil::String;
 
-CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
+
+#ifdef HAVE_MYSQL
+  #include "mysql/dbmysql.h"
+#endif
+
+#ifdef HAVE_PGSQL
+  #include "postgresql/dbpgsql.h"
+#endif
+
+namespace Exordium
 {
+
+Database::Database(void)
+{
+
   #ifdef HAVE_MYSQL
-   db_supported_engines.mysql = true;
-  #elif defined(HAVE_PGSQL)
-   db_supported_engines.pgsql = true;
+     db_supported_engines.mysql = true;
+     sqldrivers["MYSQL"]=(SqlBase*) new dbMySQL();
   #endif
 
-  String dbengine = config.getSqlEngine();
+  #ifdef HAVE_PGSQL
+     db_supported_engines.pgsql = true;
+     sqldrivers["PGSQL"]=(SqlBase*) new dbPgSQL();
+  #endif
 
-  logger.logLine("dbengine:" + dbengine);
+  #ifdef HAVE_FIREBIRD
+     db_supported_engines.firebird = true;
+     sqldrivers["FIREBIRD"]=(SqlBase*) new dbFirebird();
+  #endif
 
-  if (dbengine == "mysql")
-   {
+  
+  String dbengine = Config::instance()->getSqlEngine();
 
-     if(db_supported_engines.mysql == false)
-      {
-         std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
-         exit(1); // YUK, gotta find a way to exit more nicely
-      }
-
-     CMySQL *newdb=new CMySQL(config, logger);
-     database =(CBase*) newdb;
-     db_engines = db_mysql;
-   }
-
-  else if(dbengine == "postgresql")
-
-   {
-
-     if(db_supported_engines.pgsql == false)
-      {
-         std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
-         exit(1); // YUK, gotta find a way to exit more nicely
-      }
-
-     database =(CBase*) new CPgSQL(config,logger);
-     db_engines = db_pgsql;
-
-   }
+  if(sqldrivers.find(dbengine.toUpper())!=sqldrivers.end())
+     selectedDriver=dbengine.toUpper();
+  else // doh
+  {
+     //sqldrivers["TEXTFILES"]=(SqlBase*) new dbTextFiles();
+     selectedDriver="TEXTFILES";
+  }
 
 }
 
 
-
-
-int CDatabase::dbSelect(String const &table)
+void Database::useDriver(String const &driver)
 {
-  return database->dbQuery("SELECT * FROM " + table);
+  if(sqldrivers.find(driver)!=sqldrivers.end())
+    selectedDriver=driver;
+}
+
+
+void Database::dbSelect(String const &table)
+{
+  sqldrivers[selectedDriver]->dbSelect("*", table);
 }
 
 
 // Select <fields> from <table>
-int CDatabase::dbSelect(String const &fields, String const &table)
+void Database::dbSelect(String const &fields, String const &table)
 {
-  return database->dbQuery("SELECT " + fields + " FROM " + table);
+  sqldrivers[selectedDriver]->dbSelect(fields, table);
 }
 
 // Select <fields> from <table> where <whereargs>
-int CDatabase::dbSelect(String const &fields, String const &table, String const &whereargs)
+void Database::dbSelect(String const &fields, String const &table, String const &whereargs)
 {
-  return database->dbQuery("SELECT " + fields + " FROM " + table + " WHERE " + whereargs);
+  sqldrivers[selectedDriver]->dbSelect(fields, table, whereargs);
 }
 
 
-// Select count(*) from <table>
-int CDatabase::dbCount(String const &table)
+void Database::dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
 {
-  database->dbQuery("SELECT COUNT(*) FROM " + table);
-  return database->dbGetValue().toInt();
+  sqldrivers[selectedDriver]->dbSelect(fields, table, whereargs, orderargs);
+}
+
+
+
+// Select count(*) from <table>
+void Database::dbCount(String const &table)
+{
+  sqldrivers[selectedDriver]->dbCount(table);
 }
 
 
 // Select count(*) from <table> where <whereargs>
-int CDatabase::dbCount(String const &table, String const &whereargs)
+void Database::dbCount(String const &table, String const &whereargs)
 {
-  database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs);
-  return database->dbGetValue().toInt();
+  sqldrivers[selectedDriver]->dbCount(table, whereargs);
 }
 
-int CDatabase::dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs,LibAIS::String const &orderargs)
-{
-  database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
-  return database->dbGetValue().toInt();
-}
 
 
 // Insert into <table> values <values>
-void CDatabase::dbInsert(String const &table,  String const &values)
+void Database::dbInsert(String const &table,  String const &values)
 {
-  database->dbLock(table);  
-  database->dbBeginTrans();
-  database->dbQuery("INSERT into " + table + " VALUES (" + values + ")");
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+  sqldrivers[selectedDriver]->dbInsert(table, values);
 }
 
 
-void CDatabase::dbUpdate(String const &table, String const &values, String const &whereargs)
+void Database::dbUpdate(String const &table, String const &values, String const &whereargs)
 {
-  database->dbLock(table);
-  database->dbBeginTrans();
-  database->dbQuery("UPDATE " + table + " SET " + values + " WHERE " + whereargs);
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+  sqldrivers[selectedDriver]->dbUpdate(table, values, whereargs);
 }
 
 
 
 // Delete * from <table> where <whereargs>
-void CDatabase::dbDelete(String const &table, String const &whereargs)
+void Database::dbDelete(String const &table, String const &whereargs)
 {
-  database->dbLock(table);
-  database->dbBeginTrans();
-  database->dbQuery("DELETE  FROM " + table + " WHERE " + whereargs);
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+  sqldrivers[selectedDriver]->dbDelete(table, whereargs); 
 }
-
 
 
 // Delete * from <table>
-void CDatabase::dbDelete(String const &table)
+void Database::dbDelete(String const &table)
 {
-  database->dbLock(table);
-  database->dbBeginTrans();
-  database->dbQuery("DELETE FROM " + table);
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+  sqldrivers[selectedDriver]->dbDelete(table); 
 }
+
+
+
+int Database::dbResults(void)
+{
+  return sqldrivers[selectedDriver]->dbResults();
+}
+
+
+};

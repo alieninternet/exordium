@@ -25,19 +25,19 @@
  *
  */
 
-#ifndef __SHUFFLER_H__
-# define __SHUFFLER_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_SHUFFLER_H_
+# define _SOURCE_MODULES_GAME_CARDS_SHUFFLER_H_ 1
 
 # include <functional>
 
 namespace Cards {
    // The shuffler class
    template < class ContainerType >
-   struct shuffler : public std::unary_function < ContainerType, ContainerType > 
+   ContainerType shuffler(ContainerType cardList)
    {
       // Shuffle the stock
-      ContainerType operator()(ContainerType cardList)
-      {
+//      ContainerType operator()(ContainerType cardList)
+//      {
          ContainerType newCardList;
          newCardList.reserve(cardList.size());
                 
@@ -62,9 +62,9 @@ namespace Cards {
          }
           
          return newCardList;
-      };
+//      };
    };
 }; // namespace Cards
    
-#endif // __SHUFFLER_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_SHUFFLER_H_
 

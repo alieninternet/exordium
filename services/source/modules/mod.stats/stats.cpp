@@ -24,78 +24,78 @@
  *
  */
 
-#include "include/stats.h"
-#include "exordium/services.h"
-#include "exordium/nickname.h"
-#include "exordium/channel.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
+#include "stats.h"
+#include "tables.h"
+#include <exordium/database/database.h>
+#include <exordium/services.h>
 #include <kineircd/str.h>
-#include "exordium/sql.h"
-#include <sys/time.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::StatsModule;
 
-namespace Exordium
+
+const Module::functionTableStruct Module::functionTable[] = {
+     { "help",		&Module::parseHELP },
+     { 0, 0 }
+};
+
+
+void Module::parseLine(StringTokens& line, User& origin)
 {
-
-   struct Stats::functionTableStruct const
-     Stats::functionTable[] =
-     {
-	  {"help", &Stats::parseHELP},
-	  {0, 0}
-     };
-   void
-     Stats::parseLine (String const &line, String const &requestor, String const &ch)
-       {
-	  return;
-       }
-
-   void
-     Stats::parseLine (String const &line, String const &requestor)
-       {
-	  StringTokens st (line);
-	  String origin = requestor;
-	  String command = st.nextToken ().toLower ();
-	  for (int i = 0; functionTable[i].command != 0; i++)
-	    {
-	       // Does this match?
-	       if (command == functionTable[i].command)
-		 {
-		    (this->*(functionTable[i].function))(origin, st);
-		    return;
-		 }
-	    }
-	  services.serviceNotice ("Unrecognized Command", "Stats", requestor);
-       }
+   String command = line.nextToken ().toLower ();
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == functionTable[i].command) {
+	 (this->*(functionTable[i].function))(origin, line);
+	 return;
+      }
+   }
+   origin.sendMessage("Unrecognised Command", getName());
+}
    
-   void
-     STATS_FUNC (Stats::parseHELP)
-       {
-	  String word = tokens.nextToken();
-	  String parm = tokens.nextToken();
-	  services.doHelp(origin,"Stats",word,parm);
-	  String tolog = "Did HELP on word " + word + " parm " + parm;
-	  services.log(origin,"Stats",String(tolog));
-       }
 
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Stats(services);
-     }
+STATS_FUNC(Module::parseHELP)
+{
+   String word = tokens.nextToken();
+   String parm = tokens.nextToken();
+   services->doHelp(origin,getName(),word,parm);
+   String tolog = "Did HELP on word " + word + " parm " + parm;
+   services->log(origin,getName(),String(tolog));
+}
 
-   // Module information structure
-   const Stats::moduleInfo_type Stats::moduleInfo = {
-      "Statistics Service",
-	0, 0
-   };
+
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
+
+
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo = {
+   "Statistics Service",
+   0, 0,
+   Exordium::Service::moduleInfo_type::Events::NONE
 };
 
 
 // Start the service
-void Stats::start(void)
+bool Module::start(void)
 {
-   services.registerService(name,name,"ircdome.org","+z",
-			    "Statistics Collection Service");
-   services.serviceJoin(name,"#Debug");
+   // Attempt to affirm our database table..
+   if (!databaseFwd.affirmTable(Tables::statsTable)) {
+      servicesFwd.logLine("Unable to affirm mod_stats database table 'stats'",
+			Log::Fatality);
+      return false;
+   }
+   
+   // Register ourself to the network
+   servicesFwd.registerService(getName(), getName(),
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }

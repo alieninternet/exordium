@@ -25,17 +25,18 @@
  *
  */
 
-#ifndef __EXORDI8_H__
-# define __EXORDI8_H__
+#ifndef _SOURCE_MODULES_GAME_EXORDI8_H_
+# define _SOURCE_MODULES_GAME_EXORDI8_H_ 1
 
 # include <kineircd/str.h>
 # include <utility>
 # include <list>
-# include <stack>
+//# include <stack>
 
 # include "channelgame.h"
 # include "cards/hand.h"
 # include "cards/card.h"
+# include "cards/stock.h"
 
 # define EXORDI8_FUNC(x) \
      bool x(Exordium::User& origin, AISutil::StringTokens& line)
@@ -75,9 +76,9 @@ class Exordi8 : public ChannelGame {
    typedef std::list <player_type> players_type;
    players_type players;
 
-   // The stock of cards
-   typedef std::stack <Cards::Card> stock_type;
-   stock_type stock;
+   // The stock and discard piles 
+   Cards::Stock< Cards::Card > stock;
+   Cards::Stock< Cards::Card > discard;
 
    // The current player
    players_type::iterator currentPlayer;
@@ -112,7 +113,7 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(Game::Module& module, const AISutil::String& channel,
+   Exordi8(Exordium::GameModule::Module& module, const AISutil::String& channel,
 	   Exordium::User& caller);
    
    // Handy creation function
@@ -124,7 +125,7 @@ class Exordi8 : public ChannelGame {
 		  AISutil::StringTokens& tokens);
 };
    
-#endif // __EXORDI8_H__
+#endif // _SOURCE_MODULES_GAME_EXORDI8_H_
    
 
 

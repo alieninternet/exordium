@@ -1,4 +1,4 @@
-/*
+/* $Id$
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -25,137 +25,125 @@
  */
 
 
-#ifndef _DATABASE_H
-#define _DATABASE_H
+#ifndef _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_
+# define _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_ 1
 
 
-#include <libais/string/string.h>
-#include <exordium/database/base.h>
-#include <exordium/conf.h>
-#include <exordium/log.h>
+# include <aisutil/string/string.h>
+# include <exordium/database/base.h>
+# include <exordium/database/table.h>
+#include <exordium/singleton.h>
 
+#include <map>
 
-#ifdef HAVE_MYSQL
- #include "exordium/database/mysql/dbmysql.h"
-#endif
-
-#ifdef HAVE_PGSQL
- #include "exordium/database/postgresql/dbpgsql.h"
-#endif
-
-
-
+using namespace std;
 
 namespace Exordium {
+
+  class Database;
+
+  #define databaseFwd (*Database::instance())
 
   struct db_supported_engines_t
   {
      bool mysql;
      bool pgsql;
+     bool firebird;
   };
 
-
-  class Config;
-  class Log;
 
   /*
    * Public API for databases
    *
    *
    */
-  class CDatabase
+  class Database:public Singleton<Database>
   { 
     public:
-      CDatabase(Config &c, Log &l);
+      friend class Singleton<Database>;
 
 
-      ~CDatabase(void)
-      {
-        delete database;
-      }
+      void dbConnect(void) { sqldrivers[selectedDriver]->dbConnect(); }
+      void dbDisconnect(void) { sqldrivers[selectedDriver]->dbDisconnect(); }
 
-
-
-      void dbConnect(void) { database->dbConnect(); }
-      void dbDisconnect(void) { database->dbDisconnect(); }
-
-      void dbBeginTrans(void) { database->dbBeginTrans(); }
-      void dbCommit(void) { database->dbCommit(); }
-      void dbRollback(void) { database->dbRollback(); }
-
-      void dbSelectDB(LibAIS::String const &dbName) { database->dbSelectDB(dbName); }
-
+      void useDriver(AISutil::String const &driver);
 
       // Select * from <table>
-      int dbSelect(LibAIS::String const &table);
+      void dbSelect(AISutil::String const &table);
 
       // Select <fields> from <table>
-      int dbSelect(LibAIS::String const &fields, LibAIS::String const &table);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table);
 
       // Select <fields> from <table> where <whereargs>
-      int dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
 
       // Select <fields> from <table> where <whereargs> order by <orderargs>
-      int dbSelect(LibAIS::String const &fields, LibAIS::String const &table, LibAIS::String const &whereargs, LibAIS::String const &orderargs);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs);
 
 
       // Select count(*) from <table>
-      int dbCount(LibAIS::String const &table);
+      void dbCount(AISutil::String const &table);
 
       // Select count(*) from <table> where <whereargs>
-      int dbCount(LibAIS::String const &table, LibAIS::String const &whereargs);
+      void dbCount(AISutil::String const &table, AISutil::String const &whereargs);
 
 
 
       // Insert into <table> values <values>
-      void dbInsert(LibAIS::String const &table,  LibAIS::String const &values);
+      void dbInsert(AISutil::String const &table,  AISutil::String const &values);
 
-      void dbUpdate(LibAIS::String const &table, LibAIS::String const &values, LibAIS::String const &whereargs);
+      void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
 
 
 
       // Delete * from <table> where <whereargs>
-      void dbDelete(LibAIS::String const &table, LibAIS::String const &whereargs);
+      void dbDelete(AISutil::String const &table, AISutil::String const &whereargs);
 
       // Delete * from <table>
-      void dbDelete(LibAIS::String const &table);
+      void dbDelete(AISutil::String const &table);
 
+      int dbResults(void);
 
+      void dbQuery(AISutil::String const &query) { sqldrivers[selectedDriver]->dbQuery(query); }
 
+      AISutil::String dbGetValue(void) { return(sqldrivers[selectedDriver]->dbGetValue()); }
+      AISutil::String dbGetValue(int field) { return(sqldrivers[selectedDriver]->dbGetValue(field)); }
 
+      void dbGetRow(void) { sqldrivers[selectedDriver]->dbGetRow(); }
 
-      int dbQuery(LibAIS::String const &query) { return(database->dbQuery(query)); }
+      bool eof(void) { return sqldrivers[selectedDriver]->eof(); }
 
-      LibAIS::String dbGetValue(void) { return(database->dbGetValue()); }
-      LibAIS::String dbGetValue(int field) { return(database->dbGetValue(field)); }
+      int affectedRows(void) { return sqldrivers[selectedDriver]->affectedRows(); }
 
-      void dbGetRow(void) { database->dbGetRow(); }
-
-
-      
-      enum
-      {
-        db_mysql  = 1,
-        db_pgsql  = 2,
-      };
-      
-      typedef int db_engines_t;
-
-    private:
-      Config &config;
-      Log &logger;
-
-      CBase *database;
-
-      // Ensure a certain 'sanity', do not overuse the preprocessor
-      db_engines_t db_engines;
+      /* Affirm a table's structure. Return true if the table exists. If the
+       * table does not exist, or has missing fields, then the database engine
+       * will create the table or add the missing fields respectively. If the
+       * specific engine cannot create/modify tables on the fly or there's any
+       * other reason it was unable to affirm the table structure is identical
+       * to that described in the given table structure, then false will be
+       * returned.
+       */
+      const bool affirmTable(const DatabaseTable& table)
+       { return true; /* <=- temporary; waiting for the new database code*/ };
      
+      
+      
+    private:
+      Database(void);
+
+      // Maps a driver name with an object ptr
+      map<AISutil::String, SqlBase*> sqldrivers;
+
+      AISutil::String selectedDriver;
+   
       db_supported_engines_t db_supported_engines;
 
-  }; // class CDatabase
+      void dbSelectDB(AISutil::String const &dbName) { sqldrivers[selectedDriver]->dbSelectDB(dbName); }
+
+  }; // class Database
 
 }; // namespace Exordium
 
 
 
-#endif // _DATABASE_H
+#endif // _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_

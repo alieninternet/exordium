@@ -24,78 +24,73 @@
  *
  */
 
-#include "include/vote.h"
-#include "exordium/services.h"
-#include "exordium/nickname.h"
-#include "exordium/channel.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
+#include "vote.h"
+#include <exordium/services.h>
 #include <kineircd/str.h>
-#include "exordium/sql.h"
-#include <sys/time.h>
+
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::VoteModule;
 
-namespace Exordium
-{
 
-   struct Vote::functionTableStruct const
-     Vote::functionTable[] =
-     {
-	  {"help", &Vote::parseHELP},
-	  {0, 0}
-     };
-   void
-     Vote::parseLine (String const &line, String const &requestor, String const &ch)
-       {
-	  return;
-       }
+const Module::functionTableStruct Module::functionTable[] = {
+     { "help", &Module::parseHELP },
+     { 0, 0 }
+};
+
 
    void
-     Vote::parseLine (String const &line, String const &requestor)
+     Module::parseLine (StringTokens& line, User& origin)
        {
-	  StringTokens st (line);
-	  String origin = requestor;
-	  String command = st.nextToken ().toLower ();
+	  String command = line.nextToken ().toLower ();
 	  for (int i = 0; functionTable[i].command != 0; i++)
 	    {
 	       // Does this match?
 	       if (command == functionTable[i].command)
 		 {
-		    (this->*(functionTable[i].function))(origin, st);
+		    (this->*(functionTable[i].function))(origin, line);
 		    return;
 		 }
 	    }
-	  services.serviceNotice ("Unrecognized Command", "Vote", requestor);
+	  origin.sendMessage("Unrecognized Command", getName());
        }
    
-   void
-     VOTE_FUNC (Vote::parseHELP)
+
+     VOTE_FUNC (Module::parseHELP)
        {
 	  String word = tokens.nextToken();
 	  String parm = tokens.nextToken();
-	  services.doHelp(origin,"Vote",word,parm);
+	  services->doHelp(origin,getName(),word,parm);
 	  String tolog = "Did HELP on word " + word + " parm " + parm;
-	  services.log(origin,"Vote",String(tolog));
+	  services->log(origin,getName(),String(tolog));
        }
 
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Vote(services);
-     }
 
-   // Module information structure
-   const Vote::moduleInfo_type Vote::moduleInfo = {
-      "Voting Service",
-	0, 0
-   };
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
+
+
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo = {
+   "Voting Service",
+     0, 0,
+     Exordium::Service::moduleInfo_type::Events::NONE
 };
 
 
 // Start the service
-void Vote::start(void)
+bool Module::start(void)
 {
-   services.registerService(name,name,"ircdome.org","+dz",
-			    "Network Voting Service");
-   services.serviceJoin(name,"#Debug");
+   // Register ourself to the network
+   servicesFwd.registerService(getName(), getName(),
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }

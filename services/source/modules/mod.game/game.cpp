@@ -24,15 +24,18 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include <exordium/channel.h>
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
 
 #include "game.h"
 
-using namespace Game;
+using namespace Exordium::GameModule;
 using AISutil::String;
 using AISutil::StringTokens;
 using Exordium::Channel;
@@ -43,9 +46,7 @@ using Exordium::User;
  * Original 13/07/2002 james
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Module();
-}
+{ return new Module(); }
 
 
 // Module information structure
@@ -78,15 +79,18 @@ const Module::commandTable_type Module::channelCommandTable[] =
 /* start - Start the service
  * Original 17/09/2002 pickle
  */
-void Module::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
    
    // Register ourself to the network
    services->registerService(getName(), getName(), 
-			    getConfigData().getHostname(), "+dz",
-			    getConfigData().getDescription());
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }
 
 
@@ -106,15 +110,16 @@ void Module::stop(const String& reason)
       channelGames.erase(channelGames.begin());
    }
    
-   // Umm, we should QUIT from the network here.. but how?
+   // Quit - bye bye!
+   services->serviceQuit(getName(), reason);
 }
 
 
 /* parseLine - Parse an incoming message (which was sent to a channel)
  * Original 13/07/2002 james
  */
-void Module::parseLine(StringTokens& line__, User& origin, const String&
-channel)
+void Module::parseLine(StringTokens& line__, User& origin,
+		       const String& channel)
 {
    // dirty kludge.. at least until the core strips the char properly??
    StringTokens line(line__.rest().substr(1));
@@ -155,8 +160,10 @@ channel)
 void Module::parseLine(StringTokens& line, User& origin)
 {
    String command = line.nextToken().toLower();
+#ifdef DEBUG
    std::cout << "Trying to throw command to commandtable thingy" << command <<
 std::endl;
+#endif
    for (int i = 0; directCommandTable[i].command != 0; i++) {
       // Does this match?
       if (command == directCommandTable[i].command) {
@@ -201,12 +208,19 @@ GAME_FUNC(Module::handleQUOTE)
    }
    
    
-   int j;   
+   int j;
   
    String numb = String::convert(services->getDatabase().dbCount("fortunes"));
    j = services->random(numb.toInt());
-   
-   String thequote = services->getQuote(j);
+
+   // Grab the quote
+   if (services->getDatabase().dbSelect("body", "fortunes", 
+					"id='" + String::convert(j) + 
+					"'") < 1) {
+      return; // eek
+   }
+
+   String thequote = services->getDatabase().dbGetValue();
    StringTokens st (thequote);
    bool more = false;
    more = st.hasMoreTokens();
@@ -215,8 +229,7 @@ GAME_FUNC(Module::handleQUOTE)
       String tq = st.nextToken('\n');
       services->servicePrivmsg(tq, getName(), chan);
       more = st.hasMoreTokens();
-   }
-   
+   }   
 }
 
 /* handleSTART - Parse a 'start' command, to trigger the start of game
@@ -226,8 +239,10 @@ GAME_FUNC(Module::handleSTART)
 {
    String chan = line.nextToken().IRCtoLower();
    String game = line.nextToken().toLower();
+#ifdef DEBUG
    std::cout << "have been asked to start "<<game<< " in " << chan <<
 std::endl;
+#endif
    
    // Check for the game
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
@@ -240,9 +255,9 @@ std::endl;
 	 // Join the channel and say hello
 	 services->serviceJoin(getName(), chan);
 	 services->serverMode(chan, "+o", getName());
-	 services->serviceNotice("Hello " + chan + " (" +
-origin.getNickname() +
-				 " wanted to play " + game + ')',
+	 services->serviceNotice("Hello " + chan + " (" + 
+				 origin.getNickname() + " wanted to play " +
+				 game + ')',
 				 "Game", chan);
 	 
 	 // Leave the loop

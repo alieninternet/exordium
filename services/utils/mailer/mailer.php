@@ -1,5 +1,5 @@
 <?
-$link = mysql_connect("localhost","root","");
+$link = mysql_connect("db","root","");
 mysql_select_db("services");
 $query = "SELECT * from emails";
 $result = mysql_query($query);

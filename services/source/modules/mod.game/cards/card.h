@@ -25,10 +25,11 @@
  *
  */
 
-#ifndef __CARD_H__
-# define __CARD_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_CARD_H_
+# define _SOURCE_MODULES_GAME_CARDS_CARD_H_ 1
 
 # include <kineircd/str.h>
+# include <vector>
 
 namespace Cards {
    /* The card class. This is based on INTERNATIONAL/FRENCH class of cards,
@@ -37,6 +38,10 @@ namespace Cards {
     * all popular modern card games. Each instance of this class will
     * consume byte of memory.
     */
+      
+   class Card;
+   typedef std::vector<Card> cards_type;
+
    class Card {
     public:
       struct Suit { // <=- should be namespace?
@@ -75,27 +80,39 @@ namespace Cards {
       // More names, used for converting card names into proper ranking/suit
       static const char* suitsList[4];
       static const char* ranksList[13];
-      
-      // What kind of suit we are
-      unsigned char suit:3;
+
+      // A union, to allow for speedy copies of the data while saving memory
+      union {
+	 struct {
+	    // What kind of suit we are
+	    unsigned char suit:3;
    
-      /* Our index number
-       * Note that 1 = ACE, 11 = JACK, 12 = QUEEN and 13 = KING.
-       * Special number 14 = JOKER
-       */
-      unsigned char index:4;
-      
+	    /* Our index number
+	     * Note that 1 = ACE, 11 = JACK, 12 = QUEEN and 13 = KING.
+	     * Special number 14 = JOKER
+	     */
+	    unsigned char index:4;
+	 };
+	 
+	 unsigned char conflux;
+      };
+
     public:
       // Constructor (makes an invalid card)
       Card(void)
-	: suit(0), index(0)
+	: conflux(0)
 	{};
       
       // Constructor, using raw information about the suit and index numbers
       Card(const unsigned char s, const unsigned char i = Rank::Joker)
 	: suit(s), index(i)
-	  {};
+	{};
 
+      // Copy constructor
+      Card(const Card& c)
+	: conflux(c.conflux)
+	{};
+      
       // Constructor, but using a string (such as "Queen of hearts")
       Card(const AISutil::String& name);
       
@@ -154,8 +171,12 @@ namespace Cards {
       
       // Help people name a suit..
       static const char* nameSuit(const unsigned char suit);
+
+      // Populate the the pack with the appropriate cards
+      static void populate(cards_type& cards);
    };
+  
 }; // namespace Cards
    
-#endif // __CARD_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_CARD_H_
    

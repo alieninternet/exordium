@@ -25,13 +25,14 @@
  *
  */
 
-#ifndef __STOCK_H__
-# define __STOCK_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_STOCK_H_
+# define _SOURCE_MODULES_GAME_CARDS_STOCK_H_ 1
 
 # include <vector>
 # include <stack>
 
 # include "pack.h"
+# include "shuffler.h"
 
 namespace Cards {
    template < class CardType >
@@ -41,7 +42,7 @@ namespace Cards {
        std::vector < Pack > packs;
        
        // The stock of cards
-       typedef std::stack < CardType > stock_type;
+       typedef std::vector < CardType > stock_type;
        stock_type stock;
 
      public:
@@ -63,7 +64,7 @@ namespace Cards {
            {
              while (!packs.back().isEmpty())
              {
-               stock.push(packs.back().removeCard());
+               stock.push_back(packs.back().removeCard());
              }
 
              // Turf the empty pack
@@ -72,23 +73,30 @@ namespace Cards {
          }
 
        void addCard(CardType card) 
-         { stock.push(card); }
+         { stock.push_back(card); }
 
-       unsigned int total(void)
+       unsigned int total(void) const
          { return stock.size(); }
 
        CardType removeCard(void)
          { 
            if(!stock.empty())
            {
-             CardType card = stock.top();
-             stock.pop();
+             CardType card = stock.back();
+             stock.pop_back();
              return card;
            }
            return 0;
-         }
+         };
+
+      // Shuffle the stock
+      void shuffle(void)
+        {
+          stock_type newCardList = shuffler<stock_type>(stock);
+          stock.swap(newCardList);
+        };
    };
 }; // namespace Cards
    
-#endif // __PACKS_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_STOCK_H_
    

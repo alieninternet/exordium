@@ -24,6 +24,271 @@
  */
 autogen definitions fieldtypes;
 
+/* Note to developers:
+ *
+ * Everything here is group per list, and sorted ALPHABETICALLY by their
+ * names. Keep it that way, so this file is easier to edit.
+ */
+
+
+/*****************************************************************************
+ **                                                                         **
+ **                      FIELD TYPE TRANSLATION LIST                        **
+ **                                                                         **
+ *****************************************************************************/
+
+
 fieldtypes = {
-   name			= "Integer";
+   name			= "Boolean";
+   comment		= "Boolean value, i.e. a single bit";
+   mysql_type		= "BIT"; // Reportedly will actually be a bit soon
+   pgsql_type		= "BOOL";
+};
+
+
+fieldtypes = {
+   name			= "Character1";
+   comment		= "Character (one byte)";
+   mysql_type		= "CHAR";
+   pgsql_type		= "CHAR";
+};
+
+
+fieldtypes = {
+   name			= "FixedLengthBinaryData";
+   comment		= "Fixed length of 8-bit binary data";
+   mysql_type		= "VARCHAR";
+   mysql_typetag	= "BINARY";
+   pgsql_type		= "BYTEA";
+};
+
+
+fieldtypes = {
+   name			= "FixedLengthString";
+   comment		= "A string with a fixed width";
+   mysql_type		= "CHAR";
+   pgsql_type		= "CHAR";
+};
+
+
+fieldtypes = {
+   name			= "SignedInteger8";
+   comment		= "Range: -128 to 127";
+   mysql_type		= "TINYINT";
+   pgsql_type		= "SMALLINT";
+};
+
+
+fieldtypes = {
+   name			= "SignedInteger16";
+   comment		= "Range: -32768 to 32767";
+   mysql_type		= "SMALLINT";
+   pgsql_type		= "SMALLINT";
+};
+
+
+fieldtypes = {
+   name			= "SignedInteger24";
+   comment		= "Range: -8388608 to 8388607";
+   mysql_type		= "MEDIUMINT";
+   pgsql_type		= "INTEGER";
+};
+
+
+fieldtypes = {
+   name			= "SignedInteger32";
+   comment		= "Range: -2147483648 to 2147483647";
+   mysql_type		= "INT";
+   pgsql_type		= "INTEGER";
+};
+
+
+fieldtypes = {
+   name			= "SignedInteger64";
+   comment		= "Range: -9223372036854775808 to 9223372036854775807";
+   mysql_type		= "BIGINT";
+   pgsql_type		= "NUMERIC";
+};
+
+
+fieldtypes = {
+   name			= "Timestamp";
+   comment		= "Format: YYYYDDMMhhmmss";
+   mysql_type		= "TIMESTAMP";
+   pgsql_type		= "TIMESTAMP";
+};
+
+
+fieldtypes = {
+   name			= "UniqueSequence32";
+   comment		= "Auto-incrementing 32-bit number";
+   mysql_type		= "INT";
+   pgsql_type		= "SERIAL";
+};
+
+
+fieldtypes = {
+   name			= "UniqueSequence64";
+   comment		= "Auto-incrementing 64-bit number";
+   mysql_type		= "BIGINT";
+   pgsql_type		= "SERIAL8";
+};
+
+
+fieldtypes = {
+   name			= "UnsignedInteger8";
+   comment		= "Range: 0 to 255";
+   mysql_type		= "TINYINT";
+   mysql_typetag	= "UNSIGNED";
+   pgsql_type		= "SMALLINT"; // No unsigned integers?
+};
+
+
+fieldtypes = {
+   name			= "UnsignedInteger16";
+   comment		= "Range: 0 to 65535";
+   mysql_type		= "SMALLINT";
+   mysql_typetag	= "UNSIGNED";
+   pgsql_type		= "INT"; // No unsigned integers?
+};
+
+
+fieldtypes = {
+   name			= "UnsignedInteger24";
+   comment		= "Range: 0 to 16777215";
+   mysql_type		= "MEDIUMINT";
+   mysql_typetag	= "UNSIGNED";
+   pgsql_type		= "INT"; // No unsigned integers?
+};
+
+
+fieldtypes = {
+   name			= "UnsignedInteger32";
+   comment		= "Range: 0 to 4294967295";
+   mysql_type		= "INT";
+   mysql_typetag	= "UNSIGNED";
+   pgsql_type		= "NUMERIC"; // No unsigned integers?
+};
+
+
+fieldtypes = {
+   name			= "UnsignedInteger64";
+   comment		= "Range: 0 to 18446744073709551615";
+   mysql_type		= "BIGINT";
+   mysql_typetag	= "UNSIGNED";
+   pgsql_type		= "NUMERIC"; // No unsigned integers?
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthBinaryData";
+   comment		= "8-bit binary data";
+   mysql_type		= "CHAR";
+   mysql_typetag	= "BINARY";
+   pgsql_type		= "BYTEA";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthBinaryData8";
+   comment		= "8-bit binary data (Max. 255 bytes)";
+   mysql_type		= "TINYBLOB";
+   pgsql_type		= "BYTEA";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthBinaryData16";
+   comment		= "8-bit binary data (Max. 65535 bytes)";
+   mysql_type		= "BLOB";
+   pgsql_type		= "BYTEA";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthBinaryData24";
+   comment		= "8-bit binary data (Max. 16777215 bytes)";
+   mysql_type		= "MEDIUMBLOB";
+   pgsql_type		= "BYTEA";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthBinaryData32";
+   comment		= "8-bit binary data (Max. 4294967295 bytes)";
+   mysql_type		= "LONGBLOB";
+   pgsql_type		= "BYTEA";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthString";
+   comment		= "Variable width string";
+   mysql_type		= "VARCHAR";
+   pgsql_type		= "TEXT";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthString8";
+   comment		= "Variable width string (Max. 255 chars)";
+   mysql_type		= "TINYTEXT";
+   pgsql_type		= "VARCHAR";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthString16";
+   comment		= "Variable width string (Max. 65535 chars)";
+   mysql_type		= "TEXT";
+   pgsql_type		= "VARCHAR";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthString24";
+   comment		= "Variable width string (Max. 16777215 chars)";
+   mysql_type		= "MEDIUMTEXT";
+   pgsql_type		= "VARCHAR";
+};
+
+
+fieldtypes = {
+   name			= "VariableLengthString32";
+   comment		= "Variable width string (Max. 4294967295 chars)";
+   mysql_type		= "TINYTEXT";
+   pgsql_type		= "VARCHAR";
+};
+
+
+fieldtypes = {
+   name			= "Void";
+   comment		= "No type, an ignored field";
+};
+
+
+
+
+/*****************************************************************************
+ **                                                                         **
+ **                           FIELD FLAGS LIST                              **
+ **                                                                         **
+ *****************************************************************************/
+
+
+fieldflags = {
+   name			= "Key";
+   comment		= "A key";
+};
+
+
+fieldflags = {
+   name			= "NotNull";
+   comment		= "Disallow a null value";
+};
+
+
+fieldflags = {
+   name			= "PrimaryKey";
+   comment		= "The primary key";
 };

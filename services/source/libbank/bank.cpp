@@ -32,16 +32,20 @@
 #include <sstream>
 
 #include "bank.h"
+#include "exordium/database/database.h"
 
 using AISutil::String;
 
 const int Exordium::Bank::getBalance(const Exordium::User& origin)
 {
   int curBalance = 0;
-  if(services.getDatabase().dbSelect("balance", "bank", "nickid='"+String::convert(origin.getOnlineID())+"'") < 1)
-    return -1;
 
-  curBalance = services.getDatabase().dbGetValue().toInt();
+  databaseFwd.dbSelect("balance", "bank", "nickid='"+String::convert(origin.getID())+"'");
+
+  if(databaseFwd.eof())
+    return -1;
+  else
+    curBalance = databaseFwd.dbGetValue().toInt();
 
   return curBalance;
 }
@@ -51,7 +55,7 @@ bool Exordium::Bank::alterBalance(const Exordium::User& origin,
 {
   int curBalance, newBalance;
 
-  // SELECT * FROM credits WHERE nick_id=origin.id
+  // SELECT * FROM credits WHERE nick_id=origin.getID()
  
   newBalance = curBalance + amount;
   if(newBalance < 0)
@@ -65,7 +69,7 @@ bool Exordium::Bank::alterBalance(const Exordium::User& origin,
     << newBalance << std::endl;
 #endif
 
-  // UPDATE INTO credits SET balance='newBalance' WHERE nick_id='origin.id'
+  // UPDATE INTO credits SET balance='newBalance' WHERE nick_id=origin.getID()
   
   return true;
 }

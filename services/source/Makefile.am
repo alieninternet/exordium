@@ -1,36 +1,38 @@
-INCLUDES= -I../include -I../../kineircd/include -Imodules/include
-lib_LTLIBRARIES = lib_mod_exordium.la libservices.la lib_bot.la \
-		  lib_chan.la lib_nick.la lib_note.la lib_cards.la \
-		  lib_game.la lib_love.la 
-lib_mod_exordium_la_SOURCES = module.cpp
-lib_mod_exordium_la_LDFLAGS = -module 
-lib_mod_exordium_la_LIBADD = libservices.la
-libservices_la_LIBADD = -lkineircd -lmysqlclient \
-		        -L../../kineircd/src/lib/
-libservices_la_SOURCES = lib/channel.cpp \
-		         lib/conf.cpp \
-			 lib/ircdome.cpp \
-			 lib/log.cpp \
+INCLUDES=-I../include -I../../kineircd/include -Imodules/include \
+         @PGSQL_INCDIR@ \
+         @MYSQL_INCDIR@
+lib_LTLIBRARIES = mod_exordium.la libexordium.la
+mod_exordium_la_SOURCES = module.cpp
+mod_exordium_la_LDFLAGS = -module -avoid-version \
+                          @PGSQL_LDFLAGS@ \
+                          @MYSQL_LDFLAGS@
+mod_exordium_la_LIBADD = libexordium.la
+libexordium_la_LIBADD = ../../kineircd/src/libkineircd.la
+
+# work out what else needs compiling..
+if EXORDIUM_COMPILE_DB_MYSQL
+  EXORDIUM_TARGET_DB_MYSQL=lib/database/mysql/dbmysql.cpp
+endif
+if EXORDIUM_COMPILE_DB_PGSQL
+  EXORDIUM_TARGET_DB_PGSQL=lib/database/postgresql/dbpgsql.cpp
+endif
+
+libexordium_la_SOURCES = lib/config.cpp \
+			 lib/channel.cpp \
+			 lib/user.cpp \
+ 			 lib/reguser.cpp \
+			 lib/regchannel.cpp \
+			 lib/database/database.cpp \
+			 lib/console.cpp \
 			 lib/modules.cpp \
 			 lib/parser.cpp \
+			 lib/service.cpp \
 			 lib/services.cpp \
-			 lib/sql.cpp \
-			 lib/user.cpp
-lib_bot_la_SOURCES = modules/bot.cpp
-lib_bot_la_LIBADD = libservices.la
-lib_chan_la_SOURCES = modules/chan.cpp
-lib_chan_la_LIBADD = libservices.la
-lib_nick_la_SOURCES = modules/nick.cpp
-lib_nick_la_LIBADD = libservices.la
-lib_note_la_SOURCES = modules/note.cpp
-lib_note_la_LIBADD = libservices.la
-lib_cards_la_SOURCES = modules/game/cards/card.cpp \
-		       modules/game/cards/hand.cpp \
-		       modules/game/cards/pack.cpp 
-lib_game_la_SOURCES = modules/game/channelgame.cpp \
-		      modules/game/exordi8.cpp \
-		      modules/game/game.cpp
-lib_game_la_LIBADD = lib_cards.la libservices.la
-lib_love_la_SOURCES = modules/love/love.cpp 
-lib_love_la_LIBAIDD = libservices.la
+			 $(EXORDIUM_TARGET_DB_MYSQL) \
+			 $(EXORDIUM_TARGET_DB_PGSQL)
+
+			 
+SUBDIRS=. libbank modules
+
+
 

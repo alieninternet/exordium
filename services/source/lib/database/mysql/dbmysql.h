@@ -1,4 +1,4 @@
-/*
+/* $Id$
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -29,35 +29,49 @@
 # define _INCLUDE_EXORDIUM_DATABASE_MYSQL_DBMYSQL_H_ 1
 
 #include <exordium/database/base.h>
+#include <kineircd/str.h>
 
-#include <aisutil/string/string.h>
-
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 namespace Exordium {
 
+
   /*
-   * CMySQL: Class for MySql server
+   * dbMySQL: Class for MySql server
    *
    *
    */
-  class CMySQL:public CBase
+  class dbMySQL:public SqlBase
   { 
     public:
-      CMySQL(Config &c)
-       : CBase(c),
-         mysql(new MYSQL),
+      dbMySQL(void)
+       : mysql(new MYSQL),
          mysqlres(0)
        {};
 
-      ~CMySQL(void);
+      ~dbMySQL(void);
 
       void dbConnect(void);
       void dbDisconnect(void);
 
       void dbSelectDB(AISutil::String const &dbName);
+ 
+      void dbSelect(AISutil::String const &table);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs, AISutil::String const &orderargs);
 
-      int dbQuery(AISutil::String const &query);
+      void dbCount(AISutil::String const &table);
+      void dbCount(AISutil::String const &table, AISutil::String const &whereargs);
+
+      void dbInsert(AISutil::String const &table,  AISutil::String const &values);
+
+      void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
+
+      void dbDelete(AISutil::String const &table, AISutil::String const &whereargs);
+      void dbDelete(AISutil::String const &table);
+
+      void dbQuery(AISutil::String const &query);
 
       AISutil::String dbGetValue(void);
       AISutil::String dbGetValue(int field);
@@ -69,18 +83,26 @@ namespace Exordium {
       void dbLock(AISutil::String const &table);
       void dbUnlock(void);
 
+      int dbResults(void);
+      int dbNbCols(void);
+
+      void getFieldNames(AISutil::String const &table);
+
+      bool eof(void);
+
+      int affectedRows(void);
+
       // Commit and roolback (transaction mode) not implemented in MySQL
       void dbBeginTrans(void) {}
       void dbCommit(void) {}
       void dbRollback(void) {}
-
 
     private:
       MYSQL* const mysql;
       MYSQL_RES *mysqlres;
       MYSQL_ROW mysqlrow;
 
-  }; // class CMySQL
+  }; // class dbMySQL
 
 }; // namespace Exordium
 

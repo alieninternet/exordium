@@ -75,7 +75,7 @@ static const Exordium::DatabaseTable::fields_type notesFields = {
 };
 
 // The 'notes' table itself
-const Exordium::DatabaseTable Exordium::NoteModule::Tables::notes = {
+const Exordium::DatabaseTable Exordium::NoteModule::Tables::notesTable = {
    // The name of the table
    "notes",
    

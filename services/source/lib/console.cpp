@@ -28,10 +28,12 @@
 # include "autoconf.h"
 #endif
 
-#include "exordium/services.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
 #include "exordium/console.h"
+
+#include "exordium/config.h"
+#include "exordium/services.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -57,8 +59,9 @@ void Console::parseLine(const String &line, const String &requestor)
       }
    }
    
-   services.serviceNotice("Unrecognized Command", 
-			  services.getConfig().getConsoleName(), requestor);
+   servicesFwd.serviceNotice("Unrecognized Command", 
+			  configFwd.getConsoleName(),
+			  requestor);
 }
 
 
@@ -67,21 +70,22 @@ void CONSOLE_FUNC(Console::parseMODULE)
    String command = tokens.nextToken();
    
    if(command == "list") {
-      String foo = services.getConfig().getModules().dumpModules();
-      services.serviceNotice("The currently loaded service modules are:",
-			     services.getConfig().getConsoleName(), origin);
-      services.serviceNotice(foo, services.getConfig().getConsoleName(),
+      String foo = configFwd.getModules().dumpModules();
+      servicesFwd.serviceNotice("The currently loaded service modules are:",
+			     configFwd.getConsoleName(),
+			     origin);
+      servicesFwd.serviceNotice(foo,
+			     configFwd.getConsoleName(),
 			     origin);
       return;
    }
    
    if (command == "unload") {
       String name = tokens.nextToken();
-      services.serviceNotice("Unloading module " + name,
-			     services.getConfig().getConsoleName(), origin);
-      services.getConfig().getModules().unloadModule(name,
-						     origin +
-						     " unloaded me :(");
+      servicesFwd.serviceNotice("Unloading module " + name,
+			     configFwd.getConsoleName(),
+			     origin);
+      configFwd.getModules().unloadModule(name, origin +" unloaded me :(");
       return;
    }
    
@@ -89,23 +93,25 @@ void CONSOLE_FUNC(Console::parseMODULE)
 //    String name = tokens.nextToken();
       (void)tokens.nextToken();
       String filename = tokens.nextToken();
-      services.serviceNotice("Attempting to load module",
-			     services.getConfig().getConsoleName(), origin);
+      servicesFwd.serviceNotice("Attempting to load module",
+			     configFwd.getConsoleName(),
+			     origin);
       String errString;
       Service* const service = 
-	services.getConfig().getModules().loadModule(filename, errString);
+	configFwd.getModules().loadModule(filename, errString);
       
       if (service == 0) {
-	 services.serviceNotice("Error loading module: " + errString,
-				services.getConfig().getConsoleName(),
+	 servicesFwd.serviceNotice("Error loading module: " + errString,
+				configFwd.getConsoleName(),
 				origin);
 	 return;
       }
 	
       // Start the module, now that it has been loaded..
-      service->start(services);
+      service->start();
       
-      services.serviceNotice("Module loaded successfully",
-			     services.getConfig().getConsoleName(), origin);
+      servicesFwd.serviceNotice("Module loaded successfully",
+			     configFwd.getConsoleName(),
+			     origin);
    }
 }

@@ -1,4 +1,4 @@
-/*
+/* $Id$
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -30,10 +30,8 @@
 
 
 #include <exordium/database/base.h>
-#include <exordium/conf.h>
 
-
-#include <aisutil/string/string.h>
+#include <kineircd/str.h>
 
 #ifdef HAVE_LIBPQ_FE_H
 # include <libpq-fe.h>
@@ -45,42 +43,64 @@
 namespace Exordium {
 
   /*
-   * CPgSQL: Class for PostgreSql server
+   * dbPgSQL: Class for PostgreSql server
    *
    *
    */
-  class CPgSQL:public CBase
+  class dbPgSQL:public SqlBase
   { 
     public:
-      CPgSQL(Config &c) 
-       : CBase(c),
-         pgres(0),
+      dbPgSQL(void) 
+       : pgres(0),
          pgopts(0),
          pgtty(0),
          clearres(false)
        {};
 
-      ~CPgSQL(void);
+      ~dbPgSQL(void);
+
 
       void dbConnect(void);
       void dbDisconnect(void);
 
       void dbSelectDB(AISutil::String const &dbName);
 
-      int dbQuery(AISutil::String const &query);
+      void dbSelect(AISutil::String const &table);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs);
+      void dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs);
+
+      void dbCount(AISutil::String const &table);
+      void dbCount(AISutil::String const &table, AISutil::String const &whereargs);
+
+      void dbInsert(AISutil::String const &table,  AISutil::String const &values);
+
+      void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
+
+      void dbDelete(AISutil::String const &table, AISutil::String const &whereargs);
+      void dbDelete(AISutil::String const &table);
+
+      void dbQuery(AISutil::String const &query);
 
       AISutil::String dbGetValue(void);
       AISutil::String dbGetValue(int field);
 
       void dbGetRow(void);
 
-
       void dbClearRes(void);
+      int dbResults(void);
+      int dbNbCols(void);
+
+      void getFieldNames(AISutil::String const &table);
+
+      bool eof(void);
+
+      int affectedRows(void);
+
 
       void dbBeginTrans(void);
       void dbCommit(void);
       void dbRollback(void);
-
 
       // Locking is done automatically by postgresql
       void dbLock(AISutil::String const &table) {}
@@ -91,11 +111,11 @@ namespace Exordium {
       PGresult *pgres;
       char *pgopts;
       char *pgtty;
-
+ 
       int currow;
       bool clearres;
 
-  }; // class CPgSQL
+  }; // class dbPgSQL
 
 }; // namespace Exordium
 

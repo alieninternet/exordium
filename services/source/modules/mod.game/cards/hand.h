@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __HAND_H__
-# define __HAND_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_HAND_H_
+# define _SOURCE_MODULES_GAME_CARDS_HAND_H_ 1
 
 # include <set>
 # include <kineircd/str.h>
@@ -58,6 +58,24 @@ namespace Cards {
       void addCard(const Card& card)
 	{ (void)cards.insert(card); };
 
+      // Return the card based on position
+      Cards::Card getCardAtIndex(unsigned int idx)
+        {
+           unsigned int i = 0;
+           cards_type::iterator iter;
+
+	   for(iter = cards.begin(); iter != cards.end(); iter++)
+             {
+               if(i == idx)
+                 {
+                   return *iter;
+                 }
+
+               i++;
+             }
+           return 0;
+        };
+
       // Remove a card from this hand
       Cards::Card removeCard(const Cards::Card& card)
 	{
@@ -73,5 +91,5 @@ namespace Cards {
    };
 }; // namespace Cards
    
-#endif // __HAND_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_HAND_H_
    

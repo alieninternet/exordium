@@ -24,32 +24,36 @@
  *
  */
 
-#include "include/oper.h"
-#include "exordium/service.h"
-#include "exordium/services.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
+#include "oper.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
+
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::OperModule;
 
-struct Oper::functionTableStruct const
-  Oper::functionTable[] =
+
+const Module::functionTableStruct Module::functionTable[] =
 {
-     {"help", &Oper::parseHELP},
-     {"jupe", &Oper::parseJUPE},
-     {0, 0}
+     { "help",		&Module::parseHELP },
+     { "jupe",		&Module::parseJUPE },
+     { 0, 0 }
 };
 
 void
-  Oper::parseLine (StringTokens& line, User& origin, String const &ch)
+  Module::parseLine (StringTokens& line, User& origin, String const &ch)
 {
    return;
 }
 
 void
-  Oper::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -66,16 +70,16 @@ void
    origin.sendMessage ("Unrecognized Command", getName());
 }
 
-void
-  OPER_FUNC (Oper::parseHELP)
+
+OPER_FUNC(Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
    services->doHelp(origin,getName(),word,parm);
 }
 
-void
-  OPER_FUNC (Oper::parseJUPE)
+
+OPER_FUNC(Module::parseJUPE)
 {
    String command = tokens.nextToken();
    if(command=="")
@@ -94,13 +98,14 @@ void
 	  }
      }
 }
+
+
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Oper();
-}
+{ return new Module(); }
+
 
 // Module information structure
-const Oper::moduleInfo_type Oper::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo = {
    "Operator Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::NONE
@@ -108,10 +113,13 @@ const Oper::moduleInfo_type Oper::moduleInfo = {
 
 
 // Start the service
-void Oper::start(Exordium::Services& s)
+bool Module::start(void)
 {
-   services = &s;
-   services->registerService(getName(),getName(),"ircdome.org", "+dz",
-			    "IRC Operator Services");
-   services->serviceJoin(getName(),"#Debug");
+   // Register ourself to the network
+   servicesFwd.registerService(getName(), getName(),
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }

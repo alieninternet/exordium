@@ -41,7 +41,11 @@ namespace Exordium {
     */
    struct DatabaseTable {
       /* The name of the table, used to reference it. This should be considered
-       * case sensitive
+       * case sensitive. Each table name must be prefixed with the module name
+       * which uses it. For example, if module 'foo' needed a 'bah' table, the
+       * table should be 'foobah'. If 'foo' needed a 'foos' table, though,
+       * then 'foos' can be used, so long as the prefix can be destinguished
+       * (in this case 'foo').
        */
       const char* const name;
       
@@ -52,10 +56,25 @@ namespace Exordium {
 	 // The name used to reference this field. Consider this case sensitive
 	 const char* const name;
 	 
-	 // The type of the field
+	 /* The type of the field. Many field types are given here, but not all
+	  * may be available using the user's specified database engine. Each
+	  * database engine will compensate in that event so you are still
+	  * guaranteed types as specified in the comments. For example, you
+	  * may have a table using a variety of integer sizes but the selected
+	  * engine may only have one form of integer. That single form will be
+	  * used.
+	  *
+	  * Note that the engine's table affirmation routines may also use the
+	  * width field to optimise the type.
+	  */
 	 struct Type { // <=- should be namespace :(
-	    enum type {[+FOR fieldtypes ','+]
-	       [+name+][+ENDFOR fieldtypes+]
+	    enum type {[+ FOR fieldtypes +]
+	       [+ (sprintf "%-27s // %s"
+	             (sprintf "%s%s"
+		        (get "name")
+		        (if (not (last-for?)) "," " "))	; no comma on last iter
+		     (get "comment"))
+		+][+ ENDFOR fieldtypes +]
 	    };
 	 };
 	 const Type::type type;
@@ -65,7 +84,22 @@ namespace Exordium {
 	 
 	 // The default value of the field. Make this a null pointer for 'NULL'
 	 const char* const defaultValue;
-      } const fields[];
+	 
+	 // Flags to tighten the field's definition
+	 struct Flags { // <=- should be namespace too :(
+	    enum {[+ FOR fieldflags (define bitvalue 1) +]
+	       [+ (sprintf "%-13s = 0x%08X%s // %s"
+		     (get "name")
+		     (expt 2 (for-index))		; 2^i where i = iter #
+		     (if (not (last-for?)) "," " ")	; no comma on last iter
+		     (get "comment"))
+		+][+ ENDFOR fieldtypes +]
+	    };
+	 };
+	 const unsigned int flags;
+      };
+      typedef Field (fields_type)[];
+      const Field* const& fields;
    }; // struct DatabaseTable
 }; // namespace Exordium
 

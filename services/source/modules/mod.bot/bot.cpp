@@ -24,26 +24,28 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include "bot.h"
 
-#include "exordium/channel.h"
-#include "exordium/service.h"
-#include "exordium/services.h"
+#include <exordium/service.h>
+#include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
-struct Bot::functionTableStruct const
-  Bot::functionTable[] =
-{
-     {"help", &Bot::parseHELP},
-     {0, 0}
+using namespace Exordium::BotModule;
+
+
+const Module::functionTableStruct Module::functionTable[] = {
+     { "help",		&Module::parseHELP },
+     { 0, 0 }
 };
 
 void
-  Bot::parseLine (StringTokens& line, User& origin,
+  Module::parseLine (StringTokens& line, User& origin,
 		  const String& channel)
 {
    StringTokens& st = line;
@@ -64,7 +66,7 @@ void
 }
 
 void
-  Bot::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 
 {
    StringTokens& st = line;
@@ -83,20 +85,19 @@ void
    origin.sendMessage("Unrecognized Command", getName());
 }
 
-void
-  BOT_FUNC (Bot::parseHELP)
+
+BOT_FUNC(Module::parseHELP)
 {
-   services->doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
+   servicesFwd.doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
 }
 
+
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Bot();
-}
+{ return new Module(); }
 
 
 // Module information structure
-const Bot::moduleInfo_type Bot::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo = {
    "Bot Assistance Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::NONE
@@ -104,14 +105,13 @@ const Bot::moduleInfo_type Bot::moduleInfo = {
 
 
 // Start the service
-void Bot::start(Exordium::Services& s)
+bool Module::start(void)
 {
-   // Set the services field appropriately
-   services = &s;
-   
    // Register ourself to the network
-   services->registerService(getName(), getName(), 
-			    getConfigData().getHostname(), "+dz",
+   servicesFwd.registerService(getName(), getName(), 
+			    getConfigData().getHostname(),
 			    getConfigData().getDescription());
-   services->serviceJoin(getName(),"#Debug");
+   
+   // We started okay :)
+   return true;
 }

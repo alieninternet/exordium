@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __CREDITS_H_
-# define __CREDITS_H_ 1
+#ifndef _SOURCE_MODULES_MOD_CREDITS_CREDITS_H_
+# define _SOURCE_MODULES_MOD_CREDITS_CREDITS_H_ 1
 
 # include <exordium/service.h>
 # include <exordium/services.h>
@@ -35,80 +35,73 @@
 
 # include <libbank/bank.h>
 
-# define CREDIT_FUNC(x) \
+# define CREDITS_FUNC(x) \
     void x(Exordium::User& origin, AISutil::StringTokens& line, \
            const AISutil::String& channel)
 
-namespace Credits {
-  // The Credits module
-  class Module : public Exordium::Service
-  {
-    class Exordium::User;
-
-    private:
-      // Our convenient type-definition of our handler functions
-      typedef CREDIT_FUNC(handler_type);
-
-      // Module information structure
-      static const Exordium::Service::moduleInfo_type moduleInfo;
+namespace Exordium {
+   namespace CreditsModule {
+      // The Credits module
+      class Module : public Exordium::Service {
+       private:
+	 // Our convenient type-definition of our handler functions
+	 typedef CREDITS_FUNC(handler_type);
+	 
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
    
-      // Configuration data class
-      Exordium::Service::ConfigData configData;
-
-      // Our command table structure
-      struct commandTable_type {
-        const char* const command;                     // The command name
-        const handler_type Module::* const handler;    // The function
-      };
-
-      // Commands which are sent directly to us
-      static const commandTable_type directCommandTable[];
-
-      // Commands which are sent to a channel we are on
-      static const commandTable_type channelCommandTable[];
-
-      // Bank 
-      Exordium::Bank bank;
-
-      handler_type handleHELP;
-      handler_type handleQUOTE;
-      handler_type handleBALANCE;
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 // Our command table structure
+	 struct commandTable_type {
+	    const char* const command;                     // The command name
+	    const handler_type Module::* const handler;    // The function
+	 };
+	 
+	 // Commands which are sent directly to us
+	 static const commandTable_type directCommandTable[];
+	 
+	 // Commands which are sent to a channel we are on
+	 static const commandTable_type channelCommandTable[];
+	 
+	 // Bank 
+	 Exordium::Bank bank;
+	 
+	 handler_type handleHELP;
+	 handler_type handleBALANCE;
    
-    public:
-      Module(void)
-        : configData(moduleInfo.fullName, "somewhere.org", "Credits"),
-          bank(*services) 
-          { };
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Credits"),
+	     bank(*services) 
+	   {};
+	 
+	 ~Module(void)
+	   {};
+	 
+	 // Start the module
+	 bool start(Exordium::Services& s);
+	 
+	 // Stop the module (called just before a module is unloaded)
+	 void stop(const AISutil::String& reason);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   {};
+	 
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+      }; // class Module
+   }; // namespace CreditsModule
+}; // namespace Exordium
 
-      ~Module(void)
-      {
-#ifdef DEBUG
-		std::cout << "Credits destroyed" << std::endl;
-#endif
-      };
-   
-      // Start the module
-      void start(Exordium::Services& s);
-
-      // Stop the module (called just before a module is unloaded)
-      void stop(const AISutil::String& reason);
-   
-      void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
-      void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-                               const AISutil::String& channel)
-      { };
-
-      // Grab the information structure of a module
-      virtual const moduleInfo_type& getModuleInfo(void) const
-      { return moduleInfo; };
-
-      // Return an appropriate instance of a configuration data class
-      const Exordium::Service::ConfigData& getConfigData(void) const
-      { return configData; };
-      Exordium::Service::ConfigData& getConfigData(void)
-      { return configData; };
-  };
-}; // namespace Credits
-
-
-#endif // __CREDIT_H__
+#endif // _SOURCE_MODULES_MOD_CREDITS_CREDITS_H_

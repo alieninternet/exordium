@@ -24,75 +24,75 @@
  *
  */
 
-#ifndef __BOT_H_
-#define __BOT_H_
+#ifndef _SOURCE_MODULES_BOT_BOT_H_
+# define _SOURCE_MODULES_BOT_BOT_H_ 1
 
-#include "exordium/service.h"
-#include "exordium/services.h"
-#include "exordium/user.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
+#include <exordium/service.h>
+#include <exordium/user.h>
 
 #include <kineircd/str.h>
 
 
-#define BOT_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens, AISutil::String &chan)
+#define BOT_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens, \
+	    AISutil::String& chan)
 
 
-class Bot : public Exordium::Service
-{
-   class Exordium::User;
- private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
+namespace Exordium {
+   namespace BotModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    BOT_FUNC((Module::* const function));
+	 } static const functionTable[];
+	 
+	 void sendMessage(const AISutil::String& to,
+			  const AISutil::String& message)
+	   { services->serviceNotice(message,getName(),to); };
+	 
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Bot")
+	   {};
+
+	 ~Module(void)
+	   {};
+	 
+	 // Start the module
+	 bool start(void);
    
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
-   
-  struct functionTableStruct
-  {
-    char const *command;
-     void BOT_FUNC ((Bot::* const function));
-  };
-  static struct functionTableStruct const functionTable[];
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel);
+	 
+	 
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
+	 
+	 // Return an appropriate instance of a configuration data class
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
+	 
+       private:
+	 BOT_FUNC(parseHELP);
+	 BOT_FUNC(parseQUOTE);
+      }; // class Module
+   }; // namespace BotModule
+}; // namespace Exordium
 
-  void sendMessage(const AISutil::String &to, const AISutil::String &message)
-	{
-		services->serviceNotice(message,getName(),to);
-	};
-public:
-   Bot(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Bot")
-       {};
-
-  ~Bot(void)
-	{
-		std::cout << "Dead Bot" << std::endl;
-	};
-   
-   // Start the module
-   void start(Exordium::Services& s);
-   
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
-   
-   void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-		  const AISutil::String& channel);
-   
-
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
-
-   // Return an appropriate instance of a configuration data class
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
-   
-private:
-  void BOT_FUNC (parseHELP);
-  void BOT_FUNC (parseQUOTE);
-};
-
-
-
-
-#endif
+#endif // _SOURCE_MODULES_BOT_BOT_H_

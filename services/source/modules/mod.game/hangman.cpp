@@ -25,9 +25,16 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
+
+#include <exordium/services.h>
 
 #include "hangman.h"
 
@@ -35,103 +42,83 @@ using AISutil::String;
 using AISutil::StringTokens;
 
 // This is needed for translate since it doesn't like tolower gcc 3.x
-inline char tolower_wrapper (char ch) { return tolower(ch); }
+//inline char tolower_wrapper (char ch) { return tolower(ch); }
 
-const char* hangman[10][9] = {{"",
+const char* hangman[10][7] = {{"",
                                "",
                                "",
                                "",
                                "",
                                "",
-                               "",
-                               "",
-                               "--------------"},
+                               "+------"}, 
                               {"",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /          ",
-                               " |/           ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |            ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |            ",
-                               " |            ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |         |  ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |        /|  ",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |        /|\\",
-                               " |\\          ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        0*0 ",
-                               " |         |  ",
-                               " |        /|\\",
-                               " |\\       /   ",
-                               " | \\         ",
-                               "--------------"},
-                              {"--------------",
-                               " | /       |  ",
-                               " |/        |  ",
-                               " |        O*O ",
-                               " |         |  ",
-                               " |        /|\\",
-                               " |\\       / \\",
-                               " | \\         ",
-                               "--------------"}};
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|      ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|    | ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /| ",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /|\\",
+                               "|      ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /|\\",
+                               "|   /  ",
+                               "|      ",
+                               "+------"}, 
+                              {"+----+ ",
+                               "|    | ",
+                               "|    o ",
+                               "|   /|\\",
+                               "|   / \\",
+                               "|      ",
+                               "+------"}};
  
 /* Hangman - Constructor for a new Hangman game being played on a channel
  * Original 17/09/2002 josullivan
  */
-Hangman::Hangman(Game::Module& module, const String& channel, 
+Hangman::Hangman(Exordium::GameModule::Module& module, const String& channel, 
 		 Exordium::User& caller)
   : ChannelGame(module, channel.IRCtoLower()),
     playing(false)
@@ -228,19 +215,6 @@ Exordium::User* const
       return 0;
    }
    
-   /*
-   // Make sure we are playing too
-   if (!playing) {
-      if (!quiet) {
-	 sendMessage(player,
-		     "The game isn't being played - " + 
-		     players.front().first->getNickname() +
-		     " must deal the pack out first.");
-      }
-      return 0;
-   }
-   */
-   
    return playerInfo;
 }
 
@@ -275,37 +249,6 @@ void Hangman::nextPlayer(const String& why, bool withMatchNotify)
    
    // Tell the channel what is happening
    sendMessage(out.str());
-   
-   /* Show the new player their hand, since it's more than likely that they
-    * need refreshing - especially in games with large numbers of players.
-    */
-   /*
-   showHand(*currentPlayer);
-
-   if (withMatchNotify) {
-      // Tell the player what they need to get..
-      if ((lastDiscardedCard.getIndex() == 8) && (nextSuit != 0)) {
-	 sendMessage(*((*currentPlayer).first), 
-		     String("To discard, you need to put down a card of "
-				  "the ") + Cards::Card::nameSuit(nextSuit) + 
-				  " suit");
-      } else if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
-		 (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen)) {
-	 sendMessage(*((*currentPlayer).first),
-		     "You can put down any card you like, since the last "
-		     "card discarded was the Queen of Spades");
-      } else if (lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) {
-	 sendMessage(*((*currentPlayer).first), 
-		     String("To discard, you need to match the colour "
-				  "of the last card discarded (") +
-		     lastDiscardedCard.getColourName() + ")");
-      } else {
-	 sendMessage(*((*currentPlayer).first),
-		     String("To discard, you need to match the ") +
-		     lastDiscardedCard.getName());
-      }
-   }
-   */
 }
 
 /* getLevelData - reads in a random word depending on the level
@@ -313,12 +256,15 @@ void Hangman::nextPlayer(const String& why, bool withMatchNotify)
  */
 bool Hangman::getLevelData(unsigned int numChars)
 {
+   WordList wordList;
    String str;
 
    std::ifstream words("/usr/share/dict/words");
    if(words.fail())
    {
+#ifdef DEBUG
       std::cout << "File /usr/share/dict/words does not exist\n";
+#endif
       return false;
    }
 
@@ -332,17 +278,17 @@ bool Hangman::getLevelData(unsigned int numChars)
       if(str.length() != numChars)
          continue;
 
-      // This will eventually be a random selection
-      word = str;
-      break;
+      wordList.push_back(str);
    }
 
-   std::transform(word.begin(), word.end(), word.begin(), tolower_wrapper);
+   int id = (int)(((float)wordList.size()+1.0) * rand() / RAND_MAX);
 
-//   for(int i = 0; i < tmpWord.length(); i++)
-//   {
-//      letterMap.insert(LetterMap::value_type(word[i], false)).second;
-//   }
+#ifdef DEBUG
+   std::cerr << "ID = " << id << std::endl;
+   std::cerr << "SIZE = " << wordList.size() << std::endl;
+#endif
+   word = wordList[id].toLower();
+
    return true;
 }
 
@@ -415,10 +361,13 @@ EXORDI8_FUNC(Hangman::parseSTART)
 
    if(!getLevelData(level))
    {
+#ifdef DEBUG
       std::cerr << "Error couldn't load dictionary\n";
+#endif
       return false;
    }
 
+   numWrongGuesses = 0;
    wrongGuesses = "";
    correctGuesses = "";
    playing = true;
@@ -453,7 +402,7 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    bool isCorrect = false;
    bool isComplete = true;
 
-   String guess = line.rest();
+   String guess = line.rest().toLower();
 
    if ((player = checkPlayerStatus(origin)) == 0) {
       return true; // Keep the game alive
@@ -474,45 +423,51 @@ EXORDI8_FUNC(Hangman::parseGUESS)
 
    if(guess.length() > 1)
    {
-      sendMessage(origin, "Try again.. your guess be only one character");
-      return true;
-   }
-
-   int idx = word.find(guess[0]);
-   std::cout << "Index = " << idx << " of letter " << guess[0] << " in word " 
-      << word << std::endl;
-
-   if(idx < 0)
-   {
-      wrongGuesses += guess[0];
-   }
-   else 
-   {
-      idx = correctGuesses.find(guess); 
-      if(idx < 0)
-      {
-         isCorrect = true;
-         correctGuesses += guess[0];
-      }
-   }
-
-   showWord(*player);
-
-   if(wrongGuesses.length() >= maxWrongGuesses)
-   {
-      sendMessage(origin.getNickname() + " has been hung!");
-      playing = false;
-      return false; // End the game!
-   }
-   
-   // Check to see if the word complete
-   for(unsigned int i = 0; i < word.length(); i++)
-   {
-      int idx = correctGuesses.find(word[i]);
-      if(idx < 0)
+      sendMessage(origin.getNickname() + " is trying to solve with '" + guess + "'");
+      if(guess != word)
       {
          isComplete = false;
-         break;
+         numWrongGuesses++;
+      }
+   }
+   else
+   {
+      int idx = word.find(guess[0]);
+#ifdef DEBUG
+      std::cout << "Index = " << idx << " of letter " << guess[0] << 
+        " in word " << word << std::endl;
+#endif
+
+      if(idx < 0)
+      {
+         wrongGuesses += guess[0];
+         isComplete = false;
+         numWrongGuesses++;
+      }
+      else 
+      {
+         idx = correctGuesses.find(guess); 
+         if(idx < 0)
+         {
+            isCorrect = true;
+            correctGuesses += guess[0];
+
+            // Check to see if the word complete
+            for(unsigned int i = 0; i < word.length(); i++)
+            {
+               int idx = correctGuesses.find(word[i]);
+               if(idx < 0)
+               {
+                  isComplete = false;
+                  break;
+               }
+            }
+         }
+         else
+         {
+            numWrongGuesses++;
+            isComplete = false;
+         }
       }
    }
 
@@ -520,10 +475,21 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    if(isComplete)
    {
       sendMessage(origin.getNickname() + " has won!!");
+      sendMessage("The word was '" + word + "'!");
       playing = false;
       return false;
    }
 
+   showWord(*player);
+
+   if(numWrongGuesses >= maxWrongGuesses)
+   {
+      sendMessage(origin.getNickname() + " has been hung!");
+      sendMessage("The word was '" + word + "'!");
+      playing = false;
+      return false; // End the game!
+   }
+   
    // If we got here, do a standard message..
    out << "has chosen '" << guess << "'.";
 
@@ -550,8 +516,10 @@ void Hangman::showWord(const Exordium::User& player)
    for(unsigned int i = 0; i < word.length(); i++)
    {
       int idx = correctGuesses.find(word[i]);
+#ifdef DEBUG
       std::cout << "Index = " << idx << " of letter " << word[i] << 
          " in correctGuesses " << correctGuesses << std::endl;
+#endif
 
       if(idx < 0)
       {
@@ -563,7 +531,7 @@ void Hangman::showWord(const Exordium::User& player)
       }
    }
 
-   out << "\t\t\t\t\t" << "Letters Used: " << wrongGuesses << correctGuesses;
+   out << "          " << "Letters Used: " << wrongGuesses << correctGuesses;
 
    sendMessage(out.str());
    sendMessage(" ");
@@ -574,12 +542,14 @@ void Hangman::showWord(const Exordium::User& player)
  */
 void Hangman::showHangman(const Exordium::User& player)
 {
-   std::cout << "Wrong guesses" << wrongGuesses.length() << std::endl;
-   if(wrongGuesses.length() > 0)
+#ifdef DEBUG
+   std::cout << "Wrong guesses" << numWrongGuesses << std::endl;
+#endif
+   if(numWrongGuesses > 0)
    {
-      for(int i = 0; i < 9; i++)
+      for(int i = 0; i < 7; i++)
       {
-         sendMessage(hangman[wrongGuesses.length() - 1][i]);
+         sendMessage(hangman[numWrongGuesses - 1][i]);
       }
    }
 }

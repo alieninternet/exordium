@@ -34,20 +34,20 @@
 #include <exordium/service.h>
 #include <exordium/services.h>
 #include <kineircd/str.h>
-#include <map>
 
-using namespace Credits;
+
+using namespace Exordium::CreditsModule;
 using AISutil::String;
 using AISutil::StringTokens;
 using Exordium::User;
+
 
 /* service_init - Register ourselves to the core
  * Original 13/07/2002 james
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-     return new Module();
-}
+{ return new Module(); }
+
 
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo = {
@@ -56,35 +56,38 @@ const Module::moduleInfo_type Module::moduleInfo = {
     Exordium::Service::moduleInfo_type::Events::NONE
 };
 
+
 // Our command table for directly sent commands (commands must be lower-case)
 const Module::commandTable_type Module::directCommandTable[] =
 {
-     { "quote",         &Module::handleQUOTE },
      { "help",          &Module::handleHELP },
      { "balance",       &Module::handleBALANCE },
      { 0, 0 }
 };
 
+
 // Our command table for channel commands (commands must be lower-case)
 const Module::commandTable_type Module::channelCommandTable[] =
 {
-     { "quote",         &Module::handleQUOTE },
      { 0, 0 }
 };
+
 
 /* start - Start the service
  * Original 17/09/2002 pickle
  */
-void Module::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
    
    // Register ourself to the network
-   services->registerService(getName(), getName(), 
-			    getConfigData().getHostname(), "+dz",
-			    getConfigData().getDescription());
-
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }
 
 
@@ -123,56 +126,17 @@ std::endl;
 /* handleHELP - Parse the HELP command
  * Original 13/07/2002 james
  */
-CREDIT_FUNC(Module::handleHELP)
+CREDITS_FUNC(Module::handleHELP)
 {
    services->doHelp(origin, getName(), line.nextToken(),
 		    line.nextToken());
 }
 
 
-/* handleQUOTE - Parse the QUOTE command
- * Original 13/07/2002 james
- * Note: Mess :(
- */
-CREDIT_FUNC(Module::handleQUOTE) 
-{
-   return; // eek
-   
-   String chan = "";
-   if(chan != "") {
-      chan = channel;
-   } else {
-      chan = line.nextToken();
-   }
-   
-   if(channel == "") {
-      origin.sendMessage("Usage: quote #channel", getName());
-      return;
-   }
-   
-   
-   int j;   
-  
-   String numb = String::convert(services->getDatabase().dbCount("fortunes"));
-   j = services->random(numb.toInt());
-   
-   String thequote = services->getQuote(j);
-   StringTokens st (thequote);
-   bool more = false;
-   more = st.hasMoreTokens();
-   
-   while (more == true) {
-      String tq = st.nextToken('\n');
-      services->servicePrivmsg(tq, getName(), chan);
-      more = st.hasMoreTokens();
-   }
-   
-}
-
-/* handleSTART - Parse a 'balance' command, returns the users current balance
+/* handleBALANCE - Parse a 'balance' command, returns the users current balance
  * Original 20/10/2002 - josullivan
  */
-CREDIT_FUNC(Module::handleBALANCE)
+CREDITS_FUNC(Module::handleBALANCE)
 {
   int balance = bank.getBalance(origin);
   if(balance > 0)

@@ -25,11 +25,17 @@
  *
  */
 
-#ifndef __DIE_H__
-# define __DIE_H__
+#ifndef _SOURCE_MODULES_GAME_DICE_DIE_H_
+# define _SOURCE_MODULES_GAME_DICE_DIE_H_ 1
+
+# ifdef HAVE_CONFIG_H
+#  include "autoconf.h"
+# endif
 
 # include <cstdlib>
-# include <cassert>
+# ifdef DEBUG
+#  include <cassert>
+# endif
 
 namespace Dice {
    /* The die class. Each die takes up two bytes of memory, and can be from
@@ -62,7 +68,11 @@ namespace Dice {
 	: faces(f),
           alphabetical(a),
           value(NO_ROLL_YET)
-	{ assert((f >= 2) && (f < 127)); };
+	{
+# ifdef DEBUG
+	   assert((f >= 2) && (f < 127));
+# endif
+	};
       
       // Copy constructor
       Die(const Die& d)
@@ -91,5 +101,5 @@ namespace Dice {
    }; // class Die
 }; // namespace Dice
    
-#endif // __DIE_H__
+#endif // _SOURCE_MODULES_GAME_DICE_DIE_H_
    

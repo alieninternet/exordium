@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __POKER_H__
-# define __POKER_H__
+#ifndef _SOURCE_MODULES_GAME_POKER_H_
+# define _SOURCE_MODULES_GAME_POKER_H_ 1
 
 # include <kineircd/str.h>
 # include <utility>
@@ -36,6 +36,7 @@
 # include "channelgame.h"
 # include "cards/hand.h"
 # include "cards/card.h"
+# include "cards/stock.h"
 
 # define EXORDI8_FUNC(x) \
      bool x(Exordium::User& origin, AISutil::StringTokens& line)
@@ -47,6 +48,11 @@ class Poker : public ChannelGame {
       EXORDI8_FUNC((Poker::* const function));
    } static const functionTable[];
 
+   struct gameTable_type {
+      const char* command;
+      EXORDI8_FUNC((Poker::* const function));
+   } static const gameTable[];
+
    // Maximum number of players..
    static const unsigned int maxPlayers = 50;
    
@@ -54,7 +60,7 @@ class Poker : public ChannelGame {
    bool playing;
    
    // The last card to be discarded
-   std::list<Cards::Card*> lastDiscardedCards;
+   std::list<Cards::Card> lastDiscardedCards;
 
    // A temporary list of cards being discarded in one turn
    std::list<Cards::Card> discardList;
@@ -67,9 +73,9 @@ class Poker : public ChannelGame {
    typedef std::list <player_type> players_type;
    players_type players;
 
-   // The stock of cards
-   typedef std::stack <Cards::Card> stock_type;
-   stock_type stock;
+   // The stock and discard piles 
+   Cards::Stock< Cards::Card > stock;
+   Cards::Stock< Cards::Card > discard;
 
    // The current player
    players_type::iterator currentPlayer;
@@ -103,8 +109,8 @@ class Poker : public ChannelGame {
 
  public:
    // Constructor
-   Poker(Game::Module& module, const AISutil::String& channel,
-	   Exordium::User& caller);
+   Poker(Exordium::GameModule::Module& module, const AISutil::String& channel,
+	 Exordium::User& caller);
    
    // Handy creation function
    static CHANNEL_GAME_CREATOR_FUNC(createGame)
@@ -115,4 +121,4 @@ class Poker : public ChannelGame {
 		  AISutil::StringTokens& tokens);
 };
    
-#endif // __POKER_H__
+#endif // _SOURCE_MODULES_GAME_POKER_H_

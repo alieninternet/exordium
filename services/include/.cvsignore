@@ -1,1 +1,3 @@
-configure *.o Makefile services *.orig *~ config.* auto4* *.so *.a
+autoconf.h
+autoconf.h.in
+stamp-*

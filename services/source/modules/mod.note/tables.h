@@ -37,7 +37,7 @@
 namespace Exordium {
    namespace NoteModule {
       namespace Tables {
-	 extern const Exordium::DatabaseTable notes;
+	 extern const Exordium::DatabaseTable notesTable;
       }; // namespace Tables
    }; // namespace NoteModule
 }; // namespace Exordium

@@ -24,25 +24,29 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include "exordium/service.h"
 
 // Default configuration definition table (for uninherited ConfigData classes)
-const LibAIS::ConfigParser::defTable_type
+const AISutil::ConfigParser::defTable_type
   Exordium::Service::ConfigData::defaultDefinitions = {
        {
-	  "DESCRIPTION",
+	  "DESCRIPTION", 4,
 	    (void *)&ConfigData::defDescription, &varHandleString,
 	    0, 0
        },
        {
-	  "HOSTNAME",
+	  "HOSTNAME", 4,
 	    (void *)&ConfigData::defHostname, &varHandleHostName,
 	    0, 0
        },
        {
-	  "NAME",
-	    (void *)&ConfigData::defName, &varHandleString,
+	  "NAME", 4,
+	    (void *)&ConfigData::defName, &varHandleStringOneWord,
 	    0, 0
        },
-       { 0, 0, 0, 0, 0 }
+       { 0, 0, 0, 0, 0, 0 }
   };

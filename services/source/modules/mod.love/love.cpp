@@ -24,37 +24,44 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
 #include <map>
 #include <sstream>
-#include <exordium/config.h>
 
 #ifdef DEBUG
 # include <cassert>
 #endif
 
 #include "love.h"
+#include "tables.h"
+#include <kineircd/config.h>
 
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::LoveModule;
 
 
 /* service_init - Register ourselves to the wonderous enigma that is the core
  * Original 13/07/2002 james
- * Note: Using C-style symbols for dlsym()
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
-{
-   return new Love();
-}
+{ return new Module(); }
 
 
 // Module information structure
-const Love::moduleInfo_type Love::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo = {
+   // Module name
    "Cupid Service",
-     0, 0,
-     Exordium::Service::moduleInfo_type::Events::NONE
+     
+   // Version (major, minor)
+   0, 0,
+   
+   // Event masks
+   Exordium::Service::moduleInfo_type::Events::NONE
 };
 
 
@@ -63,35 +70,51 @@ const Love::moduleInfo_type Love::moduleInfo = {
  * our case-insensitive searchy thingy looks on the premise that the incoming
  * command will be converted to lower-case..
  */
-const Love::commandTable_type Love::commandTable[] =
+const Module::commandTable_type Module::commandTable[] =
 {
-     {
-	"commands",	0,	0,	&Love::handleCOMMANDS,
-	  0
-     },
-     { 0, 0, 0, 0, 0 }
+     { "commands",		&Module::handleCOMMANDS },
+     { 0, 0 }
 };
 
 
 /* start - Start the service
  * Original 17/09/2002 pickle
  */
-void Love::start(Exordium::Services& s)
+bool Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
    
+   // Attempt to affirm our database tables..
+   unsigned int i = 0;
+   while (Tables::tables[i] != 0) {
+      // Try to affirm this table..
+      if (!services->getDatabase().affirmTable(*(Tables::tables[i]))) {
+	 services->logLine(String("Unable to affirm mod_love database "
+				  "table '") +
+			   Tables::tables[i]->name + "'",
+			   Log::Fatality); 
+	 return false;
+      }
+      
+      // Next table..
+      i++;
+   }
+   
    // Register ourself to the network
-   services->registerService(getName(), getName(), 
-			     getConfigData().getHostname(), "+dz",
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
 }
 
 
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Love::parseLine(StringTokens& line, User& origin)
+void Module::parseLine(StringTokens& line, User& origin)
 {
    // Start breaking up the line
    String command = line.nextToken().toLower();
@@ -101,27 +124,11 @@ void Love::parseLine(StringTokens& line, User& origin)
       // Does this match?
       if (command == commandTable[i].command) {
 #ifdef DEBUG
-	 // Oh "golly gosh", I hope the function really exists
+	 // I hope the function really exists
 	 assert(commandTable[i].handler != 0);
 #endif
 	 
-	 // Check if the minimum number of parameters is achieved
-	 if (line.countTokens() < commandTable[i].minParams) {
-	    // Complain! We should send help here, really..
-	    sendMessage(origin, "You need to use more parameters");
-	    return;
-	 }
-	 
-	 // Check if the maximum number of parameters is set, if we have to
-	 if ((commandTable[i].maxParams !=
-	      Love::commandTable_type::MAX_PARAMS_UNLIMITED) &&
-	     ((line.countTokens() - 1) > commandTable[i].maxParams)) {
-	    // Complain.. THIS IS CRAP.. like above..
-	    sendMessage(origin, "Too many parameters");
-	    return;
-	 }
-	 
-	 // Run the command and leave early
+	 // Run the command and leave
 	 (this->*(commandTable[i].handler))(origin, line);
 	 return;
       }
@@ -137,11 +144,11 @@ void Love::parseLine(StringTokens& line, User& origin)
  * Notes: Probably better to move this to the base class, along with getName()
  *        and services..
  */
-LOVE_FUNC(Love::handleCOMMANDS)
+LOVE_FUNC(Module::handleCOMMANDS)
 {
    // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength =
-     services->getDaemon().getConfig().getOptionsLimitsMaxMessageLength() - 20;
+     Kine::config().getOptionsLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
    sendMessage(origin, "Command list for " + getName() + ":");

@@ -24,69 +24,73 @@
  *
  */
 
-#ifndef __SERV_H_
-# define __SERV_H_
+#ifndef _SOURCE_MODULES_SERV_SERV_H_
+# define _SOURCE_MODULES_SERV_SERV_H_ 1
 
 # include <kineircd/str.h>
 
-# define SERV_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
+# define SERV_FUNC(x) \
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
-# include "exordium/service.h"
-# include "exordium/services.h"
+# include <exordium/service.h>
 
-class Serv : public Exordium::Service
-{
- private:
-   // Module information structure
-   static const Exordium::Service::moduleInfo_type moduleInfo;
 
-   // Configuration data class
-   Exordium::Service::ConfigData configData;
+namespace Exordium {
+   namespace ServModule {
+      class Module : public Exordium::Service {
+       private:
+	 // Module information structure
+	 static const Exordium::Service::moduleInfo_type moduleInfo;
+	 
+	 // Configuration data class
+	 Exordium::Service::ConfigData configData;
+	 
+	 struct functionTableStruct {
+	    char const* const command;
+	    SERV_FUNC((Module::* const function));
+	 } static const functionTable[];
+	 
+       public:
+	 Module(void)
+	   : configData(moduleInfo.fullName, "somewhere.org", "Serv")
+	   {};
+	 
+	 ~Module(void)
+	   {};
+	 
+	 // Start the module
+	 bool start(void);
 
-   struct functionTableStruct
-     {
-	char const *command;
-	void SERV_FUNC ((Serv::* const function));
-     };
-   static struct functionTableStruct const functionTable[];
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   {};
 
- public:
-   Serv(void)
-     : configData(moduleInfo.fullName, "somewhere.org", "Serv")
-       {
-       };
-   ~Serv(void)
-     {
-     };
-   // Start the module
-   void start(Exordium::Services& s);
+	 // Grab the information structure of a module
+	 virtual const moduleInfo_type& getModuleInfo(void) const
+	   { return moduleInfo; };
 
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin);
-   void parseLine (AISutil::StringTokens& line, Exordium::User& origin, AISutil::String const &);
+	 const Exordium::Service::ConfigData& getConfigData(void) const
+	   { return configData; };
+	 Exordium::Service::ConfigData& getConfigData(void)
+	   { return configData; };
 
-   // Grab the information structure of a module
-   virtual const moduleInfo_type& getModuleInfo(void) const
-     { return moduleInfo; };
+       private:
+	 SERV_FUNC(parseCLIST);
+	 SERV_FUNC(parseDELNICK);
+	 SERV_FUNC(parseELIST);
+	 SERV_FUNC(parseNLIST);
+	 SERV_FUNC(parseHELPON);
+	 SERV_FUNC(parseHELP);
+	 SERV_FUNC(parseUSER);
+	 SERV_FUNC(parseCHAN);
+	 SERV_FUNC(parseDIE);
+//	 SERV_FUNC(parseRAW);
+	 SERV_FUNC(parseNEWS);
+	 SERV_FUNC(parseSYNCH);
+	 SERV_FUNC(parseSETPASS);
+      }; // class Module
+   }; // class ServModule
+}; // namespace Exordium
 
-   const Exordium::Service::ConfigData& getConfigData(void) const
-     { return configData; };
-   Exordium::Service::ConfigData& getConfigData(void)
-     { return configData; };
-
- private:
-   void SERV_FUNC (parseCLIST);
-   void SERV_FUNC (parseDELNICK);
-   void SERV_FUNC (parseELIST);
-   void SERV_FUNC (parseNLIST);
-   void SERV_FUNC (parseHELPON);
-   void SERV_FUNC (parseHELP);
-   void SERV_FUNC (parseUSER);
-   void SERV_FUNC (parseCHAN);
-   void SERV_FUNC (parseDIE);
-   void SERV_FUNC (parseRAW);
-   void SERV_FUNC (parseNEWS);
-   void SERV_FUNC (parseSYNCH);
-   void SERV_FUNC (parseSETPASS);
-};
-
-#endif
+#endif // _SOURCE_MODULES_SERV_SERV_H_

@@ -24,36 +24,39 @@
  *
  */
 
-#include "include/nick.h"
-#include "exordium/services.h"
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
+
+#include "nick.h"
+#include "tables.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
-#include <map>
 #include <sstream>
 
 using AISutil::String;
 using AISutil::StringTokens;
-using namespace Exordium;
+using namespace Exordium::NickModule;
 
-struct Nick::functionTableStruct const
-  Nick::functionTable[] =
+struct Module::functionTableStruct const
+  Module::functionTable[] =
 {
-     {"auth", &Nick::parseAUTH},
-     {"identify", &Nick::parseIDENTIFY},
-     {"id", &Nick::parseIDENTIFY},
-     {"help", &Nick::parseHELP},
-     {"kill", &Nick::parseKILL},
-     {"ghost", &Nick::parseGHOST},
-     {"register", &Nick::parseREGISTER},
-     {"access", &Nick::parseACCESS},
-     {"set", &Nick::parseSET},
-     {"info", &Nick::parseINFO},
+     {"auth", &Module::parseAUTH},
+     {"identify", &Module::parseIDENTIFY},
+     {"id", &Module::parseIDENTIFY},
+     {"help", &Module::parseHELP},
+     {"kill", &Module::parseKILL},
+     {"ghost", &Module::parseGHOST},
+     {"register", &Module::parseREGISTER},
+     {"access", &Module::parseACCESS},
+     {"set", &Module::parseSET},
+     {"info", &Module::parseINFO},
      {0, 0}
 };
 
 /* Event Handlers */
 void
-  Nick::handleClientSignon(User& origin)
+  Module::handleClientSignon(User& origin)
 {
 
    if(services->isNickRegistered(origin.getNickname()))
@@ -66,20 +69,17 @@ void
 	       }
 	  }
      }
-   services->queueAdd(":"+getName()+" WALLOPS :New User Signon by the name of "+origin.getNickname());
+   
+/* this would be horrible on a live network :) If this is indeed only for
+ * debugging, it should be removed entirely.
+ */
+//   services->queueAdd(":"+getName()+" WALLOPS :New User Signon by the name of "+origin.getNickname());
    return;
 }
 
-/* Entry point for Nick:: - Parse the given line and decide what to do with it */
-void
-  Nick::parseLine (StringTokens& line, User& origin, String const &ch)
-{
-   /* Nick doesn't really take in channel commands..... */
-   return;
-}
 
 void
-  Nick::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();
@@ -97,8 +97,8 @@ void
    return;
 }
 
-void
-  NICK_FUNC (Nick::parseAUTH)
+
+  NICK_FUNC (Module::parseAUTH)
 {
    String gauth = tokens.nextToken();
    if(!origin.isPending())
@@ -107,19 +107,25 @@ void
 	return;
      }
    String authcode = services->getpendingCode(origin.getNickname());
-   services->Debug("\002[\002Auth System\002]\002 The pending code is ->" + authcode);
-   services->Debug("\002[\002Auth System\002]\002 The given code was  ->" + gauth);
+#ifdef DEBUG
+   services->logLine("\002[\002Auth System\002]\002 The pending code is ->" +
+		     authcode,
+		     Log::Debug);
+   services->logLine("\002[\002Auth System\002]\002 The given code was  ->" +
+		     gauth,
+		     Log::Debug);
+#endif
    if(authcode==gauth)
      {
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
 	origin.sendMessage("You may now identify your nickname as normal",getName());
-        services->getDatabase().dbDelete("pendingnicks", "nickname='"+origin.getNickname()+"'");
+        services->getDatabase().dbDelete("nickspending", "nickname='"+origin.getNickname()+"'");
      }
 }
 
+
 /* Info */
-void
-  NICK_FUNC (Nick::parseINFO)
+  NICK_FUNC (Module::parseINFO)
 {
    String who = tokens.nextToken().IRCtoLower();
    User *ptr = services->findUser(who);
@@ -141,21 +147,26 @@ void
 	return;
      }
 
+   
+   /* Get ready to projectile vomit ... 8-/
+    *    - pickle
+    */
+   
    int saccess = origin.getAccess("Serv");
    int oaccess = origin.getAccess("Oper");
    if(saccess>0 || oaccess>0)
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     String lhost = services->getLastHost(ptr->getNickname());
-	     String lid = services->getLastID(ptr->getNickname());
-	     String lreg = services->getRegDate(ptr->getNickname());
-	     String lemail = services->getEmail(ptr->getNickname());
-	     String licq = services->getICQ(who);
-	     String lmsn = services->getMSN(who);
-	     String laim = services->getAIM(who);
-	     String lurl = services->getURL(who);
-	     String lyah = services->getYAHOO(who);
+	     String lhost = ptr->getLastHost();
+	     String lid = ptr->getLastID();
+	     String lreg = ptr->getRegDate();
+	     String lemail = ptr->getEmail();
+	     String licq = ptr->getICQ();
+	     String lmsn = ptr->getMSN();
+	     String laim = ptr->getAIM();
+	     String lurl = ptr->getURL();
+	     String lyah = ptr->getYAHOO();
 	     String lqui = ptr->getQuitMessage();
 	     bool deopAway = ptr->deopAway();
 	     bool modNick = ptr->modNick();
@@ -197,14 +208,14 @@ void
 	  }
      }
 
-   String lhost = services->getLastHost(who);
-   String lid = services->getLastID(who);
-   String lreg = services->getRegDate(who);
-   String licq = services->getICQ(who);
-   String lmsn = services->getMSN(who);
-   String laim = services->getAIM(who);
-   String lurl = services->getURL(who);
-   String lyah = services->getYAHOO(who);
+   String lhost = ptr->getLastHost();
+   String lid = ptr->getLastID();
+   String lreg = ptr->getRegDate();
+   String licq = ptr->getICQ();
+   String lmsn = ptr->getMSN();
+   String laim = ptr->getAIM();
+   String lurl = ptr->getURL();
+   String lyah = ptr->getYAHOO();
    String toa = "Nickname Information Report (NON-STAFF) for \002"+who;
    String tob = "Last Host : \002<HIDDEN>";
    String toc = "Last Identified : \002"+lid;
@@ -225,9 +236,10 @@ void
    origin.sendMessage(toi,getName());
 
 }
+
+
 /* Set */
-void
-  NICK_FUNC (Nick::parseSET)
+  NICK_FUNC (Module::parseSET)
 {
    String command = tokens.nextToken();
    String value = tokens.nextToken();
@@ -434,14 +446,15 @@ void
    origin.sendMessage("Error: Unsupported command",getName());
    return;
 }
+
+
 /* Access */
-void
-  NICK_FUNC (Nick::parseACCESS)
+  NICK_FUNC (Module::parseACCESS)
 {
    String nickname = tokens.nextToken();
    if(nickname!="")
      {
-        int nbRes = services->getDatabase().dbSelect("idas", "identified", "nick='"+origin.getOnlineIDString()+"'");
+        int nbRes = services->getDatabase().dbSelect("idas", "nicksidentified", "nick='"+origin.getOnlineIDString()+"'");
 
 	int i=0;
         for (int j=0; j<nbRes; j++)
@@ -457,7 +470,7 @@ void
      }
    int onlineID = origin.getOnlineID();
    
-   int nbRes = services->getDatabase().dbSelect("idas", "identified", "nick='"+String::convert(onlineID)+"'");
+   int nbRes = services->getDatabase().dbSelect("idas", "nicksidentified", "nick='"+String::convert(onlineID)+"'");
 
    int i=0;
    for(int j=0; j<nbRes; j++)
@@ -472,9 +485,10 @@ void
      }
 
 }
+
+
 /* Register */
-void
-  NICK_FUNC (Nick::parseREGISTER)
+  NICK_FUNC (Module::parseREGISTER)
 {
    String password = tokens.nextToken();
    String email = tokens.nextToken();
@@ -518,9 +532,9 @@ void
    services->sendEmail(email,subject,emailtext);
 }
 
+
 /* Kill */
-void
-  NICK_FUNC (Nick::parseKILL)
+  NICK_FUNC (Module::parseKILL)
 {
    String tokill = tokens.nextToken();
    String password = tokens.nextToken();
@@ -541,7 +555,7 @@ void
 	     return;
 	  }
 	String nickpass = String::convert(services->generatePassword(tokill,password));
-	String givepass = services->getPass(tokill);
+	String givepass = ptr->getPass();
 	if(nickpass == givepass)
 	  {
 	     String reason = "Kill requested by "+origin.getNickname();
@@ -558,24 +572,24 @@ void
 	     String temp2 = origin.getIdent();
 	     String thehost = String(temp2)+"@"+String(temp1);
 	     String togo = String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	     services->helpme(String(togo),"Serv");
+	     services->logLine(String(togo), Log::Warning);
 	  }
 
      }
 }
 
+
 /* Do help... */
-   void
-     NICK_FUNC (Nick::parseHELP)
+     NICK_FUNC (Module::parseHELP)
        {
 	  String word = tokens.nextToken();
 	  String parm = tokens.nextToken();
 	  services->doHelp(origin,getName(), word, parm);
        }
 
+
 /* Ghost... */
-   void
-     NICK_FUNC (Nick::parseGHOST)
+     NICK_FUNC (Module::parseGHOST)
        {
 	  String toghost = tokens.nextToken();
 	  String password = tokens.nextToken();
@@ -585,12 +599,25 @@ void
 	       origin.sendMessage(tosend,getName());
 	       return;
 	    }
-	  String nickpass = String::convert(services->generatePassword(toghost,password));
-	  String givepass = services->getPass(toghost);
+	  String nickpass = String::convert(services->generatePassword(toghost,password));	
+	  
+	  User *ptr = services->findUser(toghost);
+
+	  if (ptr == 0) {
+	     /* ?? */
+	     return;
+	  }
+	  
+	  String givepass = ptr->getPass();
 	  if(nickpass == givepass)
 	    {
+	       /* Okay, well, this is not really a service. This is a user..
+		* so technically this is utterly the wrong call.. this will
+		* change, I suspect, when kine grows up a little more..
+		* The mode, btw, was +id
+		*/
 	       services->registerService(toghost,"ghost","ghosts.ircdome.org",
-					"+id","Ghosted by "+origin.getNickname());
+					"Ghosted by "+origin.getNickname());
 	       String tosend = String("Ghost successful for ")+toghost;
 	       origin.sendMessage(tosend,getName());
 	       services->log(origin,getName(),String("Successfully ghosted ")+toghost);
@@ -601,10 +628,10 @@ void
 	  origin.sendMessage(tosend,getName());
 	  return;
        }
-/* Parse an identification request */
 
-   void
-     NICK_FUNC (Nick::parseIDENTIFY)
+
+/* Parse an identification request */
+     NICK_FUNC (Module::parseIDENTIFY)
        {
 	  String password = tokens.nextToken();
 	  if (origin.isPending())
@@ -626,13 +653,13 @@ void
 	       return;
 	    }
 	  String nickpass = services->generatePassword(origin.getNickname(),password);
-	  String givepass = services->getPass(origin.getNickname());
+	  String givepass = origin.getPass();
 	  if(nickpass == givepass)
 	    {
 	       int oid = origin.getOnlineID();
 	       int nid = services->getRegisteredNickID(origin.getNickname());
 
-               services->getDatabase().dbInsert("identified", "'','"+String::convert(oid) + "','" + String::convert(nid) + "'");
+               services->getDatabase().dbInsert("nicksidentified", "'','"+String::convert(oid) + "','" + String::convert(nid) + "'");
                services->getDatabase().dbDelete("kills", "nick='"+origin.getNickname()+"'");
 
 	       services->modeIdentify(origin.getNickname());
@@ -653,34 +680,50 @@ void
 	       String temp2 = origin.getIdent();
 	       String thehost = String(temp2)+"@"+String(temp1);
 	       String togo = String("\002Failed\002 identify for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	       services->helpme(String(togo),"Serv");
+	       services->logLine(String(togo), Log::Warning);
 	    }
 	  return;
        }
 
-   EXORDIUM_SERVICE_INIT_FUNCTION
-     {
-	return new Nick();
-     }
+EXORDIUM_SERVICE_INIT_FUNCTION
+{ return new Module(); }
 
-   // Module information structure
-   const Nick::moduleInfo_type Nick::moduleInfo =
-     {
-	"Nickname Service",
-	  0, 0,
-	  Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON |
-	  Exordium::Service::moduleInfo_type::Events::CLIENT_NICKCHANGE
-     };
+// Module information structure
+const Module::moduleInfo_type Module::moduleInfo =
+{
+   "Nickname Service",
+     0, 0,
+     Exordium::Service::moduleInfo_type::Events::CLIENT_SIGNON |
+     Exordium::Service::moduleInfo_type::Events::CLIENT_NICKCHANGE
+};
 
-   // Start the service
-   void Nick::start(Exordium::Services& s)
-     {
-	// Set the services field appropriately
-	services = &s;
-	
-	// Register ourself to the network
-	services->registerService(getName(), getName(), 
-				 getConfigData().getHostname(), "+dz",
-				 getConfigData().getDescription());
-	services->serviceJoin(getName(),"#Debug");
-     }
+// Start the service
+bool Module::start(Exordium::Services& s)
+{
+   // Set the services field appropriately
+   services = &s;
+   
+   // Attempt to affirm our database tables..
+   unsigned int i = 0;
+   while (Tables::tables[i] != 0) {
+      // Try to affirm this table..
+      if (!services->getDatabase().affirmTable(*(Tables::tables[i]))) {
+	 services->logLine(String("Unable to affirm mod_chan database "
+				  "table '") +
+			   Tables::tables[i]->name + "'",
+			   Log::Fatality); 
+	 return false;
+      }
+      
+      // Next table..
+      i++;
+   }
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
+   
+   // We started okay :)
+   return true;
+}

@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __CHANNELGAME_H__
-# define __CHANNELGAME_H__
+#ifndef _SOURCE_MODULES_GAME_CHANNELGAME_H_
+# define _SOURCE_MODULES_GAME_CHANNELGAME_H_ 1
 
 # include <kineircd/str.h>
 # include <exordium/user.h>
@@ -36,13 +36,13 @@ class ChannelGame;
 # include "game.h"
 
 # define CHANNEL_GAME_CREATOR_FUNC(x) \
-     ChannelGame* x(Game::Module& module, const AISutil::String& channel, \
-		    Exordium::User& caller)
+     ChannelGame* x(Exordium::GameModule::Module& module, \
+		    const AISutil::String& channel, Exordium::User& caller)
 
 class ChannelGame {
  protected:
    // The game service (so we can send messages)
-   Game::Module& module;
+   Exordium::GameModule::Module& module;
    
    // The channel we are playing on
    const AISutil::String channel;
@@ -58,7 +58,7 @@ class ChannelGame {
    } static const channelGameTable[];
 
    // Constructor
-   ChannelGame(Game::Module& m, const AISutil::String& c)
+   ChannelGame(Exordium::GameModule::Module& m, const AISutil::String& c)
      : module(m),
        channel(c)
        {};
@@ -88,5 +88,4 @@ class ChannelGame {
      { nick.sendMessage(message, module.getName()); };
 };
    
-#endif // __CHANNELGAME_H__
-
+#endif // _SOURCE_MODULES_GAME_CHANNELGAME_H_

@@ -1,4 +1,4 @@
-/*
+/* $Id$
  *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -24,14 +24,23 @@
  *
  */
 
-// Ugly ifdef..
-#ifdef HAVE_PGSQL
+#ifdef HAVE_CONFIG_H
+# include "autoconf.h"
+#endif
 
-#include "exordium/database/postgresql/dbpgsql.h"
+#ifndef HAVE_PGSQL
+# error "Cannot compile PostgreSQL support without PostgreSQL!"
+#endif
 
-using namespace Exordium;
+#include "dbpgsql.h"
+#include <exordium/config.h>
 
-CPgSQL::~CPgSQL(void)
+using AISutil::String;
+
+namespace Exordium
+{
+
+dbPgSQL::~dbPgSQL(void)
 {
   if(pgres != NULL)
     PQclear(pgres);
@@ -41,99 +50,138 @@ CPgSQL::~CPgSQL(void)
 }
 
 
-void CPgSQL::dbConnect()
+void dbPgSQL::dbConnect()
 {
   if(connected == false)
    {
-      pgconn = PQsetdbLogin(config.getSqlHostname().c_str(), String::convert(config.getSqlPort()).c_str(), pgopts, pgtty, 
-                            config.getSqlDatabase().c_str(), config.getSqlUsername().c_str(), 
-                            config.getSqlPassword().c_str());
+      pgconn = PQsetdbLogin(configFwd.getSqlHostname().c_str(), String::convert(configFwd.getSqlPort()).c_str(), pgopts, 
+                      pgtty, configFwd.getSqlDatabase().c_str(), configFwd.getSqlUsername().c_str(), 
+                             configFwd.getSqlPassword().c_str());
 
       if(PQstatus(pgconn) == CONNECTION_BAD)
       {  
+#ifdef DEBUG
         std::cout << "Error connecting to database: " << String::convert(PQerrorMessage(pgconn)) << std::endl;
+#endif
         exit(1); // This is rash, but what can we do if we cant connect to DB
       }
       else
          connected = true;
    }
+#ifdef DEBUG
   else
      std::cout << "WARNING: Tried to connect to DB while already connected!" << std::endl;
+#endif
 }
 
 
-void CPgSQL::dbDisconnect()
+void dbPgSQL::dbDisconnect()
 {
   if(connected == true)
   {
      PQfinish(pgconn); 
      connected=false;
   }
+#ifdef DEBUG
   else
     std::cout << "WARNING: Tried to disconnect from DB while not connected!" << std::cout;
+#endif
 }
 
 
-int CPgSQL::dbQuery(String const &query)
+void dbPgSQL::dbQuery(String const &query)
 {
+#ifdef DEBUG
+  std::clog << "Before clear!!!" << std::endl;
+#endif
+   
   // clear results of previous query
-  if(pgres != NULL) 
-    PQclear(pgres);
+  if(clearres) 
+   {
+     clearres=false;
+     PQclear(pgres);
+   }
 
-  std::cout << "DEBUG: Query=" << query << std::endl;
-  logger.logLine("DEBUG: Query=" + query);
+#ifdef DEBUG
+   std::clog << "After clear!!!!" << std::endl;
+   std::clog << "DEBUG: Query=" << query << std::endl;
+#endif
 
-  pgres = PQexec(pgconn, query.c_str());
+  pgres = PQexec(pgconn, query.data());
+
+#ifdef DEBUG
+   std::clog << "After EXEC!!!" << std::endl;
+#endif
 
   currow=0;
 
-  if( pgres != NULL )
-     return PQntuples(pgres);
+  if(pgres != NULL)
+  {
+    if(PQresultStatus(pgres)==PGRES_COMMAND_OK)
+    {
+      clearres=false;
+      PQclear(pgres);
+      isEOF=true;
+    }
+    else if(PQresultStatus(pgres)==PGRES_TUPLES_OK)
+    {
+      clearres=true;
+      if(PQntuples(pgres)>0)
+        isEOF=false;
+      else
+        isEOF=true;
+      
+    }
+  }
+}
+
+
+
+
+String dbPgSQL::dbGetValue(void)
+{
+  if(PQntuples(pgres)>0)
+     return PQgetvalue(pgres, currow, 0);
   else
-     return 0;
+     return "";
 }
 
 
-
-
-String CPgSQL::dbGetValue(void)
+String dbPgSQL::dbGetValue(int field)
 {
-  return PQgetvalue(pgres, currow, 0);
+  if(PQntuples(pgres)>0)
+     return PQgetvalue(pgres, currow, field);
+  else
+     return "";
 }
 
-
-String CPgSQL::dbGetValue(int field)
-{
-  return PQgetvalue(pgres, currow, field);
-}
-
-void CPgSQL::dbGetRow(void)
+void dbPgSQL::dbGetRow(void)
 {
   currow++;
 }
 
 
-void CPgSQL::dbClearRes(void)
+void dbPgSQL::dbClearRes(void)
 {
   PQclear(pgres);
 }
 
 
-void CPgSQL::dbBeginTrans(void)
+void dbPgSQL::dbBeginTrans(void)
 {
   pgres = PQexec(pgconn, "BEGIN");
   PQclear(pgres);
 }
 
 
-void CPgSQL::dbCommit(void)
+void dbPgSQL::dbCommit(void)
 {
   pgres = PQexec(pgconn, "COMMIT");
   PQclear(pgres);
 }
 
 
-void CPgSQL::dbRollback(void)
+void dbPgSQL::dbRollback(void)
 {
   pgres = PQexec(pgconn, "ROLLBACK");
   PQclear(pgres);
@@ -142,8 +190,119 @@ void CPgSQL::dbRollback(void)
 
 
 // DB is selected in the connection sequence
-void CPgSQL::dbSelectDB(String const &dbName)
+void dbPgSQL::dbSelectDB(String const &dbName)
 {
 }
 
-#endif // HAVE_PGSQL
+
+
+void dbPgSQL::dbSelect(String const &table)
+{
+  dbQuery("SELECT * FROM "+table);
+}
+
+
+// Select <fields> from <table>
+void dbPgSQL::dbSelect(String const &fields, String const &table)
+{
+  dbQuery("SELECT "+fields+" FROM "+table);
+}
+
+// Select <fields> from <table> where <whereargs>
+void dbPgSQL::dbSelect(String const &fields, String const &table, String const &whereargs)
+{
+  dbQuery("SELECT "+fields+" FROM "+table+ " WHERE " + whereargs);
+}
+
+
+
+// Select count(*) from <table>
+void dbPgSQL::dbCount(String const &table)
+{
+  dbQuery("SELECT COUNT(*) FROM " + table);
+}
+
+
+// Select count(*) from <table> where <whereargs>
+void dbPgSQL::dbCount(String const &table, String const &whereargs)
+{
+  dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs);
+}
+
+
+void dbPgSQL::dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
+{
+  dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
+}
+
+
+
+// Insert into <table> values <values>
+void dbPgSQL::dbInsert(String const &table,  String const &values)
+{
+  dbQuery("INSERT INTO " +table+ " VALUES " +values);
+}
+
+
+
+void dbPgSQL::dbUpdate(String const &table, String const &values, String const &whereargs)
+{
+  dbQuery("UPDATE " + table + " SET " + values + " WHERE " + whereargs);
+}
+
+
+// Delete * from <table>
+void dbPgSQL::dbDelete(String const &table)
+{
+  dbQuery("DELETE FROM " +table);
+}
+
+
+
+
+// Delete * from <table> where <whereargs>
+void dbPgSQL::dbDelete(String const &table, String const &whereargs)
+{
+  dbQuery("DELETE FROM " + table + " WHERE " + whereargs);
+}
+
+
+
+
+int dbPgSQL::dbNbCols(void)
+{
+  if(!eof() && pgres!=NULL)
+     return PQnfields(pgres);
+  else
+     return 0;
+}
+
+
+void dbPgSQL::getFieldNames(String const &table)
+{
+  dbQuery("SHOW COLUMNS FROM "+table);
+}
+
+
+
+bool dbPgSQL::eof(void)
+{
+  return isEOF;
+}
+
+
+int dbPgSQL::dbResults(void)
+{
+   if(!eof() && pgres!=NULL)
+      return PQntuples(pgres);
+   else
+      return 0;
+}
+
+
+int dbPgSQL::affectedRows(void)
+{
+  return 0; // TEMP
+}
+
+};

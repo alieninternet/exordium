@@ -25,28 +25,40 @@
  *
  */
 
-#ifndef __PACK_H__
-# define __PACK_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_PACK_H_
+# define _SOURCE_MODULES_GAME_CARDS_PACK_H_ 1
 
 # include <vector>
 
-# include "card.h"
+# include "shuffler.h"
 
 namespace Cards {
+   // The populator functor
+   template < class T > class _populator {
+    public:
+      typedef std::vector <T> cards_type;
+      void operator()(cards_type& cards) 
+        { 
+          T::populate(cards); 
+        };
+   };
+
    // The pack class
+   template < class CardType, class Allocator = _populator<CardType> >
    class Pack {
     private:
-      typedef std::vector <Card> cards_type;
+      typedef std::vector <CardType> cards_type;
       
       // Our cards
       cards_type cards;
-      
+
     public:
       // Constructor (populates the pack, all cards are in 'mint' order)
-      Pack(bool withJoker = false);
-      
+      Pack(bool withJoker = false) 
+        { Allocator allocator; allocator(cards); }
+
       // Return the number of cards left in the pack
-      cards_type::size_type getCardCount(void) const
+      typename cards_type::size_type getCardCount(void) const
 	{ return cards.size(); };
       
       // Is the pack empty?
@@ -54,17 +66,21 @@ namespace Cards {
 	{ return cards.empty(); };
       
       // Shuffle the pack
-      void shuffle(void);
+      void shuffle(void)
+        { 
+          cards_type newCardList = shuffler<cards_type>(cards);
+          cards.swap(newCardList);
+        }
       
       // Remove a card from the pack
-      Card removeCard(void)
+      CardType removeCard(void)
 	{
-	   Card card = cards.back();
+	   CardType card = cards.back();
 	   cards.pop_back();
 	   return card;
 	};
    };
 }; // namespace Cards
    
-#endif // __PACK_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_PACK_H_
    
