@@ -69,7 +69,7 @@ namespace Exordium
        * 
        * This is redundant imho. - simon
        */
-      const Kine::String& getOnlineIDString(void) const
+      const Kine::String getOnlineIDString(void) const
 	{ return String::convert(onlineID); };
 
       /* setNick(String)
