@@ -428,7 +428,7 @@ void
 	     services.serviceNotice(String(togo),target,OLDoriginl);
 	  }
 	StringTokens bloodydodgeytoo(message);
-	services.serviceM.throwLine("nick", bloodydodgeytoo, origin);
+	services.serviceM.throwLine("nick", bloodydodgeytoo, *origin);
 	return;
      }
    services.SecurePrivmsg = false;
@@ -441,7 +441,7 @@ void
    StringTokens dodgeybutnotanymoredodgeythanthelastonewas(message);
    services.serviceM.throwLine(target.toLower(),
 			       dodgeybutnotanymoredodgeythanthelastonewas,
-			       origin);
+			       *origin);
 
 }
 
