@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __CONSOLE_H_
-#define __CONSOLE_H_
+#ifndef _INCLUDE_EXORDIUM_CONSOLE_H_
+# define _INCLUDE_EXORDIUM_CONSOLE_H_ 1
 
 
 /* This should be in source/lib/. - nothing outside of the core uses it.. */
@@ -64,4 +64,4 @@ namespace Exordium {
 // Complete the forwarded definition
 # include <exordium/services.h>
 
-#endif
+#endif // _INCLUDE_EXORDIUM_CONSOLE_H_

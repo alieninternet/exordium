@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __NOTE_H_
-#define __NOTE_H_
+#ifndef _SOURCE_MODULES_NOTE_NOTE_H_
+# define _SOURCE_MODULES_NOTE_NOTE_H_ 1
 
 #ifdef HAVE_CONFIG_H
 # include "autoconf.h"
@@ -87,4 +87,4 @@ public:
   void NOTE_FUNC (parseDEL);
 };
 
-#endif
+#endif // _SOURCE_MODULES_NOTE_NOTE_H_

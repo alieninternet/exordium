@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef _USER_H_
-# define _USER_H_
+#ifndef _INCLUDE_EXORDIUM_USER_H_
+# define _INCLUDE_EXORDIUM_USER_H_ 1
 
 # include <kineircd/str.h>
 # include <map>
@@ -237,4 +237,4 @@ namespace Exordium {
    };
 }; // namespace Exordium
 
-#endif
+#endif // _INCLUDE_EXORDIUM_USER_H_

@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __STATS_H_
-#define __STATS_H_
+#ifndef _SOURCE_MODULES_STATS_STATS_H_
+# define _SOURCE_MODULES_STATS_STATS_H_ 1
 
 #ifdef HAVE_CONFIG_H
 # include "autoconf.h"
@@ -81,4 +81,4 @@ void STATS_FUNC (parseHELP);
 
 };
 
-#endif
+#endif // _SOURCE_MODULES_STATS_STATS_H_

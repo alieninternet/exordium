@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __DIE_H__
-# define __DIE_H__
+#ifndef _SOURCE_MODULES_GAME_DICE_DIE_H_
+# define _SOURCE_MODULES_GAME_DICE_DIE_H_ 1
 
 # ifdef HAVE_CONFIG_H
 #  include "autoconf.h"
@@ -101,5 +101,5 @@ namespace Dice {
    }; // class Die
 }; // namespace Dice
    
-#endif // __DIE_H__
+#endif // _SOURCE_MODULES_GAME_DICE_DIE_H_
    

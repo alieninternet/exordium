@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __LOVE_H_
-# define __LOVE_H_ 1
+#ifndef _SOURCE_MODULES_LOVE_LOVE_H_
+# define _SOURCE_MODULES_LOVE_LOVE_H_ 1
 
 # include <exordium/service.h>
 # include <exordium/services.h>
@@ -104,4 +104,4 @@ class Love : public Exordium::Service {
      { return configData; };
 };
 
-#endif // __LOVE_H_
+#endif // _SOURCE_MODULES_LOVE_LOVE_H_

@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef _MODULELIST_H_
-# define _MODULELIST_H_ 1
+#ifndef _INCLUDE_EXORDIUM_MODULES_H_
+# define _INCLUDE_EXORDIUM_MODULES_H_ 1
 
 # include <map>
 # include <kineircd/str.h>
@@ -104,5 +104,5 @@ namespace Exordium {
 # include <exordium/service.h>
 # include <exordium/user.h>
 
-#endif // _MODULELIST_H_
+#endif // _INCLUDE_EXORDIUM_MODULES_H_
 

@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __GAME_H_
-# define __GAME_H_ 1
+#ifndef _SOURCE_MODULES_GAME_GAME_H_
+# define _SOURCE_MODULES_GAME_GAME_H_ 1
 
 # include <exordium/service.h>
 # include <exordium/services.h>
@@ -118,6 +118,6 @@ namespace Game {
 // Complete the forwarded declaration
 # include "channelgame.h"
 
-#endif // __GAME_H_
+#endif // _SOURCE_MODULES_GAME_GAME_H_
 
 

@@ -26,8 +26,8 @@
 
 
 
-#ifndef _BASE_H
-#define _BASE_H
+#ifndef _INCLUDE_EXORDIUM_DATABASE_BASE_H_
+# define _INCLUDE_EXORDIUM_DATABASE_BASE_H_ 1
 
 #include <aisutil/string/string.h>
 
@@ -90,4 +90,4 @@ namespace Exordium {
 # include <exordium/conf.h>
 
 
-#endif // _BASE_H
+#endif // _INCLUDE_EXORDIUM_DATABASE_BASE_H_

@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __HAND_H__
-# define __HAND_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_HAND_H_
+# define _SOURCE_MODULES_GAME_CARDS_HAND_H_ 1
 
 # include <set>
 # include <kineircd/str.h>
@@ -91,5 +91,5 @@ namespace Cards {
    };
 }; // namespace Cards
    
-#endif // __HAND_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_HAND_H_
    

@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __SERVICES_H
-#define __SERVICES_H
+#ifndef _INCLUDE_EXORDIUM_SERVICES_H_
+# define _INCLUDE_EXORDIUM_SERVICES_H_ 1
 
 // This is naughty..
 #ifdef HAVE_CONFIG_H
@@ -393,4 +393,4 @@ namespace Exordium {
 
 #include <exordium/database/database.h>
 
-#endif
+#endif // _INCLUDE_EXORDIUM_SERVICES_H_

@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __NICK_H_
-#define __NICK_H_
+#ifndef _SOURCE_MODULES_NICK_NICK_H_
+# define _SOURCE_MODULES_NICK_NICK_H_ 1
 
 #include <exordium/services.h>
 #include <exordium/service.h>
@@ -96,4 +96,4 @@ private:
 };
 
 
-#endif
+#endif // _SOURCE_MODULES_NICK_NICK_H_

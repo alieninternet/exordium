@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __BANK_H__
-# define __BANK_H__
+#ifndef _SOURCE_LIBBANK_BANK_H_
+# define _SOURCE_LIBBANK_BANK_H_ 1
 
 # include <set>
 # include <kineircd/str.h>
@@ -52,4 +52,4 @@ namespace Exordium {
   };
 };
    
-#endif // __BANK_H__
+#endif // _SOURCE_LIBBANK_BANK_H_

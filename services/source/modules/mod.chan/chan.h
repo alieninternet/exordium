@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __CHAN_H_
-#define __CHAN_H_
+#ifndef _SOURCE_MODULES_CHAN_CHAN_H_
+# define _SOURCE_MODULES_CHAN_CHAN_H_ 1
 
 #include <exordium/service.h>
 #include <exordium/services.h>
@@ -100,4 +100,4 @@ void CHAN_FUNC (parseSEEN);
 
 
 
-#endif
+#endif // _SOURCE_MODULES_CHAN_CHAN_H_

@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __CHANNELGAME_H__
-# define __CHANNELGAME_H__
+#ifndef _SOURCE_MODULES_GAME_CHANNELGAME_H_
+# define _SOURCE_MODULES_GAME_CHANNELGAME_H_ 1
 
 # include <kineircd/str.h>
 # include <exordium/user.h>
@@ -88,5 +88,4 @@ class ChannelGame {
      { nick.sendMessage(message, module.getName()); };
 };
    
-#endif // __CHANNELGAME_H__
-
+#endif // _SOURCE_MODULES_GAME_CHANNELGAME_H_

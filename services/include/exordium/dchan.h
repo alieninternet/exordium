@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef _DCHAN_H_
-# define _DCHAN_H_
+#ifndef _INCLUDE_EXORDIUM_DCHAN_H_
+# define _INCLUDE_EXORDIUM_DCHAN_H_ 1
 
 # include <kineircd/str.h>
 # include <map>
@@ -77,4 +77,4 @@ namespace Exordium {
    };
 }; // class Exordium
 
-#endif
+#endif // _INCLUDE_EXORDIUM_DCHAN_H_

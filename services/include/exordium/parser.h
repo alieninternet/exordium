@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __PARSER_H_
-#define __PARSER_H_
+#ifndef _INCLUDE_EXORDIUM_PARSER_H_
+# define _INCLUDE_EXORDIUM_PARSER_H_ 1
 
 namespace Exordium {
    class Services;
@@ -78,4 +78,4 @@ namespace Exordium {
 // Complete the forwarded definition
 #include <exordium/services.h>
 
-#endif
+#endif // _INCLUDE_EXORDIUM_PARSER_H_

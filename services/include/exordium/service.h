@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef SERVICE_H
-# define SERVICE_H
+#ifndef _INCLUDE_EXORDIUM_SERVICE_H_
+# define _INCLUDE_EXORDIUM_SERVICE_H_ 1
 
 # include <kineircd/str.h>
 # include <aisutil/config/parser.h>
@@ -171,5 +171,5 @@ namespace Exordium {
 #include <exordium/services.h>
 #include <exordium/user.h>
 
-#endif
+#endif // _INCLUDE_EXORDIUM_SERVICE_H_
 

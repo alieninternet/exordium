@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __STOCK_H__
-# define __STOCK_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_STOCK_H_
+# define _SOURCE_MODULES_GAME_CARDS_STOCK_H_ 1
 
 # include <vector>
 # include <stack>
@@ -98,5 +98,5 @@ namespace Cards {
    };
 }; // namespace Cards
    
-#endif // __PACKS_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_STOCK_H_
    

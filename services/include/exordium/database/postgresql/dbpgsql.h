@@ -25,8 +25,8 @@
  */
 
 
-#ifndef _PGSQL_H
-#define _PGSQL_H
+#ifndef _INCLUDE_EXORDIUM_DATABASE_POSTGRESQL_DBPGSQL_H_
+# define _INCLUDE_EXORDIUM_DATABASE_POSTGRESQL_DBPGSQL_H_ 1
 
 
 #include <exordium/database/base.h>
@@ -99,4 +99,4 @@ namespace Exordium {
 
 }; // namespace Exordium
 
-#endif // _PGSQL_H
+#endif // _INCLUDE_EXORDIUM_DATABASE_POSTGRESQL_DBPGSQL_H_

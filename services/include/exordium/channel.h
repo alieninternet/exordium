@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __CHANNEL_H_
-# define __CHANNEL_H_
+#ifndef _INCLUDE_EXORDIUM_CHANNEL_H_
+# define _INCLUDE_EXORDIUM_CHANNEL_H_ 1
 
 # include <kineircd/str.h>
 
@@ -84,4 +84,4 @@ namespace Exordium {
 // Complete the forwarded definition
 # include <exordium/services.h>
 
-#endif
+#endif // _INCLUDE_EXORDIUM_CHANNEL_H_

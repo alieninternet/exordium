@@ -25,8 +25,8 @@
  */
 
 
-#ifndef _DATABASE_H
-#define _DATABASE_H
+#ifndef _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_
+# define _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_ 1
 
 
 #include <aisutil/string/string.h>
@@ -156,4 +156,4 @@ namespace Exordium {
 
 
 
-#endif // _DATABASE_H
+#endif // _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_

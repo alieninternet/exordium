@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __CONFIG_H_
-# define __CONFIG_H_ 1
+#ifndef _SOURCE_MODULES_GAME_CONFIG_H_
+# define _SOURCE_MODULES_GAME_CONFIG_H_ 1
 
 # include <kineircd/str.h>
 # include <exordium/service.h>
@@ -56,6 +56,6 @@ namespace Game {
    };
 }; // namespace Game
 
-#endif // __CONFIG_H_
+#endif // _SOURCE_MODULES_GAME_CONFIG_H_
 
 

@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __PACK_H__
-# define __PACK_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_PACK_H_
+# define _SOURCE_MODULES_GAME_CARDS_PACK_H_ 1
 
 # include <vector>
 
@@ -82,5 +82,5 @@ namespace Cards {
    };
 }; // namespace Cards
    
-#endif // __PACK_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_PACK_H_
    

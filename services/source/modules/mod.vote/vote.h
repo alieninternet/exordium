@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __VOTE_H_
-#define __VOTE_H_
+#ifndef _SOURCE_MODULES_VOTE_VOTE_H_
+# define _SOURCE_MODULES_VOTE_VOTE_H_ 1
 
 #ifdef HAVE_CONFIG_H
 # include "autoconf.h"
@@ -81,4 +81,4 @@ void VOTE_FUNC (parseHELP);
 
 };
 
-#endif
+#endif // _SOURCE_MODULES_VOTE_VOTE_H_

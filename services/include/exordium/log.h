@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef _LOG_H_
-# define _LOG_H_
+#ifndef _INCLUDE_EXORDIUM_LOG_H_
+# define _INCLUDE_EXORDIUM_LOG_H_ 1
 
 # include <kineircd/logger.h>
 
@@ -49,4 +49,4 @@ namespace Exordium {
    }; // namespace Log
 }; // namespace Exordium
 
-#endif
+#endif // _INCLUDE_EXORDIUM_LOG_H_

@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef _CONF_H_
-# define _CONF_H_
+#ifndef _INCLUDE_EXORDIUM_CONF_H_
+# define _INCLUDE_EXORDIUM_CONF_H_ 1
 
 # include <aisutil/config/data.h>
 # include <aisutil/string/string.h>
@@ -124,5 +124,5 @@ namespace Exordium {
    };
 }; // namespace Exordium
 
-#endif
+#endif // _INCLUDE_EXORDIUM_CONF_H_
 

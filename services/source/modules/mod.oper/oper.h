@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __OPER_H_
-#define __OPER_H_
+#ifndef _SOURCE_MODULES_OPER_OPER_H_
+# define _SOURCE_MODULES_OPER_OPER_H_ 1
 
 #include <exordium/service.h>
 #include <exordium/services.h>
@@ -86,7 +86,4 @@ private:
    void OPER_FUNC (parseJUPE);
 };
 
-
-
-
-#endif
+#endif // _SOURCE_MODULES_OPER_OPER_H_

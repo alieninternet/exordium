@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __BOT_H_
-#define __BOT_H_
+#ifndef _SOURCE_MODULES_BOT_BOT_H_
+# define _SOURCE_MODULES_BOT_BOT_H_ 1
 
 #ifdef HAVE_CONFIG_H
 # include "autoconf.h"
@@ -101,4 +101,4 @@ private:
 
 
 
-#endif
+#endif // _SOURCE_MODULES_BOT_BOT_H_

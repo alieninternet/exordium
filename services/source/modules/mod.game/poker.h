@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __POKER_H__
-# define __POKER_H__
+#ifndef _SOURCE_MODULES_GAME_POKER_H_
+# define _SOURCE_MODULES_GAME_POKER_H_ 1
 
 # include <kineircd/str.h>
 # include <utility>
@@ -121,4 +121,4 @@ class Poker : public ChannelGame {
 		  AISutil::StringTokens& tokens);
 };
    
-#endif // __POKER_H__
+#endif // _SOURCE_MODULES_GAME_POKER_H_

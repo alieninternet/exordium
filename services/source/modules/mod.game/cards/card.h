@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __CARD_H__
-# define __CARD_H__
+#ifndef _SOURCE_MODULES_GAME_CARDS_CARD_H_
+# define _SOURCE_MODULES_GAME_CARDS_CARD_H_ 1
 
 # include <kineircd/str.h>
 # include <vector>
@@ -178,5 +178,5 @@ namespace Cards {
   
 }; // namespace Cards
    
-#endif // __CARD_H__
+#endif // _SOURCE_MODULES_GAME_CARDS_CARD_H_
    

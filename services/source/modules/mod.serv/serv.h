@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __SERV_H_
-# define __SERV_H_
+#ifndef _SOURCE_MODULES_SERV_SERV_H_
+# define _SOURCE_MODULES_SERV_SERV_H_ 1
 
 # include <kineircd/str.h>
 
@@ -89,4 +89,4 @@ class Serv : public Exordium::Service
    void SERV_FUNC (parseSETPASS);
 };
 
-#endif
+#endif // _SOURCE_MODULES_SERV_SERV_H_
