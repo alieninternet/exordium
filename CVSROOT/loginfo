@@ -1,4 +1,2 @@
-#CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv}
-#exordium-dev-cvs@lists.sourceforge.net
-#DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv}
-#exordium-dev-cvs@lists.sourceforge.net
+CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} exordium-dev-cvs@lists.sourceforge.net
+DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} exordium-dev-cvs@lists.sourceforge.net
