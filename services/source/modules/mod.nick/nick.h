@@ -96,6 +96,7 @@ namespace Exordium {
 	 NICK_FUNC(parseINFO);
 	 NICK_FUNC(parseAUTH);
 	 NICK_FUNC(parseNICK);
+	 NICK_FUNC(parseCOMMANDS);
       }; // class Module
    }; // namespace NickModule
 }; // namespace Exordium

@@ -101,6 +101,7 @@ namespace Exordium {
 	 CHAN_FUNC(parseLISTBAN);
 	 CHAN_FUNC(parseSET);
 	 CHAN_FUNC(parseSEEN);
+	 CHAN_FUNC(parseCOMMANDS);
       }; // class Module
    }; // namespace ChanModule
 }; // namespace Exordium

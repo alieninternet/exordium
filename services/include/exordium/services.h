@@ -79,8 +79,13 @@ namespace Exordium {
       // Log a line of text..
       void logLine(const std::string& line,
 		   const Log::mask_type mask = Log::Informative)
-	{ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); };
-
+	{ 
+Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
+//liveLog(line);
+//	queueAdd(":PeopleChat PRIVMSG #Debug : " + line);
+//	servicePrivmsg(line,"PeopleChat","#Debug");
+};
+      virtual void liveLog(const AISutil::String &) = 0;
       // Function Declrations below here.
       virtual int getAccess(AISutil::String &, AISutil::String &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;

@@ -59,6 +59,7 @@ const Module::functionTableStruct Module::functionTable[] = {
      { "news",		&Module::parseNEWS },
      { "setpass",	&Module::parseSETPASS },
      { "status",	&Module::parseSTATUS },
+     { "commands",	&Module::parseCOMMANDS },
      { 0, 0}
 };
 
@@ -93,6 +94,43 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	origin.sendMessage("Exordium services status report",getName());
 	String togo = "Current build : \002" + String::convert(Services::buildNumber) + "\002";
 	origin.sendMessage(togo,getName());
+
+//	String tofo = "Rx Bytes : " +
+//String::convert(services->getCountTx()) + " : ";
+//	origin.sendMessage(tofo,getName());
+}
+
+SERV_FUNC (Module::parseCOMMANDS)
+{
+  String::size_type lineLength = 200;
+
+   // Send the banner (this shouldn't be hard-coded)
+  // sendMessage(origin, "Command list for " + getName() + ":");
+origin.sendMessage("Command list for " + getName() + ":",getName());
+   // Start formulating the data..
+   std::ostringstream list(" -=>");
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Add the command to the list
+      list << " " << functionTable[i].command;
+
+   // How are we for size?
+      if (list.str().length() >= lineLength) {
+         // Dump it and reset the string stream thingy
+         origin.sendMessage(list.str(),getName());
+         list.str() = " -=>";
+      }
+   }
+
+   // Anything left to send still?
+   if (list.str().length() > 4) {
+      origin.sendMessage(list.str(),getName());
+   }
+   // Send the footer (this shouldn't be hard-coded)
+   origin.sendMessage("End of command list",getName());
+
+
+
+
 }
 
   SERV_FUNC (Module::parseDIE)

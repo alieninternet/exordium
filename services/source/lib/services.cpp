@@ -94,8 +94,8 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
      "\002[\002Fatal Error\002]\002 Services received \002" + 
      String(sys_siglist[signal]) + "\002 - Initiating shutdown";
    ((Services *)foo)->logLine(reason, Log::Warning);
-   ((Services *)foo)->shutdown(reason);
-   exit(1); // eek
+//   ((Services *)foo)->shutdown(reason);
+//   exit(1); // eek
 }
 
 /* Services run
@@ -335,6 +335,16 @@ bool ServicesInternal::handleInput (void)
 	  connected = false;
        }
 
+void
+	ServicesInternal::liveLog(const AISutil::String &line)
+{
+	if(connected)
+	{
+	 	if(line.length()>5)
+	servicePrivmsg(line,"PeopleChat","#Debug");
+	}
+
+}
 /* connect()
  *
  * Connect to our uplink! Yeah!
@@ -407,7 +417,9 @@ bool ServicesInternal::handleInput (void)
 			   config.getConsoleHostname(),
 			   config.getConsoleDescription());
 	   // I smell a configuration variable.. *sniff sniff* can you?
-	   serviceJoin(config.getConsoleName(), "#Exordium");
+	   serviceJoin(config.getConsoleName(), "#Debug");
+	   mode("PeopleChat","#Debug","+o","PeopleChat");
+
 	}
 	
 	connected = true;
@@ -436,10 +448,20 @@ bool ServicesInternal::handleInput (void)
 	if (config.getConsoleEnabled()) {
 	   queueAdd(":PeopleChat QUIT :"+reason);
 	}
-	
-	queueAdd(":" + Kine::config().getOptionsServerName() +
-		 " SQUIT " + Kine::config().getOptionsServerName() + " :" +
-		 reason);
+
+	// Nasty hack for now.
+	String tofo = "\002Services shutting down\002 : " + reason;
+	queueAdd(":PeopleChat QUIT :"+tofo);
+	queueAdd(":Chan QUIT :"+tofo);
+	queueAdd(":Nick QUIT :"+tofo);
+	queueAdd(":Oper QUIT :"+tofo);
+	queueAdd(":Game QUIT :"+tofo);
+		
+//	queueAdd(":" + Kine::config().getOptionsServerName() +
+//		 " SQUIT " + Kine::config().getOptionsServerName() + " :" +
+//		 reason);
+	queueAdd(":services.peoplechat.org SQUIT :dev-1.plethoric.net : "+tofo);
+
 	stopping = true;
 	stopTime = currentTime + 5;
 
@@ -1242,7 +1264,7 @@ void ServicesInternal::registerNick(String const &nick, String const &password,
  */
 String ServicesInternal::genAuth(String const &nickname)
 {
-   String authcode = Utils::generatePassword(nickname,
+   String authcode = Utils::generateRegcode(nickname,
 					     "VIVA LA FRANCE :)");
    database.dbInsert("nickspending", "'','"+nickname+"','"+authcode+"'");
 #ifdef DEBUG

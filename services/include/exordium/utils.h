@@ -37,6 +37,9 @@ namespace Exordium {
       // Generate a password (uniform password types)
       extern AISutil::String generatePassword(AISutil::String const &nickname,
 					      AISutil::String const &password);
+
+      extern AISutil::String generateRegcode(AISutil::String const &nickname,
+					      AISutil::String const &password);
    }; // namespace Utils
 }; // namespace Exordium
 

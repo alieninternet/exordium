@@ -29,6 +29,7 @@
 #endif
 
 #include <kineircd/password.h>
+#include <openssl/evp.h>
 
 #include "exordium/utils.h"
 
@@ -51,8 +52,35 @@ unsigned long Exordium::Utils::random(unsigned long max)
 String Exordium::Utils::generatePassword(const String& nickname,
 					 const String& password)
 {
-std::cout << "GeneratePassword(): Nickname :"<<nickname<<": Password :" <<
+std::cout << "GeneratePassword(): Nickname :"<<nickname<<": Password :"
+<<
 password << ":" << std::endl;
+
+
+//  static const Kine::Utils::base_type PasswordStrBase = 85;
+//   static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
+//String pass =
+//Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
+//std::cout << "GeneratePassword() :" << pass << ":" << std::endl;
+return password;
+//
+//   return String((char *)Kine::Password::makePassword(nickname,
+//						      password).s_char,
+//		 (String::size_type)20);
+}
+
+/* generatePassword(String,String)
+ *
+ * Generate a new password for the given user.
+ *
+ */
+String Exordium::Utils::generateRegcode(const String& nickname,
+					 const String& password)
+{
+std::cout << "GeneratePassword(): Nickname :"<<nickname<<": Password :"
+<<
+password << ":" << std::endl;
+
 
   static const Kine::Utils::base_type PasswordStrBase = 85;
    static const AISutil::String::size_type PasswordStrBaseLongPad = 5;

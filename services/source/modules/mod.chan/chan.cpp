@@ -69,6 +69,7 @@ struct Module::functionTableStruct const
      {"set", &Module::parseSET},
      {"seen", &Module::parseSEEN},
      {".seen", &Module::parseSEEN},
+     {"commands", &Module::parseCOMMANDS},
      {0, 0}
 };
 
@@ -110,6 +111,40 @@ void
 	  }
      }
    origin.sendMessage("Unrecognized Command",getName());
+}
+
+CHAN_FUNC (Module::parseCOMMANDS)
+
+{
+
+  String::size_type lineLength = 200;
+
+   // Send the banner (this shouldn't be hard-coded)
+  // sendMessage(origin, "Command list for " + getName() + ":");
+origin.sendMessage("Command list for " + getName() + ":",getName());
+   // Start formulating the data..
+   std::ostringstream list(" -=>");
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Add the command to the list
+      list << " " << functionTable[i].command;
+
+   // How are we for size?
+      if (list.str().length() >= lineLength) {
+         // Dump it and reset the string stream thingy
+         origin.sendMessage(list.str(),getName());
+         list.str() = " -=>";
+      }
+   }
+
+   // Anything left to send still?
+   if (list.str().length() > 4) {
+      origin.sendMessage(list.str(),getName());
+   }
+  // Send the footer (this shouldn't be hard-coded)
+   origin.sendMessage("End of command list",getName());
+
+
+
 }
 
   CHAN_FUNC (Module::parseSEEN)
@@ -497,6 +532,7 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
+	bool foundmatch = false;
 	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>100)
 	  {
@@ -533,6 +569,10 @@ void
 	       }
 	     more = st.hasMoreTokens();
 	  }
+	if(!foundmatch)
+		{
+			origin.sendMessage("Sorry - None of the nicks you are identified as has access in " + channel,getName());
+		}
 
 	return;
      }

@@ -53,6 +53,7 @@ struct Module::functionTableStruct const
      {"set", &Module::parseSET},
      {"info", &Module::parseINFO},
      {"nick", &Module::parseNICK},
+     {"commands", &Module::parseCOMMANDS},
      {0, 0}
 };
 
@@ -97,6 +98,38 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    return;
 }
 
+  NICK_FUNC (Module::parseCOMMANDS)
+{
+  // Work out the line length, we subtract 20 to be safe :)
+   String::size_type lineLength = 200;
+
+   // Send the banner (this shouldn't be hard-coded)
+  // sendMessage(origin, "Command list for " + getName() + ":");
+origin.sendMessage("Command list for " + getName() + ":",getName());
+   // Start formulating the data..
+   std::ostringstream list(" -=>");
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Add the command to the list
+      list << " " << functionTable[i].command;
+
+   // How are we for size?
+      if (list.str().length() >= lineLength) {
+         // Dump it and reset the string stream thingy
+         origin.sendMessage(list.str(),getName());
+         list.str() = " -=>";
+      }
+   }
+
+   // Anything left to send still?
+   if (list.str().length() > 4) {
+      origin.sendMessage(list.str(),getName());
+   }
+
+   // Send the footer (this shouldn't be hard-coded)
+   origin.sendMessage("End of command list",getName());
+
+
+}
   NICK_FUNC (Module::parseNICK)
 
 {
@@ -433,8 +466,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set url
-www.peoplechat.org";
+	     String togo = "Usage is /msg Nick set url www.peoplechat.org";
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
@@ -667,8 +699,7 @@ services->registerService(toghost,"ghost","ghosts.peoplechat.org",
 	    }
 	  if(!safe)
 	    {
-	       String tosend = String ("For security reasons you must use
-/msg nick@peoplechat.org to identify");
+	       String tosend = String ("For security reasons you must use /ns id <password> to identify");
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
