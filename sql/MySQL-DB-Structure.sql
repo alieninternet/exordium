@@ -395,3 +395,14 @@ CREATE TABLE words (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+#
+# Table structure for table 'credits'
+#
+
+DROP TABLE IF EXISTS credits;
+CREATE TABLE credits (
+  nickid int(11) NOT NULL,
+  balance bigint(21),
+  PRIMARY KEY  (nickid)
+) TYPE=MyISAM;
+
