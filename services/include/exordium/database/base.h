@@ -35,7 +35,18 @@
 namespace Exordium {
 
    class Config;
+   /* Virtual base thingy for results - I wish i had a clue what I was doing :x */
+  class CResult
+     {
+      public:
+	CResult();
+
+	
+	virtual ~CResult(void);
+        virtual AISutil::String dbResultGetValue(void)=0;
+     };
    
+	
   /*
    * Base class for all SQL servers
    *
@@ -72,6 +83,7 @@ namespace Exordium {
 
       virtual void dbLock(AISutil::String const &table)=0;
       virtual void dbUnlock(void)=0;
+      virtual CResult* dbGetResult(void)=0;
 
 
 

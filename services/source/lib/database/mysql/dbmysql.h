@@ -34,9 +34,27 @@
 
 #include <mysql/mysql.h>
 
+
 namespace Exordium {
 
-  /*
+
+   class CMySQLRes:public CResult
+     {
+      private:
+	MYSQL_RES *mysqlres;
+	MYSQL_ROW mysqlrow;
+      public:
+	CMySQLRes(MYSQL_RES &result)
+	  : mysqlres(&result) {};
+	
+	~CMySQLRes();
+	
+	// functions
+	AISutil::String dbResultGetValue(void);
+     };
+   
+	       
+   /*
    * CMySQL: Class for MySql server
    *
    *
@@ -73,7 +91,12 @@ namespace Exordium {
       void dbBeginTrans(void) {}
       void dbCommit(void) {}
       void dbRollback(void) {}
-
+      CMySQLRes* dbGetResultSet(void)
+       {
+	  MYSQL_RES rres = *mysqlres;
+	  return new CMySQLRes(rres);
+      }
+     
 
     private:
       MYSQL* const mysql;

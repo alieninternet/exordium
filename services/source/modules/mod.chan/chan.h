@@ -30,6 +30,7 @@
 # include <exordium/service.h>
 # include <exordium/services.h>
 # include <exordium/user.h>
+# include <exordium/database/database.h>
 
 # include <kineircd/str.h>
 
@@ -52,7 +53,7 @@ namespace Exordium {
 	    char const* const command;
 	    CHAN_FUNC((Module::* const function));
 	 } static const functionTable[];
-   
+	 CDatabase* db;
        public:
 	 Module(void)
 	   : configData(moduleInfo.fullName, "somewhere.org", "Chan")
