@@ -148,7 +148,7 @@ LOVE_FUNC(Module::handleCOMMANDS)
 {
    // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength =
-     Kine::config().getOptionsLimitsMaxMessageLength() - 20;
+     Kine::config().getLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
    sendMessage(origin, "Command list for " + getName() + ":");
