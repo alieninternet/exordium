@@ -92,8 +92,11 @@ if test "$mysql_config" ; then
         LDFLAGS="$LDFLAGS `$mysql_config_prog --libs`"
         AC_CHECK_LIB([mysqlclient], [main], [
         AC_DEFINE(HAVE_MYSQL)
+	exordium_test_compile_db_mysql=yes
         AC_MSG_RESULT(Building with MySQL support)], [AC_MSG_RESULT([Building without MySQL support])])
 fi
+AM_CONDITIONAL(EXORDIUM_COMPILE_DB_MYSQL,
+               [test x$exordium_test_compile_db_mysql = xyes])
 
 AC_CHECK_LIB([pq], [main], [
 
@@ -117,10 +120,13 @@ AC_CHECK_HEADERS([`pg_config --includedir`/libpq-fe.h],
 
 #CPPFLAGS="$CPPFLAGS -DHAVE_PGSQL"
 AC_DEFINE(HAVE_PGSQL)
+exordium_test_compile_db_pgsql=yes
 LDFLAGS="$LDFLAGS -L `pg_config --libdir`"
 LDFLAGS="$LDFLAGS  -lpq"
-AC_MSG_RESULT(Building with PostgreSQL support)], [AC_MSG_RESULT([Building without PosgreSQL support])])
-
+AC_MSG_RESULT(Building with PostgreSQL support)], [AC_MSG_RESULT([Building without PosgreSQL support])
+])
+AM_CONDITIONAL(EXORDIUM_COMPILE_DB_PGSQL,
+               [test x$exordium_test_compile_db_pgsql = xyes])
 
 AC_CONFIG_FILES([source/Makefile
 		 source/modules/Makefile

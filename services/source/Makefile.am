@@ -5,6 +5,14 @@ mod_exordium_la_LDFLAGS = -module -avoid-version
 mod_exordium_la_LIBADD = libexordium.la
 libexordium_la_LIBADD = ../../kineircd/src/lib/libkineircd.la
 
+# work out what else needs compiling..
+if EXORDIUM_COMPILE_DB_MYSQL
+  EXORDIUM_TARGET_DB_MYSQL=lib/database/mysql/dbmysql.cpp
+endif
+if EXORDIUM_COMPILE_DB_PGSQL
+  EXORDIUM_TARGET_DB_PGSQL=lib/database/postgresql/dbpgsql.cpp
+endif
+
 libexordium_la_SOURCES = lib/conf.cpp \
 		       	 lib/channel.cpp \
 			 lib/dchan.cpp \
@@ -15,8 +23,9 @@ libexordium_la_SOURCES = lib/conf.cpp \
 			 lib/services.cpp \
 			 lib/user.cpp \
 			 lib/database/database.cpp \
- 			 lib/database/mysql/dbmysql.cpp \
-			 lib/database/postgresql/dbpgsql.cpp
+			 $(EXORDIUM_TARGET_DB_MYSQL) \
+			 $(EXORDIUM_TARGET_DB_PGSQL)
+
 			 
 SUBDIRS=. modules
 

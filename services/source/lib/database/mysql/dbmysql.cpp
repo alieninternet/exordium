@@ -29,7 +29,9 @@
  * of a way to change libservices_la_SOURCES that much, CPPFLAGS etc are easy but..
  */
 #include "exordium/config.h"
-#ifdef HAVE_MYSQL
+#ifndef HAVE_MYSQL
+# error "Cannot compile mysql support without mysql!"
+#endif
 #include "exordium/database/mysql/dbmysql.h"
 
 
@@ -170,5 +172,3 @@ void CMySQL::dbUnlock(void)
 {
   dbQuery("UNLOCK TABLES");
 }
-
-#endif // HAVE_MYSQL

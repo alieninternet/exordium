@@ -25,7 +25,9 @@
  */
 
 #include "exordium/config.h"
-#ifdef HAVE_PGSQL
+#ifndef HAVE_PGSQL
+# error "Cannot compile PostgreSQL support without PostgreSQL!"
+#endif
 
 #include "exordium/database/postgresql/dbpgsql.h"
 
@@ -182,5 +184,3 @@ void CPgSQL::dbRollback(void)
 void CPgSQL::dbSelectDB(String const &dbName)
 {
 }
-
-#endif // HAVE_PGSQL
