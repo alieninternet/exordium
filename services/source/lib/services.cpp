@@ -975,6 +975,16 @@ bool ServicesInternal::queueFlush(void)
      }
 };
 
+/* addServer(String,int,String)
+ * 
+ * Add a server to our server map
+ * 
+ */
+Server* const ServicesInternal::addServer(const String &name, const int &hops, const String &desc)
+{
+   return servers[name] = new Server(name,hops,desc,*this);
+}
+
 /* addChan(String,Int)
  *
  * Add a channel to our channel map
@@ -1002,20 +1012,11 @@ User* const ServicesInternal::addUser(const String& name, const int oid)
  */
 User* ServicesInternal::findUser(Kine::Name &name)
 {
-#ifdef DEBUG
-   logLine("findUser() - Looking for " + name.IRCtoLower().trim(),
-	   Log::Debug);
-#endif
    User *ptr = users[name.IRCtoLower().trim()];
    if(ptr == 0)
      {
-#ifdef DEBUG
-	logLine("findUser() - I could not find the user named :" + name,
-		Log::Debug);
-#endif
 	return 0;
      }
-
    return ptr;
 }
 
@@ -1026,17 +1027,24 @@ User* ServicesInternal::findUser(Kine::Name &name)
  */
 dChan* ServicesInternal::findChan(Kine::Name &name)
 {
-#ifdef DEBUG
-   logLine("findChan() - Looking for " + name.IRCtoLower().trim(),
-	   Log::Debug);
-#endif
    dChan *ptr = chans[name.IRCtoLower().trim()];
    if(ptr==0)
      {
-#ifdef DEBUG
-	logLine("findChan() - I could not find the channel",
-		Log::Debug);
-#endif
+	return 0;
+     }
+   return ptr;
+}
+
+/* findServer(String)
+ * 
+ * Find and return a pointer to that server.
+ * 
+ */
+Server* ServicesInternal::findServer(String &name)
+{
+   Server *ptr = servers[name];
+   if(ptr==0)
+     {
 	return 0;
      }
    return ptr;
@@ -1066,6 +1074,18 @@ bool ServicesInternal::delChan(Kine::Name &name)
    chans.erase(name.IRCtoLower());
    database.dbDelete("onlinechan","name='"+name.IRCtoLower()+"'");
    return true;
+}
+
+/* delServer(String)
+ * 
+ * Delete the given server.
+ * 
+ */
+bool ServicesInternal::delServer(String &name)
+{
+   servers.erase(name);
+   return true;
+
 }
 
 /* setNick(User,String)

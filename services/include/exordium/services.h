@@ -78,10 +78,11 @@ namespace Exordium {
       // Grab the configuration reference
       virtual const Config& getConfig(void) const = 0;
       
-      // Return the channel thingy
+      // Return the channel reference
       Channel& getChannel(void)
 	{ return channel; };
       
+      // Return the static reference
       Static& getStatic(void)
 	{ return gstatic; };
 	   
@@ -95,16 +96,19 @@ namespace Exordium {
       // Function Declrations below here.
       virtual void shutdown(const AISutil::String &) = 0;
       
+      // 'User' operability functions
       virtual User* const addUser(const AISutil::String& name,
 				  const int oid) = 0;
       virtual bool delUser(Kine::Name &) = 0;
       virtual User* findUser(Kine::Name &) = 0;
       
+      // 'dChan' operability functions
       virtual dChan* const addChan(const Kine::Name& name,
 				   const int oid) = 0;
       virtual bool delChan(Kine::Name &) = 0;
       virtual dChan* findChan(Kine::Name &) = 0;
       
+      // 'Server' operability functions
       virtual Server* const addServer(const AISutil::String&,
 				      const int &,
 				      const AISutil::String &) = 0;
@@ -114,8 +118,10 @@ namespace Exordium {
       virtual Server* findServer(AISutil::String &)= 0;
 				      
       
+      // Allows Services:: to change a User's nick.
       virtual void setNick(User &, Kine::Name &) = 0;
       
+      // Send modes.
       virtual void mode(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &, AISutil::String const &) = 0;
       

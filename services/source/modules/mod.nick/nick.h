@@ -69,6 +69,8 @@ namespace Exordium {
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			Kine::Name const &)
 	   {};
+	 
+	 void nickLinkAdd(AISutil::String const &, AISutil::String const &);
 
 	 /* Our Event Handler(s) */
 	 void handleClientSignon(Exordium::User& origin);
