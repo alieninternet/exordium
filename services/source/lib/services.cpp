@@ -1227,9 +1227,11 @@ String ServicesInternal::getpendingCode(String const &nick)
 void ServicesInternal::registerNick(String const &nick, String const &password,
 				    String const &email)
 {
-   String gpass = Utils::generatePassword(nick.IRCtoLower(),password);
+    String gpass = Utils::generatePassword(nick.IRCtoLower(),password);
+   //String gpass = "foo";
    // oh, this is revoltingly hard-coded! :(
-   database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
+   std::cout << "Registering nickname" << std::endl;
+   database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1");
 }
 
 

@@ -57,7 +57,7 @@ class ChannelGame {
    // Our channel game table structure
    struct channelGameTable_type {
       const char* const game;			// The channel game name
-      const creator_type* const creator;	// The creator function
+      creator_type* const creator;	// The creator function
    } static const channelGameTable[];
 
    // Constructor

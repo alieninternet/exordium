@@ -306,7 +306,8 @@ void
    int chanid = getChanID(name);
 
    services.getDatabase().dbInsert("chanaccess", 
-         "'"+String::convert(chanid)+"',',"+String::convert(nickid)+"','"+String::convert(level)+"'");
+
+"'"+String::convert(chanid)+"','"+String::convert(nickid)+"','"+String::convert(level)+"'");
 }
 /* Delete access from the given channel */
 void

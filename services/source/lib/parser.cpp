@@ -529,7 +529,7 @@ void
 	return;
      }
    //Hard check for nick if its @ircdome.org ......
-   if(target.toLower()=="nick@ircdome.org")
+   if(target.toLower()=="nick@peoplechat.org")
      {
 	//Safety check for the module.. :-)
 	if(!services.getConfigInternal().getModules().exists("nick"))

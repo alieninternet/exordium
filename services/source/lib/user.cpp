@@ -219,7 +219,7 @@ int
 void
   User::addCheckIdentify(void)
 {
-   sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@ircdome.org identify <password>","Nick");
+   sendMessage("[Identification Request] This nickname is registered, please identify by typing /msg nick@peoplechat.org identify <password>","Nick");
    services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (Utils::random(60)))+"'");
    return;
 };
@@ -391,8 +391,7 @@ const String User::getPass(void)
       return "";
    }
    
-   return String(services.getDatabase().dbGetValue().data(),
-		 (String::size_type)20);
+   return String(services.getDatabase().dbGetValue().data());
 }
 
 

@@ -51,11 +51,18 @@ unsigned long Exordium::Utils::random(unsigned long max)
 String Exordium::Utils::generatePassword(const String& nickname,
 					 const String& password)
 {
-   static const Kine::Utils::base_type PasswordStrBase = 85;
-   static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
+std::cout << "GeneratePassword(): Nickname :"<<nickname<<": Password :" <<
+password << ":" << std::endl;
 
-   return String((char *)Kine::Password::makePassword(nickname,
-						      password).s_char,
-		 (String::size_type)20);
+  static const Kine::Utils::base_type PasswordStrBase = 85;
+   static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
+String pass =
+Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
+std::cout << "GeneratePassword() :" << pass << ":" << std::endl;
+return pass;
+//
+//   return String((char *)Kine::Password::makePassword(nickname,
+//						      password).s_char,
+//		 (String::size_type)20);
 }
 

@@ -52,7 +52,7 @@ namespace Exordium {
 	 
 	 struct commandTable_type {
 	    const char* const command;			// Command name
-	    const handler_type Module::* const handler;	// The function
+	    handler_type Module::* const handler;	// The function
 	 } static const commandTable[];
 
 	 // Our wonderful command handlers

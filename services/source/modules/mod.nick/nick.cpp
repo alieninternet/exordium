@@ -415,7 +415,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set url www.ircdome.org";
+	     String togo = "Usage is /msg Nick set url
+www.peoplechat.org";
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
@@ -615,7 +616,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 		* change, I suspect, when kine grows up a little more..
 		* The mode, btw, was +id
 		*/
-	       services->registerService(toghost,"ghost","ghosts.ircdome.org",
+
+services->registerService(toghost,"ghost","ghosts.peoplechat.org",
 					"Ghosted by "+origin.getNickname());
 	       String tosend = String("Ghost successful for ")+toghost;
 	       origin.sendMessage(tosend,getName());
@@ -647,13 +649,16 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	    }
 	  if(!safe)
 	    {
-	       String tosend = String ("For security reasons you must use /msg nick@ircdome.org to identify");
+	       String tosend = String ("For security reasons you must use
+/msg nick@peoplechat.org to identify");
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
 	  String nickpass = Utils::generatePassword(origin.getNickname(),
 						    password);
 	  String givepass = origin.getPass();
+	  std::cout << ":" << nickpass << ":" << std::endl;
+	  std::cout << ":" << givepass << ":" << std::endl;
 	  if(nickpass == givepass)
 	    {
 	       int oid = origin.getOnlineID();
