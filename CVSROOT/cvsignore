@@ -44,4 +44,4 @@ core
 test
 .libs
 *.lock
-*.in
+Makefile.in
