@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002,2003 IRCDome Development Team
+ * Copyright (C) 2002 IRCDome Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -38,10 +38,6 @@
 #include "lib/config.h"
 #include "lib/services.h"
 #include "version.h"
-
-extern "C" {
-#include "ltdl.h"
-}
 
 using namespace Exordium;
 
@@ -123,12 +119,7 @@ namespace {
 	    return false;
 	 }
  */
-
-	 // Leave this here until > kine snapshot 200212040905
-	 if (lt_dlinit() != 0) {
-	    return false; // :(
-	 }
-	 
+	   
 	 // Create new database Instance
 	 db = new CDatabase(config);
 #ifdef DEBUG

@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002,2003 IRCDome Development Team
+ * Copyright (C) 2002 IRCDome Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -31,7 +31,7 @@
 # include <kineircd/str.h>
 
 extern "C" {
-# include <ltdl.h>
+# include <dlfcn.h>
 };
 
 namespace Exordium {
@@ -45,9 +45,9 @@ namespace Exordium {
       class Module {
        public:
 	 Service* const service;			// Service class
-	 lt_dlhandle handle;				// lt_dlopen() handle
+	 void* const handle;				// dlopen() handle
 	 
-	 Module(Service* const s, lt_dlhandle& h)
+	 Module(Service* const s, void* const h)
 	   : service(s), handle(h)
 	     {};
 	 
