@@ -485,13 +485,15 @@ void
 	// Check what kind of CTCP this is
 	if (CTCPcommand == "PING")
 	  {
-	     String data = CTCPtokens.rest ();
-	     services.sendCTCPpingReply (target, OLDorigin, data);
+	     services.queueAdd(":" + target + " NOTICE " + OLDorigin + 
+			       " :\001PING " + CTCPtokens.rest() + "\001");
 	     return;
 	  }
 	if (CTCPcommand == "VERSION")
 	  {
-	     services.sendCTCPversionReply (target, OLDorigin);
+	     services.queueAdd(":" + target + " NOTICE " + OLDorigin +
+			       " :\001VERSION Exordium Network Services "
+			       "http://exordium.sourceforge.net/\001");
 	     return;
 	  }
 	return;

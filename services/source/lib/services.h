@@ -207,22 +207,6 @@ namespace Exordium {
 	   queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
 	}
       
-      void sendCTCPpingReply(AISutil::String const &from,
-			     AISutil::String const &who,
-			     AISutil::String & data)
-	{
-	   queueAdd(":" + from + " NOTICE " + who + " :\001PING " + 
-		    data + "\001");
-	};
-      
-      void sendCTCPversionReply(AISutil::String const &from,
-				AISutil::String const &who)
-	{
-	   queueAdd(":" + from + " NOTICE " + who +
-		    " :\001VERSION IRCDome Network Services (c)2002 James I Wilkins <james@ircdome.org>\001");
-	};
-      
-      
       void registerService(AISutil::String const &nick,
 			   AISutil::String const &user,
 			   AISutil::String const &host,

@@ -146,13 +146,6 @@ namespace Exordium {
 			      AISutil::String const &mode,
 			      AISutil::String const &target) = 0;
       
-      virtual void sendCTCPpingReply(AISutil::String const &from,
-				     AISutil::String const &who,
-				     AISutil::String & data) = 0;
-      
-      virtual void sendCTCPversionReply(AISutil::String const &from,
-					AISutil::String const &who) = 0;
-      
       virtual void registerService(AISutil::String const &nick,
 				   AISutil::String const &user,
 				   AISutil::String const &host,
