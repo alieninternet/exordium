@@ -400,7 +400,7 @@ CREATE TABLE words (
 #
 
 DROP TABLE IF EXISTS credits;
-CREATE TABLE credits (
+CREATE TABLE bank (
   nickid int(11) NOT NULL,
   balance bigint(21),
   PRIMARY KEY  (nickid)
