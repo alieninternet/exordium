@@ -233,6 +233,9 @@ namespace Exordium {
 
       // set* Functions.
       const void setPassword(AISutil::String const &);
+      const void setEmail(AISutil::String const &);
+      const void setInfo(AISutil::String const &,AISutil::String const &);
+      const void setPrivmsg(bool const &);
       // get* Functions.
       const AISutil::String getPendingCode(void);
       

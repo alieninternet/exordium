@@ -328,10 +328,9 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.sendMessage("Usage: set email email@address",getName());
 	     return;
 	  }
-        services->getDatabase().dbUpdate("nicks", "email='"+value+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "Email has been changed to \002"+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),"Changed email address to "+value);
+	origin.setEmail(value);
+	origin.sendMessage("Email address changed to :"+value,getName());
+	origin.log(getName(),"Changed email address to "+value);
 	return;
      }
 
@@ -339,14 +338,12 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set msn MSN handle";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set msn handle",getName());
 	     return;
 	  }
-        services->getDatabase().dbUpdate("nicks", "msn='"+value+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "MSN has been changed to \002"+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),"Changed MSN address to "+value);
+	origin.setInfo("msn",value);
+	origin.sendMessage("MSN handle has been changed to :"+value,getName());
+        origin.log(getName(),"Changed MSN handle to "+value);
 	return;
      }
 
@@ -354,14 +351,12 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set aim handle";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set aim handle",getName());
 	     return;
 	  }
-        services->getDatabase().dbUpdate("nicks", "aim='"+value+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "AIM has been changed to \002"+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),"Changed AIM address to "+value);
+	origin.setInfo("aim",value);
+	origin.sendMessage("AIM handle has been changed to :"+value,getName());
+	origin.log(getName(),"Changed AIM handle to "+value);
 	return;
      }
 
@@ -369,14 +364,12 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set yahoo! handle";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set yahoo handle",getName());
 	     return;
 	  }
-        services->getDatabase().dbUpdate("nicks", "yahoo='"+value+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "Yahoo! has been changed to \002"+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),"Changed Yahoo! address to "+value);
+	origin.setInfo("yahoo",value);
+	origin.sendMessage("Yahoo! handle has been changed to :"+value,getName());
+	origin.log(getName(),"Changed Yahoo! handle to "+value);
 	return;
      }
 
@@ -384,14 +377,12 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set icq ICQNUMBER";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set icq value",getName());
 	     return;
 	  }
-        services->getDatabase().dbUpdate("nicks", "icq='"+value+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "ICQ has been changed to \002"+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),"Changed ICQ address to "+value);
+	origin.setInfo("icq",value);
+	origin.sendMessage("ICQ handle has been changed to :"+value,getName());
+	origin.log(getName(),"Changed ICQ address to "+value);
 	return;
      }
 
@@ -399,34 +390,36 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set url www.peoplechat.org";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set url www.someplace.org",getName());
 	     return;
 	  }
-        services->getDatabase().dbUpdate("nicks", "url='"+value+"'", "nickname='"+origin.getNickname()+"'");
-	String togo = "URL has been changed to \002"+value;
-	origin.sendMessage(togo,getName());
-	services->log(origin,getName(),"Changed URL address to "+value);
+	origin.setInfo("url",value);
+	origin.sendMessage("Website URL changed to :"+value,getName());
+	origin.log(getName(),"Changed URL address to "+value);
 	return;
      }
    if(command=="privmsg")
      {
-	if(value=="on")
+	if(value=="")
 	  {
-             services->getDatabase().dbUpdate("nicks", "privmsg=1", "nickname='"+origin.getNickname()+"'");
+	     origin.sendMessage("Usage: set privmsg on/off",getName());
+	     return;
+	  }
+	if(value=="on" || value=="true" || value=="yes")
+	  {
+	     origin.setPrivmsg(true);
 	     origin.sendMessage("I will now use the private message interface",getName());
 	     return;
 	  }
-	if(value=="off")
+	if(value=="off" || value=="false" || value=="no")
 	  {
-             services->getDatabase().dbUpdate("nicks", "privmsg=0", "nickname='"+origin.getNickname()+"'");
-	     origin.sendMessage("I will now use the private message interface",getName());
+	     origin.setPrivmsg(false);
+	     origin.sendMessage("I will now use the notice message interface",getName());
 	     return;
 	  }
-	origin.sendMessage("Error: Value must be on or off",getName());
+	origin.sendMessage("Error: Value must be on/off",getName());
 	return;
      }
-   origin.sendMessage("Error: Unsupported command",getName());
    return;
 }
 

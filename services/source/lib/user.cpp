@@ -633,7 +633,42 @@ return authcode;
  */
 const void User::setPassword(String const &newpass)
 {
-   services.getDatabase().dbUpdate("nicks","password'="+newpass+"'","nickname='"+nickname+"'");
+   services.getDatabase().dbUpdate("nicks","password='"+newpass+"'","nickname='"+nickname+"'");
          
 }
 
+/*
+ * setEmail
+ * 
+ * Update this users email with the given one
+ * 
+ */
+const void User::setEmail(String const &email)
+{
+   services.getDatabase().dbUpdate("nicks","password='"+email+"'","nickname='"+nickname+"'");
+}
+
+/*
+ * setInfo(what,value)
+ * 
+ * Update one of the msn/icq/yahoo/etc
+ * 
+ */
+const void User::setInfo(String const &what,String const &value)
+{
+services.getDatabase().dbUpdate("nicks",what+"='"+value+"'", "nickname='"+nickname+"'");
+}
+
+/*
+ * setPrivmsg
+ * 
+ * Update whether to use privmsg or notice
+ * 
+ */
+const void User::setPrivmsg(bool const &value)
+{
+if(value)
+     services.getDatabase().dbUpdate("nicks","privmsg=1","nickname='"+nickname+"'");
+   else
+     services.getDatabase().dbUpdate("nicks","privmsg=0","nickname='"+nickname+"'");
+}
