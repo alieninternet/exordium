@@ -28,6 +28,7 @@
 #include <exordium/database/database.h>
 
 using namespace Exordium;
+using LibAIS::String;
 
 CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
 {
