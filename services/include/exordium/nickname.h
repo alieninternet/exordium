@@ -86,7 +86,9 @@ namespace Exordium {
       void setDeopAway(Kine::String const &, bool const &);
       bool deopAway(Kine::String const &);
       void setModNick(Kine::String const &, bool const &);
-      bool modNick(Kine::String const &);
+      
+      // I think this got removed and someone forgot to commit!!
+//      bool modNick(Kine::String const &);
    };
 };
 

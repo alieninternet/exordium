@@ -48,12 +48,12 @@ struct Bot::functionTableStruct const
 };
 
 void
-  Bot::parseLine (String const &line, String const &requestor, String const &chan)
+  Bot::parseLine (StringTokens& line, User& origin,
+		  const String& channel)
 {
-   StringTokens st (line);
-   String origin = requestor;
+   StringTokens& st = line;
    String command = st.nextToken ().toLower ();
-   String ch = chan;
+   String ch = channel;
    for (int i = 0; functionTable[i].command != 0; i++)
      {
 	// Does this match?
@@ -69,10 +69,10 @@ void
 }
 
 void
-  Bot::parseLine (String const &line, String const &requestor)
+  Bot::parseLine (StringTokens& line, User& origin)
+
 {
-   StringTokens st (line);
-   String origin = requestor;
+   StringTokens& st = line;
    String command = st.nextToken ().toLower ();
    String ch = "";
    for (int i = 0; functionTable[i].command != 0; i++)
@@ -85,13 +85,13 @@ void
 	     return;
 	  }
      }
-   sendMessage (requestor,"Unrecognized Command");
+   origin.sendMessage("Unrecognized Command", myName);
 }
 
 void
   BOT_FUNC (Bot::parseHELP)
 {
-   services.doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
+   services.doHelp(origin.getNickname(),"bot",tokens.nextToken(),tokens.nextToken());
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION

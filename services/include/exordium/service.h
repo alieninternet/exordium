@@ -42,20 +42,22 @@ extern "C" {
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
 
 namespace Exordium {
+   class Services;
+   class User;
    
-class Service
-	{
-	public:
-		Service() {};
-		virtual ~Service() {};
-		virtual void parseLine(Kine::String const &, 
-				       Kine::String const &
-				       ) =0;
-		virtual void parseLine(Kine::String const &, 
-				       Kine::String const &, 
-				       Kine::String const &
-				       ) =0;
-	};
+   class Service {
+    public:
+      Service() 
+	{};
+      
+      virtual ~Service() 
+	{};
+
+      virtual void parseLine(Kine::StringTokens& line, User& origin) = 0;
+      
+      virtual void parseLine(Kine::StringTokens& line, User& origin,
+			     const Kine::String& channel) = 0;
+   };
 
 
 class Core {
@@ -108,8 +110,8 @@ class Core {
 		return true;
 	}
    // Throw a line at the appropriate service
-   void throwLine(Kine::String const &name, Kine::String const &line, 
-		  Kine::String const &req) {
+   void throwLine(Kine::String const &name, Kine::StringTokens& line, 
+		  User &origin) {
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
       if (sm == 0) {
          // Give up.. delete what we just made and go bye byes
@@ -117,12 +119,12 @@ class Core {
          return;
       }
       Service *serv = sm->service;
-      serv->parseLine(line,req);
+      serv->parseLine(line, origin);
       return;
    };
 
-   void throwLine(Kine::String const &name, Kine::String const &line, 
-		  Kine::String const &req, Kine::String const &ch) {
+   void throwLine(Kine::String const &name, Kine::StringTokens& line,
+		  User& origin, Kine::String const &ch) {
       // Find it...
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
 
@@ -134,7 +136,7 @@ class Core {
       }
       Service *serv = sm->service;
       // Otherwise we must have it.. send something to the service
-      serv->parseLine(line,req,ch);
+      serv->parseLine(line, origin, ch);
       return;
    };
 
@@ -155,6 +157,9 @@ class Core {
 };
 
 };
+
+#include "exordium/services.h"
+#include "exordium/user.h"
 
 #endif
 

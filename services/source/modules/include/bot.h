@@ -35,7 +35,7 @@
 #include <kineircd/str.h>
 
 
-# define BOT_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
+#define BOT_FUNC(x)           x(Exordium::User& origin, Kine::StringTokens &tokens, Kine::String &chan)
 
 using Kine::String;
 
@@ -66,8 +66,10 @@ public:
 	{
 		std::cout << "Dead Bot" << std::endl;
 	};
-   void parseLine (String const &, String const &);
-   void parseLine (String const &, String const &, String const &);
+   void parseLine(Kine::StringTokens& line, Exordium::User& origin);
+   
+   void parseLine(Kine::StringTokens& line, Exordium::User& origin,
+		  const Kine::String& channel);
 private:
   void BOT_FUNC (parseHELP);
   void BOT_FUNC (parseQUOTE);

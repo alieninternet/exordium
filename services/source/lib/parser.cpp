@@ -68,16 +68,18 @@ void Parser::parseLine(const String& line)
    //Find the associated user for this origin...
    User *ptr = services.findUser(origin);
    String command = st.nextToken ();
-   for (int i = 0; functionTable[i].command != 0; i++)
-     {
-	// Does this match?
-	if (command == functionTable[i].command)
-	  {
-	     // Run the command and leave
-	     (this->*(functionTable[i].function))(origin, st, ptr);
-	     return;
-	  }
-     }
+   if (ptr != 0) {
+      for (int i = 0; functionTable[i].command != 0; i++)
+	{
+	   // Does this match?
+	   if (command == functionTable[i].command)
+	     {
+	     // Run the command and leave *dodgey*
+		(this->*(functionTable[i].function))(origin, st, *ptr);
+		return;
+	     }
+	}
+   }
 
    services.getLogger().logLine(String("Unparsed Input!: ")+line);
 };
@@ -85,7 +87,7 @@ void Parser::parseLine(const String& line)
 void PARSER_FUNC (Parser::parseAWAY)
 {
    String reason = tokens.rest();
-   if(ptr->deopAway())
+   if(origin.deopAway())
      {
 	if(reason=="")
 	  {
@@ -94,17 +96,17 @@ void PARSER_FUNC (Parser::parseAWAY)
 	  }
 	else
 	  {
-	     String query = "SELECT chanid from chanstatus where nickid="+ptr->getOnlineIDString()+" AND status=2";
+	     String query = "SELECT chanid from chanstatus where nickid="+origin.getOnlineIDString()+" AND status=2";
 	     MysqlRes res = services.getDatabase().query(query);
 	     MysqlRow row;
 	     while ((row = res.fetch_row()))
 	       {
 		  String foo = ((std::string) row[0]).c_str();
 		  String cname = services.getChannel().getChanIDName(foo.toInt());
-		  String cstr = origin+" "+origin;
+		  String cstr = OLDorigin+" "+OLDorigin;
 		  services.serverMode(cname,"-o+v",cstr);
-		  services.getChannel().internalVoice(origin,cname);
-		  services.getChannel().internalDeOp(origin,cname);
+		  services.getChannel().internalVoice(OLDorigin,cname);
+		  services.getChannel().internalDeOp(OLDorigin,cname);
 	       }
 
 	  }
@@ -227,27 +229,27 @@ void
 	     if(add)
 	       {
 		  //Active Oper? (hah :-)
-		  int axs = services.getNickname().getAccess("Oper",origin);
+		  int axs = services.getNickname().getAccess("Oper",OLDorigin);
 		  if(axs==0)
 		    {
 		       //Non-Authorised.
-		       String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
+		       String tosend = OLDorigin+" just tried to become an IRC Operator - \002No Access\002";
 		       services.globop(tosend,"Oper");
 		       String reason = "You have no permission to become an IRC Operator";
-		       services.killnick(origin, "Oper", reason);
+		       services.killnick(OLDorigin, "Oper", reason);
 		       return;
 		    }
 		  if(axs==-1)
 		    {
-		       String tosend = origin+" just tried to become an IRC Operator - \002Suspended\002";
+		       String tosend = OLDorigin+" just tried to become an IRC Operator - \002Suspended\002";
 		       services.globop(tosend,"Oper");
 		       String reason = "You are suspended - Do not try to become an Operator";
-		       services.killnick(origin, "Oper", reason);
+		       services.killnick(OLDorigin, "Oper", reason);
 		       return;
 		    }
 		  if(axs>0)
 		    {
-		       String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
+		       String tosend = OLDorigin+" just became an IRC Operator - level "+String::convert(axs);
 		       services.globop(tosend,"Oper");
 		       return;
 		       //Need to add to an online tables of opers..
@@ -272,7 +274,7 @@ void
   PARSER_FUNC (Parser::parsePART)
 {
    String channel = tokens.nextToken();
-   services.getChannel().internalDel(origin,channel);
+   services.getChannel().internalDel(OLDorigin,channel);
 }
 
 void
@@ -281,21 +283,24 @@ void
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
-	ptr->setNick(tokens.nextToken());
-	String query = "DELETE from kills WHERE nick='"+origin+"'";
+	origin.setNick(tokens.nextToken());
+	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
-	if(services.getNickname().isNickRegistered(ptr->getNickname()))
+	if(services.getNickname().isNickRegistered(origin.getNickname()))
 	  {
-	     if(!services.getNickname().isIdentified(ptr->getNickname()))
+	     if(!services.getNickname().isIdentified(origin.getNickname()))
 	       {
-		  if(!services.getNickname().isPending(ptr->getNickname()))
+		  if(!services.getNickname().isPending(origin.getNickname()))
 		    {
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
-		       if(services.getNickname().modNick(ptr->getNickname()))
+		       /* He's an annoying little pratt isn't he?
+			* But somewhat loveable ;) - simon
+			*/
+		       if(origin.modNick())
 			 {
 			    
-		       services.getNickname().addCheckidentify(ptr->getNickname());
+		       services.getNickname().addCheckidentify(origin.getNickname());
 			 }
 		       
 		    }
@@ -308,7 +313,7 @@ void
      {
 	if(!services.getNickname().isPending(nick))
 	  {
-	     if(services.getNickname().modNick(nick))
+	     if(origin.modNick())
 	       {
 		  
 	  services.getNickname().addCheckidentify(nick);
@@ -351,9 +356,11 @@ void
 void
   PARSER_FUNC (Parser::parsePRIVMSG)
 {
-   String originl = origin.IRCtoLower();
+   String OLDoriginl = OLDorigin.IRCtoLower();
    String target = tokens.nextToken ();
-   String message = tokens.nextColonToken();
+   
+   // fix me. urgh.
+   String message(tokens.nextColonToken());
 
    if ((message[0] == '\001') && (message[message.length () - 1] == '\001'))
      {
@@ -364,19 +371,19 @@ void
 	if (CTCPcommand == "PING")
 	  {
 	     String data = CTCPtokens.rest ();
-	     services.sendCTCPpingReply (target, origin, data);
+	     services.sendCTCPpingReply (target, OLDorigin, data);
 	     return;
 	  }
 	if (CTCPcommand == "VERSION")
 	  {
-	     services.sendCTCPversionReply (target, origin);
+	     services.sendCTCPversionReply (target, OLDorigin);
 	     return;
 	  }
 	return;
      }
    if ((target.toLower ()) == "ircdome")
      {
-	services.getIRCDome().parseLine(message,originl);
+	services.getIRCDome().parseLine(message,OLDoriginl);
 	return;
      }
    std::cout << target << std::endl;
@@ -386,11 +393,18 @@ void
 	if(!services.serviceM.exists("chan"))
 	  {
 	     String togo = "Sorry - Channel services are currently disabled for maintenance";
-	     services.serviceNotice(String(togo),target,originl);
+	     services.serviceNotice(String(togo),target,OLDoriginl);
 	     return;
 	  }
-	services.serviceM.throwLine("chan",message,originl,target);
-	services.serviceM.throwLine("game",message,originl,target);
+	
+	// dodgey? YES.. YES IT IS.. :(
+//	services.serviceM.throwLine("chan",message,OLDoriginl,target);
+//	services.serviceM.throwLine("game",message,OLDoriginl,target);
+	StringTokens dodgeydodgeydodgey(message);
+	services.serviceM.throwLine("chan", dodgeydodgeydodgey, origin,
+				    target);
+	services.serviceM.throwLine("game", dodgeydodgeydodgey, origin,
+				    target);
 
      }
    //Hard check for nick if its @ircdome.org ......
@@ -401,19 +415,23 @@ void
 	if(!services.serviceM.exists("nick"))
 	  {
 	     String togo = "Sorry - This part of services is currently undergoing construction";
-	     services.serviceNotice(String(togo),target,originl);
+	     services.serviceNotice(String(togo),target,OLDoriginl);
 	  }
-	services.serviceM.throwLine("nick",message,originl);
+	StringTokens bloodydodgeytoo(message);
+	services.serviceM.throwLine("nick", bloodydodgeytoo, origin);
 	return;
      }
    services.SecurePrivmsg = false;
    if(!services.serviceM.exists(target.toLower()))
      {
 	String togo = "Sorry - This part of Services is currently offline for maintenance - please try again later";
-	services.serviceNotice(String(togo),target,originl);
+	services.serviceNotice(String(togo),target,OLDoriginl);
 	return;
      }
-   services.serviceM.throwLine(target.toLower(),message,originl);
+   StringTokens dodgeybutnotanymoredodgeythanthelastonewas(message);
+   services.serviceM.throwLine(target.toLower(),
+			       dodgeybutnotanymoredodgeythanthelastonewas,
+			       origin);
 
 }
 
@@ -445,13 +463,13 @@ void
   PARSER_FUNC (Parser::parseQUIT)
 {
    String reason = tokens.nextColonToken();
-   int oid = services.getNickname().getOnlineNickID(origin);
-   String query = "DELETE from onlineclients where nickname='"+origin+"'";
+   int oid = services.getNickname().getOnlineNickID(OLDorigin);
+   String query = "DELETE from onlineclients where nickname='"+OLDorigin+"'";
    services.getDatabase().query(query);
    query = "DELETE from identified where nick='"+String::convert(oid)+"'";
    services.getDatabase().query(query);
    //Store the quit reason here
-   query = "UPDATE nicks set quitmsg='" + reason + "' where nickname='"+origin+"'";
+   query = "UPDATE nicks set quitmsg='" + reason + "' where nickname='"+OLDorigin+"'";
    services.getDatabase().query(query);
 }
 
