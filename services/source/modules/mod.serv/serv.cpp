@@ -104,15 +104,18 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 SERV_FUNC (Module::parseSTATUS)
 {
    origin.sendMessage(GETLANG(serv_STATUS_REPORT_START),getNickname());
-   
    //origin.sendMessage(GETLANG(serv_STATUS_CURRENT_BUILD,String::convert(Services::buildNumber)),getNickname());
    long tx = services->getCountTx();
    long rx = services->getCountRx();
    origin.sendMessage(GETLANG(serv_STATUS_TXRX,String::convert(tx),String::convert(rx)),getNickname());
-   time_t now_day;
-   now_day = time ( NULL );
-   String ntime = ctime( &now_day );
-   origin.sendMessage(GETLANG(serv_STATUS_CURR_TIME,ntime),getNickname());
+   int now_time = time(NULL);
+   origin.sendMessage(GETLANG(serv_STATUS_CURR_TIME,ctime(&now_time)),getNickname());
+   time_t start_day;
+   start_day = services->getStartTime();
+   origin.sendMessage(GETLANG(serv_STATUS_START_TIME,ctime(&start_day)),getNickname());
+   int uptime = time(NULL)-start_day;
+   origin.sendMessage(GETLANG(serv_STATUS_UP_TIME,String::convert((uptime/86400)),String::convert((uptime/3600)%24),String::convert((uptime/60)%60),String::convert((uptime%60))),getNickname());
+
 }
 
 SERV_FUNC (Module::parseCOMMANDS)
@@ -122,7 +125,7 @@ SERV_FUNC (Module::parseCOMMANDS)
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++)
      {
-        list << " " << functionTable[i].command;
+	list << " " << functionTable[i].command;
 
 	// How are we for size?
 	if (list.str().length() >= lineLength)
@@ -172,7 +175,7 @@ SERV_FUNC (Module::parseFREEZE)
 	     origin.sendMessage(GETLANG(serv_FREEZE_ADD_USAGE),getNickname());
 	     return;
 	  }
-        if(!services->getChannel().isChanRegistered(chan))
+	if(!services->getChannel().isChanRegistered(chan))
 	  {
 	     origin.sendMessage(GETLANG(serv_FREEZE_NOT_REG),getNickname());
 	     return;
@@ -260,7 +263,7 @@ SERV_FUNC (Module::parseFREEZE)
 	     origin.sendMessage(GETLANG(serv_FREEZE_DEL_USAGE),getNickname());
 	     return;
 	  }
-	
+
 	if(!isFreezed(channel))
 	  {
 	     origin.sendMessage(GETLANG(serv_FREEZE_NOT_FREEZED),getNickname());
@@ -364,7 +367,7 @@ SERV_FUNC (Module::parseSETPASS)
    services->logLine(togo);
    services->sendGOper(getNickname(),togo);
    origin.sendMessage(GETLANG(serv_SETPASS_SUCCESS,who,epass),getNickname());
-   
+
 }
 
 SERV_FUNC (Module::parseRAW)
@@ -527,9 +530,9 @@ SERV_FUNC (Module::parseCHAN)
 	String togo = origin.getNickname() + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
 	services->logLine(String(togo));
 	services->getChannel().deregisterChannel(channel);
-        togo = "This channel has been deregistered \002"+reason;
-        services->serviceNotice((String)togo,getNickname(),channel);
-        origin.sendMessage(GETLANG(serv_CHAN_DEL_SUCCESS,channel),getNickname());
+	togo = "This channel has been deregistered \002"+reason;
+	services->serviceNotice((String)togo,getNickname(),channel);
+	origin.sendMessage(GETLANG(serv_CHAN_DEL_SUCCESS,channel),getNickname());
 	services->log(origin,getNickname(),String("Deregistered ")+channel+" for "+reason);
 	services->sendGOper(getNickname(),origin.getNickname()+" \002Deregistered\002 channel "+channel+" for "+reason);
 	return;
@@ -558,7 +561,7 @@ SERV_FUNC (Module::parseCHAN)
 	services->log(origin,getNickname(),String("Registered ")+channel+" to "+thenick);
 	services->sendGOper(getNickname(),origin.getNickname()+" \002Registered\002 "+channel+" to "+thenick);
 	origin.sendMessage(GETLANG(serv_CHAN_ADD_SUCCESS,channel,thenick),getNickname());
-	
+
 	return;
      }
 }
@@ -637,7 +640,7 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage(GETLANG(serv_USER_LIST_NO_MATCHES),getNickname());
 	     return;
 	  }
-	
+
 	for(int i=0; i<nbRes; i++)
 	  {
 	     String nickname = services->getNick(myRes->getValue(i,1).toInt());
@@ -734,7 +737,7 @@ SERV_FUNC (Module::parseHELPON)
    String tosend = origin.getNickname()+" failed to become a helper - Not enough access";
    services->logLine(tosend, Log::Warning);
    origin.sendMessage(GETLANG(serv_HELPON_FAILURE,String::convert(access)),getNickname());
-   
+
 }
 
 SERV_FUNC (Module::parseNLIST)
@@ -905,7 +908,7 @@ SERV_FUNC (Module::parseDELNICK)
    services->getDatabase().dbDelete("nicks", "nickname='"+who+"'");
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
    origin.sendMessage(GETLANG(serv_DELNICK_SUCCESS,who,reason),getNickname());
-   
+
 }
 
 SERV_FUNC (Module::parseCLIST)
@@ -989,7 +992,7 @@ const Module::moduleInfo_type Module::moduleInfo =
 bool Module::start(Exordium::Services& s)
 {
    std::cerr << "SERV LOADED." << std::endl;
-   
+
    // Set the services field appropriately
    services = &s;
 
@@ -1007,25 +1010,23 @@ bool Module::start(Exordium::Services& s)
    std::cerr << "ITS AT " << (void*)Exordium::ServModule::Language::tagMap << std::endl;
    Kine::langs().registerMap(Exordium::ServModule::Language::tagMap);
    std::cerr << "REGISTERED THE CUNT." << std::endl;
-   
-    int foofoo = 0;
-      for (;;) 
+
+   int foofoo = 0;
+   for (;;)
      {
-	
+
 	std::cout << " Serv TagMap " << foofoo << ": tag '" <<
 	  Exordium::ServModule::Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
 	  Exordium::ServModule::Language::tagMap[foofoo].tagID << std::endl;
-	
-	if (Language::tagMap[++foofoo].tagName == 0) 
+
+	if (Language::tagMap[++foofoo].tagName == 0)
 	  {
-	     
-	              break;
+
+	     break;
 	  }
-	
+
      }
-   
-   
-   
+
    // Register ourself to the network
    services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
@@ -1065,4 +1066,3 @@ int Module::timesFreezed(Kine::Name const &chan)
 					   +"'");
 }
 
-   

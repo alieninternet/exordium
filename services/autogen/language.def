@@ -267,20 +267,33 @@ langtag = {
 langtag = {
    name = "serv_STATUS_CURRENT_BUILD";
    component = "mod_serv";
-   data_en = "Current build : \b%p0\b";
+   data_en = "Current build : \\b%p0\\b";
 };
 
 langtag = {
    name = "serv_STATUS_TXRX";
    component = "mod_serv";
-   data_en = "Bytes Transmitted : \b%p0\b Bytes Received : \b%p1\b";
+   data_en = "Bytes Transmitted : \\b%p0\\b Bytes Received : \\b%p1\\b";
 };
 
 langtag = {
    name = "serv_STATUS_CURR_TIME";
    component = "mod_serv";
-   data_en = "Current Time : \b%p0\b";
+   data_en = "Current Time : \\b%p0\\b";
 };
+
+langtag = {
+   name = "serv_STATUS_START_TIME";
+   component = "mod_serv";
+   data_en = "Start Time : \\b%p0\\b";
+};
+
+langtag = {
+   name = "serv_STATUS_UP_TIME";
+   component = "mod_serv";
+   data_en = "Uptime : %p0 Days %p1 Hours %p2 Minutes %p3 Seconds";
+};
+
 
 langtag = {
    name = "serv_DIE_USAGE";

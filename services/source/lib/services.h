@@ -130,10 +130,7 @@ namespace Exordium {
       // Function Declrations below here.
       void shutdown(const AISutil::String &);
       
-      void nickLinkAdd(AISutil::String const &, AISutil::String const &);
-      void nickLinkDel(AISutil::String const &, AISutil::String const &);
-      
-      
+
       User* const addUser(const AISutil::String& name, const int oid);
       bool delUser(Kine::Name &);
       User* findUser(Kine::Name &);

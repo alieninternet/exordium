@@ -135,9 +135,6 @@ namespace Exordium {
       virtual void log(User&, AISutil::String const &,
 		       AISutil::String const &) = 0;
       
-      virtual void nickLinkAdd(AISutil::String const &, AISutil::String const &) = 0;
-      virtual void nickLinkDel(AISutil::String const &, AISutil::String const &) = 0;
-      
       // This is in the wrong place, surely
       virtual void sendEmail(AISutil::String const &, AISutil::String const &,
 			     AISutil::String const &) = 0;
