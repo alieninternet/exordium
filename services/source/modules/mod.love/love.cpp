@@ -102,8 +102,8 @@ bool Module::start(Exordium::Services& s)
    }
    
    // Register ourself to the network
-   services->registerService(getName(), getName(), 
-			     getConfigData().getHostname(), "+dz",
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
    
    // We started okay :)

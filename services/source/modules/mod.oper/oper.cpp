@@ -115,9 +115,13 @@ const Module::moduleInfo_type Module::moduleInfo = {
 // Start the service
 bool Module::start(Exordium::Services& s)
 {
+   // Set the services field appropriately
    services = &s;
-   services->registerService(getName(),getName(),"ircdome.org", "+dz",
-			    "IRC Operator Services");
+
+   // Register ourself to the network
+   services->registerService(getName(), getName(),
+			     getConfigData().getHostname(),
+			     getConfigData().getDescription());
    
    // We started okay :)
    return true;

@@ -594,8 +594,13 @@ void
 	  String givepass = services->getPass(toghost);
 	  if(nickpass == givepass)
 	    {
+	       /* Okay, well, this is not really a service. This is a user..
+		* so technically this is utterly the wrong call.. this will
+		* change, I suspect, when kine grows up a little more..
+		* The mode, btw, was +id
+		*/
 	       services->registerService(toghost,"ghost","ghosts.ircdome.org",
-					"+id","Ghosted by "+origin.getNickname());
+					"Ghosted by "+origin.getNickname());
 	       String tosend = String("Ghost successful for ")+toghost;
 	       origin.sendMessage(tosend,getName());
 	       services->log(origin,getName(),String("Successfully ghosted ")+toghost);
@@ -699,9 +704,8 @@ bool Module::start(Exordium::Services& s)
    
    // Register ourself to the network
    services->registerService(getName(), getName(), 
-			     getConfigData().getHostname(), "+dz",
+			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
-   services->serviceJoin(getName(),"#Debug");
    
    // We started okay :)
    return true;

@@ -418,10 +418,10 @@ bool ServicesInternal::handleInput (void)
 	  // Is the console actually wanted?
 	  if (config.getConsoleEnabled()) {
 	     registerService(config.getConsoleName(), config.getConsoleName(),
-			     config.getConsoleHostname(), "+dz",
+			     config.getConsoleHostname(),
 			     config.getConsoleDescription());
-	     serviceJoin (config.getConsoleName(), "#debug");
-	     serviceJoin (config.getConsoleName(), "#Exordium");
+	     // I smell a configuration variable.. *sniff sniff* can you?
+	     serviceJoin(config.getConsoleName(), "#Exordium");
 	  }
 
 	  connected = true;

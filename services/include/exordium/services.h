@@ -167,7 +167,6 @@ namespace Exordium {
       virtual void registerService(AISutil::String const &nick,
 				   AISutil::String const &user,
 				   AISutil::String const &host,
-				   AISutil::String const &modes,
 				   AISutil::String const &realname) = 0;
       
       virtual void serviceJoin(AISutil::String const &service,

@@ -234,12 +234,11 @@ namespace Exordium {
       void registerService(AISutil::String const &nick,
 			   AISutil::String const &user,
 			   AISutil::String const &host,
-			   AISutil::String const &modes,
 			   AISutil::String const &realname)
 	{                               
 	   queueAdd ("NICK " + nick + " 1 " + 
-		     AISutil::String::convert(currentTime) + " " + modes + 
-		     " " + user + " " + host +
+		     AISutil::String::convert(currentTime) + " +dz " + user + 
+		     " " + host + 
 		     " services.ircdome.org services.ircdome.org 0 1 :" + 
 		     realname);
         }; 
