@@ -1,44 +1,57 @@
-# $Id$
-#
-# This is the layout for the MySQL backend of Exordium.
-# it should be imported into a database called 'services'
-# like so;
-# mysqladmin create services
-# mysql services < thisfile.sql
-#
+-- MySQL dump 9.07
+--
+-- Host: localhost    Database: services
+---------------------------------------------------------
+-- Server version	4.0.12-log
 
+--
+-- Table structure for table 'access'
+--
 
-
-#
-# Table structure for table 'access'
-#
-
-DROP TABLE IF EXISTS access;
 CREATE TABLE access (
   id int(11) NOT NULL auto_increment,
   nickname varchar(32) NOT NULL default '',
   service varchar(32) NOT NULL default '',
   access int(3) NOT NULL default '0',
   PRIMARY KEY  (id),
-  KEY accessIDXA (nickname(10),service(10))
+  KEY accessIDXA (nickname,service)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'chanaccess'
-#
+--
+-- Table structure for table 'bank'
+--
 
-DROP TABLE IF EXISTS chanaccess;
+CREATE TABLE bank (
+  nickid int(11) NOT NULL default '0',
+  balance bigint(21) default NULL,
+  PRIMARY KEY  (nickid)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'builds'
+--
+
+CREATE TABLE builds (
+  id int(12) NOT NULL auto_increment,
+  build int(12) NOT NULL default '0',
+  notes mediumtext,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'chanaccess'
+--
+
 CREATE TABLE chanaccess (
   chanid int(11) NOT NULL default '0',
   nickid int(11) NOT NULL default '0',
   access int(3) NOT NULL default '0'
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'chanbans'
-#
+--
+-- Table structure for table 'chanbans'
+--
 
-DROP TABLE IF EXISTS chanbans;
 CREATE TABLE chanbans (
   id int(11) NOT NULL auto_increment,
   chan int(11) NOT NULL default '0',
@@ -50,11 +63,24 @@ CREATE TABLE chanbans (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'chanlogs'
-#
+--
+-- Table structure for table 'chanfreeze'
+--
 
-DROP TABLE IF EXISTS chanlogs;
+CREATE TABLE chanfreeze (
+  id int(12) NOT NULL auto_increment,
+  name int(12) NOT NULL default '0',
+  setby varchar(32) NOT NULL default '',
+  seton datetime default NULL,
+  expires int(12) NOT NULL default '0',
+  reason varchar(250) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'chanlogs'
+--
+
 CREATE TABLE chanlogs (
   id int(11) NOT NULL auto_increment,
   name varchar(200) NOT NULL default '',
@@ -62,51 +88,60 @@ CREATE TABLE chanlogs (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'chanopts'
-#
+--
+-- Table structure for table 'chanmodes'
+--
 
-DROP TABLE IF EXISTS chanopts;
-CREATE TABLE chanopts (
+CREATE TABLE chanmodes (
   id int(11) NOT NULL auto_increment,
-  name varchar(250) NOT NULL default '',
-  clog tinyint(1) default NULL,
+  mode char(2) NOT NULL default '',
+  tdesc varchar(50) NOT NULL default '',
+  html varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'chans'
-#
+--
+-- Table structure for table 'chanopts'
+--
 
-DROP TABLE IF EXISTS chans;
+CREATE TABLE chanopts (
+  id int(11) NOT NULL auto_increment,
+  name varchar(250) NOT NULL default '',
+  clog tinyint(1) NOT NULL default '0',
+  secure tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'chans'
+--
+
 CREATE TABLE chans (
   id int(11) NOT NULL auto_increment,
   name varchar(250) NOT NULL default '',
   owner varchar(32) NOT NULL default '',
-  topic varchar(250) NOT NULL default '',
+  topic mediumtext NOT NULL,
   modes varchar(200) NOT NULL default '',
   cdesc varchar(250) default NULL,
   url varchar(200) default NULL,
-  clog int(20) default NULL,
+  clog int(20) default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'chanstatus'
-#
+--
+-- Table structure for table 'chanstatus'
+--
 
-DROP TABLE IF EXISTS chanstatus;
 CREATE TABLE chanstatus (
   chanid int(11) NOT NULL default '0',
   nickid int(11) NOT NULL default '0',
   status int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'commands'
-#
+--
+-- Table structure for table 'commands'
+--
 
-DROP TABLE IF EXISTS commands;
 CREATE TABLE commands (
   id int(11) NOT NULL auto_increment,
   service varchar(32) NOT NULL default '',
@@ -115,11 +150,10 @@ CREATE TABLE commands (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'emails'
-#
+--
+-- Table structure for table 'emails'
+--
 
-DROP TABLE IF EXISTS emails;
 CREATE TABLE emails (
   id int(11) NOT NULL auto_increment,
   gto varchar(128) default NULL,
@@ -128,11 +162,10 @@ CREATE TABLE emails (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'glines'
-#
+--
+-- Table structure for table 'glines'
+--
 
-DROP TABLE IF EXISTS glines;
 CREATE TABLE glines (
   id int(11) NOT NULL auto_increment,
   mask varchar(250) NOT NULL default '',
@@ -142,11 +175,10 @@ CREATE TABLE glines (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'help'
-#
+--
+-- Table structure for table 'help'
+--
 
-DROP TABLE IF EXISTS help;
 CREATE TABLE help (
   id int(11) NOT NULL auto_increment,
   service varchar(32) NOT NULL default '',
@@ -157,23 +189,10 @@ CREATE TABLE help (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'nicksidentified'
-#
+--
+-- Table structure for table 'kills'
+--
 
-DROP TABLE IF EXISTS nicksidentified;
-CREATE TABLE nicksidentified (
-  id int(11) NOT NULL auto_increment,
-  nick int(11) NOT NULL default '0',
-  idas int(11) NOT NULL default '0',
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-#
-# Table structure for table 'kills'
-#
-
-DROP TABLE IF EXISTS kills;
 CREATE TABLE kills (
   id int(11) NOT NULL auto_increment,
   nick varchar(32) NOT NULL default '',
@@ -181,11 +200,10 @@ CREATE TABLE kills (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'log'
-#
+--
+-- Table structure for table 'log'
+--
 
-DROP TABLE IF EXISTS log;
 CREATE TABLE log (
   id int(20) NOT NULL auto_increment,
   nicknames varchar(128) NOT NULL default '',
@@ -198,11 +216,10 @@ CREATE TABLE log (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'news'
-#
+--
+-- Table structure for table 'news'
+--
 
-DROP TABLE IF EXISTS news;
 CREATE TABLE news (
   id int(12) NOT NULL auto_increment,
   level int(1) NOT NULL default '0',
@@ -211,24 +228,23 @@ CREATE TABLE news (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'nicks'
-#
+--
+-- Table structure for table 'nicks'
+--
 
-DROP TABLE IF EXISTS nicks;
 CREATE TABLE nicks (
   id int(11) NOT NULL auto_increment,
   nickname varchar(32) NOT NULL default '',
-  password varchar(20) binary default NULL,
-  email varchar(250) NOT NULL default '',
-  registered datetime default NULL,
-  lastid datetime default NULL,
-  lasthost varchar(250) NOT NULL default '',
+  password varchar(60) NOT NULL default 'NONESET',
+  email varchar(25) NOT NULL default 'NONE@RECORDED',
+  registered datetime NOT NULL default '0000-00-00 00:00:00',
+  lastid datetime NOT NULL default '0000-00-00 00:00:00',
+  lasthost varchar(250) NOT NULL default 'None@Recorded',
   privmsg int(1) NOT NULL default '0',
-  lang varchar(20) default NULL,
-  icq int(20) default NULL,
-  msn varchar(200) default NULL,
-  url varchar(200) NOT NULL default 'www.ircdome.org',
+  lang varchar(20) NOT NULL default 'english',
+  icq int(20) NOT NULL default '0',
+  msn varchar(200) NOT NULL default 'None Set',
+  url varchar(200) NOT NULL default 'www.peoplechat.org',
   deopaway int(1) NOT NULL default '0',
   yahoo varchar(32) NOT NULL default 'None Set',
   aim varchar(32) NOT NULL default 'None Set',
@@ -237,11 +253,32 @@ CREATE TABLE nicks (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'notes'
-#
+--
+-- Table structure for table 'nicksidentified'
+--
 
-DROP TABLE IF EXISTS notes;
+CREATE TABLE nicksidentified (
+  id int(11) NOT NULL auto_increment,
+  nick int(11) NOT NULL default '0',
+  idas int(11) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'nickspending'
+--
+
+CREATE TABLE nickspending (
+  id int(20) NOT NULL auto_increment,
+  nickname varchar(32) NOT NULL default '',
+  auth varchar(250) NOT NULL default '',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'notes'
+--
+
 CREATE TABLE notes (
   id int(11) NOT NULL auto_increment,
   nfrom varchar(32) NOT NULL default '',
@@ -251,22 +288,20 @@ CREATE TABLE notes (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'onlinechan'
-#
+--
+-- Table structure for table 'onlinechan'
+--
 
-DROP TABLE IF EXISTS onlinechan;
 CREATE TABLE onlinechan (
   id int(20) NOT NULL auto_increment,
   name varchar(250) NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'onlineclients'
-#
+--
+-- Table structure for table 'onlineclients'
+--
 
-DROP TABLE IF EXISTS onlineclients;
 CREATE TABLE onlineclients (
   id int(11) NOT NULL auto_increment,
   nickname varchar(32) NOT NULL default '',
@@ -281,11 +316,21 @@ CREATE TABLE onlineclients (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'onlineservers'
-#
+--
+-- Table structure for table 'onlineopers'
+--
 
-DROP TABLE IF EXISTS onlineservers;
+CREATE TABLE onlineopers (
+  id int(11) NOT NULL auto_increment,
+  nickid int(11) NOT NULL default '0',
+  access int(3) NOT NULL default '0',
+  PRIMARY KEY  (id,nickid)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'onlineservers'
+--
+
 CREATE TABLE onlineservers (
   id int(11) NOT NULL auto_increment,
   servername varchar(250) NOT NULL default '',
@@ -294,38 +339,10 @@ CREATE TABLE onlineservers (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+--
+-- Table structure for table 'serverlist'
+--
 
-#
-# Table structure for table 'onlineopers'
-#
-
-DROP TABLE IF EXISTS onlineopers;
-CREATE TABLE onlineopers (
-  id int(11) NOT NULL auto_increment,
-  nickid int(11) NOT NULL,
-  access int(3) NOT NULL default '0',
-  PRIMARY KEY  (id, nickid)
-) TYPE=MyISAM;
-
-
-
-#
-# Table structure for table 'nickspending'
-#
-
-DROP TABLE IF EXISTS nickspending;
-CREATE TABLE nickspending (
-  id int(20) NOT NULL auto_increment,
-  nickname varchar(32) NOT NULL default '',
-  auth varchar(250) NOT NULL default '',
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-#
-# Table structure for table 'serverlist'
-#
-
-DROP TABLE IF EXISTS serverlist;
 CREATE TABLE serverlist (
   id int(11) NOT NULL auto_increment,
   name varchar(128) NOT NULL default '',
@@ -333,11 +350,10 @@ CREATE TABLE serverlist (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-#
-# Table structure for table 'stats'
-#
+--
+-- Table structure for table 'stats'
+--
 
-DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
   id int(12) NOT NULL auto_increment,
   maxclients int(6) NOT NULL default '0',
@@ -346,23 +362,62 @@ CREATE TABLE stats (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-##
-## Table structure for table 'topics'
-##
-#
-#DROP TABLE IF EXISTS topics;
-#CREATE TABLE topics (
-#  id int(11) NOT NULL auto_increment,
-#  type char(1) NOT NULL default 'A',
-#  contents varchar(250) NOT NULL default '',
-#  PRIMARY KEY  (id)
-#) TYPE=MyISAM;
+--
+-- Table structure for table 'stats_chans'
+--
 
-#
-# Table structure for table 'triggers'
-#
+CREATE TABLE stats_chans (
+  id int(12) NOT NULL auto_increment,
+  name varchar(250) NOT NULL default '',
+  users int(12) NOT NULL default '0',
+  topic varchar(250) NOT NULL default '',
+  modes varchar(200) NOT NULL default '',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
 
-DROP TABLE IF EXISTS triggers;
+--
+-- Table structure for table 'stats_global'
+--
+
+CREATE TABLE stats_global (
+  id int(12) NOT NULL auto_increment,
+  users int(12) NOT NULL default '0',
+  servers int(12) NOT NULL default '0',
+  channels int(12) NOT NULL default '0',
+  maxusers int(12) NOT NULL default '0',
+  maxopers int(12) NOT NULL default '0',
+  maxservers int(12) NOT NULL default '0',
+  maxusers_time datetime default NULL,
+  maxopers_time datetime default NULL,
+  maxservers_time datetime default NULL,
+  lastrun datetime default NULL,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'stats_servers'
+--
+
+CREATE TABLE stats_servers (
+  id int(12) NOT NULL auto_increment,
+  name varchar(250) NOT NULL default '',
+  users int(12) NOT NULL default '0',
+  opers int(12) NOT NULL default '0',
+  maxusers int(12) NOT NULL default '0',
+  maxopers int(12) NOT NULL default '0',
+  maxusers_time datetime default NULL,
+  maxopers_time datetime default NULL,
+  lag float NOT NULL default '0',
+  version varchar(250) NOT NULL default '0',
+  uptime int(12) NOT NULL default '0',
+  maxuptime int(12) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table 'triggers'
+--
+
 CREATE TABLE triggers (
   id int(11) NOT NULL auto_increment,
   host varchar(250) NOT NULL default '',
@@ -371,27 +426,5 @@ CREATE TABLE triggers (
   email varchar(250) NOT NULL default '',
   reason varchar(250) NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-##
-## Table structure for table 'words'
-##
-#
-#DROP TABLE IF EXISTS words;
-#CREATE TABLE words (
-#  id int(11) NOT NULL auto_increment,
-#  word varchar(250) NOT NULL default '',
-#  PRIMARY KEY  (id)
-#) TYPE=MyISAM;
-
-#
-# Table structure for table 'bank'
-#
-
-DROP TABLE IF EXISTS bank;
-CREATE TABLE bank (
-  nickid int(11) NOT NULL,
-  balance bigint(21),
-  PRIMARY KEY  (nickid)
 ) TYPE=MyISAM;
 
