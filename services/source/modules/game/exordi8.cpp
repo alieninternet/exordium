@@ -24,7 +24,7 @@
 #include <sstream>
 
 #include "exordi8.h"
-#include "pack.h"
+#include "cards/pack.h"
 
 
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel

@@ -7,6 +7,7 @@ LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 
 SOURCES=\
+	exordi8.cpp \
 	module.cpp
 	
 INCDIRS=-I../../../include -I../../../../kineircd/include \

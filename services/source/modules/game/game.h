@@ -30,12 +30,13 @@ private:
   };
   static struct functionTableStruct const functionTable[];
 
-   Exordium::Services& services;
-
    // Channel games in progress..
    typedef std::map < Kine::String, ChannelGame* > channelGames_type;
    channelGames_type channelGames;
    
+ public: // temporary, I'm in a rush.
+   Exordium::Services& services;
+
 public:
    Game(Exordium::Services& s)
 	: Service(), services(s)
