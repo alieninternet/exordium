@@ -31,6 +31,8 @@
 #include "note.h"
 #include "tables.h"
 #include <exordium/channel.h>
+#include <exordium/database/database.h>
+#include <exordium/database/base.h>
 #include <kineircd/str.h>
 
 using AISutil::String;
@@ -91,42 +93,42 @@ NOTE_FUNC(Module::parseREAD)
       int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes",
 						   "nto='" + 
 						   origin.getNickname() + "'");
+      CResult *myRes = services->getDatabase().dbGetResultSet();
       int j = 0;
       
       for (int i = 0; i < nbRes; i++) {
 	 j++;
-	 String nfrom = services->getDatabase().dbGetValue(0);
-	 String nsent = services->getDatabase().dbGetValue(1);
-	 String ntext = services->getDatabase().dbGetValue(2);
+	 String nfrom = myRes->getValue(i,0);
+	 String nsent = myRes->getValue(i,1);
+	 String ntext = myRes->getValue(i,2);
 	 origin.sendMessage("Note #\002" + String::convert(j) + 
 			    "\002 From: \002" + nfrom + "\002 Sent: \002" + 
 			    nsent + "\002",
 			    getName());
-	 origin.sendMessage(ntext, getName());
-	 services->getDatabase().dbGetRow();
+	 origin.sendMessage("\002Message\002: "+ntext, getName());
       }
       services->log(origin, "Note", "Read all notes");
+      delete myRes;
       return;
    }
 
    int nbRes = services->getDatabase().dbSelect("nfrom,nsent,note", "notes", "nto='"+origin.getNickname()+"'");
-   
+   CResult *myRes = services->getDatabase().dbGetResultSet();
    int j = 0;
    for (int i = 0; i < nbRes; i++) {
       j++;
       if (j == num.toInt()) {
-	 String nfrom = services->getDatabase().dbGetValue(0);
-	 String nsent = services->getDatabase().dbGetValue(1);
-	 String ntext = services->getDatabase().dbGetValue(2);
+	 String nfrom = myRes->getValue(i,0);
+	 String nsent = myRes->getValue(i,1);
+	 String ntext = myRes->getValue(i,2);
 	 String togo = String("Note #\002") + String::convert(j) + 
 	   "\002 From: \002" + nfrom + "\002 Sent: \002" + nsent + "\002";
 	 origin.sendMessage(togo,getName());
 	 String tofo = ntext;
-	 origin.sendMessage(tofo,getName());
+	 origin.sendMessage("\002Message\002:"+tofo,getName());
 	 services->log(origin, "Note", "Read a single note");
 	 return;
       }
-      services->getDatabase().dbGetRow();
    }
    
    origin.sendMessage("No such note!", getName());
@@ -192,10 +194,12 @@ NOTE_FUNC(Module::parseSEND) {
       int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", 
 						   "chanid='" + 
 						   String::convert(chanid) + 
-						   "'");
+ 						   "'");
+      CResult *myRes = services->getDatabase().dbGetResultSet();
+      
       int j = 0;
       for (int i = 0; i < nbRes; i++) {
-	 String nnid = services->getDatabase().dbGetValue();
+	 String nnid = myRes->getValue(i,0);
 	 int nid = nnid.toInt();
 	 String nick = services->getNick(nid);
 	 
@@ -204,14 +208,14 @@ NOTE_FUNC(Module::parseSEND) {
 	    String txt = String("\002") + nto + "\002: " + note;
 	    services->sendNote(origin.getNickname(), nick, txt);
 	 }
-	 
-	 services->getDatabase().dbGetRow();
+
       }
       
       String toao = String("Your note was successfully sent to \002") + 
 	String::convert(j) + "\002 people on " + nto;
       origin.sendMessage(toao, getName());
       services->log(origin, "Note","Sent a channel note to " + nto);
+      delete myRes;
       return;
    }
    

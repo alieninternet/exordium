@@ -104,12 +104,15 @@ if(channel=="")
 	/* Iterate over members.. */
 
 int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
-	for (int i=0; i<nbRes; i++)
+CResult *myRes = services->getDatabase().dbGetResultSet();
+   
+for (int i=0; i<nbRes; i++)
 	{
-		String inick = services->getNick(services->getDatabase().dbGetValue().toInt());
+		String inick = services->getNick(myRes->getValue(i,0).toInt());
 		std::cout << inick << std::endl;
-		services->getDatabase().dbGetRow();
+	   	services->mode(getName(),channel,"-o",inick);
 	}		
+delete myRes;
 
 }
 OPER_FUNC(Module::parseQLINE)

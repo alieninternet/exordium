@@ -834,6 +834,8 @@ void
    if(foo>0)
      {
 	User *ptr = findUser(thenick);
+	if(ptr==0)
+	  return;
 	//Client is online.. But are they identified HUHUHUH?!!?
 	if(ptr->isIdentified(to))
 	  {
