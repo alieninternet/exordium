@@ -793,9 +793,26 @@ langtag = {
    component = "mod_oper";
    data_en = "I have killed %p0 as requested";
 };
+langtag = {
+   name = "oper_JUPE_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: jupe <nickname|server> <reason>"
+};
 
+langtag = {
+   name = "oper_JUPE_SERVER_SUCCESS";
+   component = "mod_oper"
+   data_en = "I have successfully juped the server %p0 (%p1)";
+};
 
-   
+langtag = {
+   name = "oper_JUPE_NICK_SUCCESS";
+   component = "mod_oper"
+   data_en = "I have successfully juped the nickname %p0 (%p1)";
+}
+ 
+ 
+  
 /*
  * Tags for mod_note
  */
@@ -1927,7 +1944,7 @@ langtag = {
    component = "mod_nick";
    data_en = "This will be delivered to the account: \\b%p0\\b";
    data_no = "Dette vil bli levert til: \\b%p0\\b";
-   data_fr = "Ce couriel va être envoyé �: \\b%p0\\b";
+   data_fr = "Ce couriel va être envoyé ú \\b%p0\\b";
    data_tr = "Bu email bu takma adına gönderilicektir: \\b%p0\\b"; 
 };
 
