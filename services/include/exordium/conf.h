@@ -39,11 +39,11 @@ namespace Exordium {
     private:
       // Variables (top class from the definition table above)
       LibAIS::String defLogfile;		// Log filename
-      LibAIS::String defUplinkHost;           	// Uplink Host
-      LibAIS::String defServicesHostname;       // Services hostname
-      LibAIS::String defServicesDescription;    // Services description (aka realname)
-      LibAIS::String defServicesConsoleHostname;// Console's hostname
       LibAIS::String defServicesConsoleDescription;// Console's description
+      LibAIS::String defServicesConsoleHostname;// Console's hostname
+      LibAIS::String defServicesDescription;    // Services description (aka realname)
+      LibAIS::String defServicesHostname;       // Services hostname
+      LibAIS::String defUplinkHost;           	// Uplink Host
       unsigned short defUplinkPort;		// Uplink Port
       
       // 'SQL' class and variables

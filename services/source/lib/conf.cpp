@@ -33,23 +33,8 @@ using namespace Exordium;
 const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 {
      {
-	"LOGFILE",
-	  (void *)&Config::defLogfile, &varHandleString,
-	  0, 0
-     },
-     { // This should be temporary, being a server is Kine's job
-        "SERVICESHOSTNAME",
-          (void *)&Config::defServicesHostname, &varHandleHostName,
-          0, 0
-     },
-     { // This should be temporary, being a server is Kine's job
-	"UPLINKHOST",
-	  (void *)&Config::defUplinkHost, &varHandleHostName,
-	  0, 0
-     },
-     { // This should be temporary, being a server is Kine's job
-        "SERVICESDESCRIPTION",
-          (void *)&Config::defServicesDescription, &varHandleString,
+        "CONSOLEDESCRIPTION",
+          (void *)&Config::defServicesConsoleDescription, &varHandleString,
           0, 0
      },
      {
@@ -58,19 +43,34 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
           0, 0
      },
      {
-        "CONSOLEDESCRIPTION",
-          (void *)&Config::defServicesConsoleDescription, &varHandleString,
+	"LOGFILE",
+	  (void *)&Config::defLogfile, &varHandleString,
+	  0, 0
+     },
+     { // This should be temporary, being a server is Kine's job
+        "SERVICESDESCRIPTION",
+          (void *)&Config::defServicesDescription, &varHandleString,
           0, 0
      },
      { // This should be temporary, being a server is Kine's job
-        "UPLINKPORT",
-          (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
+        "SERVICESHOSTNAME",
+          (void *)&Config::defServicesHostname, &varHandleHostName,
           0, 0
      },
      {
 	"SQL",
 	  0, 0,
 	  &defClassSql, 0
+     },
+     { // This should be temporary, being a server is Kine's job
+	"UPLINKHOST",
+	  (void *)&Config::defUplinkHost, &varHandleHostName,
+	  0, 0
+     },
+     { // This should be temporary, being a server is Kine's job
+        "UPLINKPORT",
+          (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
+          0, 0
      },
      { 0, 0, 0, 0, 0 }
 };
@@ -110,6 +110,12 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 // Constructor to set up defaults, mainly. These defaults are dopey :(
 Config::Config(void)
   : defLogfile("services.log"),
+    defServicesConsoleDescription("Exordium Console"),
+    defServicesConsoleHostname("exordium.somewhere"),
+    defServicesDescription("Exordium Network Services"), // temporary
+    defServicesHostname("services.exordium.somewhere"), // temporary
+    defUplinkHost("irc.somenetwork.somewhere"), // temporary
+    defUplinkPort(6667), // temporary
 
     // 'SQL' class
     defSqlDatabase("services"),
