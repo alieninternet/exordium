@@ -181,7 +181,7 @@ void Exordi8::showHand(const player_type& player) const
 void Exordi8::nextPlayer(const String& why, bool withMatchNotify)
 {
    std::ostringstream out;
-   out << (*currentPlayer).first << ' ' << why << ". It is ";
+   out << (*(*currentPlayer).first).getNickname() << ' ' << why << ". It is ";
 
    // Work out who is to play next..
    if (forwardDirection) {
@@ -205,7 +205,7 @@ void Exordi8::nextPlayer(const String& why, bool withMatchNotify)
    }
 
    // Add the current player's name to the string
-   out << (*currentPlayer).first;
+   out << (*(*currentPlayer).first).getNickname();
    
    // ... get our grammar right.. :)
    if ((*currentPlayer).first->getNickname()
@@ -335,7 +335,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
    // Start assembling a string to tell the channel what is happening
    std::ostringstream out;
    out << "There are " << stock.size() << " cards left in the stock. It is " <<
-     (*currentPlayer).first;
+     (*(*currentPlayer).first).getNickname();
    
    // ... get our grammar right.. :)
    if ((*currentPlayer).first->getNickname()
