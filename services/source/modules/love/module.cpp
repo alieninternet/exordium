@@ -36,9 +36,8 @@
 #include "love.h"
 
 
-// Use the stuff from the KineIRCd library using lovely short form
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 

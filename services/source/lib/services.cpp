@@ -56,12 +56,12 @@ extern "C"
 #include <dlfcn.h>
 };
 
-#include "socket/sockets.h"
+#include <libais/socket/sockets.h>
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using Kine::Password;
-using Kine::StringMask;
+using LibAIS::StringMask;
 using Kine::Signals;
 using namespace Exordium;
 
@@ -1041,7 +1041,7 @@ bool
  * Add the user to our users map
  *
  */
-User* const Services::addUser(const Kine::String& name, const int oid)
+User* const Services::addUser(const String& name, const int oid)
 {
    return users[name] = new User(name,oid,*this);
 }
@@ -1052,7 +1052,7 @@ User* const Services::addUser(const Kine::String& name, const int oid)
  *
  */
 User*
-  Services::findUser(Kine::String &name)
+  Services::findUser(String &name)
 {
    User *ptr = users[name.IRCtoLower()];
    if(ptr == 0)
@@ -1069,7 +1069,7 @@ User*
  *
  */
 bool
-  Services::delUser(Kine::String &name)
+  Services::delUser(String &name)
 {
    users.erase(name.IRCtoLower());
    return true;
@@ -1082,7 +1082,7 @@ bool
  *
  */
 void
-  Services::setNick(User &who, Kine::String &newnick)
+  Services::setNick(User &who, String &newnick)
 {
    user_map::iterator user = users.find(who.getNickname().IRCtoLower());
    users.erase(user);

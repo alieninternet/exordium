@@ -52,7 +52,7 @@ namespace Cards {
 	{ return cards.empty(); };
       
       // Grab the name of the cards in this hand
-      Kine::String getHandStr(void) const;
+      LibAIS::String getHandStr(void) const;
 	
       // Add a card to this hand
       void addCard(const Card& card)

@@ -30,7 +30,7 @@
 using namespace Exordium;
 
 // Information used by the configuration parser
-const Kine::ConfigParser::defTable_type Config::definitionTable =
+const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 {
      {
 	"LOGFILE",
@@ -76,7 +76,7 @@ const Kine::ConfigParser::defTable_type Config::definitionTable =
 };
 
 // 'SQL' class definition table
-const Kine::ConfigParser::defTable_type Config::defClassSql =
+const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 {
      {
         "DATABASE",

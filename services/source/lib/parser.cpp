@@ -32,8 +32,8 @@
 #include "exordium/sql.h"
 #include "exordium/ircdome.h"
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 const struct Parser::functionTableStruct Parser::functionTable[] =

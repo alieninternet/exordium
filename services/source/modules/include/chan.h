@@ -33,9 +33,7 @@
 
 #include <kineircd/str.h>
 
-#define CHAN_FUNC(x)           x(Exordium::User& origin, Kine::StringTokens &tokens, Kine::String &chan)
-
-using Kine::String;
+#define CHAN_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens, LibAIS::String &chan)
 
 
 class Chan : public Exordium::Service
@@ -48,21 +46,21 @@ private:
   };
   static struct functionTableStruct const functionTable[];
    Exordium::Services& services;
-  const String myName;
-  void sendMessage(const String &message, const String &to)
+  const LibAIS::String myName;
+  void sendMessage(const LibAIS::String &message, const LibAIS::String &to)
 	{
 		services.serviceNotice(message,myName,to);
 	}
 public:
-   Chan(Exordium::Services& s, const String &mn)
+   Chan(Exordium::Services& s, const LibAIS::String &mn)
 	: services(s), myName(mn)
 	{
 	};
   ~Chan(void)
 	{
 	};
-   void parseLine (Kine::StringTokens& line, Exordium::User& origin);
-   void parseLine (Kine::StringTokens& line, Exordium::User& origin,String const &);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin,LibAIS::String const &);
 private:
    void CHAN_FUNC (parseHELP);
    void CHAN_FUNC (parseACCESS);

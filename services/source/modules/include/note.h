@@ -28,9 +28,7 @@
 #define __NOTE_H_
 
 #include <kineircd/str.h>
-# define NOTE_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
-
-using Kine::String;
+# define NOTE_FUNC(x)           x(LibAIS::String &origin, LibAIS::StringTokens &tokens)
 
 #include "exordium/service.h"
 #include "exordium/services.h"
@@ -58,8 +56,8 @@ public:
    {
 	std::cout << "YOU BASTARD, YOU KILLED NOTE" << std::endl;
    };   
-  void parseLine (String const &, String const &);
-  void parseLine (String const &, String const &, String const &);
+  void parseLine (LibAIS::String const &, LibAIS::String const &);
+  void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
   void NOTE_FUNC (parseSEND);
   void NOTE_FUNC (parseLIST);
   void NOTE_FUNC (parseREAD);

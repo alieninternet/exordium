@@ -30,8 +30,8 @@
 #include "exordium/sql.h"
 
 using namespace Exordium;
-using Kine::String;
-using Kine::StringMask;
+using LibAIS::String;
+using LibAIS::StringMask;
 namespace Exordium
 {
 

@@ -33,8 +33,8 @@
 #include "exordium/module.h"
 #include <sys/time.h>
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 namespace Exordium

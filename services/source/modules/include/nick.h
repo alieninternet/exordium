@@ -31,10 +31,7 @@
 #include "exordium/service.h"
 #include <kineircd/str.h>
 
-#define NICK_FUNC(x)           x(Exordium::User& origin, Kine::StringTokens &tokens)
-
-using Kine::String;
-
+#define NICK_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens)
 
 
 class Nick : public Exordium::Service
@@ -47,13 +44,13 @@ private:
   };
   static struct functionTableStruct const functionTable[];
    Exordium::Services& services;
-  const String myName;
-  void sendMessage(const String &to, const String &message)
+  const LibAIS::String myName;
+  void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
 		services.serviceNotice(message,myName,to);
 	}
 public:
-   Nick(Exordium::Services& s, const String &mn)
+   Nick(Exordium::Services& s, const LibAIS::String &mn)
    : services(s), myName(mn)
    {
    };
@@ -62,8 +59,8 @@ public:
    {
    };
 
-   void parseLine (Kine::StringTokens& line, Exordium::User& origin);
-   void parseLine (Kine::StringTokens& line, Exordium::User& origin,String const &);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine (LibAIS::StringTokens& line, Exordium::User& origin,LibAIS::String const &);
 
 private:
 

@@ -30,7 +30,7 @@
 #include <kineircd/str.h>
 
 # define IRCDOME_FUNC(x) \
-     x(Kine::String &origin, Kine::StringTokens &tokens)
+     x(LibAIS::String &origin, LibAIS::StringTokens &tokens)
 
 namespace Exordium {
    class Services;
@@ -51,7 +51,7 @@ namespace Exordium {
 	: services(s)
 	{};
       
-      void parseLine(const String &, const String &);
+      void parseLine(const LibAIS::String &, const LibAIS::String &);
    };
 };
 

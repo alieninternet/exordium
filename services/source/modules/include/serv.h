@@ -29,9 +29,7 @@
 
 #include <kineircd/str.h>
 
-# define SERV_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
-
-using Kine::String;
+# define SERV_FUNC(x)           x(LibAIS::String &origin, LibAIS::StringTokens &tokens)
 
 #include "exordium/service.h"
 #include "exordium/services.h"
@@ -59,8 +57,8 @@ public:
 	{
 		std::cout << "Serv Deadeded" << std::endl;
 	};
-   void parseLine (String const &, String const &);
-   void parseLine (String const &, String const &, String const &);
+   void parseLine (LibAIS::String const &, LibAIS::String const &);
+   void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
 private:
 void SERV_FUNC (parseCLIST);
 void SERV_FUNC (parseDELNICK);

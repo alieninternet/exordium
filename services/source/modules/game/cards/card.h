@@ -97,7 +97,7 @@ namespace Cards {
 	  {};
 
       // Constructor, but using a string (such as "Queen of hearts")
-      Card(const Kine::String& name);
+      Card(const LibAIS::String& name);
       
       // Return the suit this card belongs to
       const unsigned char getSuit(void) const
@@ -150,7 +150,7 @@ namespace Cards {
       bool operator<(const Card& rhs) const;
       
       // Help people find a suit..
-      static unsigned char findSuit(const Kine::String& suitName);
+      static unsigned char findSuit(const LibAIS::String& suitName);
       
       // Help people name a suit..
       static const char* nameSuit(const unsigned char suit);

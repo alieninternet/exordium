@@ -32,8 +32,6 @@
 #include <kineircd/str.h>
 #include "exordium/conf.h"
 
-using Kine::String;
-
 namespace Exordium {
    class Log {
     private:
@@ -44,7 +42,7 @@ namespace Exordium {
     public:
       Log(const Config& c);
 	
-      void logLine(const String& line);
+      void logLine(const LibAIS::String& line);
    };
 
 };

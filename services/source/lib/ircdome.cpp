@@ -29,8 +29,8 @@
 #include <kineircd/utils.h>
 #include "exordium/ircdome.h"
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 const struct IRCDome::functionTableStruct IRCDome::functionTable[] =

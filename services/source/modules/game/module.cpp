@@ -34,8 +34,8 @@
 
 #include "game.h"
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 

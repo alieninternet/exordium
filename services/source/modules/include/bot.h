@@ -34,9 +34,7 @@
 #include <kineircd/str.h>
 
 
-#define BOT_FUNC(x)           x(Exordium::User& origin, Kine::StringTokens &tokens, Kine::String &chan)
-
-using Kine::String;
+#define BOT_FUNC(x)           x(Exordium::User& origin, LibAIS::StringTokens &tokens, LibAIS::String &chan)
 
 
 class Bot : public Exordium::Service
@@ -50,13 +48,13 @@ class Bot : public Exordium::Service
   };
   static struct functionTableStruct const functionTable[];
    Exordium::Services& services;
-  const String myName;
-  void sendMessage(const String &to, const String &message)
+  const LibAIS::String myName;
+  void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
 		services.serviceNotice(message,myName,to);
 	};
 public:
-  Bot(Exordium::Services& s, const String &mn)
+  Bot(Exordium::Services& s, const LibAIS::String &mn)
 	: services(s), myName(mn)
 	{
 	};
@@ -65,10 +63,10 @@ public:
 	{
 		std::cout << "Dead Bot" << std::endl;
 	};
-   void parseLine(Kine::StringTokens& line, Exordium::User& origin);
+   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
    
-   void parseLine(Kine::StringTokens& line, Exordium::User& origin,
-		  const Kine::String& channel);
+   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
+		  const LibAIS::String& channel);
 private:
   void BOT_FUNC (parseHELP);
   void BOT_FUNC (parseQUOTE);

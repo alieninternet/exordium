@@ -31,9 +31,7 @@
 #include "exordium/services.h"
 #include <kineircd/str.h>
 
-# define OPER_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
-
-using Kine::String;
+# define OPER_FUNC(x)           x(LibAIS::String &origin, LibAIS::StringTokens &tokens, LibAIS::String &chan)
 
 
 class Oper : public Exordium::Service
@@ -46,13 +44,13 @@ private:
   };
   static struct functionTableStruct const functionTable[];
    Exordium::Services& services;
-  const String myName;
-  void sendMessage(const String &to, const String &message)
+  const LibAIS::String myName;
+  void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
 		services.serviceNotice(message,myName,to);
 	}
 public:
-   Oper(Exordium::Services& s, const String &mn)
+   Oper(Exordium::Services& s, const LibAIS::String &mn)
 	: services(s), myName(mn)
 	{
 	};
@@ -61,8 +59,8 @@ public:
 	{
 		std::cout << "Dead Oper" << std::endl;
 	};
-  void parseLine (String const &, String const &);
-  void parseLine (String const &, String const &, String const &);
+  void parseLine (LibAIS::String const &, LibAIS::String const &);
+  void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
 private:
    void OPER_FUNC (parseHELP);
    void OPER_FUNC (parseQUOTE);

@@ -32,13 +32,12 @@
 # include "exordium/services.h"
 # include "exordium/sql.h"
 
-namespace Exordium
-{
+namespace Exordium {
    class Services;
    
    class User {
     private:
-      Kine::String nickname;
+      LibAIS::String nickname;
       int onlineID;
       Services& services;
       
@@ -50,8 +49,8 @@ namespace Exordium
        * 
        */
       
-      const Kine::String& getNickname(void) const
-	  { return nickname; };
+      const LibAIS::String& getNickname(void) const
+	{ return nickname; };
       
       /* getOnlineID()
        * 
@@ -68,25 +67,25 @@ namespace Exordium
        * 
        * This is redundant imho. - simon
        */
-      const Kine::String getOnlineIDString(void) const
-	{ return String::convert(onlineID); };
-
+      const LibAIS::String getOnlineIDString(void) const
+	{ return LibAIS::String::convert(onlineID); };
+      
       /* setNick(String)
        * 
        * Update our records to show a new nickname.....
        * 
        */
-      void setNick(const String& nick)
+      void setNick(const LibAIS::String& nick)
 	{ nickname = nick; };
       
       /* Take note. Their are two sendMessages, the latter allowing
        * you to override services default behaviour of using the 
        * nicknames settings of notice/privmsg
        */
-      void sendMessage(String const &message,
-		       String const &origin);
-      void sendMessage(String const &message,
-		       String const &origin, bool const &privmsg);
+      void sendMessage(LibAIS::String const &message,
+		       LibAIS::String const &origin);
+      void sendMessage(LibAIS::String const &message,
+		       LibAIS::String const &origin, bool const &privmsg);
       
       /* setModNick(bool)
        * 
@@ -94,7 +93,7 @@ namespace Exordium
        * 
        */
       void setModNick(bool const &);
-
+      
       /* modNick()
        * 
        * Return the current value of modNick
@@ -102,114 +101,120 @@ namespace Exordium
        */
       bool modNick(void);
       
-	/* setDeopAway(bool)
-	 * 
-	 * Modify the value of DeopAway
-	 * 
-	 */
-	void setDeopAway(bool const &);
-	/* deopAway()
-	 * 
-	 * Return the value of DeopAway
-	 * 
-	 */
-        bool deopAway(void);
-	/* updateHost(String)
-	 * 
-	 * Update the clients hostname.
-	 * 
-	 */
-	void updateHost(String const &);
-	/* getQuitMessage()
-	 * 
-	 * Return the last known quit message for this user
-	 * 
-	 */
-	Kine::String getQuitMessage(void);
-	/* getAccess(String)
-	 * 
-	 * Return the access for this user with the given
-	 * service.
-	 * 
-	 */
-	int getAccess(Kine::String const &);
-	/* addCheckIdentify()
-	 * 
-	 * Force a client to identify for this nickname...
-	 * 
-	 */
-	void addCheckIdentify(void);
-	/* countHost()
-	 * 
-	 * Return the number of online people from this
-	 * users hostname.
-	 * 
-	 */
-	int countHost(void);
-	/* getHost()
-	 * 
-	 * Return the users hostname.
-	 * 
-	 */
+      /* setDeopAway(bool)
+       * 
+       * Modify the value of DeopAway
+       * 
+       */
+      void setDeopAway(bool const &);
       
-	Kine::String getHost(void);
-        /* getIdent()
-	 * 
-	 * Return the users ident (username)
-	 * 
-	 */
-        Kine::String getIdent(void);
-        /* isIdentified()
-	 * 
-	 * Return true if we are identified as *ANY* nickname.
-	 * 
-	 */
-        bool isIdentified(void);
-       
-        /* isIdentified(String)
-	 * 
-	 * Return true if we are identified as the given nickname.
-	 * 
-	 */
-        bool isIdentified(String const &);
+      /* deopAway()
+       * 
+       * Return the value of DeopAway
+       * 
+       */
+      bool deopAway(void);
       
-        /* getIDList(String)
-	 * 
-	 * Return a list of nicknames we are identified as...
-	 * 
-	 */
-        Kine::String getIDList(void);
+      /* updateHost(String)
+       * 
+       * Update the clients hostname.
+       * 
+       */
+      void updateHost(LibAIS::String const &);
       
-        /* isPending()
-	 * 
-	 * Return TRUE if we are pending verification :-)
-	 * 
-	 */
-        bool isPending(void);
+      /* getQuitMessage()
+       * 
+       * Return the last known quit message for this user
+       * 
+       */
+      LibAIS::String getQuitMessage(void);
       
-        /* setLanguage(String)
-	 * 
-	 * Update our clients language.......
-	 * 
-	 * This could possibly be broken.. but i'll look at it later
-	 * its not a serious quirk (relating to the possibiltiy of someone
-	 * changing the language for a nick not in use... )
-	 */
-        void setLanguage(String const &);
-	/* Our constructor definition */
-	User(String const &nick, int const &oid, Services &s)
-	  : nickname(nick), //their current nickname.. duh
-	    onlineID(oid), //as dictated by the sql server..
-	    services(s)// Gives us access to the full suite of services..
-	  {
-	     
-	  };
+      /* getAccess(String)
+       * 
+       * Return the access for this user with the given
+       * service.
+       * 
+       */
+      int getAccess(LibAIS::String const &);
+      
+      /* addCheckIdentify()
+       * 
+       * Force a client to identify for this nickname...
+       * 
+       */
+      void addCheckIdentify(void);
+      
+      /* countHost()
+       * 
+       * Return the number of online people from this
+       * users hostname.
+       * 
+       */
+      int countHost(void);
+      
+      /* getHost()
+       * 
+       * Return the users hostname.
+       * 
+       */
+      LibAIS::String getHost(void);
+      
+      /* getIdent()
+       * 
+       * Return the users ident (username)
+       * 
+       */
+      LibAIS::String getIdent(void);
+      
+      /* isIdentified()
+       * 
+       * Return true if we are identified as *ANY* nickname.
+       * 
+       */
+      bool isIdentified(void);
+      
+      /* isIdentified(String)
+       * 
+       * Return true if we are identified as the given nickname.
+       * 
+       */
+      bool isIdentified(LibAIS::String const &);
+      
+      /* getIDList(String)
+       * 
+       * Return a list of nicknames we are identified as...
+       * 
+       */
+      LibAIS::String getIDList(void);
+      
+      /* isPending()
+       * 
+       * Return TRUE if we are pending verification :-)
+       * 
+       */
+      bool isPending(void);
+      
+      /* setLanguage(String)
+       * 
+       * Update our clients language.......
+       * 
+       * This could possibly be broken.. but i'll look at it later
+       * its not a serious quirk (relating to the possibiltiy of someone
+       * changing the language for a nick not in use... )
+       */
+      void setLanguage(LibAIS::String const &);
+      
+      /* Our constructor definition */
+      User(LibAIS::String const &nick, int const &oid, Services &s)
+	: nickname(nick), //their current nickname.. duh
+          onlineID(oid), //as dictated by the sql server..
+          services(s)// Gives us access to the full suite of services..
+	{};
 
       // is equal to operator
       bool operator==(const User &u) const 
 	{ return (onlineID == onlineID); };
    };
-   
-};
+}; // class Exordium
 
 #endif

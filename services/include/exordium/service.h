@@ -36,7 +36,7 @@ extern "C" {
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
-   Module* x(Exordium::Services& services, const Kine::String& name)
+   Module* x(Exordium::Services& services, const LibAIS::String& name)
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
 
@@ -52,10 +52,10 @@ namespace Exordium {
       virtual ~Service() 
 	{};
 
-      virtual void parseLine(Kine::StringTokens& line, User& origin) = 0;
+      virtual void parseLine(LibAIS::StringTokens& line, User& origin) = 0;
       
-      virtual void parseLine(Kine::StringTokens& line, User& origin,
-			     const Kine::String& channel) = 0;
+      virtual void parseLine(LibAIS::StringTokens& line, User& origin,
+			     const LibAIS::String& channel) = 0;
    };
 
 
@@ -74,7 +74,7 @@ class Core {
 		dlclose(handle);
 	}
    };
-   typedef std::map <Kine::String, ServiceModule *> modules_type;
+   typedef std::map <LibAIS::String, ServiceModule *> modules_type;
    modules_type serviceModules;
 
  public:
@@ -83,12 +83,12 @@ class Core {
       serviceModules.clear();
    };
 
-   void addModule(Kine::String const &name, Service &s, void *h) {
+   void addModule(LibAIS::String const &name, Service &s, void *h) {
       // Just add it - this will overwrite anything already there
       serviceModules[name.IRCtoLower()] = new ServiceModule(&s,h);
    };
 
-   void delModule(Kine::String const &name) {
+   void delModule(LibAIS::String const &name) {
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
       if (sm != 0) {
          delete sm;
@@ -98,7 +98,7 @@ class Core {
       std::cout << "Umm... i couldn't find " << name << std::endl;
    };
 
-   bool exists(Kine::String const &name)
+   bool exists(LibAIS::String const &name)
 	{
 		ServiceModule *sm = serviceModules[name.IRCtoLower()];
 		if ( sm == 0 )
@@ -109,7 +109,7 @@ class Core {
 		return true;
 	}
    // Throw a line at the appropriate service
-   void throwLine(Kine::String const &name, Kine::StringTokens& line, 
+   void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line, 
 		  User &origin) {
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
       if (sm == 0) {
@@ -122,8 +122,8 @@ class Core {
       return;
    };
 
-   void throwLine(Kine::String const &name, Kine::StringTokens& line,
-		  User& origin, Kine::String const &ch) {
+   void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line,
+		  User& origin, LibAIS::String const &ch) {
       // Find it...
       ServiceModule *sm = serviceModules[name.IRCtoLower()];
 
@@ -141,14 +141,14 @@ class Core {
 
 
    // Dump a list of modules
-   Kine::String dumpModules(void) {
+   LibAIS::String dumpModules(void) {
       std::cout << "Modules loaded: ";
-      Kine::String tmp = "";
+      LibAIS::String tmp = "";
       for (modules_type::iterator it = serviceModules.begin();
            it != serviceModules.end(); it++) {
          // Output the key..
          std::cout << (*it).first << ' ';
-	 tmp = Kine::String(tmp)+" "+(*it).first;
+	 tmp = LibAIS::String(tmp)+" "+(*it).first;
       }
       std::cout << std::endl;
       return tmp;

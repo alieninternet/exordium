@@ -29,6 +29,9 @@
 
 #include "card.h"
 
+using LibAIS::String;
+using LibAIS::StringTokens;
+
 
 /* This relates closely to the enumeration list in the card class. For
  * efficiency it was decided to use redundant data rather than constantly
@@ -130,15 +133,15 @@ const char* Cards::Card::ranksList[13] = {
 /* Constructor - Converts a name (such as "Queen of hearts") into a valid card
  * Original 31/08/2002 simonb
  */
-Cards::Card::Card(const Kine::String& name)
+Cards::Card::Card(const String& name)
   : suit(0),
     index(0)
 {
    // Tokenise the string so we can jump through it in a nice lazy fashion
-   Kine::StringTokens st(name.toUpper());
+   StringTokens st(name.toUpper());
    
    // Grab the first token..
-   Kine::String token = st.nextToken();
+   String token = st.nextToken();
    
    // Is this supposed to be a joker?
    if (token == "JOKER") {
@@ -206,9 +209,9 @@ bool Cards::Card::operator<(const Card& rhs) const
 /* findSuit - Help people find a suit
  * Original 31/08/2002 simonb
  */
-unsigned char Cards::Card::findSuit(const Kine::String& suitName)
+unsigned char Cards::Card::findSuit(const String& suitName)
 {
-   Kine::String name = suitName.toUpper();
+   String name = suitName.toUpper();
    
    // Try and find the suit..
    for (unsigned int i = 0; i != 4; i++) {

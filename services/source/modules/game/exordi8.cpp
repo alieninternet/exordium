@@ -31,11 +31,14 @@
 #include "exordi8.h"
 #include "cards/pack.h"
 
+using LibAIS::String;
+using LibAIS::StringTokens;
+
 
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel
  * Original 29/08/2002 simonb
  */
-Exordi8::Exordi8(Game& game, const Kine::String& channel, 
+Exordi8::Exordi8(Game& game, const String& channel, 
 		 Exordium::User& caller)
   : ChannelGame(game, channel.IRCtoLower()),
     playing(false),
@@ -72,9 +75,9 @@ const Exordi8::functionTable_type Exordi8::functionTable[] =
 /* parseLine - Parse an incoming command from someone
  * Original 29/08/2002 simonb
  */
-bool Exordi8::parseLine(Exordium::User& origin, Kine::StringTokens& tokens)
+bool Exordi8::parseLine(Exordium::User& origin, StringTokens& tokens)
 {
-   Kine::String command = tokens.nextToken().toLower();
+   String command = tokens.nextToken().toLower();
    
    // Run through the command list and find a matching command..
    for (int i = 0; functionTable[i].command != 0; i++) {
@@ -176,7 +179,7 @@ void Exordi8::showHand(const player_type& player) const
 /* nextPlayer - Jump to the next player, telling the channel why parse
  * Original 30/08/2002 simonb
  */
-void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
+void Exordi8::nextPlayer(const String& why, bool withMatchNotify)
 {
    std::ostringstream out;
    out << (*currentPlayer).first << ' ' << why << ". It is ";
@@ -225,7 +228,7 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
       // Tell the player what they need to get..
       if ((lastDiscardedCard.getIndex() == 8) && (nextSuit != 0)) {
 	 sendMessage(*((*currentPlayer).first), 
-		     Kine::String("To discard, you need to put down a card of "
+		     String("To discard, you need to put down a card of "
 				  "the ") + Cards::Card::nameSuit(nextSuit) + 
 				  " suit");
       } else if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
@@ -235,12 +238,12 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
 		     "card discarded was the Queen of Spades");
       } else if (lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) {
 	 sendMessage(*((*currentPlayer).first), 
-		     Kine::String("To discard, you need to match the colour "
+		     String("To discard, you need to match the colour "
 				  "of the last card discarded (") +
 		     lastDiscardedCard.getColourName() + ")");
       } else {
 	 sendMessage(*((*currentPlayer).first),
-		     Kine::String("To discard, you need to match the ") +
+		     String("To discard, you need to match the ") +
 		     lastDiscardedCard.getName());
       }
    }
@@ -392,7 +395,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
    // Okay, make sure the player actually HAS this card first..
    if (!(*currentPlayer).second.hasCard(cardToDiscard)) {
       sendMessage(origin,
-		  Kine::String("You don't have a ") + 
+		  String("You don't have a ") + 
 		  cardToDiscard.getName() + " to discard!");
       return true; // Keep the game alive
    }
@@ -416,7 +419,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	     */
 	    if ((nextSuit != cardToDiscard.getSuit()) && !stock.empty()) {
 	       sendMessage(origin, 
-			   Kine::String("You must discard a card that matches "
+			   String("You must discard a card that matches "
 					"the suit selected by the last player "
 					"(") +
 			   Cards::Card::nameSuit(nextSuit) + 
@@ -433,7 +436,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 		!((lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) &&
 		  (cardToDiscard.getColour() == lastDiscardedCard.getColour()))) {
 	       sendMessage(origin,
-			   Kine::String("You must match either the suit or "
+			   String("You must match either the suit or "
 					"the rank of the last discarded "
 					"card (") + 
 			   lastDiscardedCard.getName() + 
@@ -529,7 +532,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
       if ((players.size() > 2) &&
 	  (cardToDiscard.getIndex() == Cards::Card::Rank::Ace)) {
 	 forwardDirection = !forwardDirection;
-	 nextPlayer(Kine::String("has discarded the ") + 
+	 nextPlayer(String("has discarded the ") + 
 		    cardToDiscard.getName() +
 		    " - the direction of play has been reversed");
 	 return true; // Keep the game alive
@@ -553,7 +556,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
    }
 
    // If we got here, do a standard message..
-   nextPlayer(Kine::String("has discarded the ") + cardToDiscard.getName());
+   nextPlayer(String("has discarded the ") + cardToDiscard.getName());
    
    return true;
 }
@@ -622,7 +625,7 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
    }
    
    // Okay, it must be the current player.. Pick up a card for them
-   sendMessage(origin, Kine::String("You picked up ") + stock.top().getName());
+   sendMessage(origin, String("You picked up ") + stock.top().getName());
    (*currentPlayer).second.addCard(stock.top());
    stock.pop();
    
@@ -725,7 +728,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
    // Grab the player's info
    const player_type* player = checkPlayerStatus(origin, true);
    
-   Kine::String out;
+   String out;
    
    // Run through the list of players and give them vague information..
    for (players_type::iterator p = players.begin();
@@ -739,7 +742,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
 	 
 	 // Add the info
 	 out += (*p).first->getNickname() + ": " +
-	   Kine::String::convert((*p).second.getCardCount()) + " cards";
+	   String::convert((*p).second.getCardCount()) + " cards";
 	 
 	 // If the line is too long, send what we have and clear it
 	 if (out.length() > 300) {
@@ -771,7 +774,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
    if (stock.empty()) {
       out += "The stock is empty.";
    } else {
-      out += "There are " + Kine::String::convert(stock.size()) + 
+      out += "There are " + String::convert(stock.size()) + 
 	" cards left in the stock.";
    }
 
@@ -822,7 +825,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
    
    // Tell the next player which suit they need..
    sendMessage(*((*currentPlayer).first),
-	       Kine::String("You need to use a card of the suit ") +
+	       String("You need to use a card of the suit ") +
 	       Cards::Card::nameSuit(nextSuit) + ", or take a card.");
    
    return true;

@@ -31,7 +31,7 @@
 #include <sys/time.h>
 #include <sstream>
 
-using Kine::String;
+using LibAIS::String;
 using namespace Exordium;
 
 Mysql mysql;

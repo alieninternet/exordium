@@ -34,8 +34,8 @@
 #include "exordium/module.h"
 #include <map>
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 namespace Exordium

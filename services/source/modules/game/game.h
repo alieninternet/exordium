@@ -34,8 +34,8 @@
 
 
 # define GAME_FUNC(x) \
-     void x(Exordium::User& origin, Kine::StringTokens& line, \
-	    const Kine::String& channel)
+     void x(Exordium::User& origin, LibAIS::StringTokens& line, \
+	    const LibAIS::String& channel)
 
 
 // Forward declarations
@@ -61,14 +61,14 @@ class Game : public Exordium::Service {
    static const commandTable_type channelCommandTable[];
 
    // A list of channel games currently in progress
-   typedef std::map < Kine::String, ChannelGame* > channelGames_type;
+   typedef std::map < LibAIS::String, ChannelGame* > channelGames_type;
    channelGames_type channelGames;
    
    // Where is services?
    Exordium::Services& services;
    
    // Who are we?!
-   const Kine::String myName;
+   const LibAIS::String myName;
 
    // Command handlers
    handler_type handleHELP;
@@ -77,7 +77,7 @@ class Game : public Exordium::Service {
    
 public:
    // Our constructor
-   Game(Exordium::Services& s, const Kine::String& mn);
+   Game(Exordium::Services& s, const LibAIS::String& mn);
 
    // Our destructor
    ~Game(void)
@@ -88,13 +88,13 @@ public:
      { return services; };
    
    // Return our name
-   const Kine::String& getName(void) const
+   const LibAIS::String& getName(void) const
      { return myName; };
    
    // Parser for incoming stuff
-   void parseLine(Kine::StringTokens& line, Exordium::User& origin);
-   void parseLine(Kine::StringTokens& line, Exordium::User& origin,
-		  const Kine::String& channel);
+   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
+   void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
+		  const LibAIS::String& channel);
 };
 
 // Complete the forwarded declaration

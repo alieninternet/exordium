@@ -33,8 +33,6 @@
 #include "exordium/mysql.h" // was "mysql.h" -- did I change this in error?
 #include <kineircd/str.h>
 
-using Kine::String;
-
 namespace Exordium {
    class Sql {
     private: 
@@ -47,9 +45,9 @@ namespace Exordium {
       // These should probably be templated :( In fact, MySql:: should be
       // simply merged with this class altogether :(
       MysqlRes query(const char* const);
-      MysqlRes query(const String&);
+      MysqlRes query(const LibAIS::String&);
       
-      String makeSafe(const String&);
+      LibAIS::String makeSafe(const LibAIS::String&);
    };
 };
 

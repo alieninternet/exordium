@@ -36,7 +36,7 @@ class ChannelGame;
 # include "game.h"
 
 # define CHANNEL_GAME_CREATOR_FUNC(x) \
-     ChannelGame* x(Game& game, const Kine::String& channel, \
+     ChannelGame* x(Game& game, const LibAIS::String& channel, \
 		    Exordium::User& caller)
 
 class ChannelGame {
@@ -45,7 +45,7 @@ class ChannelGame {
    Game& game;
    
    // The channel we are playing on
-   const Kine::String channel;
+   const LibAIS::String channel;
    
  public:
    // Our convenient type-definition of a creator function
@@ -58,7 +58,7 @@ class ChannelGame {
    } static const channelGameTable[];
 
    // Constructor
-   ChannelGame(Game& g, const Kine::String& c)
+   ChannelGame(Game& g, const LibAIS::String& c)
      : game(g), 
        channel(c)
        {};
@@ -69,15 +69,15 @@ class ChannelGame {
    
    // Our line parser - where channel commands for us are sent
    virtual bool parseLine(Exordium::User& origin,
-			  Kine::StringTokens& tokens) = 0;
+			  LibAIS::StringTokens& tokens) = 0;
    
    // Send a message to the channel
-   void sendMessage(const Kine::String& message) const
+   void sendMessage(const LibAIS::String& message) const
      { game.getServices().servicePrivmsg(message, game.getName(), channel); };
 
    // Send a message to someone (specified)
    void sendMessage(Exordium::User& nick,
-		    const Kine::String& message) const
+		    const LibAIS::String& message) const
      { nick.sendMessage(message, game.getName()); };
 };
    

@@ -35,8 +35,8 @@
 #include <map>
 #include "exordium/sql.h"
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 struct Oper::functionTableStruct const

@@ -109,7 +109,7 @@ class Mysql
    int      insert_id () {return mysql_insert_id(mysql);}
    int      query (const char* const query) 
      { return mysql_query (mysql, query); }
-   int      query (const Kine::String& query) 
+   int      query (const LibAIS::String& query) 
      { return mysql_real_query(mysql, query.data(), query.length()); }
   
    // ?

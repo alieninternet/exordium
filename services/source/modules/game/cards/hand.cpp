@@ -29,11 +29,13 @@
 
 #include "hand.h"
 
+using LibAIS::String;
+
 
 /* getHandStr - Grab the name of the cards in this hand
  * Original 30/08/2002 simonb
  */
-Kine::String Cards::Hand::getHandStr(void) const
+String Cards::Hand::getHandStr(void) const
 {
    // If the hand is empty, say so
    if (cards.empty()) {

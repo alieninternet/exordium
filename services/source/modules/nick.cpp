@@ -33,8 +33,8 @@
 #include <map>
 #include <sstream>
 
-using Kine::String;
-using Kine::StringTokens;
+using LibAIS::String;
+using LibAIS::StringTokens;
 using namespace Exordium;
 
 struct Nick::functionTableStruct const
