@@ -38,23 +38,23 @@ const Kine::ConfigParser::defTable_type Config::definitionTable =
 	  0, 0
      },
      {
-        "HOSTNAME",
-          (void *)&Config::defServicesHostname, &varHandleString,
+        "SERVICESHOSTNAME",
+          (void *)&Config::defServicesHostname, &varHandleHostName,
           0, 0
      },
      {
 	"UPLINKHOST",
-	  (void *)&Config::defUplinkHost, &varHandleString,
+	  (void *)&Config::defUplinkHost, &varHandleHostName,
 	  0, 0
      },
      {
-        "DESCRIPTION",
+        "SERVICESDESCRIPTION",
           (void *)&Config::defServicesDescription, &varHandleString,
           0, 0
      },
      {
         "CONSOLEHOSTNAME",
-          (void *)&Config::defServicesConsoleHostname, &varHandleString,
+          (void *)&Config::defServicesConsoleHostname, &varHandleHostName,
           0, 0
      },
      {
@@ -62,7 +62,6 @@ const Kine::ConfigParser::defTable_type Config::definitionTable =
           (void *)&Config::defServicesConsoleDescription, &varHandleString,
           0, 0
      },
-
      {
         "UPLINKPORT",
           (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
@@ -80,32 +79,33 @@ const Kine::ConfigParser::defTable_type Config::definitionTable =
 const Kine::ConfigParser::defTable_type Config::defClassSql =
 {
      {
-	"DATABASE",
-	  (void *)&Config::defSqlDatabase, &varHandleString,
-	  0, 0
+        "DATABASE",
+          (void *)&Config::defSqlDatabase, &varHandleString,
+          0, 0
      },
      {
-	"HOSTNAME",
-	  (void *)&Config::defSqlHostname, &varHandleHostName,
-	  0, 0
+        "HOSTNAME",
+          (void *)&Config::defSqlHostname, &varHandleHostName,
+          0, 0
      },
      {
-	"PASSWORD",
-	  (void *)&Config::defSqlPassword, &varHandleString,
-	  0, 0
+        "PASSWORD",
+          (void *)&Config::defSqlPassword, &varHandleString,
+          0, 0
      },
      {
-	"PORT",
-	  (void *)&Config::defSqlPort, &varHandleUnsignedShortNoZero,
-	  0, 0
+        "PORT",
+          (void *)&Config::defSqlPort, &varHandleUnsignedShortNoZero,
+          0, 0
      },
      {
-	"USERNAME",
-	  (void *)&Config::defSqlUsername, &varHandleString,
-	  0, 0
+        "USERNAME",
+          (void *)&Config::defSqlUsername, &varHandleString,
+          0, 0
      },
      { 0, 0, 0, 0, 0 }
 };
+
 
 // Constructor to set up defaults, mainly. These defaults are dopey :(
 Config::Config(void)

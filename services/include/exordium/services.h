@@ -253,7 +253,7 @@ namespace Exordium {
 	
 	void serviceJoin(String const &service, String const &target)
 	  {
-	     queueAdd(":services.ircdome.org SJOIN " +
+	     queueAdd(":" + config.getServicesHostname() + " SJOIN " +
 		      Kine::String::convert(currentTime) + " " + target +
 		      " + :" + service);
 	};
