@@ -6,14 +6,15 @@ CXXFLAGS=@CXXFLAGS@ -nostdlib -I/usr/local/ssl/include
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 
-SOURCES=sql.cpp \
-	nickname.cpp \
+SOURCES=\
 	channel.cpp \
 	conf.cpp \
 	ircdome.cpp \
 	log.cpp \
+	nickname.cpp \
 	parser.cpp \
-	services.cpp
+	services.cpp \
+	sql.cpp
 	
 INCLUDES=../../include
 

@@ -10,14 +10,15 @@ LIBS=-lmysqlclient
 
 INCLUDES=/../include
 
-SOURCES=chan.cpp \
-	nick.cpp \
-	serv.cpp \
-	love.cpp \
-	note.cpp \
-	game.cpp \
+SOURCES=\
 	bot.cpp \
-	oper.cpp 
+	chan.cpp \
+	game.cpp \
+	love.cpp \
+	nick.cpp \
+	note.cpp \
+	oper.cpp \
+	serv.cpp
 	
 OBJECTS=$(SOURCES:.cpp=.so)
 
