@@ -1,6 +1,6 @@
 #!/usr/local/bin/php -q
 <?
-$link = mysql_connect("localhost","root","");
+$link = mysql_connect("localhost","root","be3tHov3n");
 if($link==FALSE)
 {
     echo "i'm a buggy piece of shit\r\n";
