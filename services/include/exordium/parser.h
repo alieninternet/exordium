@@ -35,7 +35,7 @@ namespace Exordium {
 #include <kineircd/str.h>
 
 # define PARSER_FUNC(x) \
-     x(const Kine::String& OLDorigin, Kine::StringTokens& tokens, User& origin)
+     x(Kine::String& OLDorigin, Kine::StringTokens& tokens)
 
 namespace Exordium {
    class Parser {

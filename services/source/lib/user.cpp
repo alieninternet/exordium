@@ -123,7 +123,10 @@ void
 bool
   User::modNick(void)
 {
-   MysqlRes res = services.getDatabase().query("SELECT modnick from nicks where nickname='"+nickname+"'");
+   std::cout << "MY NICKNAME IS" << nickname << std::endl;
+   String query = "SELECT modnick from nicks where nickname='"+nickname+"'";
+   std::cout << query << std::endl;
+   MysqlRes res = services.getDatabase().query(query);
    MysqlRow row;
    while ((row = res.fetch_row()))
      {

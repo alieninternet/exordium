@@ -65,20 +65,20 @@ void Parser::parseLine(const String& line)
 	origin = origin.IRCtoLower();
      }
    //Find the associated user for this origin...
-   User *ptr = services.findUser(origin);
+//   User *ptr = services.findUser(origin);
    String command = st.nextToken ();
-   if (ptr != 0) {
+//   if (ptr != 0) {
       for (int i = 0; functionTable[i].command != 0; i++)
 	{
 	   // Does this match?
 	   if (command == functionTable[i].command)
 	     {
 	     // Run the command and leave *dodgey*
-		(this->*(functionTable[i].function))(origin, st, *ptr);
+		(this->*(functionTable[i].function))(origin, st);
 		return;
 	     }
 	}
-   }
+  // }
 
    services.getLogger().logLine(String("Unparsed Input!: ")+line);
 };
@@ -86,7 +86,14 @@ void Parser::parseLine(const String& line)
 void PARSER_FUNC (Parser::parseAWAY)
 {
    String reason = tokens.rest();
-   if(origin.deopAway())
+   User *origin = services.findUser(OLDorigin);
+   if(origin == 0)
+     {
+	std::cout << "Our pointer is null." << std::endl;
+	exit(0);
+     }
+ 
+   if(origin->deopAway())
      {
 	if(reason=="")
 	  {
@@ -95,7 +102,7 @@ void PARSER_FUNC (Parser::parseAWAY)
 	  }
 	else
 	  {
-	     String query = "SELECT chanid from chanstatus where nickid="+origin.getOnlineIDString()+" AND status=2";
+	     String query = "SELECT chanid from chanstatus where nickid="+origin->getOnlineIDString()+" AND status=2";
 	     MysqlRes res = services.getDatabase().query(query);
 	     MysqlRow row;
 	     while ((row = res.fetch_row()))
@@ -279,27 +286,28 @@ void
 void
   PARSER_FUNC (Parser::parseN)
 {
+User *origin = services.findUser(OLDorigin);
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
-	origin.setNick(tokens.nextToken());
+	origin->setNick(tokens.nextToken());
 	String query = "DELETE from kills WHERE nick='"+OLDorigin+"'";
 	services.getDatabase().query(query);
-	if(services.getNickname().isNickRegistered(origin.getNickname()))
+	if(services.getNickname().isNickRegistered(origin->getNickname()))
 	  {
-	     if(!services.getNickname().isIdentified(origin.getNickname()))
+	     if(!services.getNickname().isIdentified(origin->getNickname()))
 	       {
-		  if(!services.getNickname().isPending(origin.getNickname()))
+		  if(!services.getNickname().isPending(origin->getNickname()))
 		    {
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
 		       /* He's an annoying little pratt isn't he?
 			* But somewhat loveable ;) - simon
 			*/
-		       if(origin.modNick())
+		       if(origin->modNick())
 			 {
 			    
-		       services.getNickname().addCheckidentify(origin.getNickname());
+		       services.getNickname().addCheckidentify(origin->getNickname());
 			 }
 		       
 		    }
@@ -308,11 +316,12 @@ void
 	return;
      }
    String nick = tokens.nextToken();
+   std::cout << "NEW CLIENT" << nick << std::endl;
    if(services.getNickname().isNickRegistered(nick))
      {
 	if(!services.getNickname().isPending(nick))
 	  {
-	     if(origin.modNick())
+	     if(origin->modNick())
 	       {
 		  
 	  services.getNickname().addCheckidentify(nick);
@@ -329,7 +338,8 @@ void
    String host = tokens.nextToken();
    String vwhost = tokens.nextToken();
    String server = tokens.nextToken();
-   //Don't want the next two.
+
+  //Don't want the next two.
    tokens.nextToken();
    tokens.nextToken();
    String realname = tokens.rest();
@@ -355,6 +365,7 @@ void
 void
   PARSER_FUNC (Parser::parsePRIVMSG)
 {
+   User *origin = services.findUser(OLDorigin);
    String OLDoriginl = OLDorigin.IRCtoLower();
    String target = tokens.nextToken ();
    
@@ -400,9 +411,9 @@ void
 //	services.serviceM.throwLine("chan",message,OLDoriginl,target);
 //	services.serviceM.throwLine("game",message,OLDoriginl,target);
 	StringTokens dodgeydodgeydodgey(message);
-	services.serviceM.throwLine("chan", dodgeydodgeydodgey, origin,
+	services.serviceM.throwLine("chan", dodgeydodgeydodgey, *origin,
 				    target);
-	services.serviceM.throwLine("game", dodgeydodgeydodgey, origin,
+	services.serviceM.throwLine("game", dodgeydodgeydodgey, *origin,
 				    target);
 
      }

@@ -253,13 +253,13 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
 EXORDI8_FUNC(Exordi8::parseDEAL)
 {
    // Only the dealer can deal (the first player in the players list)
-   if (origin != *(players.front().first)) {
-      sendMessage(origin,
-		  "Only " + players.front().first->getNickname() +
-		  " can deal, since " +  players.front().first->getNickname() +
-		  " is the dealer!!");
-      return true; // Keep the game alive
-   }
+//   if (origin != *(players.front().first)) {
+//      sendMessage(origin,
+//		  "Only " + players.front().first->getNickname() +
+//		  " can deal, since " +  players.front().first->getNickname() +
+//		  " is the dealer!!");
+//      return true; // Keep the game alive
+//   }
    
    // Make sure we aren't already playing
    if (playing) {
