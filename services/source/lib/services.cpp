@@ -31,7 +31,6 @@
 #include "exordium/parser.h"
 #include "exordium/service.h"
 #include "exordium/utils.h"
-#include "exordium/love.h"
 #include "exordium/module.h" 
 #include "kineircd/kineircdconf.h"
 #include "kineircd/signals.h"

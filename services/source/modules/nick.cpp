@@ -5,7 +5,7 @@
  $Id$
 */
 
-#include "exordium/nick.h"
+#include "include/nick.h"
 #include "exordium/services.h"
 #include "exordium/nickname.h"
 #include "kineircd/str.h"

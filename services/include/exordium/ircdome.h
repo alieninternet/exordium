@@ -24,7 +24,7 @@ private:
     void IRCDOME_FUNC ((*function));
   };
   static struct functionTableStruct const functionTable[];
-  static void NICK_FUNC (parseMODULE);
+  static void IRCDOME_FUNC (parseMODULE);
 public: 
   static void parseLine( String &, String const &);
 };

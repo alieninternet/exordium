@@ -5,7 +5,7 @@
  $Id$
 */
 
-#include "exordium/love.h"
+#include "include/love.h"
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include "kineircd/str.h"

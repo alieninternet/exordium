@@ -5,7 +5,7 @@
  $Id$
 */
 
-#include "exordium/note.h"
+#include "include/note.h"
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include "exordium/channel.h"

@@ -23,10 +23,8 @@
 #include <fstream>
 #include <unistd.h>
 #include "exordium/log.h"
-#include "exordium/nick.h"
 #include "kineircd/utils.h"
 #include "kineircd/password.h"
-#include "exordium/love.h"
 #include "exordium/service.h"
 #include <signal.h>
 

@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include "exordium/services.h"
-#include "exordium/love.h"
 #include "exordium/log.h"
 #include "exordium/sql.h"
 #include <signal.h>
