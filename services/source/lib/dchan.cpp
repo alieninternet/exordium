@@ -80,7 +80,7 @@ int const dChan::getAccess(String const &who)
 {
      if(services.getDatabase().dbSelect("access","chanaccess",
 				      "chanid='"+String::convert(getRegisteredID())+"' AND nickid='"
-				      +String::convert(services.getRegisteredNickID(who))+"'") < 1)
+				      +String::convert(services.getStatic().getRegisteredNickID(who))+"'") < 1)
      return 0;
    else
      return services.getDatabase().dbGetValue().toInt();
@@ -160,7 +160,7 @@ void const dChan::addAccess(String &nick, String const &level)
 {
    std::cout << "inside a pointer thingy that simon hates about to adduser :(" << std::endl;
    //User *ptr = services.findUser(nick);
-   int nid = services.getRegisteredNickID(nick);
+   int nid = services.getStatic().getRegisteredNickID(nick);
    services.getDatabase().dbInsert("chanaccess","'"+String::convert(getRegisteredID())+
 				   "','"+String::convert(nid)+"','"+level+"'");
 }

@@ -117,17 +117,13 @@ namespace Exordium {
 	{ return console; };
 
       time_t getStartTime(void);
-
+      time_t getCurrentTime(void);
 	   
    
       // These will disappear upon full integration with kine..
       void run(void);
       
       // Function Declrations below here.
-      void addFreeze(Kine::Name const &,AISutil::String const &,int const &,AISutil::String const &);
-      int timesFreezed(Kine::Name const &);
-      bool isFreezed(Kine::Name const &);
-      void delFreeze(Kine::Name const &);
       int getAccess(AISutil::String const &, AISutil::String const &);
       void shutdown(const AISutil::String &);
       
@@ -256,7 +252,6 @@ namespace Exordium {
       void updateLastID(AISutil::String const &);
       
       
-      int getRegisteredNickID(AISutil::String const &);
       
       AISutil::String getNick(int const &);
       AISutil::String getOnlineNick(int const &);

@@ -535,13 +535,13 @@ void
   ServicesInternal::nickLinkAdd(String const &first, String const &second)
 {
 
-   database.dbInsert("nicklinks","'"+String::convert(getRegisteredNickID(first))+"','"+String::convert(getRegisteredNickID(second))+"'");
+   database.dbInsert("nicklinks","'"+String::convert(gstatic.getRegisteredNickID(first))+"','"+String::convert(gstatic.getRegisteredNickID(second))+"'");
 }
 
 void
   ServicesInternal::nickLinkDel(String const &first, String const &second)
 {
-   database.dbDelete("nicklinks","fromnick='"+String::convert(getRegisteredNickID(first))+"','"+String::convert(getRegisteredNickID(second))+"'");
+   database.dbDelete("nicklinks","fromnick='"+String::convert(gstatic.getRegisteredNickID(first))+"','"+String::convert(gstatic.getRegisteredNickID(second))+"'");
 }
 
 void
@@ -1230,20 +1230,6 @@ bool ServicesInternal::isNickRegistered(String const &nick)
      }
 }
 
-/* getRegisteredNickID(String)
- *
- * Return the unique identifier for a nickname if it is registered
- *
- */
-
-int ServicesInternal::getRegisteredNickID(String const &nick)
-{
-   if( database.dbSelect("id", "nicks", "nickname='"+nick+"'") < 1 )
-     return 0;
-   else
-     return database.dbGetValue().toInt();
-}
-
 /* modeIdentify(String)
  *
  * Causes services to set a user client +r
@@ -1316,46 +1302,20 @@ int ServicesInternal::getOnlineChanID(String const &id)
    else
      return database.dbGetValue().toInt();
 }
-void ServicesInternal::delFreeze(Kine::Name const &chan)
-{
-   int cid = getChannel().getChanID(chan.IRCtoLower());
-   database.dbUpdate("chanfreeze","expires=0","name='"+String::convert(cid)+"'");
-}
-
-void ServicesInternal::addFreeze(Kine::Name const &chan, String const &setby, int const &expires, String const &reason)
-{
-   int cid = getChannel().getChanID(chan.IRCtoLower());
-   database.dbInsert("chanfreeze","'','"+String::convert(cid)+"','"+setby+"',NOW(),"+String::convert(expires)+",'"+reason+"'");
-}
-bool ServicesInternal::isFreezed(Kine::Name const &chan)
-{
-   int cid = getChannel().getChanID(chan.IRCtoLower());
-   if(database.dbSelect("id","chanfreeze","name='"+String::convert(cid)+"' AND expires>"+String::convert(currentTime)) < 1)
-     return false;
-   else
-     return true;
-}
-
-int ServicesInternal::timesFreezed(Kine::Name const &chan)
-{
-   int cid = getChannel().getChanID(chan.IRCtoLower());
-   int nbRes = database.dbSelect("id","chanfreeze","name='"+String::convert(cid)+"'");
-   return nbRes;
-}
 
 void ServicesInternal::addOper(String const &nick, int access)
 {
-   database.dbInsert("onlineopers", "''," + String::convert(getRegisteredNickID(nick)) + "," +String::convert(access));
+   database.dbInsert("onlineopers", "''," + String::convert(gstatic.getRegisteredNickID(nick)) + "," +String::convert(access));
 }
 
 void ServicesInternal::delOper(String const &nick)
 {
-   database.dbDelete("onlineopers", "nickid="+String::convert(getRegisteredNickID(nick)));
+   database.dbDelete("onlineopers", "nickid="+String::convert(gstatic.getRegisteredNickID(nick)));
 }
 
 bool ServicesInternal::isOper(String const &nick)
 {
-   if( database.dbSelect("id", "onlineopers", "nickid="+ String::convert(getRegisteredNickID(nick))) < 1 )
+   if( database.dbSelect("id", "onlineopers", "nickid="+ String::convert(gstatic.getRegisteredNickID(nick))) < 1 )
      return false;
    else
      return true;
@@ -1419,7 +1379,7 @@ int
   ServicesInternal::getAccess(String const &service, String const &nickname)
 {
 
-   if( database.dbSelect("access", "access", "nickname='"+String::convert(getRegisteredNickID(nickname))+"' AND service='"+service+"'") < 1 )
+   if( database.dbSelect("access", "access", "nickname='"+String::convert(gstatic.getRegisteredNickID(nickname))+"' AND service='"+service+"'") < 1 )
      return 0;
    else
      {
@@ -1434,6 +1394,11 @@ int
 time_t ServicesInternal::getStartTime()
 {
    return startTime;
+}
+
+time_t ServicesInternal::getCurrentTime()
+{
+   return currentTime;
 }
 
 void ServicesInternal::queueAdd(const String& line)

@@ -126,7 +126,7 @@ bool
 int
   Channel::getChanAccess(String const &name, String const &nick)
 {
-   int nickid = services.getRegisteredNickID(nick);
+   int nickid = services.getStatic().getRegisteredNickID(nick);
    int chanid = getChanID(name);
 
    if( services.getDatabase().dbSelect("access", "chanaccess", 
@@ -225,7 +225,7 @@ String
 void
   Channel::chanAddAccess(String const &name, String const &nick, String const &level)
 {
-   int nickid = services.getRegisteredNickID(nick);
+   int nickid = services.getStatic().getRegisteredNickID(nick);
    int chanid = getChanID(name);
 
    services.getDatabase().dbInsert("chanaccess", 
@@ -236,7 +236,7 @@ void
 void
   Channel::chanDelAccess(String const &name, String const &nick)
 {
-   int nickid = services.getRegisteredNickID(nick);
+   int nickid = services.getStatic().getRegisteredNickID(nick);
    int chanid = getChanID(name);
    services.getDatabase().dbDelete("chanaccess", 
           "chanid='"+String::convert(chanid)+"' AND nickid='"+String::convert(nickid)+"'");

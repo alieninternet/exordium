@@ -95,6 +95,8 @@ namespace Exordium {
 	 Exordium::Service::ConfigData& getConfigData(void)
 	   { return configData; };
 	 
+	 
+	 
        private:
 	 CHAN_FUNC(parseHELP);
 	 CHAN_FUNC(parseACCESS);
@@ -113,6 +115,9 @@ namespace Exordium {
 	 CHAN_FUNC(parseSEEN);
 	 CHAN_FUNC(parseCOMMANDS);
          CHAN_FUNC(parseDROP);
+
+	 bool isFreezed(Kine::Name const &);
+
       }; // class Module
    }; // namespace ChanModule
 }; // namespace Exordium

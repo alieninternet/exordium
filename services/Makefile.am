@@ -87,11 +87,10 @@ libexordium_la_SOURCES = \
 			include/exordium/database/table.h \
 			include/exordium/dchan.h \
 			include/exordium/log.h \
-			include/exordium/regchannel.h \
-			include/exordium/reguser.h \
 			include/exordium/service.h \
 			include/exordium/services.h \
 			include/exordium/singleton.h \
+			include/exordium/static.h \
 			include/exordium/user.h \
 			include/exordium/utils.h \
 			source/lib/core_language.cpp \
@@ -106,6 +105,7 @@ libexordium_la_SOURCES = \
 			source/lib/parser.cpp \
 			source/lib/service.cpp \
 			source/lib/services.cpp \
+			source/lib/static.cpp \
 			source/lib/user.cpp \
 			source/lib/utils.cpp \
 			source/lib/database/database.cpp \

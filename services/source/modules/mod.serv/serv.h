@@ -75,6 +75,13 @@ namespace Exordium {
 	   { return configData; };
 	 Exordium::Service::ConfigData& getConfigData(void)
 	   { return configData; };
+	 
+	 // Public functions here please!.
+	 void addFreeze(Kine::Name const &,AISutil::String const &,
+			int const &,AISutil::String const &);
+	 int timesFreezed(Kine::Name const &);
+	 bool isFreezed(Kine::Name const &);
+	 void delFreeze(Kine::Name const &);
 
        private:
 	 SERV_FUNC(parseCLIST);

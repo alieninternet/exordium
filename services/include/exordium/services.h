@@ -37,6 +37,7 @@
 # include <exordium/channel.h>
 # include <exordium/dchan.h>
 # include <exordium/log.h>
+# include <exordium/static.h>
 
 
 namespace Exordium {
@@ -51,10 +52,12 @@ namespace Exordium {
       // This will be going soon (plv?)
       Channel channel;
       
+      Static gstatic;
       // Constructor
       Services(CDatabase& db)
 	: database(db),
-          channel(*this)
+          channel(*this),
+          gstatic(*this)
 	{};
       
     public:
@@ -78,18 +81,17 @@ namespace Exordium {
       Channel& getChannel(void)
 	{ return channel; };
       
+      Static& getStatic(void)
+	{ return gstatic; };
+	   
+      
       // Log a line of text..
       void logLine(const std::string& line,
 		   const Log::mask_type mask = Log::Informative)
 	{ 
           Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
         };
-      virtual void liveLog(const AISutil::String &) = 0;
       // Function Declrations below here.
-      virtual void addFreeze(Kine::Name const &,AISutil::String const &,int const &,AISutil::String const &) = 0;
-      virtual int timesFreezed(Kine::Name const &) = 0;
-      virtual bool isFreezed(Kine::Name const &) = 0;
-      virtual void delFreeze(Kine::Name const &) = 0;
       virtual int getAccess(AISutil::String const &, AISutil::String const &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;
       
@@ -201,7 +203,6 @@ namespace Exordium {
       virtual void updateLastID(AISutil::String const &) = 0;
       
       
-      virtual int getRegisteredNickID(AISutil::String const &) = 0;
 
       virtual AISutil::String getNick(int const &) = 0;
       virtual AISutil::String getOnlineNick(int const &) = 0;
@@ -219,6 +220,7 @@ namespace Exordium {
       virtual unsigned long getCountTx(void) = 0;
       virtual unsigned long getCountRx(void) = 0;
       virtual time_t getStartTime(void) = 0;
+      virtual time_t getCurrentTime(void) = 0;
    }; // class Services
 }; // namespace Exordium
 

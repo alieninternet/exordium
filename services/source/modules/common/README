@@ -1,0 +1,4 @@
+This directory is for code that is common amongst modules, modules include
+what they need from here, thus saving on code reptitions and compile time.
+
+James.

@@ -177,7 +177,7 @@ SERV_FUNC (Module::parseFREEZE)
 	     origin.sendMessage(GETLANG(serv_FREEZE_NOT_REG),getNickname());
 	     return;
 	  }
-	int times = services->timesFreezed(chan);
+	int times = timesFreezed(chan);
 	int expires = 0;
 	String flong;
 	if(times==0)
@@ -221,7 +221,7 @@ SERV_FUNC (Module::parseFREEZE)
 	     return;
 	  }
 
-	services->addFreeze(chan,origin.getNickname(),expires,reason);
+	addFreeze(chan,origin.getNickname(),expires,reason);
 	int cid = services->getChannel().getChanID(chan.IRCtoLower());
 	int coid = services->getChannel().getOnlineChanID(chan);
 	int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(coid)+" AND status=2");
@@ -261,7 +261,7 @@ SERV_FUNC (Module::parseFREEZE)
 	     return;
 	  }
 	
-	if(!services->isFreezed(channel))
+	if(!isFreezed(channel))
 	  {
 	     origin.sendMessage(GETLANG(serv_FREEZE_NOT_FREEZED),getNickname());
 	     return;
@@ -269,7 +269,7 @@ SERV_FUNC (Module::parseFREEZE)
 
 	String topic = "This channel has been unfrozen by "+origin.getNickname();
 	services->getChannel().synchChannel(channel,topic,"+nt-m");
-	services->delFreeze(channel);
+	delFreeze(channel);
      }
    if(func=="list")
      {
@@ -623,7 +623,7 @@ SERV_FUNC (Module::parseUSER)
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+String::convert(ilevel);
 	services->logLine(togo);
 	services->sendGOper(getNickname(),togo);
-	services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+String::convert(services->getRegisteredNickID(toadd))+"'");
+	services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+String::convert(services->getStatic().getRegisteredNickID(toadd))+"'");
 	services->log(origin,getNickname(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+String::convert(level));
 	origin.sendMessage(GETLANG(serv_USER_MOD_SUCCESS,toadd,String::convert(level)),getNickname());
 	return;
@@ -668,7 +668,7 @@ SERV_FUNC (Module::parseUSER)
 	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
-	services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + String::convert(services->getRegisteredNickID(toadd))+"'");
+	services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + String::convert(services->getStatic().getRegisteredNickID(toadd))+"'");
 	origin.sendMessage(GETLANG(serv_USER_DEL_SUCCESS,toadd),getNickname());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
 	services->logLine(String(togo), Log::Warning);
@@ -705,7 +705,7 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage(GETLANG(serv_USER_ADD_LEVEL_ERROR),getNickname());
 	     return;
 	  }
-	services->getDatabase().dbInsert("access", "'','" + String::convert(services->getRegisteredNickID(toadd)) + "','serv','" + level + "'");
+	services->getDatabase().dbInsert("access", "'','" + String::convert(services->getStatic().getRegisteredNickID(toadd)) + "','serv','" + level + "'");
 	origin.sendMessage(GETLANG(serv_USER_ADD_SUCCESS,toadd,level),getNickname());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
 	services->logLine(String(togo), Log::Warning);
@@ -938,7 +938,7 @@ SERV_FUNC (Module::parseCLIST)
    int totalc = services->getChannel().maxChannels();
    int userc = services->getChannel().maxChannelsUser(who);
    int totala = services->getChannel().maxChannelsAccess();
-   int theid = services->getRegisteredNickID(who);
+   int theid = services->getStatic().getRegisteredNickID(who);
    int nbRes = services->getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");
    String togo = origin.getNickname() + " did a \002clist\002 on "+who+", "
      +String::convert(nbRes)+" matches found from "+String::convert(totalc)+
@@ -1033,3 +1033,36 @@ bool Module::start(Exordium::Services& s)
    // We started okay :)
    return true;
 }
+
+void Module::delFreeze(Kine::Name const &chan)
+{
+   services->getDatabase().dbUpdate("chanfreeze","expires=0","name='"+
+				    String::convert(services->getChannel().getChanID(chan.IRCtoLower()))+"'");
+}
+
+void Module::addFreeze(Kine::Name const &chan, String const &setby,
+		       int const &expires, String const &reason)
+{
+   services->getDatabase().dbInsert("chanfreeze","'','"+String::convert(services->getChannel().getChanID(chan.IRCtoLower()))+"','"
+				    +setby+"',NOW(),"+String::convert(expires)
+				    +",'"+reason+"'");
+}
+
+bool Module::isFreezed(Kine::Name const &chan)
+{
+   if(services->getDatabase().dbSelect("id","chanfreeze","name='"
+				       +String::convert(services->getChannel().getChanID(chan.IRCtoLower()))
+				       +"' AND expires>"+String::convert(services->getCurrentTime())) < 1)
+     return false;
+   else
+     return true;
+}
+
+int Module::timesFreezed(Kine::Name const &chan)
+{
+   return services->getDatabase().dbSelect("id","chanfreeze","name='"
+					   +String::convert(services->getChannel().getChanID(chan.IRCtoLower()))
+					   +"'");
+}
+
+   
