@@ -31,7 +31,7 @@
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
 #include "console.h"
-#include "language.h"
+#include "console_language.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
