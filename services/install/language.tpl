@@ -30,7 +30,14 @@
 ##
 [+(dne "## ")+]
 ##
-##
+##[+
+
+   ;;; Make the variable we are looking for, in the form of data_<langcode>
+   (define (makeDataVariable)
+      (sprintf "data_%s"
+         (get "langCode")))
+
++]
 
 
 .LangCode = [+langCode+]
@@ -39,9 +46,10 @@
 .Maintainer[+ ENDIF +]
 .Revision = [+langRevision+]
 
-[+ FOR langtag +][+tagPrefix+][+name+] = [+
-   (get 
-      (sprintf "data_%s"
-         (get "langCode")))
+[+ FOR langtag +][+ IF 
+   (exist? 
+      (makeDataVariable)) +][+tagPrefix+][+name+] = [+
+   (get
+      (makeDataVariable))
 +]
-[+ ENDFOR +][+ (out-pop) +][+ ENDFOR +]
+[+ ENDIF +][+ ENDFOR +][+ (out-pop) +][+ ENDFOR +]
