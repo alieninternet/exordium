@@ -27,9 +27,15 @@
 #ifndef _INCLUDE_EXORDIUM_SERVICE_H_
 # define _INCLUDE_EXORDIUM_SERVICE_H_ 1
 
+# include <string>
 # include <aisutil/string.h>
 # include <aisutil/config/parser.h>
+//# include <kineircd/service.h>
+# include <kineircd/daemon.h>
 
+extern "C" {
+# include <sys/time.h>
+};
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -43,7 +49,7 @@ namespace Exordium {
    class User;
    class dChan;
    
-   class Service {
+   class Service /* : public Kine::Service */ {
     public:
       struct moduleInfo_type {
 	 // Version information about the module
@@ -140,9 +146,13 @@ namespace Exordium {
        */
       Exordium::Services* services;
       
+      // The sign-on time for this module
+      timeval signonTime;
+      
     public:
       // Constructor
       Service(void)
+	: signonTime(Kine::daemon().getTime())
 	{};
       
       // Destructor
@@ -182,9 +192,29 @@ namespace Exordium {
       const AISutil::String& getName(void) const
 	{ return getConfigData().getName(); };
       
-      const AISutil::String& getIdent(void) const
+      /*
+       * 
+       * The follow is defined as virtuals from Kine::Service and need to be
+       * here upon inheriting from Kine..
+       *						- pickle
+       * 
+       */
+
+      // Return the username/identity of the service
+      const std::string& getUsername(void) const
 	{ return getConfigData().getIdent(); };
-	   
+
+      // Return the hostname of this service module
+      const std::string& getHostname(void) const
+	{ return getConfigData().getHostname(); };
+      
+      // Return the description of this service module
+      const std::string& getDescription(void) const
+	{ return getConfigData().getDescription(); };
+      
+      // Return the time this module was created/signed on to the network
+      const timeval& getSignonTime(void) const
+	{ return signonTime; };
    };
 };
 

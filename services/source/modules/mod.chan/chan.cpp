@@ -1477,9 +1477,8 @@ bool Module::start(Exordium::Services& s)
      }
    Kine::langs().registerMap(Language::tagMap);
    // Register ourself to the network
-   services->registerService(getName(), getName(),
-			     getConfigData().getHostname(),
-			     getConfigData().getDescription());
+   services->registerService(getName(), getUsername(),
+			     getHostname(), getDescription());
 
    // This should be internal :(
    services->getChannel().synchChannels();
