@@ -78,5 +78,9 @@ AC_SUBST(LANGUAGE)
 
 
 AC_CONFIG_FILES([source/Makefile
-                 source/lib/Makefile source/modules/Makefile Makefile] )
+                 source/lib/Makefile 
+		 source/modules/Makefile
+		 source/modules/game/Makefile
+		 Makefile
+		 ])
 AC_OUTPUT

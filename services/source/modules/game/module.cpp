@@ -5,7 +5,7 @@
  $Id$
 */
 
-#include "include/game.h"
+#include "game.h"
 #include "exordium/channel.h"
 #include "exordium/nickname.h"
 #include "exordium/service.h"

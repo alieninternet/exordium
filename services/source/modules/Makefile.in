@@ -13,7 +13,6 @@ INCLUDES=/../include
 SOURCES=\
 	bot.cpp \
 	chan.cpp \
-	game.cpp \
 	love.cpp \
 	nick.cpp \
 	note.cpp \
@@ -24,7 +23,18 @@ SOURCES=\
 	
 OBJECTS=$(SOURCES:.cpp=.so)
 
-all: $(OBJECTS)
+
+SUB_DIRS=\
+	game
+
+.PHONY: all subdirs $(SUB_DIRS)
+
+all: subdirs $(OBJECTS)
+
+subdirs: $(SUB_DIRS)
+
+$(SUB_DIRS):
+	$(MAKE) -C $@
 
 %.so: %.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -I/usr/local/ssl/include -shared $< -o $@ -lservices -L../lib
