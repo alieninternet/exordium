@@ -1,4 +1,4 @@
 #!/bin/sh
-aclocal
+#aclocal
 automake
 autoconf --output=configure configure.in
