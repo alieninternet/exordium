@@ -229,8 +229,8 @@ namespace Exordium {
 	{};
 
       // is equal to operator
-      bool operator==(const User &u) const 
-	{ return (onlineID == onlineID); };
+      bool operator==(const User &u) const
+	{ return (onlineID == u.onlineID) };
    };
 }; // class Exordium
 
