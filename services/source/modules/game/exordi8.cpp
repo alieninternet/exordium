@@ -169,7 +169,7 @@ void Exordi8::showHand(const player_type& player) const
 /* nextPlayer - Jump to the next player, telling the channel why parse
  * Original 30/08/2002 simonb
  */
-void Exordi8::nextPlayer(const Kine::String& why)
+void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify = true)
 {
    std::ostringstream out;
    out << (*currentPlayer).first << ' ' << why << ". It is ";
@@ -212,11 +212,13 @@ void Exordi8::nextPlayer(const Kine::String& why)
     * need refreshing - especially in games with large numbers of players.
     */
    showHand(*currentPlayer);
-   
-   // Tell the player what they need to get..
-   sendMessage((*currentPlayer).first, 
-	       Kine::String("To discard, you need to match the ") +
-	       lastDiscardedCard.getName());
+
+   if (withMatchNotify) {
+      // Tell the player what they need to get..
+      sendMessage((*currentPlayer).first, 
+		  Kine::String("To discard, you need to match the ") +
+		  lastDiscardedCard.getName());
+   }
 }
 
 
@@ -389,25 +391,25 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 					"card (") +
 			   lastDiscardedCard.getName() + ") or take a card.");
 	       return;
-	    } else {
-	       // Check the suits OR the ranks match
-	       if (!((cardToDiscard.getSuit() == 
-		     lastDiscardedCard.getSuit()) ||
-		    (cardToDiscard.getIndex() == 
-		     lastDiscardedCard.getIndex())) ||
-		   !((lastDiscardedCard.getIndex() == 
-		      Cards::Card::Rank::Jack) &&
-		     (cardToDiscard.getColour() == 
-		      lastDiscardedCard.getColour()))) {
-		  sendMessage(origin,
-			      Kine::String("You must match either the suit or "
-					   "the rank of the last discarded "
-					   "card (") + 
-			      lastDiscardedCard.getName() + 
-			      (stock.empty() ? 
-			       ") or drop a card" : ") or take a card."));
-		  return;
-	       }
+	    }
+	 } else {
+	    // Check the suits OR the ranks match
+	    if (!((cardToDiscard.getSuit() == 
+		   lastDiscardedCard.getSuit()) ||
+		  (cardToDiscard.getIndex() == 
+		   lastDiscardedCard.getIndex())) ||
+		!((lastDiscardedCard.getIndex() == 
+		   Cards::Card::Rank::Jack) &&
+		  (cardToDiscard.getColour() == 
+		   lastDiscardedCard.getColour()))) {
+	       sendMessage(origin,
+			   Kine::String("You must match either the suit or "
+					"the rank of the last discarded "
+					"card (") + 
+			   lastDiscardedCard.getName() + 
+			   (stock.empty() ? 
+			    ") or drop a card" : ") or take a card."));
+	       return;
 	    }
 	 }
       }
@@ -481,7 +483,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	 
 	 // Tell everyone what happened.. (notice - no next player)
 	 sendMessage(origin + " has discarded the " + cardToDiscard.getName() +
-		     '.');
+		     ', and now needs to select a suit.');
 
 	 // Tell the player what happens next
 	 sendMessage(origin, 
@@ -769,7 +771,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
    }
    
    // Next player!!
-   nextPlayer("has selected the next suit after discarding an '8'");
+   nextPlayer("has selected the next suit after discarding an '8'", false);
    
    // Tell the next player which suit they need..
    sendMessage((*currentPlayer).first,

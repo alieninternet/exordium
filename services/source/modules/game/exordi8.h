@@ -93,7 +93,7 @@ class Exordi8 : public ChannelGame {
    void showHand(const player_type& player) const;
 
    // Jump to the next player, telling the channel why
-   void nextPlayer(const Kine::String& why);
+   void nextPlayer(const Kine::String& why, bool withMatchNotify = true);
    
    // Function handlers
    EXORDI8_FUNC(parseDEAL);
