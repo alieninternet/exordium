@@ -30,7 +30,7 @@
 
 #include "language.h"
 
-Kine::Languages::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR langtag +][+ IF
+Kine::Languages::tagMap_type Exordium::NickModule::Language::tagMap = {[+ FOR langtag +][+ IF
    (string-ci=?
       (get "component")
       "mod_nick")
@@ -51,7 +51,7 @@ Kine::Languages::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR langta
 
 namespace Exordium {
    namespace NickModule {
-      struct Lang { // <=- probably should be namespace too
+      struct Language { // <=- probably should be namespace too
          // Language tag look-up table (for our language map)
          enum {[+ FOR langtag +][+ IF 
    (string-ci=?
@@ -69,6 +69,14 @@ namespace Exordium {
       }; // struct Language
    }; // namespace NickModule
 }; // namespace Exordium
+
+
+// Macros (*shock horror*) to make the code neater (hopefully)
+# define GETLANG(n,...) \
+   Kine::langs().get(origin.getLanguage(), \
+                     Language::tagMap[Language::n].tagID, \
+                     ##__VA_ARGS__)
+
 
 #endif // _SOURCE_MODULES_NICK_LANGUAGE_H_
 [+ ESAC +]
