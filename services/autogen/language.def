@@ -74,6 +74,19 @@ langtag = {
   data_no = "Du har ikke nok aksess til å bruke den kommandoen";
 };
 
+langtag = {
+  name = "core_CONSOLE_LANGUAGE_COULDNT_LOAD";
+  component = "core";
+  data_en = "Couldn't load %p0: %p1";
+};
+
+langtag = {
+  name = "core_CONSOLE_LANGUAGE_LOADED";
+  component = "core";
+  data_en = "Loaded language file %p0";
+};
+
+
 /*
  * tags for the core
  */
