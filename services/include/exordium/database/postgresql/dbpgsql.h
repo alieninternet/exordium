@@ -36,7 +36,11 @@
 
 #include <libais/string/string.h>
 
-#include <libpq-fe.h>
+#ifdef HAVE_LIBPQ_FE_H
+  #include <libpq-fe.h>
+#elif defined(HAVE_LIBPQ_INT_H)
+  #include <libpq-int.h>
+#endif
 
 using LibAIS::String;
 

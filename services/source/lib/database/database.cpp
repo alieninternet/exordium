@@ -70,6 +70,14 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
 
    }
 
+  else 
+   
+   {
+     std::cout << "No Database engine selected! Please add engine=<myengine> to ircd.conf!" << std::endl;
+     exit(1);
+   
+   }
+
 }
 
 

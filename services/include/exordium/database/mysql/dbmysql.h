@@ -34,7 +34,7 @@
 
 #include <libais/string/string.h>
 
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 namespace Exordium {
 
