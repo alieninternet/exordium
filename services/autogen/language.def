@@ -38,7 +38,9 @@ autogen definitions fieldtypes;
 tagPrefix = "exordium_";
 
 
-// Languages this file has data for..
+/*
+ * Languages this file has data for..
+ */
 language = {
    langCode = "en";
    langName = "English";
@@ -46,17 +48,19 @@ language = {
 };
 
 
-// Tags
+/*
+ * Tags for mod_nick
+ */
 langtag = {
-   name = "nick_ERROR_UNKNOWN_COMMAND";
+   name = "nick_ACCESS_LIST_START";
    component = "mod_nick";
-   data_en = "Unrecognised Command :%p0";
+   data_en = "Access list for %p0";
 };
 
 langtag = {
-   name = "nick_COMMAND_LIST_START";
+   name = "nick_AIM_CHANGED";
    component = "mod_nick";
-   data_en = "Command list for %p0:";
+   data_en = "AIM handle has been changed to :%p0";
 };
 
 langtag = {
@@ -66,9 +70,257 @@ langtag = {
 };
 
 langtag = {
+   name = "nick_COMMAND_LIST_START";
+   component = "mod_nick";
+   data_en = "Command list for %p0:";
+};
+
+langtag = {
+   name = "nick_DEOPAWAY_NOW_OFF";
+   component = "mod_nick";
+   data_en = "DeopOnAway is now disabled on this nickname";
+};
+
+langtag = {
+   name = "nick_DEOPAWAY_NOW_ON";
+   component = "mod_nick";
+   data_en = "DeopOnAway is now enabled for this nickname";
+};
+
+langtag = {
+   name = "nick_EMAIL_CHANGED";
+   component = "mod_nick";
+   data_en = "Email address changed to :%p0";
+};
+
+langtag = {
+   name = "nick_ERROR_ALREADY_REGISTERED";
+   component = "mod_nick";
+   data_en = "Error - This nickname is already registered";
+};
+
+langtag = {
+   name = "nick_ERROR_BROKEN_AUTH_CODE";
+   component = "mod_nick";
+   data_en = "Error: The auth code you gave does not match our records";
+};
+
+langtag = {
+   name = "nick_ERROR_CHECK_EMAIL";
+   component = "mod_nick";
+   data_en = "Please re-check the email you received from services";
+};
+
+langtag = {
+   name = "nick_ERROR_COULDNT_FIND_USER";
+   component = "mod_nick";
+   data_en = "Error: Could not locate that user";
+};
+
+langtag = {
+   name = "nick_ERROR_INCORRECT_PASSWORD";
+   component = "mod_nick";
+   data_en = "Error: Incorrect password";
+};
+
+langtag = {
+   name = "nick_ERROR_INSECURE_MESSAGE";
+   component = "mod_nick";
+   data_en = "Error: For security if you must use /ns id password";
+};
+
+langtag = {
    name = "nick_ERROR_NICK_NOT_PENDING_CONFIRM";
    component = "mod_nick";
    data_en = "Error: This nickname is not pending confirmation";
+};
+
+langtag = {
+   name = "nick_ERROR_NICK_NOT_REGISTERED";
+   component = "mod_nick";
+   data_en = "Error: That nickname is not registered";
+};
+
+langtag = {
+   name = "nick_ERROR_NICK_PENDING_NO_IDENTIFY";
+   component = "mod_nick";
+   data_en = "Error: This nickname is still pending confirmation - please "
+             "check your email";
+};
+
+langtag = {
+   name = "nick_ERROR_NICK_PENDING_NO_KILL";
+   component = "mod_nick";
+   data_en = "Error: That nickname is in a pending state and may not be "
+             "killed";
+};
+
+langtag = {
+   name = "nick_ERROR_NOT_BOOLEAN";
+   component = "mod_nick";
+   data_en = "Error: Value must be true or false";
+};
+
+langtag = {
+   name = "nick_ERROR_NOT_IDENTIFIED";
+   component = "mod_nick";
+   data_en = "You are not identified as that nickname";
+};
+
+langtag = {
+   name = "nick_ERROR_NOT_ONLINE";
+   component = "mod_nick";
+   data_en = "Error: That user is not online";
+};
+
+langtag = {
+   name = "nick_ERROR_PASSWORD_TOO_SHORT";
+   component = "mod_nick";
+   data_en = "Error: New password must be greater than %p0 letters";
+};
+
+langtag = {
+   name = "nick_ERROR_UNKNOWN_COMMAND";
+   component = "mod_nick";
+   data_en = "Unrecognised Command :%p0";
+};
+
+langtag = {
+   name = "nick_ERROR_UNSUPPORTED_LANGUAGE";
+   component = "mod_nick";
+   data_en = "Error: Unsupported Language!";
+};
+
+langtag = {
+   name = "nick_GHOST_SUCCESSFUL";
+   component = "mod_nick";
+   data_en = "Ghost successful for %p0";
+};
+
+langtag = {
+   name = "nick_ICQ_CHANGED";
+   component = "mod_nick";
+   data_en = "ICQ handle has been changed to :%p0";
+};
+
+langtag = {
+   name = "nick_IDENTIFY_SUCCESSFUL";
+   component = "mod_nick";
+   data_en = "You have been successfully identified to services";
+};
+
+langtag = {
+   name = "nick_INFO_AIM";
+   component = "mod_nick";
+   data_en = "AIM : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_EMAIL";
+   component = "mod_nick";
+   data_en = "Email : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_ICQ";
+   component = "mod_nick";
+   data_en = "ICQ : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_IDENTIFIED";
+   component = "mod_nick";
+   data_en = "Last identified : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_LAST_HOST";
+   component = "mod_nick";
+   data_en = "Last host : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_LAST_QUIT_REASON";
+   component = "mod_nick";
+   data_en = "Last Quit Message : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_MSN";
+   component = "mod_nick";
+   data_en = "MSN : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_OPTION_DEOPAWAY";
+   component = "mod_nick";
+   data_en = "Deop on Away";
+};
+
+langtag = {
+   name = "nick_INFO_OPTION_MODNICK";
+   component = "mod_nick";
+   data_en = "Nickname Enforcement";
+};
+
+langtag = {
+   name = "nick_INFO_OPTIONS";
+   component = "mod_nick";
+   data_en = "Options : %p0";
+};
+
+langtag = {
+   name = "nick_INFO_REGISTERED";
+   component = "mod_nick";
+   data_en = "Registered : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_STAFF_INFO";
+   component = "mod_nick";
+   data_en = "Extra Information for Staff";
+};
+
+langtag = {
+   name = "nick_INFO_START";
+   component = "mod_nick";
+   data_en = "Nickname information for \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_URL";
+   component = "mod_nick";
+   data_en = "URL : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_INFO_YAHOO";
+   component = "mod_nick";
+   data_en = "Yahoo! : \b%p0\b";
+};
+
+langtag = {
+   name = "nick_LANGUAGE_CHANGED";
+   component = "mod_nick";
+   data_en = "Helpfiles interface has been changed to %p0";
+};
+
+langtag = {
+   name = "nick_MODNICK_NOW_OFF";
+   component = "mod_nick";
+   data_en = "Nickname enforcement is now disabled for this nickname";
+};
+
+langtag = {
+   name = "nick_MODNICK_NOW_ON";
+   component = "mod_nick";
+   data_en = "Nickname enforcement is now enabled for this nickname";
+};
+
+langtag = {
+   name = "nick_MSN_CHANGED";
+   component = "mod_nick";
+   data_en = "MSN handle has been changed to %p0";
 };
 
 langtag = {
@@ -85,297 +337,9 @@ langtag = {
 };
 
 langtag = {
-   name = "nick_ERROR_BROKEN_AUTH_CODE";
-   component = "mod_nick";
-   data_en = "Error: The auth code you gave does not match our records";
-};
-
-langtag = {
-   name = "nick_ERROR_CHECK_EMAIL";
-   component = "mod_nick";
-   data_en = "Please re-check the email you received from services";
-};
-
-langtag = {
-   name = "nick_USAGE_INFO";
-   component = "mod_nick";
-   data_en = "Usage: info nickname";
-};
-
-langtag = {
-   name = "nick_ERROR_COULDNT_FIND_USER";
-   component = "mod_nick";
-   data_en = "Error: Could not locate that user";
-};
-
-langtag = {
-   name = "nick_ERROR_NICK_NOT_REGISTERED";
-   component = "mod_nick";
-   data_en = "Error: That nickname is not registered";
-};
-
-langtag = {
-   name = "nick_INFO_START";
-   component = "mod_nick";
-   data_en = "Nickname information for \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_IDENTIFIED";
-   component = "mod_nick";
-   data_en = "Last identified : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_REGISTERED";
-   component = "mod_nick";
-   data_en = "Registered : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_ICQ";
-   component = "mod_nick";
-   data_en = "ICQ : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_MSN";
-   component = "mod_nick";
-   data_en = "MSN : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_AIM";
-   component = "mod_nick";
-   data_en = "AIM : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_URL";
-   component = "mod_nick";
-   data_en = "URL : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_YAHOO";
-   component = "mod_nick";
-   data_en = "Yahoo! : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_LAST_QUIT_REASON";
-   component = "mod_nick";
-   data_en = "Last Quit Message : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_OPTIONS";
-   component = "mod_nick";
-   data_en = "Options : %p0";
-};
-
-langtag = {
-   name = "nick_INFO_OPTION_DEOPAWAY";
-   component = "mod_nick";
-   data_en = "Deop on Away";
-};
-
-langtag = {
-   name = "nick_INFO_OPTION_MODNICK";
-   component = "mod_nick";
-   data_en = "Nickname Enforcement";
-};
-
-langtag = {
-   name = "nick_INFO_STAFF_INFO";
-   component = "mod_nick";
-   data_en = "Extra Information for Staff";
-};
-
-langtag = {
-   name = "nick_INFO_LAST_HOST";
-   component = "mod_nick";
-   data_en = "Last host : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_INFO_EMAIL";
-   component = "mod_nick";
-   data_en = "Email : \b%p0\b";
-};
-
-langtag = {
-   name = "nick_ERROR_NOT_IDENTIFIED";
-   component = "mod_nick";
-   data_en = "You are not identified as that nickname";
-};
-
-langtag = {
-   name = "nick_SET_OPTIONS_ARE";
-   component = "mod_nick";
-   data_en = "Set options are: %p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_PASS";
-   component = "mod_nick";
-   data_en = "Usage: set pass newpassword";
-};
-
-langtag = {
-   name = "nick_ERROR_PASSWORD_TOO_SHORT";
-   component = "mod_nick";
-   data_en = "Error: New password must be greater than %p0 letters";
-};
-
-langtag = {
    name = "nick_PASSWORD_CHANGED";
    component = "mod_nick";
    data_en = "Password has been successfully changed to :%p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_MODNICK";
-   component = "mod_nick";
-   data_en = "Usage: set modnick true/false";
-};
-
-langtag = {
-   name = "nick_MODNICK_NOW_ON";
-   component = "mod_nick";
-   data_en = "Nickname enforcement is now enabled for this nickname";
-};
-
-langtag = {
-   name = "nick_MODNICK_NOW_OFF";
-   component = "mod_nick";
-   data_en = "Nickname enforcement is now disabled for this nickname";
-};
-
-langtag = {
-   name = "nick_ERROR_NOT_BOOLEAN";
-   component = "mod_nick";
-   data_en = "Error: Value must be true or false";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_DEOPAWAY";
-   component = "mod_nick";
-   data_en = "Usage: set deopaway true/false";
-};
-
-langtag = {
-   name = "nick_DEOPAWAY_NOW_ON";
-   component = "mod_nick";
-   data_en = "DeopOnAway is now enabled for this nickname";
-};
-
-langtag = {
-   name = "nick_DEOPAWAY_NOW_OFF";
-   component = "mod_nick";
-   data_en = "DeopOnAway is now disabled on this nickname";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_LANGUAGE";
-   component = "mod_nick";
-   data_en = "Usage: set language LANGUAGE";
-};
-
-langtag = {
-   name = "nick_LANGUAGE_CHANGED";
-   component = "mod_nick";
-   data_en = "Helpfiles interface has been changed to %p0";
-};
-
-langtag = {
-   name = "nick_ERROR_UNSUPPORTED_LANGUAGE";
-   component = "mod_nick";
-   data_en = "Error: Unsupported Language!";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_EMAIL";
-   component = "mod_nick";
-   data_en = "Usage: set email email@address";
-};
-
-langtag = {
-   name = "nick_EMAIL_CHANGED";
-   component = "mod_nick";
-   data_en = "Email address changed to :%p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_MSN";
-   component = "mod_nick";
-   data_en = "Usage: set msn handle";
-};
-
-langtag = {
-   name = "nick_MSN_CHANGED";
-   component = "mod_nick";
-   data_en = "MSN handle has been changed to %p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_AIM";
-   component = "mod_nick";
-   data_en = "Usage: set aim handle";
-};
-
-langtag = {
-   name = "nick_AIM_CHANGED";
-   component = "mod_nick";
-   data_en = "AIM handle has been changed to :%p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_YAHOO";
-   component = "mod_nick";
-   data_en = "Usage: set yahoo handle";
-};
-
-langtag = {
-   name = "nick_YAHOO_CHANGED";
-   component = "mod_nick";
-   data_en = "Yahoo! handle has been changed to :%p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_ICQ";
-   component = "mod_nick";
-   data_en = "Usage: set icq value";
-};
-
-langtag = {
-   name = "nick_ICQ_CHANGED";
-   component = "mod_nick";
-   data_en = "ICQ handle has been changed to :%p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_URL";
-   component = "mod_nick";
-   data_en = "Usage: set url www.someplace.org";
-};
-
-langtag = {
-   name = "nick_URL_CHANGED";
-   component = "mod_nick";
-   data_en = "Website URL changed to :%p0";
-};
-
-langtag = {
-   name = "nick_USAGE_SET_PRIVMSG";
-   component = "mod_nick";
-   data_en = "Usage: set privmsg on/off";
-};
-
-langtag = {
-   name = "nick_PRIVMSG_NOW_ON";
-   component = "mod_nick";
-   data_en = "I will now use the private message interface";
 };
 
 langtag = {
@@ -385,27 +349,9 @@ langtag = {
 };
 
 langtag = {
-   name = "nick_USAGE_ACCESS";
+   name = "nick_PRIVMSG_NOW_ON";
    component = "mod_nick";
-   data_en = "Usage: access nickname";
-};
-
-langtag = {
-   name = "nick_ERROR_NOT_ONLINE";
-   component = "mod_nick";
-   data_en = "Error: That user is not online";
-};
-
-langtag = {
-   name = "nick_ACCESS_LIST_START";
-   component = "mod_nick";
-   data_en = "Access list for %p0";
-};
-
-langtag = {
-   name = "nick_ERROR_ALREADY_REGISTERED";
-   component = "mod_nick";
-   data_en = "Error - This nickname is already registered";
+   data_en = "I will now use the private message interface";
 };
 
 langtag = {
@@ -447,28 +393,21 @@ langtag = {
 };
 
 langtag = {
-   name = "nick_USAGE_KILL";
+   name = "nick_SET_OPTIONS_ARE";
    component = "mod_nick";
-   data_en = "Usage: kill nickname password";
+   data_en = "Set options are: %p0";
 };
 
 langtag = {
-   name = "nick_ERROR_NICK_PENDING_NO_KILL";
+   name = "nick_URL_CHANGED";
    component = "mod_nick";
-   data_en = "Error: That nickname is in a pending state and may not be "
-             "killed";
+   data_en = "Website URL changed to :%p0";
 };
 
 langtag = {
-   name = "nick_KILL_REASON";
+   name = "nick_USAGE_ACCESS";
    component = "mod_nick";
-   data_en = "Kill requested by %p0";
-};
-
-langtag = {
-   name = "nick_ERROR_INCORRECT_PASSWORD";
-   component = "mod_nick";
-   data_en = "Error: Incorrect password";
+   data_en = "Usage: access nickname";
 };
 
 langtag = {
@@ -478,26 +417,86 @@ langtag = {
 };
 
 langtag = {
-   name = "nick_GHOST_SUCCESSFUL";
+   name = "nick_USAGE_INFO";
    component = "mod_nick";
-   data_en = "Ghost successful for %p0";
+   data_en = "Usage: info nickname";
 };
 
 langtag = {
-   name = "nick_ERROR_NICK_PENDING_NO_IDENTIFY";
+   name = "nick_USAGE_KILL";
    component = "mod_nick";
-   data_en = "Error: This nickname is still pending confirmation - please "
-             "check your email";
+   data_en = "Usage: kill nickname password";
 };
 
 langtag = {
-   name = "nick_ERROR_INSECURE_MESSAGE";
+   name = "nick_USAGE_SET_AIM";
    component = "mod_nick";
-   data_en = "Error: For security if you must use /ns id password";
+   data_en = "Usage: set aim handle";
 };
 
 langtag = {
-   name = "nick_IDENTIFY_SUCCESSFUL";
+   name = "nick_USAGE_SET_DEOPAWAY";
    component = "mod_nick";
-   data_en = "You have been successfully identified to services";
+   data_en = "Usage: set deopaway true/false";
 };
+
+langtag = {
+   name = "nick_USAGE_SET_EMAIL";
+   component = "mod_nick";
+   data_en = "Usage: set email email@address";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_ICQ";
+   component = "mod_nick";
+   data_en = "Usage: set icq value";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_LANGUAGE";
+   component = "mod_nick";
+   data_en = "Usage: set language LANGUAGE";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_MODNICK";
+   component = "mod_nick";
+   data_en = "Usage: set modnick true/false";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_MSN";
+   component = "mod_nick";
+   data_en = "Usage: set msn handle";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_PASS";
+   component = "mod_nick";
+   data_en = "Usage: set pass newpassword";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_PRIVMSG";
+   component = "mod_nick";
+   data_en = "Usage: set privmsg on/off";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_URL";
+   component = "mod_nick";
+   data_en = "Usage: set url www.someplace.org";
+};
+
+langtag = {
+   name = "nick_USAGE_SET_YAHOO";
+   component = "mod_nick";
+   data_en = "Usage: set yahoo handle";
+};
+
+langtag = {
+   name = "nick_YAHOO_CHANGED";
+   component = "mod_nick";
+   data_en = "Yahoo! handle has been changed to :%p0";
+};
+
