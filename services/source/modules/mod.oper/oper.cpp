@@ -107,7 +107,7 @@ OPER_FUNC(Module::parseGLOBAL)
 
 OPER_FUNC(Module::parseMDEOP)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(oper_MDEOP_USAGE), getNickname());
@@ -125,7 +125,7 @@ OPER_FUNC(Module::parseMDEOP)
 
    for (int i=0; i<nbRes; i++)
      {
-	String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
+	Kine::Name inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
 	std::cout << inick << std::endl;
 	services->mode(getNickname(),channel,"-ov",inick);
 	User *ptr = services->findUser(inick);
@@ -221,7 +221,8 @@ OPER_FUNC(Module::parseZLINE)
 
 OPER_FUNC(Module::parseJOIN)
 {
-   String chan = tokens.nextToken().IRCtoLower();
+   Kine::Name chan = tokens.nextToken();
+   chan = chan.IRCtoLower();
    if(chan=="")
      {
 	origin.sendMessage(GETLANG(oper_JOIN_USAGE),getNickname());
@@ -243,7 +244,8 @@ OPER_FUNC(Module::parseJOIN)
 
 OPER_FUNC(Module::parsePART)
 {
-   String chan = tokens.nextToken().IRCtoLower();
+   Kine::Name chan = tokens.nextToken();
+   chan = chan.IRCtoLower();
    if(chan=="")
      {
 	origin.sendMessage(GETLANG(oper_PART_USAGE),getNickname());
@@ -264,7 +266,7 @@ OPER_FUNC(Module::parsePART)
 
 OPER_FUNC (Module::parseKILL)
 {
-   String tokill = tokens.nextToken();
+   Kine::Name tokill = tokens.nextToken();
    String reason = tokens.rest();
    if(tokill == "" | reason == "")
      {
@@ -288,7 +290,7 @@ OPER_FUNC (Module::parseKILL)
 
 OPER_FUNC (Module::parseJUPE)
 {
-   String tojupe = tokens.nextToken();
+   Kine::Name tojupe = tokens.nextToken();
    String reason = tokens.rest();
 
    if (tojupe == "" | reason == "")
@@ -311,7 +313,7 @@ OPER_FUNC (Module::parseJUPE)
    else
      {
 	User *ptr = services->findUser(tojupe);
-	String who = origin.getNickname();
+	Kine::Name who = origin.getNickname();
 	User *optr = services->findUser(who);
 	if (ptr != 0)
 	  {

@@ -31,7 +31,6 @@
 #include "nick.h"
 #include "tables.h"
 #include "language.h"
-#include <kineircd/utils.h>
 #include <kineircd/config.h>
 #include <exordium/utils.h>
 #include <sstream>
@@ -177,7 +176,8 @@ NICK_FUNC (Module::parseAUTH)
 /* Info */
   NICK_FUNC (Module::parseINFO)
 {
-   String who = tokens.nextToken().IRCtoLower();
+   Kine::Name who = tokens.nextToken();
+   who = who.IRCtoLower();
    if(who.empty())
 	{
 		origin.sendMessage(GETLANG(nick_USAGE_INFO),
@@ -518,7 +518,7 @@ NICK_FUNC (Module::parseAUTH)
 /* Access */
   NICK_FUNC (Module::parseACCESS)
 {
-   String nickname = tokens.nextToken();
+   Kine::Name nickname = tokens.nextToken();
    if(nickname=="")
      {
 	origin.sendMessage(GETLANG(nick_USAGE_ACCESS),
@@ -593,7 +593,7 @@ NICK_FUNC (Module::parseAUTH)
 /* Kill */
   NICK_FUNC (Module::parseKILL)
 {
-   String tokill = tokens.nextToken();
+   Kine::Name tokill = tokens.nextToken();
    String password = tokens.nextToken();
    if(tokill=="" | password=="")
      {

@@ -164,7 +164,7 @@ SERV_FUNC (Module::parseFREEZE)
      }
    if(func=="add")
      {
-	String chan = tokens.nextToken();
+	Kine::Name chan = tokens.nextToken();
 	String reason = tokens.rest();
 	if(chan=="" | reason=="")
 	  {
@@ -272,7 +272,7 @@ SERV_FUNC (Module::parseFREEZE)
      }
    if(func=="list")
      {
-	String channel = tokens.nextToken();
+	Kine::Name channel = tokens.nextToken();
 	if(channel=="")
 	  {
 	     origin.sendMessage(GETLANG(serv_FREEZE_LIST_USAGE),getNickname());
@@ -307,7 +307,7 @@ SERV_FUNC (Module::parseFREEZE)
 
 SERV_FUNC (Module::parseGETHASH)
 {
-   String who = tokens.nextToken();
+   Kine::Name who = tokens.nextToken();
    if(who=="")
      {
 	origin.sendMessage(GETLANG(serv_GETHASH_USAGE),getNickname());
@@ -739,7 +739,7 @@ SERV_FUNC (Module::parseHELPON)
 SERV_FUNC (Module::parseNLIST)
 {
    String tomatch = tokens.nextToken();
-   String dest = tokens.nextToken();
+   Kine::Name dest = tokens.nextToken();
    if(tomatch=="")
      {
 	origin.sendMessage(GETLANG(serv_NLIST_USAGE),getNickname());
@@ -809,7 +809,7 @@ SERV_FUNC (Module::parseNLIST)
 SERV_FUNC (Module::parseELIST)
 {
    String tomatch = tokens.nextToken();
-   String dest = tokens.nextToken();
+   Kine::Name dest = tokens.nextToken();
    if(tomatch=="")
      {
 	origin.sendMessage(GETLANG(serv_ELIST_USAGE),getNickname());
@@ -909,8 +909,8 @@ SERV_FUNC (Module::parseDELNICK)
 
 SERV_FUNC (Module::parseCLIST)
 {
-   String who = tokens.nextToken();
-   String send = tokens.nextToken();
+   Kine::Name who = tokens.nextToken();
+   Kine::Name send = tokens.nextToken();
    if(who=="")
      {
 	origin.sendMessage(GETLANG(serv_CLIST_USAGE),getNickname());

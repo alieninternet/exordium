@@ -77,7 +77,7 @@ namespace Exordium {
 	 void handleAway(Exordium::User& origin, 
 			 const AISutil::String& reason);
 
-         void handleTopic(const AISutil::String&, dChan& channel, const AISutil::String &);
+         void handleTopic(const Kine::Name&, dChan& channel, const AISutil::String &);
 
          void handleChannelJoin(User& origin, dChan &channel, const int &status);
          void handleChannelPart(User& origin, dChan &channel);

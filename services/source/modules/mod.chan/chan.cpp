@@ -140,7 +140,7 @@ CHAN_FUNC (Module::parseSEEN)
 
 CHAN_FUNC (Module::parseSET)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel.empty())
      {
 	origin.sendMessage(GETLANG(chan_USAGE_SET),getNickname());
@@ -392,7 +392,7 @@ CHAN_FUNC (Module::parseSET)
 
 CHAN_FUNC (Module::parseLISTBAN)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel.empty())
      {
 	origin.sendMessage(GETLANG(chan_LISTBAN_USAGE),getNickname());
@@ -415,14 +415,14 @@ CHAN_FUNC (Module::parseLISTBAN)
 	origin.sendMessage(GETLANG(ERROR_CHANNEL_FROZEN),getNickname());
 	return;
      }
-   String tempnick = origin.getNickname();
+   Kine::Name tempnick = origin.getNickname();
    ptr->sendBans(tempnick,getNickname());
    return;
 }
 
 CHAN_FUNC (Module::parseINFO)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel.empty())
      {
 	origin.sendMessage(GETLANG(chan_INFO_USAGE),getNickname());
@@ -484,7 +484,7 @@ CHAN_FUNC (Module::parseINFO)
 
 CHAN_FUNC (Module::parseADDUSER)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    String nickname = tokens.nextToken();
    String level = tokens.nextToken();
    if(channel=="" | nickname=="" | level=="")
@@ -545,7 +545,7 @@ CHAN_FUNC (Module::parseADDUSER)
 
 CHAN_FUNC (Module::parseTOPIC)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel.empty())
      {
 	origin.sendMessage(GETLANG(chan_TOPIC_USAGE),getNickname());
@@ -593,7 +593,7 @@ CHAN_FUNC (Module::parseHELP)
 
 CHAN_FUNC (Module::parseBAN)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(chan_BAN_USAGE),getNickname());
@@ -605,7 +605,7 @@ CHAN_FUNC (Module::parseBAN)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
-   String who = tokens.nextToken();
+   Kine::Name who = tokens.nextToken();
    String reason = tokens.rest();
    if(who=="")
      {
@@ -636,7 +636,7 @@ CHAN_FUNC (Module::parseBAN)
 
 CHAN_FUNC (Module::parseREGISTER)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if (channel=="")
      {
         origin.sendMessage(GETLANG(chan_REGISTER_USAGE),getNickname());
@@ -684,7 +684,7 @@ CHAN_FUNC (Module::parseREGISTER)
 
 CHAN_FUNC (Module::parseOP)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(chan_OP_USAGE),getNickname());
@@ -712,7 +712,7 @@ CHAN_FUNC (Module::parseOP)
 	bool foundmatch = false;
 	if(ptr->getAccess(currnick)>99)
 	  {
-	     String foo = tokens.nextToken();
+	     Kine::Name foo = tokens.nextToken();
 	     User *fptr = services->findUser(foo);
 	     if(foo=="")
 	       {
@@ -738,7 +738,7 @@ CHAN_FUNC (Module::parseOP)
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
-		  String foo = tokens.nextToken();
+		  Kine::Name foo = tokens.nextToken();
 		  if(!ptr->isOp(foo))
 		    {
 		       ptr->mode(getNickname(),"+o",foo);
@@ -761,7 +761,7 @@ CHAN_FUNC (Module::parseOP)
 
 CHAN_FUNC (Module::parseDEOP)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(chan_DEOP_USAGE),getNickname());
@@ -788,7 +788,7 @@ CHAN_FUNC (Module::parseDEOP)
 	String currnick = st.nextToken();
 	if(ptr->getAccess(currnick)>99)
 	  {
-	     String foo = tokens.nextToken();
+	     Kine::Name foo = tokens.nextToken();
 	     if(foo=="")
 	       {
 		  if(ptr->isOp(origin.getNickname()))
@@ -813,7 +813,7 @@ CHAN_FUNC (Module::parseDEOP)
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
-		  String foo = tokens.nextToken();
+		  Kine::Name foo = tokens.nextToken();
 		  User *fptr = services->findUser(foo);
 		  if(fptr==0)
 		    return;
@@ -836,7 +836,7 @@ CHAN_FUNC (Module::parseDEOP)
 
 CHAN_FUNC (Module::parseVOICE)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(chan_VOICE_USAGE),getNickname());
@@ -863,7 +863,7 @@ CHAN_FUNC (Module::parseVOICE)
 	String currnick = st.nextToken();
 	if(ptr->getAccess(currnick)>50)
 	  {
-	     String foo = tokens.nextToken();
+	     Kine::Name foo = tokens.nextToken();
 	     if(foo=="")
 	       {
 		  if(!ptr->isVoice(origin.getNickname()))
@@ -888,7 +888,7 @@ CHAN_FUNC (Module::parseVOICE)
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
-		  String foo = tokens.nextToken();
+		  Kine::Name foo = tokens.nextToken();
 		  User *fptr = services->findUser(foo);
 		  if(fptr==0)
 		    return;
@@ -911,7 +911,7 @@ CHAN_FUNC (Module::parseVOICE)
 
 CHAN_FUNC (Module::parseDEVOICE)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(chan_DEVOICE_USAGE),getNickname());
@@ -938,7 +938,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 	String currnick = st.nextToken();
 	if(ptr->getAccess(currnick)>50)
 	  {
-	     String foo = tokens.nextToken();
+	     Kine::Name foo = tokens.nextToken();
 	     if(foo=="")
 	       {
 		  if(ptr->isVoice(origin.getNickname()))
@@ -963,7 +963,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
-		  String foo = tokens.nextToken();
+		  Kine::Name foo = tokens.nextToken();
 		  User *fptr = services->findUser(foo);
 		  if(fptr==0)
 		    return;
@@ -986,8 +986,8 @@ CHAN_FUNC (Module::parseDEVOICE)
 
 CHAN_FUNC (Module::parseKICK)
 {
-   String channel = tokens.nextToken();
-   String who = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
+   Kine::Name who = tokens.nextToken();
    String reason = tokens.rest();
    if(channel=="" | who=="" | reason=="")
      {
@@ -1035,7 +1035,7 @@ CHAN_FUNC (Module::parseKICK)
 
 CHAN_FUNC (Module::parseACCESS)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    if(channel=="")
      {
 	origin.sendMessage(GETLANG(chan_ACCESS_USAGE),getNickname());
@@ -1069,7 +1069,8 @@ CHAN_FUNC (Module::parseACCESS)
 
    CResult *myRes = services->getDatabase().dbGetResultSet();
 
-   String tnickid, taccess;
+   Kine::Name tnickid;
+   String taccess;
 
    for (int i = 0; i < nbRes; i++)
      {
@@ -1085,7 +1086,7 @@ CHAN_FUNC (Module::parseACCESS)
 
 CHAN_FUNC (Module::parseDROP)
 {
-   String channel = tokens.nextToken();
+   Kine::Name channel = tokens.nextToken();
    String reason = tokens.rest();
    if(channel=="" || reason=="")
      {
@@ -1167,14 +1168,14 @@ void
 // Context: When we enter this method we know that the channel is valid
 // and that the channel is registered.
 void
-  Module::handleTopic(const String& origin, Exordium::dChan& channel, const String &newTopic)
+  Module::handleTopic(const Kine::Name& origin, Exordium::dChan& channel, const String &newTopic)
 {
 
    // If the TOPIC was sent by myself(chan) we just return
    if( origin.toLower() == getNickname().toLower() )
      return;
 
-   User *source = services->findUser( (String&)origin );
+   User *source = services->findUser( (Kine::Name&) origin );
 
    // In this case the TOPIC was sent by a server, for example returning from a netsplit.
    // Also, if the channel is freezed we revert back.
@@ -1252,7 +1253,7 @@ void
    bool take=false;
    int i;
    int length = modes.length();
-   String targ;
+   Kine::Name targ;
 
    StringTokens st(target);
 
