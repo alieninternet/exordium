@@ -402,9 +402,12 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 	       return;
 	    }
 	 } else {
-	    // Check the suits OR the ranks match
+	    /* Check the suits OR the ranks match. However, if the card is
+	     * a jack (of any suit) then we really only need to check the
+	     * colours..
+	     */
 	    if (!((cardToDiscard.getSuit() == lastDiscardedCard.getSuit()) ||
-		  (cardToDiscard.getIndex() == lastDiscardedCard.getIndex())) ||
+		  (cardToDiscard.getIndex() == lastDiscardedCard.getIndex())) &&
 		!((lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) &&
 		  (cardToDiscard.getColour() == lastDiscardedCard.getColour()))) {
 	       sendMessage(origin,
