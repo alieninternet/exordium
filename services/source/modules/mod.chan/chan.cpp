@@ -407,6 +407,8 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 
   CHAN_FUNC (Module::parseBAN)
 {
+   origin.sendMessage("Disabled until next build",getName());
+   return;
    String channel = "";
    if(chan!="")
      {

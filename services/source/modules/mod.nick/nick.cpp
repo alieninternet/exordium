@@ -238,8 +238,6 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.sendMessage("URL : \002"+ptr->getURL(),getName());
 	     origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
 	     origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
-
-
 }
 
 
@@ -254,14 +252,12 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     String togo = "Usage is /msg Nick set pass newpassword";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Usage: set pass newpassword",getName());
 	     return;
 	  }
 	if(value.length()<5)
 	  {
-	     String togo = "Error: New password must be greater than 4 letters";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage("Error: New password must be greater than four letters",getName());
 	     return;
 	  }
 	String newhash = Utils::generatePassword(origin.getNickname(), value);

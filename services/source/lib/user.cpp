@@ -543,7 +543,7 @@ services.getDatabase().dbDelete("nickspending","nickname='"+nickname+"'");
 // registerNick(nick,password,email) .. Uhh DOH!
 const void User::registerNick(String const &password,String const &email)
 {
-services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'english','0','None','None','0,'None Set','None Set','None recorded',1");
+services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'english','0','None','None','0','None Set','None Set','None recorded',1");
 }
 
 // isRegistered .. another mind numbing one!!
@@ -571,6 +571,7 @@ services.getDatabase().dbInsert("log","'','"+getIDList()+"','"+getIdent()+"','"+
 // Gen auth code type thing!
 const String User::genAuth(void)
 {
-services.getDatabase().dbInsert("nickspending","'','"+nickname+"','"+Utils::generateRegcode(nickname,"VIVA LA FRANCE :)"));
-return Utils::generateRegcode(nickname,"VIVA LA FRANCE :)");
+String authcode = Utils::generateRegcode(nickname,"VIVA LA FRANCE :)");
+services.getDatabase().dbInsert("nickspending","'','"+nickname+"','"+authcode+"'");
+return authcode;
 }
