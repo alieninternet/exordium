@@ -162,23 +162,20 @@ void
 {
    int chanid = getOnlineChanID(channel);
    int nickid = services.getNickname().getOnlineNickID(nickname);
-   String query = "DELETE from chanstatus where chanid='"
+   services.getDatabase().query("DELETE from chanstatus where chanid='"
      +String::convert(chanid)+"' AND nickid='"
-     + String::convert(nickid) + "' AND status='1'";
-   services.getDatabase().query(query);
+     + String::convert(nickid) + "' AND status='1'");
 }
 
 /* Return the numercial (unique) id of a registered channel */
 int
   Channel::getChanID(String const &name)
 {
-   String query = "SELECT id from chans where name='"+name.toLower()+"'";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("SELECT id from chans where name='"+name.toLower()+"'");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String foo = ((std::string) row[0]);
-	res.free_result();
+	String foo = row[0];
 	return foo.toInt();
      }
    res.free_result();
@@ -189,13 +186,11 @@ int
 int
   Channel::getOnlineChanID(String const &name)
 {
-   String query = "SELECT id from onlinechan where name='"+name.toLower()+"'";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("SELECT id from onlinechan where name='"+name.toLower()+"'");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String foo = ((std::string) row[0]);
-	res.free_result();
+	String foo = row[0];
 	return foo.toInt();
      }
    res.free_result();
@@ -206,12 +201,11 @@ int
 bool
   Channel::isChanRegistered(String const &name)
 {
-   String query = "select id from chans where name='" + name + "'";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services.getDatabase().query("select id from chans where name='" + name + "'");
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	String foo  = ((std::string) row[0]);
+	String foo  = row[0];
 	res.free_result();
 	if(foo.toInt() > 0)
 	  {
