@@ -27,9 +27,7 @@ $(SUB_DIRS):
 
 $(TARGET): subdirs $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS) $(LIBS) -L/usr/local/mysql/lib/mysql \
-		$(LDFLAGS)  -L./lib/ -lservices \
-		-fPIC -shared -g3 -Wall -Werror -O0 -fpic -ggdb3 -pg \
-		-fno-rtti -fvtable-gc
+		$(LDFLAGS)  -L./lib/ -lservices -fPIC -shared
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(DEFINES) -I/usr/local/ssl/include -I$(INCLUDES) -I/usr/local/mysql/include/ -I../../kineircd/src/lib -I../../kineircd/include -I../include/  -c $< 
