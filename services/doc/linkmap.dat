@@ -40,59 +40,21 @@ digraph intranet_map {
      "libaisutil";
      "libdl";
      "libmysqlclient";
-     "libnetsnmp";
-     "libnetsnmpagent";
-     "libnetsnmphelpers";
-     "libnetsnmpmibs";
      "libpq"; // postgresql
      "libssl";
-     "libxml2";
 //  };
 
   // KineIRCd library
   node [shape=diamond,color=lightblue];
   "libkineircd";
   
-  // KineIRCd module libraries
-  node [shape=diamond,color=lightblue];
-  "libkineircd_irc2";
-
-  // KineIRCd modules
-  node [shape=ellipse,color=lightgoldenrod];
-  {  rank=same;
-     "mod_http";
-     "mod_iirc1";
-     "mod_irc2server";
-     "mod_irc2user";
-     "mod_snmp";
-  };
-
   // Linkage map
   "KineIRCd" -> "libaisutil";
   "KineIRCd" -> "libkineircd";
   "libkineircd" -> "mod_exordium" [color=blue,dir=both];
-  "libkineircd" -> "mod_http" [color=blue,dir=both];
-  "libkineircd" -> "mod_iirc1" [color=blue,dir=both];
-  "libkineircd" -> "mod_irc2server" [color=blue,dir=both];
-  "libkineircd" -> "mod_irc2user" [color=blue,dir=both];
-  "libkineircd" -> "mod_snmp" [color=blue,dir=both];
   "libkineircd" -> "libaisutil";
   "libkineircd" -> "libdl";
   "libkineircd" -> "libssl" [style=dashed];
-  "mod_http" -> "libaisutil";
-  "mod_http" -> "libxml2";
-  "mod_iirc1" -> "libaisutil";
-  "mod_irc2server" -> "libaisutil";
-  "mod_irc2server" -> "libkineircd_irc2";
-  "mod_irc2user" -> "libaisutil";
-  "mod_irc2user" -> "libkineircd_irc2";
-  "mod_snmp" -> "libaisutil";
-  "mod_snmp" -> "libnetsnmp";
-  "mod_snmp" -> "libnetsnmpagent";
-  "mod_snmp" -> "libnetsnmphelpers";
-  "mod_snmp" -> "libnetsnmpmibs";
-  "libkineircd_irc2" -> "libaisutil";
-  "libkineircd_irc2" -> "libkineircd";
 
   subgraph "exordium" {
      label="Exordium Network Services";
