@@ -19,18 +19,21 @@ namespace mod_exordium {
 
    // Our special little classes, we need these so we can delete them later
    static Config *config;
+   static Log *logger;
    static Services *services;
    static Sql *db;   
-   static Log *logger;
+   
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
      {
 	std::cout << "mod_exordium::moduleStart()" << std::endl;
 
-	// New Logger
-	logger = new Logger(*services,*config);
+	// New Logger (the config file will have been created by now)
+	logger = new Logger(*config);
+	
 	// Create new SQL Instance
 	db = new Sql(*services,*config);
+	
 	// Create the new services instance - Passing sql + logger YAY :|
 	services = new Services(daemon, *config, *logger, *db);
 	
@@ -41,8 +44,8 @@ namespace mod_exordium {
 	services->init();
 	services->run();
 	logger->logLine("Services terminated - Normal exit");
-	exit(0); // we are naughty using this here..
-	
+	exit(0); // we are naughty using this here..... very naughty.. :(
+
 	// Tell Kine that we started happily
 	return true;
      }
