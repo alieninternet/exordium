@@ -265,6 +265,7 @@ namespace Exordium {
       void delOper(AISutil::String const &);
       bool isOper(AISutil::String const &);
       void validateOper(AISutil::String &);
+      void sendGOper(AISutil::String const &, AISutil::String const &);
       
       unsigned long getCountTx(void) const
 	{ return countTx; };

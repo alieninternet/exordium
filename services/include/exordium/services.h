@@ -208,6 +208,8 @@ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask);
       virtual void delOper(AISutil::String const &) = 0;
       virtual bool isOper(AISutil::String const &) = 0;
       virtual void validateOper(AISutil::String &) = 0;
+      virtual void sendGOper(AISutil::String const &,
+			AISutil::String const &) = 0;
    }; // class Services
 }; // namespace Exordium
 

@@ -321,6 +321,7 @@ void
    long unsigned rx = services.getCountRx();
    long unsigned tx = services.getCountTx();
    String togo = String("Completed Network Synch: ")+String::convert(rx)+" Bytes received. "+String::convert(tx)+" Bytes transmitted";
+   services.sendGOper("services.peoplechat.org",togo);
    services.logLine(String(togo));
    return;
 }

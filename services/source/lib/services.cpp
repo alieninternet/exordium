@@ -94,7 +94,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
      "\002[\002Fatal Error\002]\002 Services received \002" + 
      String(sys_siglist[signal]) + "\002 - Initiating shutdown";
    ((Services *)foo)->logLine(reason, Log::Warning);
-//   ((Services *)foo)->shutdown(reason);
+   ((Services *)foo)->shutdown(reason);
 //   exit(1); // eek
 }
 
@@ -186,6 +186,8 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 
 			 if(stopping)
 			   {
+				std::cout << stopTime << std::endl;
+				std::cout << currentTime << std::endl;
 			      if(stopTime < currentTime)
 				{
 #ifdef DEBUG
@@ -512,6 +514,12 @@ void
        {
           database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
        }
+void
+ServicesInternal::sendGOper(String const &from, String const &text)
+{
+	queueAdd(":"+from+" GLOBOPS :"+text);
+
+}
 
    /* DelOnlineServer(ServerName)
     *
