@@ -14,7 +14,7 @@ SOURCES=\
 	bot.cpp \
 	chan.cpp \
 	nick.cpp \
-#	note.cpp \
+	note.cpp \
 #	oper.cpp \
 #	serv.cpp \
 #	stats.cpp \

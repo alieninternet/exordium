@@ -1174,7 +1174,7 @@ User*
    database.query("INSERT into onlineclients values ('','"+nick.toLower()+"','"
 		  +hops + "','" + timestamp + "','" + username + "','"
 		  +host + "','" + vwhost + "','" + server + "','"
-		  +modes+ "','" + database.makeSafe(realname) + "')");
+		  +modes+ "','" + Sql::makeSafe(realname) + "')");
    std::cout << "Just insert an entry for the user " << nick.toLower() << std::endl;
    int foo = locateID(nick);
    String client = nick.IRCtoLower();

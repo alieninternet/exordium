@@ -46,8 +46,9 @@ namespace Exordium {
       // simply merged with this class altogether :(
       MysqlRes query(const char* const);
       MysqlRes query(const LibAIS::String&);
-      
-      LibAIS::String makeSafe(const LibAIS::String&);
+
+      // Escape a string so it is safe to be used in an SQL query
+      static LibAIS::String makeSafe(const LibAIS::String& line);
    };
 };
 

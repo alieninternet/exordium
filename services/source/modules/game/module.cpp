@@ -184,7 +184,7 @@ GAME_FUNC(Game::handleQUOTE)
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services.servicePrivmsg(services.getDatabase().makeSafe(tq),"Game",chan);
+      services.servicePrivmsg(Sql::makeSafe(tq), myName, chan);
       more = st.hasMoreTokens();
    }
    
