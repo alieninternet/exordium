@@ -16,12 +16,9 @@ error_reporting  (E_ERROR | E_WARNING | E_PARSE);
 // Report all PHP errors (bitwise 63 may be used in PHP 3)
 //error_reporting (E_ALL);
 
-$sql["username"] = "wwwserv";
-$sql["password"] = "tw1stedp@ss";
-$sql["database"] = "services";
-$sql["hostname"] = "mely.demon.co.uk";
-
+require "config.inc";
 include "Mysql.php";
+include "Channel.php";
 $debug = 0;
 
 $MYSQL = new MySQL();

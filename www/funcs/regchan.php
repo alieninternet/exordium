@@ -1,4 +1,5 @@
 <?
+$CHAN = new Channel();
 page_start();
 if ($_POST[submit])
 {
@@ -48,7 +49,9 @@ else
   echo "<tr><td id=\"label\">topic</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"topic\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">room description</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"cdesc\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">room url</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"url\" size=\"25\" maxlength=\"255\" /></td></tr>";
-  echo "<tr><td id=\"label\">help text<p>legend:<br>&nbsp;%b% = <b>bold</b><br>&nbsp;%u% = <u>underline</u><br>&nbsp;%r% = reverse</p></td><td id=\"field\"><textarea name=\"txt\" cols=\"40\" rows=\"10\"></textarea></td></tr>";
+  echo "<tr><td id=\"label\">set your modes</td><td id=\"field\">";
+  $CHAN->chan_mode_checkboxes();
+  echo "</td></tr>";
   echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" name=\"submit\" value=\"Register Channel\"></form>";
   echo "</table>";
 }
