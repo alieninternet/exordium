@@ -146,7 +146,7 @@ namespace Exordium
 #ifdef DEBUG		 
 	       else
 		 {
-		    std::cout << "not connected..." << std::endl;
+		    logLine("not connected...", Log::Debug);
 		 }
 #endif
 
@@ -213,13 +213,13 @@ namespace Exordium
 #ifdef DEBUG
 	       if(!connected)
 		 {
-		    std::cout << "Not connected" << std::endl;
+		    logLine("Not connected", Log::Debug);
 		 }
 #endif
 	       if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
 		 {
 #ifdef DEBUG
-		    std::cout << "Beginning Connect Attempt" << std::endl;
+		    logLine("Beginning Connect Attempt", Log::Debug);
 #endif
 		    connect ();
 		 }
@@ -267,8 +267,10 @@ namespace Exordium
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
 #ifdef DEBUG
-	std::cout << config.getUplinkHost() << std::endl;
-	std::cout << config.getUplinkPort() << std::endl;
+	std::ostringstream debugging;
+	debugging << "UplinkHost = " << config.getUplinkHost() << 
+	  "; UplinkPort = " << config.getUplinkPort();
+	logLine(debugging.str(), Log::Debug);
 #endif
 	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
@@ -352,8 +354,9 @@ Services::~Services()
 	if(!socky.connect())
 	  {
 #ifdef DEBUG
-	     std::cout << "Socky.connect() returned an error: " <<
-	       socky.getErrorMessage() << std::endl;
+	     logLine(String("Socky.connect() returned an error: ") +
+		     socky.getErrorMessage(), 
+		     Log::Debug);
 #endif
 
 	  }
@@ -914,7 +917,9 @@ Services::checkpoint(void)
 		    if(ptr==0)
 		      {
 #ifdef DEBUG
-			 std::cout << "I could not find the users record.. hence i can't change their nick " << tomod << std::endl;
+			 logLine("I could not find the users record.. hence i"
+				 " can't change their nick " + tomod,
+				 Log::Debug);
 #endif
 			 return;
 		      }
@@ -954,7 +959,8 @@ bool
 	     if (socky.write (outputQueue.front ()))
 	       {
 #ifdef DEBUG
-		  std::cout << "DEBUG TX:" << outputQueue.front() << std::endl;
+		  logLine("DEBUG TX:" + outputQueue.front(),
+			  Log::Debug);
 #endif
 		  outputQueue.pop ();
 		  return true;
@@ -975,7 +981,7 @@ bool
 	else
 	  {
 #ifdef DEBUG
-	     std::cout << "Socky is dead" << std::endl;
+	     logLine("Socky is dead :(", Log::Debug);
 #endif
 	     connected = false;
 	     return false;
@@ -986,7 +992,8 @@ bool
    else
      {
 #ifdef DEBUG
-	std::cout << "Trying to queueflush when disconnected ?!" << std::endl;
+	logLine("Trying to queueflush when disconnected ?!",
+		Log::Debug);
 #endif
 	return false;
      }
@@ -1020,13 +1027,15 @@ User*
   Services::findUser(String &name)
 {
 #ifdef DEBUG
-   std::cout << "findUser() - Looking for " << name.IRCtoLower().trim() << std::endl;
+   logLine("findUser() - Looking for " + name.IRCtoLower().trim(),
+	   Log::Debug);
 #endif
    User *ptr = users[name.IRCtoLower().trim()];
    if(ptr == 0)
      {
 #ifdef DEBUG
-	std::cout << "findUser() - I could not find the user named :" << name << std::endl;
+	logLine("findUser() - I could not find the user named :" + name,
+		Log::Debug);
 #endif
 	return 0;
      }
@@ -1043,13 +1052,15 @@ dChan*
   Services::findChan(String &name)
 {
 #ifdef DEBUG
-   std::cout << "findChan() - Looking for " << name.IRCtoLower().trim() << std::endl;
+   logLine("findChan() - Looking for " + name.IRCtoLower().trim(),
+	   Log::Debug);
 #endif
    dChan *ptr = chans[name.IRCtoLower().trim()];
    if(ptr==0)
      {
 #ifdef DEBUG
-	std::cout << "findChan() - I could not find the channel" << std::endl;
+	logLine("findChan() - I could not find the channel",
+		Log::Debug);
 #endif
 	return 0;
      }
@@ -1094,7 +1105,7 @@ void
   Services::setNick(User &who, String &newnick)
 {
 #ifdef DEBUG
-   std::cout << "setNick: " << newnick << std::endl;
+   logLine("setNick: " + newnick, Log::Debug);
 #endif
    user_map::iterator user = users.find(who.getNickname().IRCtoLower());
    users.erase(user);
@@ -1255,7 +1266,8 @@ String
    {
      String ret(database.dbGetValue().data(),(String::size_type)20);
 #ifdef DEBUG
-      std::cout << "Pass DEBUG: Size of return is" << ret.length() << std::endl;
+      logLine("Pass DEBUG: Size of return is" + String::convert(ret.length()),
+	      Log::Debug);
 #endif
      return ret;
    }
@@ -1629,7 +1641,9 @@ void
 #ifdef DEBUG
 	else
 	  {
-	     std::cout << "Warning: inconsistency in ValidateOper: new oper already in onlineopers!" << std::endl;
+	     logLine("Warning: inconsistency in ValidateOper: "
+		     "new oper already in onlineopers!",
+		     Log::Debug);
 	  }
 #endif
 
@@ -1660,7 +1674,8 @@ int
    else
    {
 #ifdef DEBUG
-     std::cout << "AXS:" << database.dbGetValue() << std::endl;
+      logLine("AXS:" + database.dbGetValue(),
+	      Log::Debug);
 #endif
      return database.dbGetValue().toInt();
    }
