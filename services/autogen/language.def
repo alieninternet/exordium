@@ -35,7 +35,7 @@ autogen definitions fieldtypes;
  *  Sorry? % and \ what? ohhh.. you're talking about substitutions! Have a
  *  look at the following URL for info (which is hopefully up to date :)
  *      http://cvs.sourceforge.net/
- *        cgi-bin/viewcvs.cgi/kineircd/languages/README?rev=HEAD
+ *        cgi-bin/viewcvs.cgi/kineircd/kineircd/doc/LangTags?rev=HEAD
  * 
  */
 
