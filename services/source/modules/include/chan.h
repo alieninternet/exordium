@@ -45,15 +45,14 @@ private:
      void CHAN_FUNC ((Chan::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
-  const LibAIS::String myName;
+   
   void sendMessage(const LibAIS::String &message, const LibAIS::String &to)
 	{
 		services.serviceNotice(message,myName,to);
 	}
 public:
    Chan(Exordium::Services& s, const LibAIS::String &mn)
-	: services(s), myName(mn)
+     : Exordium::Service(s, mn)
 	{
 	};
   ~Chan(void)

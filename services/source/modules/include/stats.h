@@ -45,11 +45,10 @@ private:
      void STATS_FUNC ((Stats::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
    
 public:
-   Stats(Exordium::Services& s)
-		: Service(), services(s)
+   Stats(Exordium::Services& s, const LibAIS::String& mn)
+     : Service(s, mn)
 	{
 		std::cout << "Stats New()" << std::endl;
 	};

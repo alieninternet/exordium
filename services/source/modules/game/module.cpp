@@ -70,8 +70,7 @@ const Game::commandTable_type Game::channelCommandTable[] =
  * Original 11/09/2002
  */
 Game::Game(Exordium::Services& s, const String& mn)
-  : services(s), 
-    myName(mn)
+  : Exordium::Service(s, mn)
 {
 //   services.registerService(myName, myName, "ircdome.org", "+dz", 
 //			    "Network Games!");

@@ -45,11 +45,10 @@ private:
      void VOTE_FUNC ((Vote::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
    
 public:
-   Vote(Exordium::Services& s)
-		: Service(), services(s)
+   Vote(Exordium::Services& s, const LibAIS::String& mn)
+     : Service(s, mn)
 	{
 		std::cout << "Vote New()" << std::endl;
 	};

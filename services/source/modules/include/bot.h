@@ -47,17 +47,15 @@ class Bot : public Exordium::Service
      void BOT_FUNC ((Bot::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
-  const LibAIS::String myName;
+
   void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
 		services.serviceNotice(message,myName,to);
 	};
 public:
   Bot(Exordium::Services& s, const LibAIS::String &mn)
-	: services(s), myName(mn)
-	{
-	};
+     : Exordium::Service(s, mn)
+       {};
 
   ~Bot(void)
 	{

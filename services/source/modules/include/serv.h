@@ -45,11 +45,10 @@ private:
      void SERV_FUNC ((Serv::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
    
 public:
-   Serv(Exordium::Services& s)
-		: Service(), services(s)
+   Serv(Exordium::Services& s, const LibAIS::String& mn)
+     : Service(s, mn)
 	{
 		std::cout << "Serv New()" << std::endl;
 	};

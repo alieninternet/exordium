@@ -47,8 +47,8 @@ private:
    Exordium::Services& services;
    
 public:
-   Note(Exordium::Services& s)
-   : Service(), services(s)
+   Note(Exordium::Services& s, const LibAIS::String& mn)
+   : Service(s, mn)
    {
 	std::cout << "Hi im an instance. :(" << std::endl;
    };

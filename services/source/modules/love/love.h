@@ -59,12 +59,6 @@ class Love : public Exordium::Service {
       const int padding;			// For future use..
    } static const commandTable[];
 
-   // Where is services?
-   Exordium::Services& services;
-   
-   // Who are we?!
-   const LibAIS::String myName;
-   
    // Our wonderful command handlers
    handler_type handleCOMMANDS;
 

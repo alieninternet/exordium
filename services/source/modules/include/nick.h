@@ -43,15 +43,14 @@ private:
      void NICK_FUNC ((Nick::* const function));
   };
   static struct functionTableStruct const functionTable[];
-   Exordium::Services& services;
-  const LibAIS::String myName;
+
   void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
 		services.serviceNotice(message,myName,to);
 	}
 public:
    Nick(Exordium::Services& s, const LibAIS::String &mn)
-   : services(s), myName(mn)
+     : Exordium::Service(s, mn)
    {
    };
 

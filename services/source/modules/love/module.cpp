@@ -70,8 +70,7 @@ const Love::commandTable_type Love::commandTable[] =
  * Original 26/07/2002 simonb
  */
 Love::Love(Exordium::Services& s, const String& mn)
-  : services(s),
-    myName(mn)
+  : Exordium::Service(s, mn)
 {
 //   services.registerService(myName, myName, "ircdome.org", "+dz",
 //			    "Your local love slave");

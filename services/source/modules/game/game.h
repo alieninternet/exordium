@@ -64,12 +64,6 @@ class Game : public Exordium::Service {
    typedef std::map < LibAIS::String, ChannelGame* > channelGames_type;
    channelGames_type channelGames;
    
-   // Where is services?
-   Exordium::Services& services;
-   
-   // Who are we?!
-   const LibAIS::String myName;
-
    // Command handlers
    handler_type handleHELP;
    handler_type handleQUOTE;

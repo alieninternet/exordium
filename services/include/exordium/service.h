@@ -25,18 +25,20 @@
  */
 
 #ifndef SERVICE_H
-#define SERVICE_H
-#include <kineircd/str.h>
-#include <map>
-#include <cassert>
+# define SERVICE_H
+
+# include <kineircd/str.h>
+# include <map>
+# include <cassert>
 
 extern "C" {
-#include <dlfcn.h>
+# include <dlfcn.h>
 };
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
    Module* x(Exordium::Services& services, const LibAIS::String& name)
+
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
 
@@ -45,13 +47,25 @@ namespace Exordium {
    class User;
    
    class Service {
+    protected:
+      // Where is services?
+      Exordium::Services& services;
+      
+      // Who are we?
+      const LibAIS::String myName;
+      
     public:
-      Service() 
+      // Constructor
+      Service(Exordium::Services& s, const LibAIS::String& mn)
+	: services(s),
+          myName(mn)
 	{};
       
+      // Destructor
       virtual ~Service() 
 	{};
 
+      // Parsers
       virtual void parseLine(LibAIS::StringTokens& line, User& origin) = 0;
       
       virtual void parseLine(LibAIS::StringTokens& line, User& origin,
@@ -59,102 +73,103 @@ namespace Exordium {
    };
 
 
-class Core {
- private:
-   struct ServiceModule {
-      Service *service;
-      void *handle;
-
-      ServiceModule(Service *s, void *h)
-        : service(s), handle(h)
-          {};
-     ~ServiceModule(void)
+   // This needs to be renamed and moved (soon, along with config integration)
+   class Core {
+    private:
+      struct ServiceModule {
+	 Service *service;
+	 void *handle;
+	 
+	 ServiceModule(Service *s, void *h)
+	   : service(s), handle(h)
+	     {};
+	 ~ServiceModule(void)
+	   {
+	      std::cout << "Dead module??" << std::endl;
+	      dlclose(handle);
+	   }
+      };
+      typedef std::map <LibAIS::String, ServiceModule *> modules_type;
+      modules_type serviceModules;
+      
+    public:
+      Core(void) {
+	 // I'm anal, so shoot me.
+	 serviceModules.clear();
+      };
+      
+      void addModule(LibAIS::String const &name, Service &s, void *h) {
+	 // Just add it - this will overwrite anything already there
+	 serviceModules[name.IRCtoLower()] = new ServiceModule(&s,h);
+      };
+      
+      void delModule(LibAIS::String const &name) {
+	 ServiceModule *sm = serviceModules[name.IRCtoLower()];
+	 if (sm != 0) {
+	    delete sm;
+	    serviceModules.erase(name.IRCtoLower());
+	    return;
+	 }
+	 std::cout << "Umm... i couldn't find " << name << std::endl;
+      };
+      
+      bool exists(LibAIS::String const &name)
 	{
-		std::cout << "Dead module??" << std::endl;
-		dlclose(handle);
+	   ServiceModule *sm = serviceModules[name.IRCtoLower()];
+	   if ( sm == 0 )
+	     {
+		serviceModules.erase(name.IRCtoLower());
+		return false;
+	     }
+	   return true;
 	}
-   };
-   typedef std::map <LibAIS::String, ServiceModule *> modules_type;
-   modules_type serviceModules;
-
- public:
-   Core(void) {
-      // I'm anal, so shoot me.
-      serviceModules.clear();
-   };
-
-   void addModule(LibAIS::String const &name, Service &s, void *h) {
-      // Just add it - this will overwrite anything already there
-      serviceModules[name.IRCtoLower()] = new ServiceModule(&s,h);
-   };
-
-   void delModule(LibAIS::String const &name) {
-      ServiceModule *sm = serviceModules[name.IRCtoLower()];
-      if (sm != 0) {
-         delete sm;
-	 serviceModules.erase(name.IRCtoLower());
+      // Throw a line at the appropriate service
+      void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line, 
+		     User &origin) {
+	 ServiceModule *sm = serviceModules[name.IRCtoLower()];
+	 if (sm == 0) {
+	    // Give up.. delete what we just made and go bye byes
+	    serviceModules.erase(name.IRCtoLower());
+	    return;
+	 }
+	 Service *serv = sm->service;
+	 serv->parseLine(line, origin);
 	 return;
+      };
+      
+      void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line,
+		     User& origin, LibAIS::String const &ch) {
+	 // Find it...
+	 ServiceModule *sm = serviceModules[name.IRCtoLower()];
+	 
+	 // It will be null if we did not find it..
+	 if (sm == 0) {
+	    // Give up.. delete what we just made and go bye byes
+	    serviceModules.erase(name.IRCtoLower());
+	    return;
+	 }
+	 Service *serv = sm->service;
+	 // Otherwise we must have it.. send something to the service
+	 serv->parseLine(line, origin, ch);
+	 return;
+      };
+      
+      
+      // Dump a list of modules
+      LibAIS::String dumpModules(void) {
+	 std::cout << "Modules loaded: ";
+	 LibAIS::String tmp = "";
+	 for (modules_type::iterator it = serviceModules.begin();
+	      it != serviceModules.end(); it++) {
+	    // Output the key..
+	    std::cout << (*it).first << ' ';
+	    tmp = LibAIS::String(tmp)+" "+(*it).first;
+	 }
+	 std::cout << std::endl;
+	 return tmp;
       }
-      std::cout << "Umm... i couldn't find " << name << std::endl;
    };
-
-   bool exists(LibAIS::String const &name)
-	{
-		ServiceModule *sm = serviceModules[name.IRCtoLower()];
-		if ( sm == 0 )
-		{
-			serviceModules.erase(name.IRCtoLower());
-			return false;
-		}
-		return true;
-	}
-   // Throw a line at the appropriate service
-   void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line, 
-		  User &origin) {
-      ServiceModule *sm = serviceModules[name.IRCtoLower()];
-      if (sm == 0) {
-         // Give up.. delete what we just made and go bye byes
-         serviceModules.erase(name.IRCtoLower());
-         return;
-      }
-      Service *serv = sm->service;
-      serv->parseLine(line, origin);
-      return;
-   };
-
-   void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line,
-		  User& origin, LibAIS::String const &ch) {
-      // Find it...
-      ServiceModule *sm = serviceModules[name.IRCtoLower()];
-
-      // It will be null if we did not find it..
-      if (sm == 0) {
-         // Give up.. delete what we just made and go bye byes
-         serviceModules.erase(name.IRCtoLower());
-         return;
-      }
-      Service *serv = sm->service;
-      // Otherwise we must have it.. send something to the service
-      serv->parseLine(line, origin, ch);
-      return;
-   };
-
-
-   // Dump a list of modules
-   LibAIS::String dumpModules(void) {
-      std::cout << "Modules loaded: ";
-      LibAIS::String tmp = "";
-      for (modules_type::iterator it = serviceModules.begin();
-           it != serviceModules.end(); it++) {
-         // Output the key..
-         std::cout << (*it).first << ' ';
-	 tmp = LibAIS::String(tmp)+" "+(*it).first;
-      }
-      std::cout << std::endl;
-      return tmp;
-   }
-};
-
+   
 };
 
 #include "exordium/services.h"
