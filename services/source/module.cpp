@@ -17,7 +17,8 @@ using namespace Exordium;
 // called just before the module is actually going to be used
 KINE_MODULE_START(moduleStart)
 {
-   cout << "moduleStart()" << endl;
+   cout << "moduleStart().. btw the daemon is located at " << &daemon
+     << endl;
 
    // My, it looks an awful lot like main.cpp from here on... :) This is
    // temporary, naturally.
