@@ -123,6 +123,9 @@ int CMySQL::dbQuery(String const &query)
      std::cout << mysql_error(mysql) << std::endl;
    }
 #endif
+   
+   // hmm!
+   return 0;
 }
 
 

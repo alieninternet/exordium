@@ -390,6 +390,7 @@ String
    else
      return services.getDatabase().dbGetValue();
 */
+   return "";
 }
 
 int

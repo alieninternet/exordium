@@ -488,8 +488,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 		    {
 		       sendMessage(origin,
 				   String("You must discard a card that matches "
-					  "the suit selected by the last player
-					    "
+					  "the suit selected by the last player "
 					  "(") +
 				   Cards::Card::nameSuit(nextSuit) +
 				   ") or take a card.");
@@ -927,8 +926,7 @@ EXORDI8_FUNC(Exordi8::parseSUIT)
    if ((lastDiscardedCard.getIndex() != 8) || (nextSuit != 0))
      {
 	sendMessage(origin,
-		    "You need to discard a card with a face-value of '8' before
-		      "
+		    "You need to discard a card with a face-value of '8' before "
 		    "you can select a suit for the next player to play");
 	return true; // Keep the game alive
      }
