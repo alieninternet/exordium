@@ -30,6 +30,7 @@
 
 #include "nick.h"
 #include "tables.h"
+#include "language.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
 #include <kineircd/config.h>
@@ -89,7 +90,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	 return;
       }
    }
-   origin.sendMessage("Unrecognised Command :"+command, getName());
+   origin.sendMessage(GETLANG(nick_ERROR_UNKNOWN_COMMAND, command),
+		      getName());
    return;
 }
 
@@ -99,7 +101,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    String::size_type lineLength = 200;
 
    // Send the banner (this shouldn't be hard-coded)
-   origin.sendMessage("Command list for " + getName() + ":",getName());
+   origin.sendMessage(GETLANG(nick_COMMAND_LIST_START, getName()),
+		      getName());
    // Start formulating the data..
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++) {
@@ -120,7 +123,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    }
 
    // Send the footer (this shouldn't be hard-coded)
-   origin.sendMessage("End of command list",getName());
+   origin.sendMessage(GETLANG(nick_COMMAND_LIST_END),
+		      getName());
 
 
 }
@@ -136,7 +140,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
          return;
       }
    }
-   origin.sendMessage("Unrecognised Command :"+command, getName());
+   origin.sendMessage(GETLANG(nick_ERROR_UNKNOWN_COMMAND, command),
+		      getName());
    return;
 }
 
@@ -146,20 +151,25 @@ NICK_FUNC (Module::parseAUTH)
    String gauth = tokens.nextToken();
    if(!origin.isPending())
      {
-	origin.sendMessage("Error: This nickname is not pending confirmation",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_PENDING_CONFIRM),
+			   getName());
 	return;
      }
    if(origin.getPendingCode()==gauth)
      {
-	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
-	origin.sendMessage("You may now identify your nickname as normal",getName());
+	origin.sendMessage(GETLANG(nick_NICKNAME_CONFIRMED),
+			   getName());
+	origin.sendMessage(GETLANG(nick_NICKNAME_CONFIRMED_NOW_ID),
+			   getName());
 	origin.clearPendingCode();
 	return;
      }
      else
      {
-	origin.sendMessage("Error: The auth code you gave does not match our records",getName());
-	origin.sendMessage("Please re-check the email you received from services",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_BROKEN_AUTH_CODE),
+			   getName());
+	origin.sendMessage(GETLANG(nick_ERROR_CHECK_EMAIL),
+			   getName());
 	return;
      }
 }
@@ -171,52 +181,66 @@ NICK_FUNC (Module::parseAUTH)
    String who = tokens.nextToken().IRCtoLower();
    if(who=="")
 	{
-		origin.sendMessage("Usage: info nickname",getName());
+		origin.sendMessage(GETLANG(nick_USAGE_INFO),
+				   getName());
 		return;
 	}
    User *ptr = services->findUser(who);
    if(ptr==0)
      {
-	origin.sendMessage("Error: Could not locate that user",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_COULDNT_FIND_USER),
+			   getName());
 	return;
      }
    if(!origin.isRegistered())
      {
-	origin.sendMessage("Error: That nickname is not registered",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+			   getName());
 	return;
      }
-   origin.sendMessage("Nickname Information for \002"+who,getName());
-   origin.sendMessage("Last identified : \002"+ptr->getLastID(),getName());
-   origin.sendMessage("Registered : \002"+ptr->getRegDate(),getName());
-   origin.sendMessage("ICQ : \002"+ptr->getICQ(),getName());
-   origin.sendMessage("MSN : \002"+ptr->getMSN(),getName());
-   origin.sendMessage("AIM : \002"+ptr->getAIM(),getName());
-   origin.sendMessage("URL : \002"+ptr->getURL(),getName());
-   origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
-   origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
+   origin.sendMessage(GETLANG(nick_INFO_START, who),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_IDENTIFIED, ptr->getLastID()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_REGISTERED, ptr->getRegDate()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_ICQ, ptr->getICQ()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_MSN, ptr->getMSN()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_AIM, ptr->getAIM()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_URL, ptr->getURL()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_YAHOO, ptr->getYAHOO()),
+		      getName());
+   origin.sendMessage(GETLANG(nick_INFO_LAST_QUIT_REASON, 
+			      ptr->getQuitMessage()),
+		      getName());
    std::ostringstream tol;
-                tol << "Options : ";
-                if(ptr->deopAway())
-     {
-	
-	                  tol << "{Deop on Away}";
-     }
    
-                if(ptr->modNick())
-     {
-	
-	                  tol << "{Nickname Enforcement}";
-     }
-             origin.sendMessage(tol.str(),getName());
+   if(ptr->deopAway()) {
+      tol << '{' << GETLANG(nick_INFO_OPTION_DEOPAWAY) << '}';
+   }
+   
+   if(ptr->modNick()) {
+      tol << '{' << GETLANG(nick_INFO_OPTION_MODNICK) << '}';
+   }
+   
+   origin.sendMessage(GETLANG(nick_INFO_OPTIONS, tol.str()),
+		      getName());
    
    
    if(origin.getAccess("Serv")>0 || origin.getAccess("Oper")>0)
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     origin.sendMessage("Extra Infortmation for Staff",getName());
-	     origin.sendMessage("Last host : \002"+ptr->getLastHost(),getName());
-	     origin.sendMessage("Email : \002"+ptr->getEmail(),getName());
+	     origin.sendMessage(GETLANG(nick_INFO_STAFF_INFO),
+				getName());
+	     origin.sendMessage(GETLANG(nick_INFO_LAST_HOST, ptr->getLastHost()),
+				getName());
+	     origin.sendMessage(GETLANG(nick_INFO_EMAIL, ptr->getEmail()),
+				getName());
  	     return;
 	  }
      }
@@ -230,12 +254,16 @@ NICK_FUNC (Module::parseAUTH)
    String value = tokens.nextToken();
    if(!origin.isIdentified(origin.getNickname()))
      {
-	origin.sendMessage("You are not identified as that nickname",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NOT_IDENTIFIED),
+			   getName());
         return;
      }
    if(command=="")
      {
-	origin.sendMessage("Set options are: password,email,language,modnick,privmsg,deopaway",getName());
+	origin.sendMessage(GETLANG(nick_SET_OPTIONS_ARE,
+				   "password,email,language,modnick,privmsg,"
+				   "deopaway"),
+			   getName());
 	return;
      }
    
@@ -243,16 +271,19 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set pass newpassword",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_PASS),
+				getName());
 	     return;
 	  }
 	if(value.length()<5)
 	  {
-	     origin.sendMessage("Error: New password must be greater than four letters",getName());
+	     origin.sendMessage(GETLANG(nick_ERROR_PASSWORD_TOO_SHORT, "4"),
+				getName());
 	     return;
 	  }
 	origin.setPassword(value);
-	origin.sendMessage("Password has been successfully changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_PASSWORD_CHANGED, value),
+			   getName());
 	origin.log(getName(),String("Changed nickname password"));
 	return;
      }
@@ -260,24 +291,28 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set modnick true/false",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_MODNICK),
+				getName());
 	     return;
 	  }
 
 	if(value=="true")
 	  {
 	     origin.setModNick(true);
-	     origin.sendMessage("Nickname enforcement is now enabled for this nickname",getName());
+	     origin.sendMessage(GETLANG(nick_MODNICK_NOW_ON),
+				getName());
 	     return;
 	  }
 
 	if(value=="false")
 	  {
 	     origin.setModNick(false);
-	     origin.sendMessage("Nickname enforcement is now disabled for this nickname",getName());
+	     origin.sendMessage(GETLANG(nick_MODNICK_NOW_OFF),
+				getName());
 	     return;
 	  }
-	origin.sendMessage("Error: Value must be true or false",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NOT_BOOLEAN),
+			   getName());
 	return;
      }
 
@@ -285,22 +320,26 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set deopaway true/false",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_DEOPAWAY),
+				getName());
 	     return;
 	  }
 	if(value=="true")
 	  {
 	     origin.setDeopAway(true);
-	     origin.sendMessage("DeopOnAway is now enabled for this nickname",getName());
+	     origin.sendMessage(GETLANG(nick_DEOPAWAY_NOW_ON),
+				getName());
 	     return;
 	  }
 	if(value=="false")
 	  {
 	     origin.setDeopAway(false);
-	     origin.sendMessage("DeopOnAway is now disabled for this nickname",getName());
+	     origin.sendMessage(GETLANG(nick_DEOPAWAY_NOW_OFF),
+				getName());
 	     return;
 	  }
-	origin.sendMessage("Error: Value must be true or false",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NOT_BOOLEAN),
+			   getName());
 	return;
      }
 
@@ -308,16 +347,19 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	      origin.sendMessage("Usage: set language LANGUAGE",getName());
+	      origin.sendMessage(GETLANG(nick_USAGE_SET_LANGUAGE),
+				 getName());
 	     return;
 	  }
-	if(value=="english")
+	if((value=="english") || (value == "en"))
 	  {
-	     origin.setLanguage("english");
-	     origin.sendMessage("Helpfiles interface has been changed to english",getName());
+	     origin.setLanguage("en");
+	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "English"),
+				getName());
 	     return;
 	  }
-	origin.sendMessage("Error: Unsupported Language!",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
+			   getName());
 	return;
 
      }
@@ -325,11 +367,13 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set email email@address",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_EMAIL),
+				getName());
 	     return;
 	  }
 	origin.setEmail(value);
-	origin.sendMessage("Email address changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_EMAIL_CHANGED, value),
+			   getName());
 	origin.log(getName(),"Changed email address to "+value);
 	return;
      }
@@ -338,11 +382,13 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set msn handle",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_MSN),
+				getName());
 	     return;
 	  }
 	origin.setInfo("msn",value);
-	origin.sendMessage("MSN handle has been changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_MSN_CHANGED, value),
+			   getName());
         origin.log(getName(),"Changed MSN handle to "+value);
 	return;
      }
@@ -351,11 +397,13 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set aim handle",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_AIM),
+				getName());
 	     return;
 	  }
 	origin.setInfo("aim",value);
-	origin.sendMessage("AIM handle has been changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_AIM_CHANGED, value),
+			   getName());
 	origin.log(getName(),"Changed AIM handle to "+value);
 	return;
      }
@@ -364,11 +412,13 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set yahoo handle",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_YAHOO),
+				getName());
 	     return;
 	  }
 	origin.setInfo("yahoo",value);
-	origin.sendMessage("Yahoo! handle has been changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_YAHOO_CHANGED, value),
+			   getName());
 	origin.log(getName(),"Changed Yahoo! handle to "+value);
 	return;
      }
@@ -377,11 +427,13 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set icq value",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_ICQ),
+				getName());
 	     return;
 	  }
 	origin.setInfo("icq",value);
-	origin.sendMessage("ICQ handle has been changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_ICQ_CHANGED, value),
+			   getName());
 	origin.log(getName(),"Changed ICQ address to "+value);
 	return;
      }
@@ -390,11 +442,13 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set url www.someplace.org",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_URL),
+				getName());
 	     return;
 	  }
 	origin.setInfo("url",value);
-	origin.sendMessage("Website URL changed to :"+value,getName());
+	origin.sendMessage(GETLANG(nick_URL_CHANGED, value),
+			   getName());
 	origin.log(getName(),"Changed URL address to "+value);
 	return;
      }
@@ -402,22 +456,26 @@ NICK_FUNC (Module::parseAUTH)
      {
 	if(value=="")
 	  {
-	     origin.sendMessage("Usage: set privmsg on/off",getName());
+	     origin.sendMessage(GETLANG(nick_USAGE_SET_PRIVMSG),
+				getName());
 	     return;
 	  }
 	if(value=="on" || value=="true" || value=="yes")
 	  {
 	     origin.setPrivmsg(true);
-	     origin.sendMessage("I will now use the private message interface",getName());
+	     origin.sendMessage(GETLANG(nick_PRIVMSG_NOW_ON),
+				getName());
 	     return;
 	  }
 	if(value=="off" || value=="false" || value=="no")
 	  {
 	     origin.setPrivmsg(false);
-	     origin.sendMessage("I will now use the notice message interface",getName());
+	     origin.sendMessage(GETLANG(nick_PRIVMSG_NOW_OFF),
+				getName());
 	     return;
 	  }
-	origin.sendMessage("Error: Value must be on/off",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NOT_BOOLEAN),
+			   getName());
 	return;
      }
    return;
@@ -430,16 +488,19 @@ NICK_FUNC (Module::parseAUTH)
    String nickname = tokens.nextToken();
    if(nickname=="")
      {
-	origin.sendMessage("Usage: access nickname",getName());
+	origin.sendMessage(GETLANG(nick_USAGE_ACCESS),
+			   getName());
 	return;
      }
    User *ptr = services->findUser(nickname);
    if(ptr==0)
      {
-	origin.sendMessage("Error: That user is not online",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NOT_ONLINE),
+			   getName());
 	return;
      }
-   origin.sendMessage("Access list for "+nickname,getName());
+   origin.sendMessage(GETLANG(nick_ACCESS_LIST_START, nickname),
+		      getName());
    origin.sendMessage(ptr->getIDList(),getName());
 }
 
@@ -451,24 +512,32 @@ NICK_FUNC (Module::parseAUTH)
    String email = tokens.nextToken();
    if(origin.isRegistered())
      {
-	origin.sendMessage ("Error - This nickname is already registered", getName());
+	origin.sendMessage(GETLANG(nick_ERROR_ALREADY_REGISTERED),
+			   getName());
 	return;
      }
    if(password=="" | email=="")
      {
-	origin.sendMessage ("Usage: register password email@address", getName());
+	origin.sendMessage(GETLANG(nick_USAGE_REGISTER),
+			   getName());
 	return;
      }
    if(password.length()<4)
      {
-	origin.sendMessage ("Error - Your password needs to be greater than four letters!", getName());
+	origin.sendMessage(GETLANG(nick_ERROR_PASSWORD_TOO_SHORT, "4"),
+			   getName());
 	return;
      }
-   origin.sendMessage("Here on "+Kine::config().getNetworkName()+" we require email validation before allowing our users", getName());
-   origin.sendMessage("to register nicknames, this is a simple process and only takes a few minutes to complete",getName());
-   origin.sendMessage("You will shortly receive an email with further instructions",getName());
-   origin.sendMessage("This will be delivered to the account :\002"+email+"\002",getName());
-   origin.sendMessage("Thank you for using "+Kine::config().getNetworkName()+"!",getName());
+   origin.sendMessage(GETLANG(nick_REGISTRATION_EMAIL_NOTICE_1),
+		      getName());
+   origin.sendMessage(GETLANG(nick_REGISTRATION_EMAIL_NOTICE_2),
+		      getName());
+   origin.sendMessage(GETLANG(nick_REGISTRATION_EMAIL_NOTICE_3),
+		      getName());
+   origin.sendMessage(GETLANG(nick_REGISTRATION_EMAIL_NOTICE_4, email),
+		      getName());
+   origin.sendMessage(GETLANG(nick_REGISTRATION_THANKYOU),
+		      getName());
    origin.registerNick(password,email);
    origin.log(getName(),"Registered nickname with email "+email);
    String authcode = origin.genAuth();
@@ -494,25 +563,29 @@ NICK_FUNC (Module::parseAUTH)
    String password = tokens.nextToken();
    if(tokill=="" | password=="")
      {
-	origin.sendMessage("Usage: kill nickname password",getName());
+	origin.sendMessage(GETLANG(nick_USAGE_KILL),
+			   getName());
 	return;
      }
    User *ptr = services->findUser(tokill);
    if(ptr==0)
      {
-	origin.sendMessage("Error: That user is not online.",getName());
+	origin.sendMessage(GETLANG(nick_ERROR_NOT_ONLINE),
+			   getName());
 	return; /* yoda says so yes yes yes */
      }
      else
      { 
 	if(ptr->isPending())
 	  {
-	     origin.sendMessage("Error: That nickname is in a pending state and may not be killed",getName());
+	     origin.sendMessage(GETLANG(nick_ERROR_NICK_PENDING_NO_KILL),
+				getName());
 	     return;
 	  }
 	if(!ptr->isRegistered())
 	  {
-	     origin.sendMessage("Error: That nickname is not registered!",getName());
+	     origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+				getName());
 	     return;
 	  }
 	if(ptr->getPass() == password)
@@ -521,8 +594,9 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.log(getName(),"Requested a kill on "+tokill);
 	     return;
 	  }
-	origin.sendMessage("Error: Incorrect password",getName());
-	int access = origin.getAccess("Serv");
+	origin.sendMessage(GETLANG(nick_ERROR_INCORRECT_PASSWORD),
+			   getName());
+//	int access = origin.getAccess("Serv");
 	if(ptr->getAccess("Serv")>0 || ptr->getAccess("Oper")>0)
 	  {
 	     services->sendHelpme(getName(),String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
@@ -547,24 +621,28 @@ NICK_FUNC (Module::parseGHOST)
   String password = tokens.nextToken();
   if(toghost=="" | password=="")
    {
-	origin.sendMessage("Usage: ghost nickname password",getName());
+	origin.sendMessage(GETLANG(nick_USAGE_GHOST),
+			   getName());
 	return;
    }
   if (!services->isNickRegistered( toghost))
     {
-       origin.sendMessage("Error: Target nickname is not registered",getName());
+       origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+			  getName());
        return;
     }
    if(Utils::generatePassword(toghost,password) == password)
     {
        services->registerService(toghost,"ghost","ghosts.peoplechat.org",
 					"Ghosted by "+origin.getNickname());
-       origin.sendMessage("Ghost successfull for "+toghost,getName());
-       origin.log(getName(),String("Successfully ghosted ")+toghost);
+       origin.sendMessage(GETLANG(nick_GHOST_SUCCESSFUL, toghost),
+			  getName());
+       origin.log(getName(), "Successfully ghosted " + toghost);
        return;
     }
   origin.log(getName(),String("Failed ghost for "+toghost));
-  origin.sendMessage("Error: Incorrect Password",getName());
+  origin.sendMessage(GETLANG(nick_ERROR_INCORRECT_PASSWORD),
+		     getName());
   return;
 }
 
@@ -575,26 +653,31 @@ NICK_FUNC (Module::parseIDENTIFY)
   String password = tokens.nextToken();
   if (origin.isPending())
     {
-       origin.sendMessage ("Error: This nickname is still pending confirmation - please check your email", getName());
+       origin.sendMessage(GETLANG(nick_ERROR_NICK_PENDING_NO_IDENTIFY),
+			  getName());
        return;
     }
   if (!origin.isRegistered())
     {
-       origin.sendMessage ("Error: That nickname is not registered", getName());
+       origin.sendMessage(GETLANG(nick_ERROR_NICK_NOT_REGISTERED),
+			  getName());
        return;
     }
   if(!safe)
     {
-       origin.sendMessage ("Error: For security if you must use /ns id password", getName());
+       origin.sendMessage(GETLANG(nick_ERROR_INSECURE_MESSAGE),
+			  getName());
        return;
      }
    if(Utils::generatePassword(origin.getNickname(),password) == origin.getPass())
     {
        origin.updateIdentified();
-       origin.sendMessage("You have been successfully identified to services",getName());
+       origin.sendMessage(GETLANG(nick_IDENTIFY_SUCCESSFUL),
+			  getName());
        return;
     }
-  origin.sendMessage(String("\002Incorrect\002 Password"),getName());
+  origin.sendMessage(GETLANG(nick_ERROR_INCORRECT_PASSWORD),
+		     getName());
   origin.log(getName(),"Failed identify for nickname "+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
   if(origin.getAccess("Serv")>0 || origin.getAccess("Oper")>0)
     {
@@ -636,6 +719,9 @@ bool Module::start(Exordium::Services& s)
       // Next table..
       i++;
    }
+
+   // Register and process our language tag name -> tag ID map
+   Kine::langs().registerMap(Language::tagMap);
    
    // Register ourself to the network
    services->registerService(getName(), getName(), 
