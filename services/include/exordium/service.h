@@ -55,6 +55,7 @@ namespace Exordium {
 	 // Configuration information (this is a default list for this base)
 	 static const LibAIS::ConfigParser::defTable_type defaultDefinitions;
 	 
+       protected:
 	 LibAIS::String defDescription;			// Our description
 	 LibAIS::String defHostname;			// Our hostname
 	 LibAIS::String defName;			// Our name
