@@ -40,7 +40,7 @@ using namespace Exordium;
 
 
 // Information used by the configuration parser
-const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
+const AIS::Util::ConfigParser::defTable_type ConfigInternal::definitionTable =
 {
      {
 	"CONSOLE", 7,
@@ -98,7 +98,7 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
 
 
 // 'CONSOLE' class definition table
-const AISutil::ConfigParser::defTable_type ConfigInternal::defClassConsole =
+const AIS::Util::ConfigParser::defTable_type ConfigInternal::defClassConsole =
 {
      {
         "DESCRIPTION", 4,
@@ -130,7 +130,7 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::defClassConsole =
 
 
 // 'SQL' class definition table
-const AISutil::ConfigParser::defTable_type ConfigInternal::defClassSql =
+const AIS::Util::ConfigParser::defTable_type ConfigInternal::defClassSql =
 {
      {
         "DATABASE", 8,
@@ -280,7 +280,7 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
    
    // Parse the module's configuration data
    return
-     AISutil::ConfigParser::parse(configData, position,
+     AIS::Util::ConfigParser::parse(configData, position,
 				  ((void *)
 				   &(service->getConfigData().getDefinitions())),
 				  service->getConfigData());
@@ -292,7 +292,7 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
  * 18/09/2002 pickle - Modified to suit Exordium
  * Note: This is the same as the class handler, except the module is 
  *       responsible for the configuration of its defaults. Remember that 
- *       the AISutil::ConfigParser routines are designed to be totally 
+ *       the AIS::Util::ConfigParser routines are designed to be totally 
  *       passive..
  */
 LIBAISUTIL_CONFIG_VARIABLE_HANDLER(ConfigInternal::varHandleModule)

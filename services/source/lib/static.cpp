@@ -39,7 +39,7 @@
 #include "exordium/static.h"
 #include <aisutil/string.h>
 
-using AISutil::String;
+using AIS::Util::String;
 using namespace Exordium;
 
 namespace Exordium

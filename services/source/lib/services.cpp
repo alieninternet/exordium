@@ -74,10 +74,10 @@ extern "C"
 
 #include <aisutil/socket/sockets.h>
 
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 using Kine::Password;
-using AISutil::StringMask;
+using AIS::Util::StringMask;
 using Kine::Signals;
 using namespace Exordium;
 
@@ -723,11 +723,11 @@ void
    queueAdd (String (":") + service + " PART " + target);
 }
 
-void ServicesInternal::serviceJoin(AISutil::String const &service,
-				   AISutil::String const &target)
+void ServicesInternal::serviceJoin(AIS::Util::String const &service,
+				   AIS::Util::String const &target)
 {
    queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
-	    AISutil::String::convert(currentTime) + " " + target +
+	    AIS::Util::String::convert(currentTime) + " " + target +
 	    " + :" + service);
 };
 

@@ -55,7 +55,7 @@ namespace Exordium {
 	{};
       
       // Defintions
-      AISutil::String getValue(const int &,const int &);
+      AIS::UTil::String getValue(const int &,const int &);
       
       //functions.
       int getRows(void) 

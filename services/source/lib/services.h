@@ -44,15 +44,15 @@ namespace Exordium {
 
       ConfigInternal& config;
 
-      typedef std::map <AISutil::String, User *> user_map;
-      typedef std::map <AISutil::String, dChan *> chan_map;
-      typedef std::map <AISutil::String, Server *> server_map;
+      typedef std::map <AIS::Util::String, User *> user_map;
+      typedef std::map <AIS::Util::String, dChan *> chan_map;
+      typedef std::map <AIS::Util::String, Server *> server_map;
       
       user_map users;
       chan_map chans;
       server_map servers;
       
-      const AISutil::String buffer;
+      const AIS::Util::String buffer;
       int sock;
       int maxSock;
       char *inputBuffer;
@@ -73,9 +73,9 @@ namespace Exordium {
       unsigned long countTx;
       unsigned long countRx;
       unsigned long remoteAddress;
-      std::queue < AISutil::String > outputQueue;
+      std::queue < AIS::Util::String > outputQueue;
       std::string inputQueue;
-      AISutil::SocketIPv4TCP socky;
+      AIS::Util::SocketIPv4TCP socky;
       
       bool handleInput(void);
       
@@ -93,7 +93,7 @@ namespace Exordium {
       void disconnect(void);
       bool connect(void);
       bool queueFlush(void);
-      AISutil::String parseHelp(AISutil::String const &);
+      AIS::Util::String parseHelp(AIS::Util::String const &);
       
       void checkpoint(void);
 	
@@ -128,10 +128,10 @@ namespace Exordium {
       void run(void);
       
       // Function Declrations below here.
-      void shutdown(const AISutil::String &);
+      void shutdown(const AIS::Util::String &);
       
 
-      User* const addUser(const AISutil::String& name, const int oid);
+      User* const addUser(const AIS::Util::String& name, const int oid);
       bool delUser(Kine::Name &);
       User* findUser(Kine::Name &);
       
@@ -139,44 +139,44 @@ namespace Exordium {
       bool delChan(Kine::Name &);
       dChan* findChan(Kine::Name &);
       
-      Server* const addServer(const AISutil::String&, const int&,
-			      const AISutil::String&);
-      bool delServer(AISutil::String &);
-      Server* findServer(AISutil::String &);
+      Server* const addServer(const AIS::Util::String&, const int&,
+			      const AIS::Util::String&);
+      bool delServer(AIS::Util::String &);
+      Server* findServer(AIS::Util::String &);
       
       
       
       void setNick(User &,Kine::Name &);
       
-      void mode(AISutil::String const &, AISutil::String const &,
-		AISutil::String const &, AISutil::String const &);
+      void mode(AIS::Util::String const &, AIS::Util::String const &,
+		AIS::Util::String const &, AIS::Util::String const &);
       
       // This shold be in the Service:: class
-      void doHelp(User&, AISutil::String const &, AISutil::String const &,
-		  AISutil::String const &);
+      void doHelp(User&, AIS::Util::String const &, AIS::Util::String const &,
+		  AIS::Util::String const &);
       
-      void log(User&, AISutil::String const &, AISutil::String const &,
-	       AISutil::String const &);
-      void log(User&, AISutil::String const &, AISutil::String const &);
+      void log(User&, AIS::Util::String const &, AIS::Util::String const &,
+	       AIS::Util::String const &);
+      void log(User&, AIS::Util::String const &, AIS::Util::String const &);
       
       // This is in the wrong place, surely
-      void sendEmail(AISutil::String const &, AISutil::String const &,
-		     AISutil::String const &);
+      void sendEmail(AIS::Util::String const &, AIS::Util::String const &,
+		     AIS::Util::String const &);
 
-      void servicePart (AISutil::String const &, AISutil::String const &);
-      void queueAdd (const AISutil::String& line);
+      void servicePart (AIS::Util::String const &, AIS::Util::String const &);
+      void queueAdd (const AIS::Util::String& line);
 
 
-      void killnick (AISutil::String const &target,
-		     AISutil::String const &from,
-		     AISutil::String const &reason)
+      void killnick (AIS::Util::String const &target,
+		     AIS::Util::String const &from,
+		     AIS::Util::String const &reason)
 	{
 	   queueAdd(":" + from + " KILL " + target + " :" + reason);
 	};
       
-      void serviceNotice(AISutil::String const &line,
-			 AISutil::String const &service, 
-			 AISutil::String const &target)
+      void serviceNotice(AIS::Util::String const &line,
+			 AIS::Util::String const &service, 
+			 AIS::Util::String const &target)
 	{
 	   if (usePrivmsg(target.toLower())) {
 	      queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
@@ -185,86 +185,86 @@ namespace Exordium {
 	   }
 	}
       
-      void serviceNoticeForce(AISutil::String const &line, 
-			      AISutil::String const &service,
-			      AISutil::String const &target)
+      void serviceNoticeForce(AIS::Util::String const &line, 
+			      AIS::Util::String const &service,
+			      AIS::Util::String const &target)
 	{
 	   queueAdd(":" + service + " NOTICE " + target + " :" + line);
 	}
       
-      void servicePrivmsg(AISutil::String const &line,
-			  AISutil::String const &service, 
-			  AISutil::String const &target)
+      void servicePrivmsg(AIS::Util::String const &line,
+			  AIS::Util::String const &service, 
+			  AIS::Util::String const &target)
 	{
 	   queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	}
       
-      void serviceQuit(const AISutil::String& name,
-		       const AISutil::String& reason)
+      void serviceQuit(const AIS::Util::String& name,
+		       const AIS::Util::String& reason)
 	{
 	   queueAdd(":" + name + " QUIT :" + reason);
 	};
       
       // This does not modify a server mode, it should be renamed.
-      void serverMode(AISutil::String const &chan, AISutil::String const &mode,
-		      AISutil::String const &target)
+      void serverMode(AIS::Util::String const &chan, AIS::Util::String const &mode,
+		      AIS::Util::String const &target)
 	{
 	   queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
 	}
       
-      void registerService(AISutil::String const &nick,
-			   AISutil::String const &user,
-			   AISutil::String const &host,
-			   AISutil::String const &realname)
+      void registerService(AIS::Util::String const &nick,
+			   AIS::Util::String const &user,
+			   AIS::Util::String const &host,
+			   AIS::Util::String const &realname)
 	{                               
 	   queueAdd ("NICK " + nick + " 1 1 +o " + user + 
 		     " " + host + " " + Kine::config().getOptionsServerName() +
 		     " 0 0 :" + realname);
         }; 
       
-      void serviceJoin(AISutil::String const &service,
-		       AISutil::String const &target);
+      void serviceJoin(AIS::Util::String const &service,
+		       AIS::Util::String const &target);
       
-      bool usePrivmsg(AISutil::String const &);
+      bool usePrivmsg(AIS::Util::String const &);
       
       // These should be moved to the new channel classes
-      void serviceKick(AISutil::String const &, AISutil::String const &,
-		       AISutil::String const &);
-      bool isOp(AISutil::String const &, AISutil::String const &);
-      bool isVoice(AISutil::String const &, AISutil::String const &);
+      void serviceKick(AIS::Util::String const &, AIS::Util::String const &,
+		       AIS::Util::String const &);
+      bool isOp(AIS::Util::String const &, AIS::Util::String const &);
+      bool isVoice(AIS::Util::String const &, AIS::Util::String const &);
       
       
       // This should be moved to the NOTE MODULE
       void sendNote(Kine::Name const &, Kine::Name const &,
-		    AISutil::String const &);
+		    AIS::Util::String const &);
       
       int locateID(Kine::Name const &nick);
-      User* addClient(Kine::Name const &, AISutil::String const &,
-		      AISutil::String const &, AISutil::String const &,
-		      AISutil::String const &, AISutil::String const &,
-		      AISutil::String const &,
-		      AISutil::String const &);
-      int getRequiredAccess(AISutil::String const &, AISutil::String const &);
-      bool isNickRegistered(AISutil::String const &);
+      User* addClient(Kine::Name const &, AIS::Util::String const &,
+		      AIS::Util::String const &, AIS::Util::String const &,
+		      AIS::Util::String const &, AIS::Util::String const &,
+		      AIS::Util::String const &,
+		      AIS::Util::String const &);
+      int getRequiredAccess(AIS::Util::String const &, AIS::Util::String const &);
+      bool isNickRegistered(AIS::Util::String const &);
       // This should be in the NICK MODULE
-      void modeIdentify(AISutil::String const &);
-      void updateLastID(AISutil::String const &);
+      void modeIdentify(AIS::Util::String const &);
+      void updateLastID(AIS::Util::String const &);
       
       
       
-      AISutil::String getNick(int const &);
-      AISutil::String getOnlineNick(int const &);
-      int getOnlineChanID(AISutil::String const &);
-      AISutil::String getpendingCode(AISutil::String const &);
-      void registerNick(AISutil::String const &, AISutil::String const &,
-			AISutil::String const &);
-      void addOper(AISutil::String const &, int access);
-      void delOper(AISutil::String const &);
-      bool isOper(AISutil::String const &);
+      AIS::Util::String getNick(int const &);
+      AIS::Util::String getOnlineNick(int const &);
+      int getOnlineChanID(AIS::Util::String const &);
+      AIS::Util::String getpendingCode(AIS::Util::String const &);
+      void registerNick(AIS::Util::String const &, AIS::Util::String const &,
+			AIS::Util::String const &);
+      void addOper(AIS::Util::String const &, int access);
+      void delOper(AIS::Util::String const &);
+      bool isOper(AIS::Util::String const &);
       void validateOper(Kine::Name &);
-      void sendGOper(AISutil::String const &, AISutil::String const &);
-      void sendHelpme(AISutil::String const &, AISutil::String const &);
-      void setMode(AISutil::String const &, AISutil::String const &);      
+      void sendGOper(AIS::Util::String const &, AIS::Util::String const &);
+      void sendHelpme(AIS::Util::String const &, AIS::Util::String const &);
+      void setMode(AIS::Util::String const &, AIS::Util::String const &);      
       unsigned long getCountTx(void);
 //	{ return countTx; };
       unsigned long getCountRx(void);

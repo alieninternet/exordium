@@ -33,7 +33,7 @@
 
 #include "exordium/utils.h"
 
-using AISutil::String;
+using AIS::Util::String;
 using namespace Exordium;
 
 // Random number generator
@@ -55,7 +55,7 @@ String Exordium::Utils::generatePassword(const String& nickname,
      password << ":" << std::endl;
 
    //  static const Kine::Utils::base_type PasswordStrBase = 85;
-   //   static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
+   //   static const AIS::Util::String::size_type PasswordStrBaseLongPad = 5;
    //String pass =
    //Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
    //std::cout << "GeneratePassword() :" << pass << ":" << std::endl;
@@ -79,9 +79,9 @@ String Exordium::Utils::generateRegcode(const String& nickname,
      password << ":" << std::endl;
 
    static const unsigned char PasswordStrBase = 85;
-   static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
+   static const AIS::Util::String::size_type PasswordStrBaseLongPad = 5;
    String pass =
-     AISutil::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
+     AIS::Util::SHA1::digestToStr(Kine::Password::makePassword(nickname,password),PasswordStrBase,PasswordStrBaseLongPad);
    std::cout << "GeneratePassword() :" << pass << ":" << std::endl;
    return pass;
    //

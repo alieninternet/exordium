@@ -38,7 +38,7 @@
 #include <mysql/mysql.h>
 
 using namespace Exordium;
-using AISutil::String;
+using AIS::Util::String;
 
 // Constructor thingy ma bob 
 CMySQLRes::CMySQLRes(MYSQL_RES ptr)

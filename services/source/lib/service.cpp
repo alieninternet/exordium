@@ -31,7 +31,7 @@
 #include "exordium/service.h"
 
 // Default configuration definition table (for uninherited ConfigData classes)
-const AISutil::ConfigParser::defTable_type
+const AIS::Util::ConfigParser::defTable_type
   Exordium::Service::ConfigData::defaultDefinitions = {
        {
 	  "DESCRIPTION", 4,

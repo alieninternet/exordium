@@ -33,8 +33,8 @@
 #include "core_language.h"
 #include <assert.h>
 
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 using namespace Exordium;
 
 const struct Console::functionTableStruct Console::functionTable[] = {

@@ -35,7 +35,7 @@
 #include "dbpgsql.h"
 
 using namespace Exordium;
-using AISutil::String;
+using AIS::Util::String;
 
 CPgSQL::~CPgSQL(void)
 {

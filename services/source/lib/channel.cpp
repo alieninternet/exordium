@@ -34,8 +34,8 @@
 #include "exordium/services.h"
 
 using namespace Exordium;
-using AISutil::String;
-using AISutil::StringMask;
+using AIS::Util::String;
+using AIS::Util::StringMask;
 namespace Exordium
 {
 

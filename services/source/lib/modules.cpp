@@ -34,8 +34,8 @@
 #include "modules.h"
 
 using namespace Exordium;
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 
 /* ~Modules - Shut down all existing modules in the list
  * Original 17/09/2002 pickle
@@ -260,7 +260,7 @@ void
  *
  */
 
-void Modules::handleAway(User& origin, const AISutil::String &message) {
+void Modules::handleAway(User& origin, const AIS::Util::String &message) {
    
    for (modules_type::const_iterator it = modules.begin();
 	it != modules.end(); it++) {
@@ -283,7 +283,7 @@ void Modules::handleAway(User& origin, const AISutil::String &message) {
  * to the appropiate modules who are listening for this event type.
  *
  */
-void Modules::handleTopic(const AISutil::String &origin, dChan& channel, const AISutil::String &newTopic) {
+void Modules::handleTopic(const AIS::Util::String &origin, dChan& channel, const AIS::Util::String &newTopic) {
 
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {
@@ -343,8 +343,8 @@ void Modules::handleChannelPart(User& origin, dChan &channel) {
 
 
 
-void Modules::handleChannelMode(dChan &channel, const AISutil::String &modes, const AISutil::String &target,
-                                const AISutil::String& source) {
+void Modules::handleChannelMode(dChan &channel, const AIS::Util::String &modes, const AIS::Util::String &target,
+                                const AIS::Util::String& source) {
 
    for (modules_type::const_iterator it = modules.begin();
         it != modules.end(); it++) {

@@ -36,21 +36,21 @@ namespace Exordium {
    class ConfigInternal : public Exordium::Config {
     public:
       // The definition table used by Kine's configuration parser
-      static const AISutil::ConfigParser::defTable_type definitionTable;
+      static const AIS::Util::ConfigParser::defTable_type definitionTable;
 
     private:
       // Variables (top class from the definition table above)
       Kine::Logger::Mask::lazy_type defLogMask;	// Database logging mask
-      AISutil::String defUnderlingDescription;	// Underling server description
-      AISutil::String defUplinkHost;           	// Uplink Host (temporary)
+      AIS::Util::String defUnderlingDescription;	// Underling server description
+      AIS::Util::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
-      AISutil::String defUplinkPass;		// Uplink Pass (temporary)
+      AIS::Util::String defUplinkPass;		// Uplink Pass (temporary)
 
       // 'CONSOLE' class and variables
-      static const AISutil::ConfigParser::defTable_type defClassConsole;
-      AISutil::String defConsoleDescription;	// Console's real name field
+      static const AIS::Util::ConfigParser::defTable_type defClassConsole;
+      AIS::Util::String defConsoleDescription;	// Console's real name field
       bool defConsoleEnabled;			// Is the console active?
-      AISutil::String defConsoleHostname;	// The console's host name
+      AIS::Util::String defConsoleHostname;	// The console's host name
       Kine::Name defConsoleName;		// The console's nickname
       Kine::Name defConsoleChan;		// Console's channel
 
@@ -64,7 +64,7 @@ namespace Exordium {
       static LIBAISUTIL_CONFIG_VARIABLE_HANDLER(varHandleModule);
       
       // 'SQL' class
-      static const AISutil::ConfigParser::defTable_type defClassSql;
+      static const AIS::Util::ConfigParser::defTable_type defClassSql;
 
     public:
       // Constructor
@@ -77,23 +77,23 @@ namespace Exordium {
       const bool checkConfig(void) const;
       
       // Top variables
-      const AISutil::String& getUnderlingDescription(void) const
+      const AIS::Util::String& getUnderlingDescription(void) const
 	{ return defUnderlingDescription; };      
-      const AISutil::String& getUplinkHost(void) const
+      const AIS::Util::String& getUplinkHost(void) const
 	{ return defUplinkHost; };      
       const unsigned short getUplinkPort(void) const
         { return defUplinkPort; };
-      const AISutil::String& getUplinkPass(void) const
+      const AIS::Util::String& getUplinkPass(void) const
 	{ return defUplinkPass; };
       const Kine::Logger::Mask::lazy_type getLogMask(void) const
 	{ return defLogMask; };
       
       // 'CONSOLE' class
-      const AISutil::String& getConsoleDescription(void) const
+      const AIS::Util::String& getConsoleDescription(void) const
 	{ return defConsoleDescription; };
       const bool getConsoleEnabled(void) const
 	{ return defConsoleEnabled; };
-      const AISutil::String& getConsoleHostname(void) const
+      const AIS::Util::String& getConsoleHostname(void) const
 	{ return defConsoleHostname; };
       const Kine::Name& getConsoleName(void) const
 	{ return defConsoleName; };

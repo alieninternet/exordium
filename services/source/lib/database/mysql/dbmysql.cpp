@@ -41,7 +41,7 @@
 
 
 using namespace Exordium;
-using AISutil::String;
+using AIS::Util::String;
 
 CMySQL::~CMySQL()
 {
@@ -163,7 +163,7 @@ void CMySQL::dbSelectDB(String const &dbName)
      }
 }
 
-void CMySQL::dbLock(AISutil::String const &table)
+void CMySQL::dbLock(AIS::Util::String const &table)
 {
    dbQuery("LOCK TABLES " + table + " WRITE");
 }

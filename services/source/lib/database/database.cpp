@@ -39,7 +39,7 @@
 #endif
 
 using namespace Exordium;
-using AISutil::String;
+using AIS::Util::String;
 
 CDatabase::CDatabase(Config &c) : config(c)
 {
@@ -133,7 +133,7 @@ int CDatabase::dbCount(String const &table, String const &whereargs)
    return database->dbGetValue().toInt();
 }
 
-int CDatabase::dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
+int CDatabase::dbSelect(AIS::Util::String const &fields, AIS::Util::String const &table, AIS::Util::String const &whereargs,AIS::Util::String const &orderargs)
 {
    database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
    return database->dbGetValue().toInt();

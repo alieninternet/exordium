@@ -58,18 +58,18 @@ namespace Exordium {
       void dbConnect(void);
       void dbDisconnect(void);
 
-      void dbSelectDB(AISutil::String const &dbName);
+      void dbSelectDB(AIS::Util::String const &dbName);
 
-      int dbQuery(AISutil::String const &query);
+      int dbQuery(AIS::Util::String const &query);
 
-      AISutil::String dbGetValue(void);
-      AISutil::String dbGetValue(int field);
+      AIS::Util::String dbGetValue(void);
+      AIS::Util::String dbGetValue(int field);
 
       void dbGetRow(void);
 
       void dbClearRes(void);
 
-      void dbLock(AISutil::String const &table);
+      void dbLock(AIS::Util::String const &table);
       void dbUnlock(void);
 
       // Commit and roolback (transaction mode) not implemented in MySQL
