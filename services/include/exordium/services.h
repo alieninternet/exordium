@@ -76,11 +76,11 @@ namespace Exordium {
    class Services
      {
       private:
-	const AISutil::String buffer;
-	Kine::Daemon& daemon;
-
+        const AISutil::String buffer;
+        Kine::Daemon& daemon;
+	
         CDatabase& database;
-        
+      
 	Config& config;
 
 	Parser parser;
@@ -101,7 +101,6 @@ namespace Exordium {
 	time_t serverLastSpoke;
 	time_t lastCheckPoint;
 	time_t lastExpireRun;
-	time_t lastModeRun;
 	bool connected;
 	bool stopping;
 	bool sendPing;
@@ -110,15 +109,44 @@ namespace Exordium {
 	unsigned long countRx;
 	unsigned long remoteAddress;
 	std::queue < AISutil::String > outputQueue;
-	std::queue < AISutil::String > ModeoutputQueue;
 	AISutil::SocketIPv4TCP socky;
 	typedef std::map <AISutil::String, User *> user_map;
 	typedef std::map <AISutil::String, dChan *> chan_map;
 	user_map users;
 	chan_map chans;
 	
+	void SynchTime(void);
+	void expireRun(void);
+	void disconnect(void);
+	bool connect(void);
+	bool handleInput (void);
+	AISutil::String getLogCount(void);
+	AISutil::String getGlineCount(void);
+	AISutil::String getNoteCount(void);
+	void doBurst(void);
+	bool queueFlush(void);
+	AISutil::String parseHelp(AISutil::String const &);
+	
+	bool queueReady(void) const
+	  { 
+	     return !outputQueue.empty(); 
+	  };
+	
+	void queueKill (void)
+	  {
+	     while(!outputQueue.empty()) {
+		outputQueue.pop();
+	     }
+	  };
+	
+	AISutil::String getOnlineCount(void) const
+	  {
+	     return AISutil::String::convert(users.size());
+	  };
+	
+	void checkpoint(void);
+	
       public:
-//	UserBase clients;
 	static const Kine::Utils::base_type PasswordStrBase = 85;
 	static const AISutil::String::size_type PasswordStrBaseLongPad = 5;
 	User* const addUser(const AISutil::String& name, const int oid);
@@ -129,8 +157,10 @@ namespace Exordium {
 	dChan* findChan(AISutil::String &);
 	void setNick(User &,AISutil::String &);
 	AISutil::String getRegNickCount(void);
+	
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Config& c, CDatabase& db);
+	
         // Mr. Destructor
         ~Services(void);	
 
@@ -156,7 +186,8 @@ namespace Exordium {
 	
 	time_t currentTime;
   	void run (void);
-	bool handleInput (void);
+
+	// this is dodgey and should be passed to modules, *not* set by Parser::
 	bool SecurePrivmsg;
 
 	// Log a line of text..
@@ -167,26 +198,22 @@ namespace Exordium {
 	// Function Declrations below here.
 	int getAccess(AISutil::String &, AISutil::String &);
 	void shutdown(const AISutil::String &);
-	void SynchTime(void);
-	void expireRun(void);
+	
+	// This should be in the GAME MODULE
 	AISutil::String getQuote(int const &number);
-	AISutil::String getLogCount(void);
-	AISutil::String getGlineCount(void);
-	AISutil::String getNoteCount(void);
-	void disconnect(void);
-	bool connect(void);
-	void doBurst(void);
+	
 	void AddOnlineServer(AISutil::String const &, AISutil::String const &, 
 			     AISutil::String const &);
         void DelOnlineServer(AISutil::String const &);
 
 	void doPong(AISutil::String const &);
-	bool queueFlush(void);
 	void mode (AISutil::String const &, AISutil::String const &, 
 		   AISutil::String const &, AISutil::String const &);
-	AISutil::String parseHelp(AISutil::String const &);
+	
+	// This shold be in the Service:: class
 	void doHelp(User&, AISutil::String const &,
 		    AISutil::String const &, AISutil::String const &);
+	
 	void log (User&, AISutil::String const &, 
 		  AISutil::String const &, AISutil::String const &);
 	void log (User&, AISutil::String const &, 
@@ -194,14 +221,7 @@ namespace Exordium {
 	void sendEmail(AISutil::String const &, AISutil::String const &, 
 		       AISutil::String const &);
 	void servicePart (AISutil::String const &, AISutil::String const &);
-	void test(void) const
-	  {
-#ifdef DEBUG
-	     std::cout << 
-	       "This is a simple test, proving we can access services" << 
-	       std::endl;
-#endif
-	  };
+
 	//Inline Functions Below here.
 	void killnick (AISutil::String const &target,
 		       AISutil::String const &from,
@@ -210,6 +230,7 @@ namespace Exordium {
 	     queueAdd(":" + from + " KILL " + target + " :" + reason);
 	  };
 
+	// This should be replaced with logLine() calls
 	void helpme (AISutil::String const &line, AISutil::String const &from)
 	  {
 	     queueAdd(":" + from + " HELPME :" + line);
@@ -238,20 +259,23 @@ namespace Exordium {
 	  {
 	     queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	  }
-	
+
+	// This, also, should be replaced by logLine calls
 	void Debug(AISutil::String const &line);
-	
+
+	// This does not modify a server mode, it should be renamed.
 	void serverMode(AISutil::String const &chan, AISutil::String const &mode,
 			AISutil::String const &target)
 	  {
-	     ModequeueAdd(":Chan MODE " + chan + " " + mode + " " + target);
+	     queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
 	  }
-	
+
+	// This should be replaced with logLine() calls
 	void globop(AISutil::String const &line, AISutil::String const &from)
 	  {
 	     queueAdd(":" + from + " GOPER :" + line);
 	  };
-	
+
 	void sendCTCPpingReply(AISutil::String const &from,
 			       AISutil::String const &who,
 			       AISutil::String & data)
@@ -284,41 +308,6 @@ namespace Exordium {
 	void serviceJoin(AISutil::String const &service,
 			 AISutil::String const &target);
 	
-	bool queueReady(void) const
-	  { 
-	     return !outputQueue.empty(); 
-	  };
-	
-	bool ModequeueReady(void) const
-	  {		
-	     return !ModeoutputQueue.empty();
-	  };
-
-	// .. and this!
-  	 bool ModequeueFlush (void)
-  	{
-    		if (socky.write (ModeoutputQueue.front ()))
-      		{	
-        		ModeoutputQueue.pop ();
-        		return true;
-      		}
-	return false;
-  	};
-
-	void queueKill (void)
-	  {
-	     while(!outputQueue.empty()) {
-		outputQueue.pop();
-	     }
-	  };
-	
-	void ModequeueKill (void)
-	  {
-	     while (!ModeoutputQueue.empty()) {
-		ModeoutputQueue.pop();
-	     }
-	  };
-
 	void queueAdd (const AISutil::String& line)
 	  {
 	     if(connected)
@@ -335,54 +324,24 @@ namespace Exordium {
 	       }
 	  };
 
-	void ModequeueAdd(const AISutil::String & line)
-	  {
-	     logLine("MQ: " + line,
-		     Log::Debug);
-	     outputQueue.push(line+ "\r\n");
-	  };
-	
-//	void queueAdd(String line)
-//	  {
-//	     logLine("TX: " + line,
-//	             Log::Debug);
-//	     outputQueue.push(line + "\r\n");
-//	  };
-	
-//	void ModequeueAdd(String line)
-//	  {
-//	     outputQueue.push(line + "\r\n");
-//	  };
-	
-	bool getSecure(void) const
-	  {
-	     return SecurePrivmsg;
-	  };
-	
-	unsigned long getCountRx(void) const
-	  {
-	     return countRx;
-	  };
-	
-	unsigned long getCountTx(void) const
-	  {
-	     return countTx;
-	  };
-	AISutil::String getOnlineCount(void) const
-	  {
-	     return AISutil::String::convert(users.size());
-	  };
 	bool usePrivmsg(AISutil::String const &);
+	
+	// These should be moved to the new channel classes
 	void serviceKick(AISutil::String const &, AISutil::String const &,
 			 AISutil::String const &);
 	bool isOp(AISutil::String const &, AISutil::String const &);
 	bool isVoice(AISutil::String const &, AISutil::String const &);
-	int countNotes(AISutil::String const &);
-	void sendNote(AISutil::String const &,AISutil::String const &,AISutil::String const &); 
-	void checkpoint(void);
-	unsigned long random(unsigned long max);
+	
+	
+//	int countNotes(AISutil::String const &);
+
+	// This should be moved to the NOTE MODULE
+	void sendNote(AISutil::String const &,AISutil::String const &,AISutil::String const &);
+
+	static unsigned long random(unsigned long max);
+	
 	int locateID(AISutil::String const &nick);
-	AISutil::String generatePassword(AISutil::String const &,AISutil::String const &);
+	static AISutil::String generatePassword(AISutil::String const &,AISutil::String const &);
 	bool isAuthorised(AISutil::String const &);
 	User* addClient(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &, AISutil::String const &,
@@ -391,16 +350,23 @@ namespace Exordium {
 			AISutil::String const &);
 	int getRequiredAccess(AISutil::String const &, AISutil::String const &);
 	bool isNickRegistered(AISutil::String const &);
+	
+	// This should be in the NICK MODULE
 	AISutil::String getPass(AISutil::String const &);
-	AISutil::String stripModes(AISutil::String const &);
-	int getRegisteredNickID(AISutil::String const &);
 	void modeIdentify(AISutil::String const &);
 	void updateLastID(AISutil::String const &);
+	
+	
+//	AISutil::String stripModes(AISutil::String const &);
+	int getRegisteredNickID(AISutil::String const &);
+	
 	AISutil::String getNick(int const &);
 	AISutil::String getOnlineNick(int const &);
 	AISutil::String getpendingCode(AISutil::String const &);
 	void registerNick(AISutil::String const &,AISutil::String const &,AISutil::String const &);
 	AISutil::String genAuth(AISutil::String const &);
+	
+	// These definately should be in the NICK MODULE
 	AISutil::String getURL(AISutil::String const &);
 	AISutil::String getMSN(AISutil::String const &);
 	AISutil::String getYAHOO(AISutil::String const &);
@@ -411,11 +377,17 @@ namespace Exordium {
 	AISutil::String getRegDate(AISutil::String const &);
 	AISutil::String getLastID(AISutil::String const &);
 	AISutil::String getLastHost(AISutil::String const &);
+	
         void addOper(AISutil::String const &, int access);
         void delOper(AISutil::String const &);
         bool isOper(AISutil::String const &);
         void validateOper(AISutil::String &);
-	
+
+	// These will disappear upon full integration with kine..
+        unsigned long getCountTx(void) const
+	  { return countTx; };
+	unsigned long getCountRx(void) const
+	  { return countRx; };
      };
 }; // namespace Exordium
 

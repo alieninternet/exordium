@@ -209,14 +209,7 @@ namespace Exordium
 		    SynchTime ();
 
 		 }
-	       if (currentTime > (time_t) (lastModeRun + 1))
-		 {
-		    lastModeRun = currentTime;
-		    if(ModequeueReady())
-		      {
-			 ModequeueFlush();
-		      }
-		 }
+
 #ifdef DEBUG
 	       if(!connected)
 		 {
@@ -856,11 +849,11 @@ Services::~Services()
             return false;
        }
 
-   int
-     Services::countNotes(String const &who)
-       {
-          return database.dbCount("notes", "nto='"+who+"'");
-       }
+//   int
+//     Services::countNotes(String const &who)
+//       {
+//          return database.dbCount("notes", "nto='"+who+"'");
+//       }
 
    void
      Services::sendNote(String const &from, String const &to, String const &text)
@@ -1277,33 +1270,33 @@ String
  *
  */
 
-String
-  Services::stripModes(String const &nick)
-{
-   char *temp = new char[nick.length() + 1];
-   for (register unsigned int i = (nick.length() + 1); i--;)
-     {
-
-	char ch = nick.c_str()[i];
-	switch(ch)
-	  {
-
-	   case '@': /* Opped.. */
-	     temp[i] = ' ';
-	     continue;
-	   case '+': /* Voiced */
-	     temp[i] = ' ';
-	     continue;
-	   default:
-	     temp[i] = ch;
-	  }
-
-     }
-   String result(temp);
-   delete(temp);
-   return result.trim();
-
-}
+//String
+//  Services::stripModes(String const &nick)
+//{
+//   char *temp = new char[nick.length() + 1];
+//   for (register unsigned int i = (nick.length() + 1); i--;)
+//     {
+//
+//	char ch = nick.c_str()[i];
+//	switch(ch)
+//	  {
+//
+//	   case '@': /* Opped.. */
+//	     temp[i] = ' ';
+//	     continue;
+//	   case '+': /* Voiced */
+//	     temp[i] = ' ';
+//	     continue;
+//	   default:
+//	     temp[i] = ch;
+//	  }
+//
+//     }
+//   String result(temp);
+//   delete(temp);
+//   return result.trim();
+//
+//}
 
 /* getRegisteredNickID(String)
  *
