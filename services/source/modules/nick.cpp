@@ -19,7 +19,6 @@ using Kine::StringTokens;
 using namespace Exordium;
 
 
-namespace Exordium {
 
 struct Nick::functionTableStruct const
   Nick::functionTable[] = {
@@ -563,8 +562,10 @@ return;
 
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   return new Module("nick", new Nick());
+	Services::registerService(name,name,"ircdome.org", "+dz",
+				"Nickname Registration Services");
+	Services::serviceJoin(name,"#Debug");
+   return new Module("nick", new Nick(name));
 }
 
-};
 

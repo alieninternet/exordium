@@ -69,7 +69,7 @@ Bot::parseLine (String const &line, String const &requestor)
           return;
         }
     }
-  Services::serviceNotice ("Unrecognized Command", "Bot", requestor);
+  sendMessage (requestor,"Unrecognized Command");
 }
 
 void

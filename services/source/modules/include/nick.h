@@ -8,18 +8,17 @@
 #ifndef __NICK_H_
 #define __NICK_H_
 
+#include "exordium/services.h"
+#include "exordium/service.h"
 #include "kineircd/str.h"
 
 # define NICK_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens)
 
 using Kine::String;
 
-#include "exordium/service.h"
-
-namespace Exordium {
 
 
-class Nick : public Service
+class Nick : public Exordium::Service
 {
 private:
   struct functionTableStruct
@@ -28,16 +27,19 @@ private:
     void NICK_FUNC ((*function));
   };
   static struct functionTableStruct const functionTable[];
-
+  const String myName;
+  void sendMessage(const String &to, const String &message)
+	{
+		Exordium::Services::serviceNotice(message,myName,to);
+	}
 public:
-  Nick(void)
-   : Service()
+  Nick(const String &mn)
+   : myName(mn)
    {
-        std::cout << "Hi im an instance. :(" << std::endl;
    };
+
   ~Nick(void)
    {
-        std::cout << "YOU BASTARD, YOU KILLED NICK" << std::endl;
    };
 
   void parseLine (String const &, String const &);
@@ -54,8 +56,6 @@ private:
   static void NICK_FUNC (parseSET);
   static void NICK_FUNC (parseINFO);
   static void NICK_FUNC (parseAUTH);
-};
-
 };
 
 
