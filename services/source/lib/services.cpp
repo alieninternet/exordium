@@ -591,7 +591,7 @@ bool
 Services::loadModule (String const &name, String const &fileName)
 {
 void *handle;
-handle = dlopen(fileName.c_str(), RTLD_LAZY);
+handle = dlopen(fileName.c_str(), RTLD_NOW);
 if(!handle)
 {
 	String togo = "Error: Could not load "+fileName;
