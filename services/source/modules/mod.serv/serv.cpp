@@ -590,7 +590,9 @@ SERV_FUNC (Module::parseNLIST)
 	String tnick = myRes->getValue(i,0);
 	String thost = myRes->getValue(i,1);
 	String temail = myRes->getValue(i,2);
-	String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002 "+temail+"\002";
+	if(thost.length()<2)
+	  thost = "No Recorded Host (Never Identified)";
+	String tosend = "\002["+String::convert(i)+"]\002 Nickname: \002"+tnick+"\002 Last ID'd Host: \002"+thost+"\002 Email Address: \002"+temail+"\002";
 	if(f>30)
 	  {
 	     origin.sendMessage("More than 30 results found! Please be more specific in your search",getName());

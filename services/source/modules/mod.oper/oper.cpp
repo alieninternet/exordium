@@ -1,20 +1,20 @@
 /* $Id$
- * 
+ *
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
  *
  * This file is a part of Exordium.
- * 
+ *
  * Exordium is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Exordium is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,11 +33,9 @@
 #include <exordium/services.h>
 #include <kineircd/str.h>
 
-
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::OperModule;
-
 
 const Module::functionTableStruct Module::functionTable[] =
 {
@@ -67,8 +65,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
              int access = origin.getAccess(getName());
              if(required>access)
                {
- origin.sendMessage("You do not have enough access for that command",getName());
-  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
+		  origin.sendMessage("You do not have enough access for that command",getName());
+		  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
                   services->logLine(togo, Log::Warning);
                   return;
                }
@@ -80,7 +78,6 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
      }
    origin.sendMessage ("Unrecognized Command", getName());
 }
-
 
 OPER_FUNC(Module::parseHELP)
 {
@@ -97,7 +94,7 @@ OPER_FUNC(Module::parseGLOBAL)
 	origin.sendMessage("Usage: global Your global here",getName());
 	return;
      }
-   
+
    /* And goo.... */
    int nbRes = services->getDatabase().dbSelect("servername","onlineservers");
    CResult *myRes = services->getDatabase().dbGetResultSet();
@@ -107,161 +104,155 @@ OPER_FUNC(Module::parseGLOBAL)
      }
 
    services->sendGOper("Oper",origin.getNickname()+" sent a \002global\002 message ("+txt+")");
-   
+
 }
 
 OPER_FUNC(Module::parseMDEOP)
 {
-String channel = tokens.nextToken();
-if(channel=="")
-{
+   String channel = tokens.nextToken();
+   if(channel=="")
+     {
 	origin.sendMessage("Usage: mdeop #channel", getName());
 	return;
-}
+     }
 
 	/* Get the id.. */
-	int cid = services->getChannel().getOnlineChanID(channel);
+   int cid = services->getChannel().getOnlineChanID(channel);
 	/* Iterate over members.. */
 
-int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
-CResult *myRes = services->getDatabase().dbGetResultSet();
-   
-for (int i=0; i<nbRes; i++)
-	{
-		String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
-		std::cout << inick << std::endl;
-	   	services->mode(getName(),channel,"-o",inick);
-	}		
+   int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
+   CResult *myRes = services->getDatabase().dbGetResultSet();
+
+   for (int i=0; i<nbRes; i++)
+     {
+	String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
+	std::cout << inick << std::endl;
+	services->mode(getName(),channel,"-o",inick);
+     }
    services->sendGOper(getName(),origin.getNickname()+" performed a \002massdeop\002 in "+channel);
-   
-  
-delete myRes;
+
+   delete myRes;
 
 }
 OPER_FUNC(Module::parseQLINE)
 {
-String command = tokens.nextToken();
-if(command=="")
-{
+   String command = tokens.nextToken();
+   if(command=="")
+     {
 	origin.sendMessage("Usage: qline add/del", getName());
 	return;
-}
-if(command=="del")
-{
+     }
+   if(command=="del")
+     {
 	String mask = tokens.nextToken();
 	if(mask=="")
-	{
-		origin.sendMessage("Usage: qline del mask (either channel/nick mask)",getName());
-		return;
-	}
+	  {
+	     origin.sendMessage("Usage: qline del mask (either channel/nick mask)",getName());
+	     return;
+	  }
 	String togo = origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("UNSQLINE 0 "+mask);
 	origin.sendMessage("qline removed",getName());
-}
+     }
 
-if(command=="add")
-{
+   if(command=="add")
+     {
 	String mask = tokens.nextToken();
 	String reason = tokens.rest();
 	if(mask=="" | reason=="")
-	{
-		origin.sendMessage("Usage: qline add mask reason",getName());
-		return;
-	}
+	  {
+	     origin.sendMessage("Usage: qline add mask reason",getName());
+	     return;
+	  }
 	String togo = origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("SQLINE "+mask+" :"+reason);
 	origin.sendMessage("qline added",getName());
 	return;
-}
-
-
-
+     }
 
 }
 OPER_FUNC(Module::parseGLINE)
 {
-String command = tokens.nextToken();
-if(command=="")
-{
+   String command = tokens.nextToken();
+   if(command=="")
+     {
 	origin.sendMessage("Usage: gline add/del", getName());
 	return;
-}
-if(command=="del")
-{
+     }
+   if(command=="del")
+     {
 	String mask = tokens.nextToken();
 	if(mask=="")
-	{
-		origin.sendMessage("Usage: gline del mask",getName());
-		return;
-	}
+	  {
+	     origin.sendMessage("Usage: gline del mask",getName());
+	     return;
+	  }
 	String togo = origin.getNickname() + " removed a net wide \002gline\002 on \002"+mask+"\002";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("GLINE 0 -"+mask);
 	origin.sendMessage("Gline removed",getName());
-}
+     }
 
-if(command=="add")
-{
+   if(command=="add")
+     {
 	String mask = tokens.nextToken();
 	String expire = tokens.nextToken();
 	String reason = tokens.rest();
 	if(mask=="" | expire=="" | reason=="")
-	{
-		origin.sendMessage("Usage: gline add mask expire reason",getName());
-		return;
-	}
+	  {
+	     origin.sendMessage("Usage: gline add mask expire reason",getName());
+	     return;
+	  }
 	String togo = origin.getNickname() + " placed a net wide \002gline\002 on \002"+mask+"\002 expiring in \002"+expire+"\002 seconds (\002"+reason+"\002)";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("GLINE 0 +"+mask+" "+expire+" :"+reason);
 	origin.sendMessage("Gline added",getName());
 	return;
-}
+     }
 
 }
-
-
 
 OPER_FUNC(Module::parseZLINE)
 {
-String command = tokens.nextToken();
-if(command=="")
-{
+   String command = tokens.nextToken();
+   if(command=="")
+     {
 	origin.sendMessage("Usage: zline add/del", getName());
 	return;
-}
-if(command=="del")
-{
+     }
+   if(command=="del")
+     {
 	String ip = tokens.nextToken();
 	if(ip=="")
-	{
-		origin.sendMessage("Usage: zline del IP",getName());
-		return;
-	}
+	  {
+	     origin.sendMessage("Usage: zline del IP",getName());
+	     return;
+	  }
 	String togo = origin.getNickname() + " removed a net wide \002zline\002 on \002"+ip;
 	services->sendGOper("Oper",togo);
 	services->queueAdd("UNSZLINE " + ip);
 	origin.sendMessage("Zline removed",getName());
-}
+     }
 
-if(command=="add")
-{
+   if(command=="add")
+     {
 	String ip = tokens.nextToken();
 	String reason = tokens.rest();
-	
+
 	if(ip=="" | reason=="")
-	{
-		origin.sendMessage("Usage: zline add IP Reason",getName());
-		return;
-	}
+	  {
+	     origin.sendMessage("Usage: zline add IP Reason",getName());
+	     return;
+	  }
 
 	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("SZLINE " + ip +" :"+reason);
 	origin.sendMessage("Zline added",getName());
 	return;
-}
+     }
 
 }
 OPER_FUNC(Module::parseJUPE)
@@ -299,9 +290,9 @@ OPER_FUNC(Module::parseJOIN)
      }
    else
      {
-       services->serviceJoin(getName(), chan);
-       services->serverMode(chan, "+o", getName());
-       services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" join \002"+chan+"\002");
+	services->serviceJoin(getName(), chan);
+	services->serverMode(chan, "+o", getName());
+	services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" join \002"+chan+"\002");
      }
 }
 
@@ -320,14 +311,14 @@ OPER_FUNC(Module::parsePART)
      }
    else
      {
-       services->servicePart(getName(), chan);
-       services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" part \002"+chan+"\002");
+	services->servicePart(getName(), chan);
+	services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" part \002"+chan+"\002");
      }
 }
 
-  OPER_FUNC (Module::parseCOMMANDS)
+OPER_FUNC (Module::parseCOMMANDS)
 {
-  // Work out the line length, we subtract 20 to be safe :)
+   // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength = 200;
 
    // Send the banner (this shouldn't be hard-coded)
@@ -335,22 +326,25 @@ OPER_FUNC(Module::parsePART)
    origin.sendMessage("Command list for " + getName() + ":",getName());
    // Start formulating the data..
    std::ostringstream list(" -=>");
-   for (int i = 0; functionTable[i].command != 0; i++) {
-      // Add the command to the list
-      list << " " << functionTable[i].command;
+   for (int i = 0; functionTable[i].command != 0; i++)
+     {
+	// Add the command to the list
+	list << " " << functionTable[i].command;
 
-   // How are we for size?
-      if (list.str().length() >= lineLength) {
-         // Dump it and reset the string stream thingy
-         origin.sendMessage(list.str(),getName());
-         list.str() = " -=>";
-      }
-   }
+	// How are we for size?
+	if (list.str().length() >= lineLength)
+	  {
+	     // Dump it and reset the string stream thingy
+	     origin.sendMessage(list.str(),getName());
+	     list.str() = " -=>";
+	  }
+     }
 
    // Anything left to send still?
-   if (list.str().length() > 4) {
-      origin.sendMessage(list.str(),getName());
-   }
+   if (list.str().length() > 4)
+     {
+	origin.sendMessage(list.str(),getName());
+     }
 
    // Send the footer (this shouldn't be hard-coded)
    origin.sendMessage("End of command list",getName());
@@ -359,14 +353,13 @@ OPER_FUNC(Module::parsePART)
 EXORDIUM_SERVICE_INIT_FUNCTION
 { return new Module(); }
 
-
 // Module information structure
-const Module::moduleInfo_type Module::moduleInfo = {
+const Module::moduleInfo_type Module::moduleInfo =
+{
    "Operator Service",
      0, 0,
      Exordium::Service::moduleInfo_type::Events::NONE
 };
-
 
 // Start the service
 bool Module::start(Exordium::Services& s)
@@ -378,7 +371,7 @@ bool Module::start(Exordium::Services& s)
    services->registerService(getName(), getName(),
 			     getConfigData().getHostname(),
 			     getConfigData().getDescription());
-   
+
    // We started okay :)
    return true;
 }
