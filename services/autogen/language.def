@@ -120,6 +120,19 @@ langtag = {
   data_tr = "%p0 dil dosyası yüklenmiştir";
 };
 
+langtag = {
+   name = "core_CONSOLE_HELP_HELP";
+   component = "core";
+   data_en = 
+      "Hello! This is a test of Kine's \\bmulti-call\\b langtag get()\\n"
+      "function. Don't let the autogen language.def file formatting fool \\n"
+      "you, you really do need to use the \\\\n in there to tell kine's\\n"
+      "langtags processors how to break the line up for you.\\n"
+      "Unfortunately, it does mean you need to escape the '\\\\' char.\\n"
+      "I hope it works :)";
+   // Hey translators - don't translate this, it's just an example/test/thingy
+};
+
 
 /*
  * tags for the core
