@@ -42,7 +42,7 @@ namespace Cards {
        std::vector < Pack > packs;
        
        // The stock of cards
-       typedef std::stack < CardType > stock_type;
+       typedef std::vector < CardType > stock_type;
        stock_type stock;
 
      public:
@@ -64,7 +64,7 @@ namespace Cards {
            {
              while (!packs.back().isEmpty())
              {
-               stock.push(packs.back().removeCard());
+               stock.push_back(packs.back().removeCard());
              }
 
              // Turf the empty pack
@@ -73,7 +73,7 @@ namespace Cards {
          }
 
        void addCard(CardType card) 
-         { stock.push(card); }
+         { stock.push_back(card); }
 
        unsigned int total(void) const
          { return stock.size(); }
@@ -82,8 +82,8 @@ namespace Cards {
          { 
            if(!stock.empty())
            {
-             CardType card = stock.top();
-             stock.pop();
+             CardType card = stock.back();
+             stock.pop_back();
              return card;
            }
            return 0;

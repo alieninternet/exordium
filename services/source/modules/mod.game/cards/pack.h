@@ -52,9 +52,6 @@ namespace Cards {
       // Our cards
       cards_type cards;
 
-      // Our shuffler functor
-      //Shuffler<cards_type> shuffler;
-
     public:
       // Constructor (populates the pack, all cards are in 'mint' order)
       Pack(bool withJoker = false) 
