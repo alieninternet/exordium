@@ -584,6 +584,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 
    // Discard the card..
    lastDiscardedCard = ((*currentPlayer).second.removeCard(cardToDiscard));
+   discard.addCard(lastDiscardedCard);
 
    // Hold on a second.. check if this player is the winner..
    if ((*currentPlayer).second.isEmpty())
@@ -673,7 +674,7 @@ EXORDI8_FUNC(Exordi8::parsePASS)
      }
 
    // Make sure the stock isn't empty
-   if (stock.total())
+   if (!stock.total())
      {
 	sendMessage(origin,
 		    "You cannot pass a play while the stock is not empty. If "

@@ -86,7 +86,36 @@ namespace Cards {
              return card;
            }
            return 0;
-         }
+         };
+
+      // Shuffle the stock
+      void shuffle(void)
+        {
+          stock_type newCardList;
+          newCardList.reserve(stock.size());
+                
+          // Until the main list of cards is empty, dump the cards in the above vector
+          while (!stock.empty()) {
+             typename stock_type::iterator iter;
+
+             int iterationCount = (int)((float)stock.size() * rand() /
+                 (RAND_MAX + 1.0));
+
+             // Loop to that location
+             for (iter = stock.begin(); iterationCount > 1; iter++) {
+                iterationCount--;
+             }
+
+             // Copy the card..
+             newCardList.push_back(*iter);
+             
+             // Delete the card..
+             stock.erase(iter);
+          }
+          
+          // Swap the two lists..
+          cards.swap(newCardList);
+        };
    };
 }; // namespace Cards
    
