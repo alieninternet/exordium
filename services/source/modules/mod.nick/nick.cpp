@@ -177,6 +177,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
   NICK_FUNC (Module::parseINFO)
 {
    String who = tokens.nextToken().IRCtoLower();
+   if(who=="")
+	{
+		origin.sendMessage("Syntax: info nickname",getName());
+		return;
+	}
    User *ptr = services->findUser(who);
    if(ptr==0)
      {
@@ -649,6 +654,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
        {
 	  String toghost = tokens.nextToken();
 	  String password = tokens.nextToken();
+	  if(toghost=="" | password=="")
+	   {
+		origin.sendMessage("Usage: ghost nickname password",getName());
+		return;
+	   }
 	  if (!services->isNickRegistered( toghost))
 	    {
 	       String tosend = String("Error: Target nickname is not registered");
