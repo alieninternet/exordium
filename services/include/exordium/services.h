@@ -114,16 +114,16 @@ namespace Exordium {
       
       virtual bool delServer(AISutil::String &) = 0;
       
-      virtual Server* findServer(AISutil::String &)= 0;
+      virtual Server* findServer(AISutil::String &) = 0;
 				      
       
       // Allows Services:: to change a User's nick.
       virtual void setNick(User &, Kine::ClientName &) = 0;
       
       // Send modes.
-      virtual void mode(AISutil::String const &, AISutil::String const &,
-			AISutil::String const &, AISutil::String const &) = 0;
-      
+      void mode(AISutil::String const &, AISutil::String const &,
+		AISutil::String const &, AISutil::String const &) {};
+
       // This shold be in the Service:: class
       virtual void doHelp(User&, AISutil::String const &,
 			  AISutil::String const &,
@@ -138,40 +138,40 @@ namespace Exordium {
       virtual void sendEmail(AISutil::String const &, AISutil::String const &,
 			     AISutil::String const &) = 0;
       
-      virtual void servicePart (AISutil::String const &,
-				AISutil::String const &) = 0;
+      void servicePart (AISutil::String const &,
+			AISutil::String const &) {};
       
       //Inline Functions Below here.
-      virtual void killnick (AISutil::String const &target,
-			     AISutil::String const &from,
-			     AISutil::String const &reason) = 0;
+      void killnick(AISutil::String const &target,
+		    AISutil::String const &from,
+		    AISutil::String const &reason) {};
       
-      virtual void serviceNotice(AISutil::String const &line,
-				 AISutil::String const &service, 
-				 AISutil::String const &target) = 0;
+      void serviceNotice(AISutil::String const &line,
+			 AISutil::String const &service, 
+			 AISutil::String const &target) {};
       
-      virtual void serviceNoticeForce(AISutil::String const &line, 
-				      AISutil::String const &service,
-				      AISutil::String const &target) = 0;
+      void serviceNoticeForce(AISutil::String const &line, 
+			      AISutil::String const &service,
+			      AISutil::String const &target) {};
       
-      virtual void servicePrivmsg(AISutil::String const &line,
-				  AISutil::String const &service, 
-				  AISutil::String const &target) = 0;
+      void servicePrivmsg(AISutil::String const &line,
+			  AISutil::String const &service,
+			  AISutil::String const &target) {};
       
       // This does not modify a server mode, it should be renamed.
-      virtual void serverMode(AISutil::String const &chan,
-			      AISutil::String const &mode,
-			      AISutil::String const &target) = 0;
+      void serverMode(AISutil::String const &chan,
+		      AISutil::String const &mode,
+		      AISutil::String const &target) {};
       
-      virtual void serviceJoin(AISutil::String const &service,
-			       AISutil::String const &target) = 0;
+      void serviceJoin(AISutil::String const &service,
+		       AISutil::String const &target) {};
       
       virtual bool usePrivmsg(AISutil::String const &) = 0;
       
       // These should be moved to the new channel classes
-      virtual void serviceKick(AISutil::String const &,
-			       AISutil::String const &,
-			       AISutil::String const &) = 0;
+      void serviceKick(AISutil::String const &,
+		       AISutil::String const &,
+		       AISutil::String const &) {};
       virtual bool isOp(Kine::ClientName const &,
 			Kine::ChannelName const &) = 0;
       virtual bool isVoice(AISutil::String const &,
@@ -193,7 +193,7 @@ namespace Exordium {
       virtual bool isNickRegistered(AISutil::String const &) = 0;
       
       // This should be in the NICK MODULE
-      virtual void modeIdentify(AISutil::String const &) = 0;
+      void modeIdentify(AISutil::String const &) {};
       virtual void updateLastID(AISutil::String const &) = 0;
       
       
@@ -205,12 +205,12 @@ namespace Exordium {
       virtual void delOper(AISutil::String const &) = 0;
       virtual bool isOper(AISutil::String const &) = 0;
       virtual void validateOper(Kine::ClientName &) = 0;
-      virtual void sendGOper(AISutil::String const &,
-			AISutil::String const &) = 0;
-      virtual void sendHelpme(AISutil::String const &,
-			AISutil::String const &) = 0;
-      virtual void setMode(AISutil::String const &,
-			AISutil::String const &) = 0;
+      void sendGOper(AISutil::String const &,
+		     AISutil::String const &) {};
+      void sendHelpme(AISutil::String const &,
+		      AISutil::String const &) {};
+      void setMode(AISutil::String const &,
+		   AISutil::String const &) {};
       time_t getStartTime(void) { return startTime; };
       time_t getCurrentTime(void) { return currentTime; }; // useless?
    }; // class Services

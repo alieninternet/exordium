@@ -163,30 +163,7 @@ void ServicesInternal::SynchTime(void)
    //
 }
 
-void
-  ServicesInternal::sendGOper(String const &from, String const &text)
-{
-//   queueAdd(":"+from+" GLOBOPS :"+text);
-}
 
-void
-  ServicesInternal::sendHelpme(String const &from, String const &text)
-{
-//   queueAdd(":"+from+" HELPME :"+text);
-}
-
-/* mode(String,String,String,String)
- *
- * A messy way of sending a mode
- *
- */
-
-void
-  ServicesInternal::mode (String const &who, String const &chan, String const &mode,
-			  String const &target)
-{
-//   queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
-}
 /* doHelp(User,String,String,String)
  *
  * Generate a help page from our dynamic help system
@@ -260,12 +237,6 @@ void
    database.dbInsert("emails", "'','"+to+"','"+subject+"','"+text+"'");
 }
 
-void
-  ServicesInternal::setMode(String const &who, String const &mode)
-{
-//   queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
-
-}
 /* parseHelp(In)
  *
  * This parses our special codes in the help files
@@ -369,28 +340,6 @@ String String::trim(void) const
    return substr(s, e - s);
 }
 
-   /* servicePart(String,String)
-    *
-    * Make a given service part a channel.
-    *
-    * Perhaps this should be handed over to each individual module
-    * to control
-    *
-    */
-
-void
-  ServicesInternal::servicePart(String const &service, String const &target)
-{
-//   queueAdd (String (":") + service + " PART " + target);
-}
-
-void ServicesInternal::serviceJoin(AISutil::String const &service,
-				   AISutil::String const &target)
-{
-//   queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
-//	    AISutil::String::convert(currentTime) + " " + target +
-//	    " + :" + service);
-};
 
    /* usePrivmsg(nick)
     *
@@ -413,12 +362,6 @@ bool
      return true;
    else
      return false;
-}
-
-void
-  ServicesInternal::serviceKick(String const &chan, String const &nick, String const &reason)
-{
-//   queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
 }
 
 bool
@@ -762,22 +705,6 @@ bool ServicesInternal::isNickRegistered(String const &nick)
 	else
 	  return false;
      }
-}
-
-/* modeIdentify(String)
- *
- * Causes services to set a user client +r
- * meaning they have identified to the nickname
- * they are currently using.
- *
- * as an after thought , maybe this should be an inline function? thoughts?
- */
-
-void ServicesInternal::modeIdentify(String const &nick)
-{
-//   queueAdd(":" + Kine::config().getOptionsServerName() + " SVSMODE " + nick +
-//	    " +r");
-   return;
 }
 
 /*

@@ -102,9 +102,6 @@ namespace Exordium {
       
       void setNick(User &,Kine::ClientName &);
       
-      void mode(AISutil::String const &, AISutil::String const &,
-		AISutil::String const &, AISutil::String const &);
-      
       // This shold be in the Service:: class
       void doHelp(User&, AISutil::String const &, AISutil::String const &,
 		  AISutil::String const &);
@@ -117,56 +114,9 @@ namespace Exordium {
       void sendEmail(AISutil::String const &, AISutil::String const &,
 		     AISutil::String const &);
 
-      void servicePart (AISutil::String const &, AISutil::String const &);
-
-
-      void killnick (AISutil::String const &target,
-		     AISutil::String const &from,
-		     AISutil::String const &reason)
-	{
-//	   queueAdd(":" + from + " KILL " + target + " :" + reason);
-	};
-      
-      void serviceNotice(AISutil::String const &line,
-			 AISutil::String const &service, 
-			 AISutil::String const &target)
-	{
-	   if (usePrivmsg(target.toLower())) {
-//	      queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
-	   } else {
-//	      queueAdd(":" + service + " NOTICE " + target + " :" + line);
-	   }
-	}
-      
-      void serviceNoticeForce(AISutil::String const &line, 
-			      AISutil::String const &service,
-			      AISutil::String const &target)
-	{
-//	   queueAdd(":" + service + " NOTICE " + target + " :" + line);
-	}
-      
-      void servicePrivmsg(AISutil::String const &line,
-			  AISutil::String const &service, 
-			  AISutil::String const &target)
-	{
-//	   queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
-	}
-      
-      // This does not modify a server mode, it should be renamed.
-      void serverMode(AISutil::String const &chan, AISutil::String const &mode,
-		      AISutil::String const &target)
-	{
-//	   queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
-	}
-      
-      void serviceJoin(AISutil::String const &service,
-		       AISutil::String const &target);
-      
       bool usePrivmsg(AISutil::String const &);
       
       // These should be moved to the new channel classes
-      void serviceKick(AISutil::String const &, AISutil::String const &,
-		       AISutil::String const &);
       bool isOp(const Kine::ClientName& nick,
 		const Kine::ChannelName& channel);
       bool isVoice(AISutil::String const &, AISutil::String const &);
@@ -185,7 +135,6 @@ namespace Exordium {
       int getRequiredAccess(AISutil::String const &, AISutil::String const &);
       bool isNickRegistered(AISutil::String const &);
       // This should be in the NICK MODULE
-      void modeIdentify(AISutil::String const &);
       void updateLastID(AISutil::String const &);
       
       
@@ -200,9 +149,6 @@ namespace Exordium {
       void delOper(AISutil::String const &);
       bool isOper(AISutil::String const &);
       void validateOper(Kine::ClientName &);
-      void sendGOper(AISutil::String const &, AISutil::String const &);
-      void sendHelpme(AISutil::String const &, AISutil::String const &);
-      void setMode(AISutil::String const &, AISutil::String const &);      
    }; // class ServicesInternal
 }; // namespace Exordium
 
