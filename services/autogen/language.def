@@ -364,6 +364,49 @@ langtag = {
 
 
 langtag = {
+   name = "chan_SET_ENFORCE_BANS_TRUE";
+   component = "mod_chan";
+   data_en = "Channel bans enforcement has been enabled";
+};
+
+
+langtag = {
+   name = "chan_SET_ENFORCE_BANS_FALSE";
+   component = "mod_chan";
+   data_en = "Channel bans enforcement has been disabled";
+};
+
+
+langtag = {
+   name = "chan_SET_ENFORCE_BANS_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel enforcebans true/false";
+};
+
+
+langtag = {
+   name = "chan_SET_TRACK_TOPICS_TRUE";
+   component = "mod_chan";
+   data_en = "Topic tracking has been enabled";
+};
+
+
+langtag = {
+   name = "chan_SET_TRACK_TOPICS_FALSE";
+   component = "mod_chan";
+   data_en = "Topic tracking has been disabled";
+};
+
+
+langtag = {
+   name = "chan_SET_TRACK_TOPICS_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel tracktopics true/false";
+};
+
+
+
+langtag = {
    name = "chan_SET_UNSUPPORTED_OPTION";
    component = "mod_chan";
    data_en = "Error: Unsupported channel option";
