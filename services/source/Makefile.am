@@ -7,6 +7,7 @@ libexordium_la_LIBADD = ../../kineircd/src/lib/libkineircd.la
 
 libexordium_la_SOURCES = lib/channel.cpp \
 		         lib/conf.cpp \
+			 lib/dchan.cpp \
 			 lib/ircdome.cpp \
 			 lib/log.cpp \
 			 lib/modules.cpp \
