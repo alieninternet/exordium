@@ -38,6 +38,11 @@ using LibAIS::StringTokens;
  */
 Modules::~Modules(void)
 {
+   // Wipe the modules out, bye bye!
+   while (!modules.empty()) {
+      delete (*(modules.begin())).second;
+      modules.erase(modules.begin());
+   }
 }
 
 
