@@ -21,17 +21,18 @@ private:
   struct functionTableStruct
   {
     char const *command;
-    void CHAN_FUNC ((*function));
+     void CHAN_FUNC ((Chan::* const function));
   };
   static struct functionTableStruct const functionTable[];
+   Exordium::Services& services;
   const String myName;
   void sendMessage(const String &message, const String &to)
 	{
-		Exordium::Services::serviceNotice(message,myName,to);
+		services.serviceNotice(message,myName,to);
 	}
 public:
-  Chan(const String &mn)
-	: myName(mn)
+   Chan(Exordium::Services& s, const String &mn)
+	: services(s), myName(mn)
 	{
 	};
   ~Chan(void)
@@ -40,19 +41,19 @@ public:
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
 private:
-   static void CHAN_FUNC (parseHELP);
-   static void CHAN_FUNC (parseACCESS);
-   static void CHAN_FUNC (parseKICK);
-   static void CHAN_FUNC (parseOP);
-   static void CHAN_FUNC (parseVOICE);
-   static void CHAN_FUNC (parseREGISTER);
-   static void CHAN_FUNC (parseBAN);
-   static void CHAN_FUNC (parseDEOP);
-   static void CHAN_FUNC (parseTOPIC);
-   static void CHAN_FUNC (parseDEVOICE);
-   static void CHAN_FUNC (parseADDUSER);
-   static void CHAN_FUNC (parseINFO);
-   static void CHAN_FUNC (parseLISTBAN);
+   void CHAN_FUNC (parseHELP);
+   void CHAN_FUNC (parseACCESS);
+   void CHAN_FUNC (parseKICK);
+   void CHAN_FUNC (parseOP);
+   void CHAN_FUNC (parseVOICE);
+   void CHAN_FUNC (parseREGISTER);
+   void CHAN_FUNC (parseBAN);
+   void CHAN_FUNC (parseDEOP);
+   void CHAN_FUNC (parseTOPIC);
+   void CHAN_FUNC (parseDEVOICE);
+   void CHAN_FUNC (parseADDUSER);
+   void CHAN_FUNC (parseINFO);
+   void CHAN_FUNC (parseLISTBAN);
 };
 
 
