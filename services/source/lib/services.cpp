@@ -209,10 +209,10 @@ int
 Services::init(void)
 {
    Log::logLine("Setting up signal handlers");
-   //getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
-   //getDaemon().getSignals().addHandler(&Death,
-//				       Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
-//				       (void *)this);
+   getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
+   getDaemon().getSignals().addHandler(&Death,
+				       Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
+				       (void *)this);
    
 	struct hostent *host;
 	queueKill ();

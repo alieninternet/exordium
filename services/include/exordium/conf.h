@@ -22,6 +22,7 @@ namespace Exordium {
     private:
       // Variables (top class from the definition table above)
       String defLogfile;			// Log filename
+      String defUplink;				// Uplink Host
       
       // 'SQL' class and variables
       static const Kine::ConfigParser::defTable_type defClassSql;
@@ -38,7 +39,8 @@ namespace Exordium {
       // Top variables
       const String &getLogfile(void) const
 	{ return defLogfile; };
-      
+      const String &getUplink(void) const
+	{ return defUplink; };      
       // 'SQL' class
       const String &getSqlDatabase(void) const
 	{ return defSqlDatabase; };

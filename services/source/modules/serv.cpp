@@ -87,13 +87,14 @@ Services::shutdown(togo);
 void
 SERV_FUNC (Serv::parseSYNCH)
 {
-   String tosend = "Services database synch started by "+origin;
+   String tosend = "\002[\002Database Save\002]\002 Started by "+origin;
    Services::helpme(tosend,"Serv");
    struct timeval start;
    gettimeofday(&start, NULL);
    String query = "COMMIT";
    Sql::query(query);
    struct timeval finish;
+   gettimeofday(&finish,NULL);
    long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec)
         - (((long long)start.tv_sec * 1000000) + start.tv_usec));
    String togo = "Database synch finished - time taken "+String::convert(time)+" microseconds";
@@ -114,10 +115,38 @@ void
 SERV_FUNC (Serv::parseNEWS)
 {
 	String command = tokens.nextToken();
-	String channel = tokens.nextToken();
 	if(command=="")
 	{
 		Services::serviceNotice("Usage: news add/del/list","Serv",origin);
+		return;
+	}
+	if(command=="list")
+	{
+		String query = "SELECT * from news";
+		MysqlRes res = Sql::query(query);
+		MysqlRow row;
+		while ((row = res.fetch_row()))
+		{
+			String id = ((std::string) row[0]).c_str();
+			String level = ((std::string) row[1]).c_str();
+			String expires = ((std::string) row[2]).c_str();
+			String txt = ((std::string) row[3]).c_str();
+			String togo = "ID \002[\002"+id+"\002]\002 Level \002[\002"+level+"\002]\002 Expires \002[\002"+expires+"\002]\002 Text \002[\002"+txt+"\002]\002";
+			Services::serviceNotice(togo,"Serv",origin);
+		}
+
+	}
+	if(command=="del")
+	{
+		String id = tokens.nextToken();
+		if(id.empty())
+		{
+			Services::serviceNotice("\002[\002Fatal Error\002]\002 Usage: del ID","Serv",origin);
+			return;
+		}
+		String query = "DELETE FROM NEWS where id="+id;
+		Sql::query(query);
+		Services::serviceNotice("News has been deleted","Serv",origin);
 		return;
 	}
 	if(command=="add")
