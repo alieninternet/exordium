@@ -29,8 +29,8 @@
 # include <stack>
 
 # include "channelgame.h"
-# include "hand.h"
-# include "card.h"
+# include "cards/hand.h"
+# include "cards/card.h"
 
 # define EXORDI8_FUNC(x) \
      void x(const Kine::String& origin, Kine::StringTokens& line)
@@ -107,7 +107,8 @@ class Exordi8 : public ChannelGame {
 
  public:
    // Constructor
-   Exordi8(const Kine::String& channel, const Kine::String& caller);
+   Exordi8(Game& game, const Kine::String& channel, 
+	   const Kine::String& caller);
 
    // Parse a line..
    bool parseLine(Kine::String& origin, Kine::StringTokens& tokens);

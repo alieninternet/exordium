@@ -25,16 +25,23 @@
 
 # include <kineircd/str.h>
 
-# include "channelgame.h"
+class ChannelGame;
+
+# include "game.h"
 
 class ChannelGame {
  protected:
+   // The game service (so we can send messages)
+   Game& game;
+   
+   // The channel we are playing on
    const Kine::String channel;
    
  public:
    // Constructor
-   ChannelGame(const Kine::String& c)
-     : channel(c)
+   ChannelGame(Game& g, const Kine::String& c)
+     : game(g), 
+       channel(c)
        {};
    
    // Our destructor

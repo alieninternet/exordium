@@ -30,8 +30,9 @@
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel
  * Original 29/08/2002 simonb
  */
-Exordi8::Exordi8(const Kine::String& channel, const Kine::String& caller)
-  : ChannelGame(channel.IRCtoLower()),
+Exordi8::Exordi8(Game& game, const Kine::String& channel, 
+		 const Kine::String& caller)
+  : ChannelGame(game, channel.IRCtoLower()),
     playing(false),
     forwardDirection(true),
     sequentTrick(false),

@@ -15,6 +15,8 @@
 #include <map>
 #include "exordium/sql.h"
 
+#include "exordi8.h"
+
 using Kine::String;
 using Kine::StringTokens;
 using namespace Exordium;
@@ -38,7 +40,7 @@ namespace Exordium
 	  StringTokens st (line);
 	  String origin = requestor;
 	  String command = st.nextToken ().toLower ();
-	  String ch = chan;
+	  String ch = chan; // why is this copied?!
 	  for (int i = 0; functionTable[i].command != 0; i++)
 	    {
 	       // Does this match?
@@ -50,6 +52,13 @@ namespace Exordium
 		 }
 	    }
 
+	  // feh, check if this channel is one playing a game
+	  if (channelGames.find(chan.IRCtoLower()) != channelGames.end()) {
+	     // Too lazy to work around the mess above
+	     StringTokens tokens(line.substr(1));
+	     channelGames[chan]->parseLine(origin, tokens);
+	  }
+	  
 	  return;
        }
 
@@ -129,14 +138,19 @@ namespace Exordium
    void
      GAME_FUNC (Game::parseSTART)
        {
-	  String channel = tokens.nextToken();
-	  String game = tokens.nextToken();
+	  String channel = tokens.nextToken().IRCtoLower();
+	  String game = tokens.nextToken().toUpper();
 	  
-	  // checking?! ;)
+	  // Check for exordi8
+	  if (game == "EXORDI8") {
+	     channelGames[channel] = new Exordi8(*this, channel, origin);
+	  } else {
+	     // give them an error???!!
+	     return;
+	  }
 	  
 	  services.serviceJoin("game", channel);
-	  services.serviceNotice("Hello " + channel + " (wanted to do " + 
-				 game + ")", "Game", channel);
+	  services.serviceNotice("Hello " + channel + " (" + origin + " wanted to play " + game + ')', "Game", channel);
 	  
        }
 

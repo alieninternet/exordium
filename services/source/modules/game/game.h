@@ -9,18 +9,18 @@
 #define __GAME_H_
 
 #include <kineircd/str.h>
-#include "exordium/services.h"
+#include <exordium/services.h>
+#include <map>
+
+class ChannelGame;
 
 # define GAME_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
 
 using Kine::String;
 
-#include "exordium/service.h"
+#include <exordium/service.h>
 
-namespace Exordium {
-
-
-class Game : public Service
+class Game : public Exordium::Service
 {
 private:
   struct functionTableStruct
@@ -31,6 +31,10 @@ private:
   static struct functionTableStruct const functionTable[];
 
    Exordium::Services& services;
+
+   // Channel games in progress..
+   typedef std::map < Kine::String, ChannelGame* > channelGames_type;
+   channelGames_type channelGames;
    
 public:
    Game(Exordium::Services& s)
@@ -52,8 +56,6 @@ private:
 };
 
 
-
-
-};
+#include "channelgame.h"
 
 #endif
