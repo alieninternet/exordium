@@ -14,4 +14,4 @@ be required to have the following installed (in the following order):
   GNU Guile Library | 1.6 or later    | http://www.gnu.org/software/guile/
   GNU Autogen       | 5.5.3 or later  | http://www.gnu.org/software/autogen/
   LibAISutil        | 1.1 or later    | http://www.sf.net/projects/libais/
-  KineIRCd          | SS 200203221047 | http://www.sf.net/projects/kineircd/
+  KineIRCd          | SS 200303260939 | http://www.sf.net/projects/kineircd/
