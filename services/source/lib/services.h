@@ -49,13 +49,8 @@ namespace Exordium {
       chan_map chans;
       server_map servers;
       
-//      time_t startTime;
-      time_t lastPing;
-      time_t stopTime;
       time_t lastCheckPoint;
       time_t lastExpireRun;
-      bool stopping;
-      bool sendPing;
       
       void SynchTime(void);
       AISutil::String parseHelp(AISutil::String const &);
@@ -63,9 +58,6 @@ namespace Exordium {
       void checkpoint(void);
 	
     public:
-      time_t startTime;
-      unsigned int buildNumber;
-      
       // Constructor
       ServicesInternal(ConfigInternal& c, CDatabase& db);
 	

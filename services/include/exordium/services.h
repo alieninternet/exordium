@@ -27,7 +27,7 @@
 #ifndef _INCLUDE_EXORDIUM_SERVICES_H_
 # define _INCLUDE_EXORDIUM_SERVICES_H_ 1
 
-# include <ctime>
+# include <aisutil/time.h>
 # include <aisutil/string.h>
 # include <kineircd/password.h>
 # include <kineircd/daemon.h>
@@ -55,16 +55,20 @@ namespace Exordium {
       Channel channel;
       
       Static gstatic;
+      
+    private:
+      AISutil::Time startTime;
+
+    protected:
       // Constructor
       Services(CDatabase& db)
 	: database(db),
           channel(*this),
           gstatic(*this)
-	{};
+	{ startTime.setTime(); };
       
     public:
       static const int buildNumber = 1;
-      time_t startTime;
       
       // Destructor
       virtual ~Services(void)
@@ -209,7 +213,9 @@ namespace Exordium {
 		      AISutil::String const &) {};
       void setMode(AISutil::String const &,
 		   AISutil::String const &) {};
-      time_t getStartTime(void) { return startTime; };
+      
+      const AISutil::Time& getStartTime(void) const
+	{ return startTime; };
    }; // class Services
 }; // namespace Exordium
 

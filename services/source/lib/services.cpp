@@ -71,14 +71,10 @@ using namespace Exordium;
 
 ServicesInternal::ServicesInternal(ConfigInternal& c, CDatabase& db)
   : Services(db),
-console(*this),
-config(c),
-//startTime(time(NULL)),
-lastPing(time(NULL)),
-stopTime(0),
-lastCheckPoint(time(NULL)),
-lastExpireRun(time(NULL)),
-stopping(false)
+    console(*this),
+    config(c),
+    lastCheckPoint(time(NULL)),
+    lastExpireRun(time(NULL))
 {
    database.dbConnect();
 
@@ -124,9 +120,6 @@ ServicesInternal::~ServicesInternal(void)
 //   queueAdd(":" + Kine::config().getOptionsServerName() +
 //	    " SQUIT " + Kine::config().getOptionsServerName() + " :" +
 //	    reason);
-
-   stopping = true;
-   stopTime = Kine::daemon().getTime().seconds + 15;
 
    // Clean up before we die
    database.dbDelete("onlineclients");
