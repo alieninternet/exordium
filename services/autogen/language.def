@@ -405,6 +405,69 @@ langtag = {
 };
 
 
+langtag = {
+   name = "chan_SET_MODE_LOCK_TRUE";
+   component = "mod_chan";
+   data_en = "Channel mode lock has been enabled";
+};
+
+
+langtag = {
+   name = "chan_SET_MODE_LOCK_FALSE";
+   component = "mod_chan";
+   data_en = "Channel mode lock has been disabled";
+};
+
+
+langtag = {
+   name = "chan_SET_MODE_LOCK_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel mlock on/off";
+};
+
+
+langtag = {
+   name = "chan_SET_MODE";
+   component = "mod_chan";
+   data_en = "Channel default mode has been set to :%p0";
+};
+
+
+langtag = {
+   name = "chan_SET_MODE_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel mode <modes>";
+};
+
+
+
+langtag = {
+   name = "chan_SET_ENTRY_MSG";
+   component = "mod_chan";
+   data_en = "Channel entry message has been set";
+};
+
+langtag = {
+   name = "chan_SET_ENTRY_MSG_OFF";
+   component = "mod_chan";
+   data_en = "Channel entry message has been disabled";
+};
+
+
+langtag = {
+   name = "chan_SET_PART_MSG";
+   component = "mod_chan";
+   data_en = "Channel part message has been set";
+};
+
+
+langtag = {
+   name = "chan_SET_PART_MSG_OFF";
+   component = "mod_chan";
+   data_en = "Channel part message has been disabled";
+};
+
+
 
 langtag = {
    name = "chan_SET_UNSUPPORTED_OPTION";
