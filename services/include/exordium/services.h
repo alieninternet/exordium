@@ -67,6 +67,7 @@ extern "C" {
 #include <exordium/ircdome.h>
 #include <exordium/user.h>
 #include <exordium/dchan.h>
+#include <exordium/log.h>
 
 
 namespace Exordium {
@@ -159,8 +160,9 @@ namespace Exordium {
 	bool SecurePrivmsg;
 
 	// Log a line of text..
-	void logLine(const AISutil::String& line)
-	  { std::clog << "Logger: " << line << std::endl; };
+	void logLine(const AISutil::String& line,
+		     const Log::mask_type mask = Log::Informative)
+	  { std::clog << "Log(" << mask << "): " << line << std::endl; };
 
 	// Function Declrations below here.
 	int getAccess(AISutil::String &, AISutil::String &);
@@ -321,25 +323,29 @@ namespace Exordium {
 	  {
 	     if(connected)
 	       {
-		  logLine("TX: " + line);
+		  logLine("TX: " + line,
+			  Log::Debug);
 		  outputQueue.push (line + "\r\n");
 		  countTx += line.length();
 	       }
 	     else
 	       {
-		  logLine("Tried to TX " + line + " but not connected");
+		  logLine("Tried to TX " + line + " but not connected",
+			  Log::Debug);
 	       }
 	  };
 
 	void ModequeueAdd(const AISutil::String & line)
 	  {
-	     logLine("MQ: " + line);
+	     logLine("MQ: " + line,
+		     Log::Debug);
 	     outputQueue.push(line+ "\r\n");
 	  };
 	
 //	void queueAdd(String line)
 //	  {
-//	     logLine("TX: " + line);
+//	     logLine("TX: " + line,
+//	             Log::Debug);
 //	     outputQueue.push(line + "\r\n");
 //	  };
 	

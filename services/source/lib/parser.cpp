@@ -97,7 +97,8 @@ void Parser::parseLine(const String& line)
 	}
   // }
 
-   services.logLine("Unparsed Input!: " + line);
+   services.logLine("Unparsed Input!: " + line,
+		    Log::Debug);
 };
 
 void PARSER_FUNC (Parser::parseAWAY)

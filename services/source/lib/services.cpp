@@ -188,7 +188,8 @@ namespace Exordium
 			   {
 			      if(stopTime < currentTime)
 				{
-				   logLine("Disconnecting, QueueFlushed and in stop state");
+				   logLine("Disconnecting, QueueFlushed and in stop state",
+					   Log::Debug);
 				   connected = false;
 				   exit(0);
 				}
@@ -250,7 +251,8 @@ namespace Exordium
 	SecurePrivmsg = false;
 	countTx = 0;
 	countRx = 0;
-	logLine("Setting up signal handlers");
+	logLine("Setting up signal handlers",
+		Log::Debug);
 	getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
 	getDaemon().getSignals().addHandler(&Death,
 					    Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
@@ -264,7 +266,8 @@ namespace Exordium
 	startTime = currentTime = lastPing = lastExpireRun = lastCheckPoint = serverLastSpoke = time (NULL);
 	if (!(inputBuffer = (char *) malloc (inputBufferSize)))
 	  {
-	     logLine ("Fatal Error: Could not allocate input buffer");
+	     logLine ("Fatal Error: Could not allocate input buffer",
+		      Log::Fatality);
 	     perror ("malloc");
 	     exit (1);
 	  }
@@ -276,7 +279,8 @@ namespace Exordium
 #endif
 	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
-	     logLine ("Fatal Error: Error resolving uplinkhost");
+	     logLine ("Fatal Error: Error resolving uplinkhost",
+		      Log::Fatality);
 	     exit (1);
 	  }
 	memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
@@ -305,7 +309,8 @@ Services::~Services()
 	while(bufferin.peek()!=-1)
 	  {
 	     std::getline(bufferin,line);
-	     logLine("RX: "+line);
+	     logLine("RX: "+line,
+		     Log::Debug);
 	     countRx += line.length();
 	     parser.parseLine(line);
 	  }
@@ -322,7 +327,8 @@ Services::~Services()
    void
      Services::disconnect (void)
        {
-	  logLine ("Closing socket.");
+	  logLine ("Closing socket.",
+		   Log::Debug);
 	  socky.close();
 	  connected = false;
        }
@@ -338,7 +344,8 @@ Services::~Services()
 	logLine ("Attempting Connection to Uplink");
 	if (sock >= 0)
 	  {
-	     logLine ("Closing stale network socket");
+	     logLine ("Closing stale network socket",
+		      Log::Debug);
 	     socky.close();
 	     sock = -1;
 	  }
