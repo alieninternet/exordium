@@ -215,6 +215,11 @@ int
      }
    return 0;
 }
+/* addCheckIdentify()
+ * 
+ * Force this client to identify for their nickname..
+ * 
+ */
 
 void
   User::addCheckIdentify(void)
