@@ -135,6 +135,8 @@ CREATE TABLE chans (
   cdesc varchar(250) default NULL,
   url varchar(200) default NULL,
   clog int(20) default '0',
+  enforcebans tinyint(1) NOT NULL default '0',
+  tracktopics tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY chans_idx (name),
   KEY chans_owner_idx (owner)
