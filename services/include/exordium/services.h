@@ -86,6 +86,10 @@ namespace Exordium {
         };
       virtual void liveLog(const AISutil::String &) = 0;
       // Function Declrations below here.
+      virtual void addFreeze(AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &) = 0;
+      virtual int timesFreezed(AISutil::String const &) = 0;
+      virtual bool isFreezed(AISutil::String const &) = 0;
+      virtual void delFreeze(AISutil::String const &) = 0;
       virtual int getAccess(AISutil::String const &, AISutil::String const &) = 0;
       virtual void shutdown(const AISutil::String &) = 0;
       

@@ -1270,6 +1270,32 @@ int ServicesInternal::getOnlineChanID(String const &id)
    else
      return database.dbGetValue().toInt();
 }
+void ServicesInternal::delFreeze(String const &chan)
+{
+   int cid = getChannel().getChanID(chan.IRCtoLower());
+   database.dbUpdate("chanfreeze","expires=0","name='"+String::convert(cid)+"'");
+}
+
+void ServicesInternal::addFreeze(String const &chan, String const &setby, int const &expires, String const &reason)
+{
+   int cid = getChannel().getChanID(chan.IRCtoLower());
+   database.dbInsert("chanfreeze","'','"+String::convert(cid)+"','"+setby+"',NOW(),"+String::convert(expires)+",'"+reason+"'");
+}
+bool ServicesInternal::isFreezed(String const &chan)
+{
+   int cid = getChannel().getChanID(chan.IRCtoLower());
+   if(database.dbSelect("id","chanfreeze","name='"+String::convert(cid)+"' AND expires>"+String::convert(currentTime)) < 1)
+     return false;
+   else
+     return true;
+}
+
+int ServicesInternal::timesFreezed(String const &chan)
+{
+   int cid = getChannel().getChanID(chan.IRCtoLower());
+   int nbRes = database.dbSelect("id","chanfreeze","name='"+String::convert(cid)+"'");
+   return nbRes;
+}
 
 void ServicesInternal::addOper(String const &nick, int access)
 {

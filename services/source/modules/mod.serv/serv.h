@@ -93,6 +93,7 @@ namespace Exordium {
 	 SERV_FUNC(parseSTATUS);
 	 SERV_FUNC(parseCOMMANDS);
 	 SERV_FUNC(parseGETHASH);
+	 SERV_FUNC(parseFREEZE);
       }; // class Module
    }; // class ServModule
 }; // namespace Exordium

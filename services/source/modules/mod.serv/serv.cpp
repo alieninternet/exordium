@@ -62,6 +62,7 @@ const Module::functionTableStruct Module::functionTable[] =
      { "status",	&Module::parseSTATUS },
      { "commands",	&Module::parseCOMMANDS },
      { "gethash",	&Module::parseGETHASH },
+     { "freeze",	&Module::parseFREEZE },
      { 0, 0}
 };
 
@@ -79,7 +80,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 		  services->sendGOper(origin.getNickname()+" tried to use \002"+command+"\002 when not identified",getName());
 		  return;
 	       }
-	     
+
 	     int required = services->getRequiredAccess(getName(),command.toLower());
 	     int access = origin.getAccess(getName());
 	     if(required>access)
@@ -110,7 +111,7 @@ SERV_FUNC (Module::parseSTATUS)
    origin.sendMessage(tofo,getName());
    time_t start_day;
    time_t now_day;
-   
+
    now_day = time ( NULL );
    String ntime = ctime( &now_day );
    //start_day = time ( services->startTime);
@@ -160,22 +161,165 @@ SERV_FUNC (Module::parseDIE)
    String togo = "\002"+origin.getNickname()+"\002 - "+reason;
    services->shutdown(togo);
 }
+SERV_FUNC (Module::parseFREEZE)
+{
+   String func = tokens.nextToken();
+   if(func=="")
+     {
+	origin.sendMessage("Usage: freeze add/del/list",getName());
+	return;
+     }
+   if(func=="add")
+     {
+	String chan = tokens.nextToken();
+	String reason = tokens.rest();
+	if(chan=="" | reason=="")
+	  {
+	     origin.sendMessage("Usage: freeze add #channel reason",getName());
+	     return;
+	  }
+        if(!services->getChannel().isChanRegistered(chan))
+	  {
+	     origin.sendMessage("Error: That channel is not registered",getName());
+	     return;
+	  }
+	int times = services->timesFreezed(chan);
+	std::cout << "Counter returned " << times << std::endl;
+	int expires = 0;
+	String flong;
+	if(times==0)
+	  {
+	     expires = time(NULL)+3600;
+	     flong = "1 hour";
+	  }
+	if(times==1)
+	  {
+	     expires = time(NULL)+7200;
+	     flong = "2 hours";
+	  }
+
+	if(times==2)
+	  {
+	     flong = "12 hours";
+	     expires = time(NULL)+43200;
+	  }
+
+	if(times==3)
+	  {
+	     flong = "1 day";
+	     expires = time(NULL)+86400;
+	  }
+
+	if(times==4)
+	  {
+	     flong = "2 days";
+	     expires = time(NULL)+172800;
+	  }
+
+	if(times==5)
+	  {
+	     flong = "7 days";
+	     expires = time(NULL)+604800;
+	  }
+
+	if(times==6)
+	  {
+	     origin.sendMessage("Error: That channel has already been frozen 6 times",getName());
+	     return;
+	  }
+
+	services->addFreeze(chan,origin.getNickname(),expires,reason);
+	int cid = services->getChannel().getChanID(chan.IRCtoLower());
+	int coid = services->getChannel().getOnlineChanID(chan);
+	int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(coid)+" AND status=2");
+	CResult *myRes = services->getDatabase().dbGetResultSet();
+	std::cout << "entering loop with " << nbRes << std::endl;
+	for(int i=0;i<nbRes;i++)
+	  {
+	     String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
+	     std::cout << inick << std::endl;
+	     services->mode(getName(),chan,"-o",inick);
+	  }
+	delete myRes;
+	int mbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(coid)+" AND status=1");
+	CResult *mvRes = services->getDatabase().dbGetResultSet();
+	for(int j=0;j<nbRes;j++)
+	  {
+	     String inick = services->getOnlineNick(mvRes->getValue(j,0).toInt());
+	     services->mode(getName(),chan,"-v",inick);
+	  }
+	delete mvRes;
+	services->mode(getName(),chan,"+ntm-ilsl","");
+	String topic = "This channel has been frozen by "+origin.getNickname()+" because \002"+reason;
+	services->getChannel().setTopic(chan,topic);
+	services->sendGOper(getName(),origin.getNickname()+" set a \002freeze\002 on "+chan+" for \002"+reason+"\002 ("+flong+")");
+	return;
+
+     }
+   if(func=="del")
+     {
+	String channel = tokens.nextToken();
+	if(!services->isFreezed(channel))
+	  {
+	     origin.sendMessage("Error: That channel is not frozen",getName());
+	     return;
+	  }
+
+	String topic = "This channel has been unfrozen by "+origin.getNickname();
+	services->getChannel().synchChannel(channel,topic,"+nt-m");
+	services->delFreeze(channel);
+     }
+   if(func=="list")
+     {
+	String channel = tokens.nextToken();
+	if(channel=="")
+	  {
+	     origin.sendMessage("Usage: freeze list #channel",getName());
+	     return;
+	  }
+
+	/* Lists all current freezes*/
+	int cid = services->getChannel().getChanID(channel.IRCtoLower());
+	int nbRes = services->getDatabase().dbSelect("*","chanfreeze","name='"+String::convert(cid)+"'");
+	CResult *myRes = services->getDatabase().dbGetResultSet();
+	if(nbRes==0)
+	  {
+	     origin.sendMessage("No freeze's found for "+channel,getName());
+	     return;
+	  }
+	origin.sendMessage("Freeze history for channel "+channel,getName());
+
+	for(int i=0;i<nbRes;i++)
+	  {
+	     String id = myRes->getValue(i,0);
+	     String setby = myRes->getValue(i,2);
+	     String seton = myRes->getValue(i,3);
+	     String expires = myRes->getValue(i,4);
+	     String reason = myRes->getValue(i,5);
+	     origin.sendMessage("\002["+id+"]\002 Setby: \002"+setby+"\002 SetOn: \002"+seton+"\002 Expires: \002"+expires+"\002 Reason: \002"+reason,getName());
+	  }
+	delete myRes;
+
+     }
+
+}
+
 SERV_FUNC (Module::parseGETHASH)
 {
    String who = tokens.nextToken();
    if(who=="")
      {
 	origin.sendMessage("Usage: gethash nickname",getName());
-        return;
+	return;
      }
    if(!services->isNickRegistered(who))
      {
-   	origin.sendMessage("Error: Nickname is not registered",getName());
+	origin.sendMessage("Error: Nickname is not registered",getName());
 	return;
      }
    if(!services->getDatabase().dbSelect("id","nickspending","nickname='"+who+"'"))
      {
-        origin.sendMessage("Error: That nickname is not in a pending status",getName());
+	origin.sendMessage("Error: That nickname is not in a pending status",getName());
 	return;
      }
    int nbRes = services->getDatabase().dbSelect("auth","nickspending","nickname='"+who+"'");
@@ -211,9 +355,9 @@ SERV_FUNC (Module::parseSETPASS)
 	     services->sendGOper(getName(),"\002Warning\002 "+origin.getNickname()+" tried to perform a \002setpass\002 on a staff nickname ("+who+")");
 	     return;
 	  }
-	
+
      }
-   
+
    String epass =  Utils::generatePassword(who, newpass);
    services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
@@ -240,15 +384,15 @@ SERV_FUNC (Module::parseNEWS)
      }
    if(command=="list")
      {
-        int nbRes = services->getDatabase().dbSelect("news");
-	
+	int nbRes = services->getDatabase().dbSelect("news");
+
 	if(nbRes==0)
 	  {
 	     origin.sendMessage("No News found",getName());
 	     return;
 	  }
 	CResult *myRes = services->getDatabase().dbGetResultSet();
-	
+
 	for(int i=0; i<nbRes; i++)
 	  {
 	     String id = myRes->getValue(i,0);
@@ -269,12 +413,12 @@ SERV_FUNC (Module::parseNEWS)
 	     origin.sendMessage("\002[\002Fatal Error\002]\002 Usage: del ID",getName());
 	     return;
 	  }
-        services->getDatabase().dbDelete("news", "id="+id);
+	services->getDatabase().dbDelete("news", "id="+id);
 	origin.sendMessage("News has been deleted",getName());
 	services->sendGOper(getName(),origin.getNickname()+" \002deleted\002 news item "+id);
 	return;
      }
-   
+
    if(command=="add")
      {
 	String type = tokens.nextToken();
@@ -300,7 +444,7 @@ SERV_FUNC (Module::parseNEWS)
 	     origin.sendMessage("Error: Expire time is to far in the future",getName());
 	     return;
 	  }
-	
+
 	int nexpires = expires.toInt();
 	nexpires = services->currentTime + (nexpires * 3600);
 	if(services->currentTime>nexpires)
@@ -308,7 +452,7 @@ SERV_FUNC (Module::parseNEWS)
 	     origin.sendMessage("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past",getName());
 	     return;
 	  }
-        services->getDatabase().dbInsert("news", "'','"+type+"','"+String::convert(nexpires)+"','"+text+"'");
+	services->getDatabase().dbInsert("news", "'','"+type+"','"+String::convert(nexpires)+"','"+text+"'");
 	origin.sendMessage("New news item added successfully",getName());
 	services->sendGOper(getName(),origin.getNickname() + "\002Added\002 a new news item");
      }
@@ -342,7 +486,7 @@ SERV_FUNC (Module::parseCHAN)
 	     origin.sendMessage("Error: That channel is not registered",getName());
 	     return;
 	  }
-	
+
 	String newtopic = "This channel is now owned by "+newowner;
 	services->getChannel().setTopic(channel,newtopic);
 	services->getChannel().updateTopic(channel,newtopic);
@@ -352,7 +496,7 @@ SERV_FUNC (Module::parseCHAN)
 	services->logLine(String(togo));
 	services->getChannel().chanDelAccess(channel,oldowner);
 	services->getChannel().chanAddAccess(channel,newowner,"500");
-        services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
+	services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
 	services->log(origin,getName(),String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
 	services->sendGOper(getName(),origin.getNickname()+" \002Modified\002 channel ownedship of "+channel+" "+oldowner+"->"+newowner);
 	return;
@@ -370,7 +514,7 @@ SERV_FUNC (Module::parseCHAN)
 	     origin.sendMessage("That channel is not registered",getName());
 	     return;
 	  }
-	
+
 	String togo = origin.getNickname() + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
 	services->logLine(String(togo));
 	services->getChannel().deregisterChannel(channel,reason);
@@ -443,7 +587,7 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage("Error: Level must be between 1 and 499",getName());
 	     return;
 	  }
-	
+
 	if(ilevel>access || ilevel==access)
 	  {
 	     origin.sendMessage("Error: You cannot set someones access higher than, or equal to your own",getName());
@@ -465,13 +609,13 @@ SERV_FUNC (Module::parseUSER)
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+String::convert(ilevel);
 	services->logLine(togo);
 	services->sendGOper(getName(),togo);
-        services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+toadd+"'");
+	services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+toadd+"'");
 	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+String::convert(level));
 	return;
      }
    if(command=="list")
      {
-        int nbRes = services->getDatabase().dbSelect("*", "access", "service='serv'");
+	int nbRes = services->getDatabase().dbSelect("*", "access", "service='serv'");
 	CResult *myRes = services->getDatabase().dbGetResultSet();
 
 	for(int i=0; i<nbRes; i++)
@@ -505,7 +649,7 @@ SERV_FUNC (Module::parseUSER)
 	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
-        services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
+	services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
 	origin.sendMessage("Command complete",getName());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
 	services->logLine(String(togo), Log::Warning);
@@ -547,7 +691,7 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage("Error: You cannot add someone with higher than 499 access",getName());
 	     return;
 	  }
-        services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
+	services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
 	origin.sendMessage("Command completed",getName());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
 	services->logLine(String(togo), Log::Warning);
@@ -600,7 +744,7 @@ SERV_FUNC (Module::parseNLIST)
 	  }
 	delete tmp;
      }
-   
+
    for(int i=0; i<nbRes; i++)
      {
 	f++;
@@ -615,7 +759,7 @@ SERV_FUNC (Module::parseNLIST)
 	     origin.sendMessage("More than 30 results found! Please be more specific in your search",getName());
 	     return;
 	  }
-	
+
 	if(dest=="")
 	  {
 	     origin.sendMessage(String(tosend),getName());
@@ -669,7 +813,7 @@ SERV_FUNC (Module::parseELIST)
 	  }
 	delete tmp;
      }
-   
+
    for(int i=0; i<nbRes; i++)
      {
 	String nickname = myRes->getValue(i,0);
@@ -681,7 +825,7 @@ SERV_FUNC (Module::parseELIST)
 	     origin.sendMessage("More than 30 results found! Please be more specific",getName());
 	     return;
 	  }
-	
+
 	if(dest=="")
 	  origin.sendMessage(tosend,getName());
 	else
@@ -737,9 +881,9 @@ SERV_FUNC (Module::parseDELNICK)
 	     services->sendGOper(getName(),origin.getNickname()+" tried to perform a \002delnick\002 on a staff nickname ("+who+")");
 	     return;
 	  }
-	
+
      }
-   
+
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
    services->logLine(togo, Log::Warning);
    services->sendGOper(getName(),togo);

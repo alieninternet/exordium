@@ -153,6 +153,14 @@ CHAN_FUNC (Module::parseSET)
 	origin.sendMessage(GETLANG(chan_USAGE_SET),getName());
 	return;
      }
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String command = tokens.nextToken();
    String value = tokens.nextToken();
    dChan *ptr = services->findChan(channel);
@@ -250,6 +258,14 @@ CHAN_FUNC (Module::parseLISTBAN)
 	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
+      if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String tempnick = origin.getNickname();
    ptr->sendBans(tempnick,getName());
 }
@@ -283,6 +299,14 @@ CHAN_FUNC (Module::parseINFO)
         origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
+      if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    origin.sendMessage(GETLANG(chan_INFO_START,channel),getName());
    origin.sendMessage(GETLANG(chan_INFO_OWNER,ptr->getOwner()),getName());
    origin.sendMessage(GETLANG(chan_INFO_UNIQUEIDS,
@@ -320,7 +344,14 @@ CHAN_FUNC (Module::parseADDUSER)
 	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -365,7 +396,14 @@ CHAN_FUNC (Module::parseTOPIC)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String topic = tokens.rest();
    String la = origin.getIDList();
    StringTokens st (la);
@@ -441,6 +479,14 @@ CHAN_FUNC (Module::parseBAN)
 	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getName());
 	return;
      }
+      if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    ptr->ban(*uptr,getName(),reason,origin.getNickname());
    origin.sendMessage(GETLANG(chan_BAN_SUCCESS),getName());
 }
@@ -507,6 +553,12 @@ CHAN_FUNC (Module::parseOP)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
+   if(services->isFreezed(channel))
+     {
+	origin.sendMessage("Error: That channel is frozen",getName());
+	return;
+     }
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -587,7 +639,14 @@ CHAN_FUNC (Module::parseDEOP)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -666,7 +725,14 @@ CHAN_FUNC (Module::parseVOICE)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -745,7 +811,14 @@ CHAN_FUNC (Module::parseDEVOICE)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String la = origin.getIDList();
    StringTokens st (la);
    bool more = false;
@@ -826,7 +899,14 @@ CHAN_FUNC (Module::parseKICK)
 	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    String thelist = origin.getIDList();
    StringTokens st (thelist);
    bool more = false;
@@ -883,7 +963,14 @@ CHAN_FUNC (Module::parseACCESS)
 	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
 	return;
      }
-
+   if(services->isFreezed(channel))
+     {
+	
+	        origin.sendMessage("Error: That channel is frozen",getName());
+	        return;
+     }
+   
+   
    origin.sendMessage(GETLANG(chan_ACCESS_START,channel),
 		      getName());
 

@@ -124,6 +124,10 @@ namespace Exordium {
       void run(void);
       
       // Function Declrations below here.
+      void addFreeze(AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &);
+      int timesFreezed(AISutil::String const &);
+      bool isFreezed(AISutil::String const &);
+      void delFreeze(AISutil::String const &);
       int getAccess(AISutil::String const &, AISutil::String const &);
       void shutdown(const AISutil::String &);
       
