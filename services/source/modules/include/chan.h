@@ -54,19 +54,18 @@ private:
    
   void sendMessage(const LibAIS::String &message, const LibAIS::String &to)
 	{
-		services.serviceNotice(message,getName(),to);
+		services->serviceNotice(message,getName(),to);
 	}
 public:
-   Chan(Exordium::Services& s)
-     : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", "Chan")
+   Chan(void)
+     : configData(moduleInfo.fullName, "somewhere.org", "Chan")
 	{
 	};
   ~Chan(void)
 	{
 	};
    // Start the module
-   void start(void);
+   void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
    void stop(void) {};

@@ -57,13 +57,13 @@ namespace Exordium
 	  if(num=="all")
 	    {
 	       String query = "DELETE from notes where nto='" + origin.getNickname() + "'";
-	       services.getDatabase().query(query);
+	       services->getDatabase().query(query);
 	       origin.sendMessage("All notes erased.",getName());
-	       services.log(origin,getName(),"Erased all notes");
+	       services->log(origin,getName(),"Erased all notes");
 	       return;
 	    }
 	  String query = "SELECT id from notes where nto='" + origin.getNickname() + "'";
-	  MysqlRes res = services.getDatabase().query(query);
+	  MysqlRes res = services->getDatabase().query(query);
 	  MysqlRow row;
 	  int j = 0;
 	  while ((row = res.fetch_row()))
@@ -75,8 +75,8 @@ namespace Exordium
 		    origin.sendMessage(togo,getName());
 		    String ntext = ((std::string) row[0]).c_str();
 		    String query = "DELETE from notes where id='" + ntext + "'";
-		    services.getDatabase().query(query);
-		    services.log(origin,"Note","Deleted a single note");
+		    services->getDatabase().query(query);
+		    services->log(origin,"Note","Deleted a single note");
 		    res.free_result();
 		    return;
 		 }
@@ -90,7 +90,7 @@ namespace Exordium
 	  if(num.toLower()=="all")
 	    {
 	       String query = "SELECT nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
-	       MysqlRes res = services.getDatabase().query(query);
+	       MysqlRes res = services->getDatabase().query(query);
 	       MysqlRow row;
 	       int j = 0;
 	       while ((row = res.fetch_row()))
@@ -104,12 +104,12 @@ namespace Exordium
 		    String tofo = ntext;
 		    origin.sendMessage(tofo,getName());
 		 }
-	       services.log(origin,"Note","Read all notes");
+	       services->log(origin,"Note","Read all notes");
 	       res.free_result();
 	       return;
 	    }
 	  String query = "SELECT nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
-	  MysqlRes res = services.getDatabase().query(query);
+	  MysqlRes res = services->getDatabase().query(query);
 	  MysqlRow row;
 	  int j = 0;
 	  while ((row = res.fetch_row()))
@@ -124,7 +124,7 @@ namespace Exordium
 		    origin.sendMessage(togo,getName());
 		    String tofo = ntext;
 		    origin.sendMessage(tofo,getName());
-		    services.log(origin,"Note","Read a single note");
+		    services->log(origin,"Note","Read a single note");
 		    res.free_result();
 		    return;
 		 }
@@ -137,7 +137,7 @@ namespace Exordium
      NOTE_FUNC (Note::parseLIST)
        {
 	  String query = "select nfrom,nsent,note from notes where nto='" + origin.getNickname() + "'";
-	  MysqlRes res = services.getDatabase().query(query);
+	  MysqlRes res = services->getDatabase().query(query);
 	  MysqlRow row;
 	  int j = 0;
 	  while ((row = res.fetch_row()))
@@ -156,7 +156,7 @@ namespace Exordium
 	    }
 	  String tofo = String("To read a note, type /msg Note read Number");
 	  origin.sendMessage(tofo,getName());
-	  services.log(origin, "Note", "Listed their notes");
+	  services->log(origin, "Note", "Listed their notes");
 	  res.free_result();
        }
    void
@@ -180,45 +180,45 @@ namespace Exordium
 	  if(nto[0]=='#')
 	    {
 	       //Channel Note
-	       if(!services.getChannel().isChanRegistered(nto))
+	       if(!services->getChannel().isChanRegistered(nto))
 		 {
 		    String tofo = String("That channel is not registered");
 		    origin.sendMessage(String(tofo),getName());
 		    return;
 		 }
-	       int chanid = services.getChannel().getChanID(nto);
+	       int chanid = services->getChannel().getChanID(nto);
 	       String query = "SELECT nickid from chanaccess where chanid='" + String::convert(chanid) + "'";
-	       MysqlRes res = services.getDatabase().query(query);
+	       MysqlRes res = services->getDatabase().query(query);
 	       MysqlRow row;
 	       int j = 0;
 	       while ((row = res.fetch_row()))
 		 {
 		    String nnid = ((std::string) row[0]).c_str();
 		    int nid = nnid.toInt();
-		    String nick = services.getNick(nid);
+		    String nick = services->getNick(nid);
 		    if(nick.toLower()!=origin.getNickname().toLower())
 		      {
 			 j++;
 			 String txt = String("\002")+nto+"\002: "+note;
-			 services.sendNote(origin.getNickname(),nick,txt);
+			 services->sendNote(origin.getNickname(),nick,txt);
 		      }
 		 }
 	       String toao = String("Your note was successfully sent to \002")+String::convert(j)+"\002 people on "+nto;
 	       origin.sendMessage(String(toao),getName());
-	       services.log(origin,"Note","Sent a channel note to "+nto);
+	       services->log(origin,"Note","Sent a channel note to "+nto);
 	       res.free_result();
 	       return;
 	    }
 
-	  if(!services.isNickRegistered(nto))
+	  if(!services->isNickRegistered(nto))
 	    {
 	       String togo = String("Error: Destination nickname is not registered");
 	       origin.sendMessage(togo,getName());
 	       return;
 	    }
-	  services.sendNote(origin.getNickname(),nto,note);
+	  services->sendNote(origin.getNickname(),nto,note);
 	  origin.sendMessage("Your note was successfully sent to \002"+nto+"\002",getName());
-	  services.log(origin,"Note","Sent a private note to "+nto);
+	  services->log(origin,"Note","Sent a private note to "+nto);
        }
 
    void
@@ -252,7 +252,7 @@ namespace Exordium
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	return new Note(services);
+	return new Note();
      }
 
    // Module information structure
@@ -263,12 +263,16 @@ namespace Exordium
 
 
    // Start the service
-   void Note::start(void)
+   void Note::start(Exordium::Services& s)
      {
-	services.registerService(getName(), getName(), 
+	// Set the services field appropriately
+	services = &s;
+	
+	// Register ourself to the network
+	services->registerService(getName(), getName(), 
 				 getConfigData().getHostname(), "+dz",
 				 getConfigData().getDescription());
-	services.serviceJoin(getName(),"#Debug");
+	services->serviceJoin(getName(),"#Debug");
      }
 }
 

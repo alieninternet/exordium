@@ -88,12 +88,12 @@ void
 void
   BOT_FUNC (Bot::parseHELP)
 {
-   services.doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
+   services->doHelp(origin,"bot",tokens.nextToken(),tokens.nextToken());
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Bot(services);
+   return new Bot();
 }
 
 
@@ -105,10 +105,14 @@ const Bot::moduleInfo_type Bot::moduleInfo = {
 
 
 // Start the service
-void Bot::start(void)
+void Bot::start(Exordium::Services& s)
 {
-   services.registerService(getName(), getName(), 
+   // Set the services field appropriately
+   services = &s;
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
-   services.serviceJoin(getName(),"#Debug");
+   services->serviceJoin(getName(),"#Debug");
 }

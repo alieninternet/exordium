@@ -56,12 +56,11 @@ class Bot : public Exordium::Service
 
   void sendMessage(const LibAIS::String &to, const LibAIS::String &message)
 	{
-		services.serviceNotice(message,getName(),to);
+		services->serviceNotice(message,getName(),to);
 	};
 public:
-   Bot(Exordium::Services& s)
-     : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", "Bot")
+   Bot(void)
+     : configData(moduleInfo.fullName, "somewhere.org", "Bot")
        {};
 
   ~Bot(void)
@@ -70,7 +69,7 @@ public:
 	};
    
    // Start the module
-   void start(void);
+   void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
    void stop(void) {};

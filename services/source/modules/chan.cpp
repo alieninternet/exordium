@@ -149,7 +149,7 @@ void
      }
    String command = tokens.nextToken();
    String value = tokens.nextToken();
-   if(!services.getChannel().isChanRegistered(channel))
+   if(!services->getChannel().isChanRegistered(channel))
      {
         origin.sendMessage("Error: That channel is not registered",getName());
 	return;
@@ -161,19 +161,19 @@ void
      {
 
 	String currnick  = st.nextToken();
-	if((services.getChannel().getChanAccess(channel,currnick)>400))
+	if((services->getChannel().getChanAccess(channel,currnick)>400))
 	  {
 	     if(command=="log")
 	       {
 		  if(value=="true")
 		    {
-		       services.getChannel().setChanLog(channel,true);
+		       services->getChannel().setChanLog(channel,true);
 		       origin.sendMessage("Channel logs have been enabled, the owner will receive a nightly email from this channel",getName());
 		       return;
 		    }
 		  if(value=="false")
 		    {
-		       services.getChannel().setChanLog(channel,false);
+		       services->getChannel().setChanLog(channel,false);
 		       origin.sendMessage("Channel logs have been disabled",getName());
 		       return;
 		    }
@@ -210,15 +210,15 @@ void
 	origin.sendMessage("\002[\002Incorrect Command Usage\002]\002 Usage: listban #channel",getName());
 	return;
      }
-   if(!services.getChannel().isChanRegistered(channel))
+   if(!services->getChannel().isChanRegistered(channel))
      {
 	origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",getName());
 	return;
      }
-   int tid = services.getChannel().getChanID(channel);
+   int tid = services->getChannel().getChanID(channel);
    origin.sendMessage("\002[\002Ban List\002]\002 for \002"+channel,getName());
    String tquery = "SELECT * from chanbans where chan='" + String::convert(tid) + "'";
-   MysqlRes res = services.getDatabase().query(tquery);
+   MysqlRes res = services->getDatabase().query(tquery);
    MysqlRow row;
    int j=0;
    while ((row = res.fetch_row()))
@@ -252,16 +252,16 @@ void
 	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: info #channel",getName());
 	return;
      }
-   if(!services.getChannel().isChanRegistered(channel))
+   if(!services->getChannel().isChanRegistered(channel))
      {
         origin.sendMessage("\002[\002Fatal Error\002]\002 Channel not registered",getName());
 	return;
      }
-   int cid = services.getChannel().getChanID(channel);
-   String nowner = services.getChannel().getChanOwner(cid);
-   String ntotal = services.getChannel().getChanCount();
-   String nuniq = String::convert(services.getChannel().getChanID(channel));
-   String nnuniq = String::convert(services.getChannel().getOnlineChanID(channel));
+   int cid = services->getChannel().getChanID(channel);
+   String nowner = services->getChannel().getChanOwner(cid);
+   String ntotal = services->getChannel().getChanCount();
+   String nuniq = String::convert(services->getChannel().getChanID(channel));
+   String nnuniq = String::convert(services->getChannel().getOnlineChanID(channel));
    String toa = "\002[\002Channel Information\002]\002 for \002"+channel;
    String tob = "Owner : "+nowner;
    String toc = "Unique IDS: "+nuniq+"/"+nnuniq;
@@ -289,7 +289,7 @@ void
 	origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: adduser #channel nickname level",getName());
 	return;
      }
-   if(!services.isNickRegistered(nickname))
+   if(!services->isNickRegistered(nickname))
      {
 	origin.sendMessage("\002[\002Fatal Error\002]\002 Nickname not registered",getName());
 	return;
@@ -301,9 +301,9 @@ void
    while(more==true)
      {
 	String currnick  = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	int waccess = level.toInt();
-	int taccess = services.getChannel().getChanAccess(channel,nickname);
+	int taccess = services->getChannel().getChanAccess(channel,nickname);
 	if(waccess==access || waccess>access || waccess<1 || waccess>499)
 	  {
 	     origin.sendMessage("Error: You cannot add someone with higher, or equal access to your own",getName());
@@ -314,8 +314,8 @@ void
 	     origin.sendMessage("Error: That person already has access",getName());
 	     return;
 	  }
-	services.getChannel().chanAddAccess(channel,nickname,level);
-	services.log(origin,"Chan","Added "+nickname+" with level "+level,channel);
+	services->getChannel().chanAddAccess(channel,nickname,level);
+	services->log(origin,"Chan","Added "+nickname+" with level "+level,channel);
 	origin.sendMessage("Command completed successfully",getName());
 	return;
      }
@@ -341,12 +341,12 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>150)
 	  {
-	     services.getChannel().updateTopic(channel,topic);
-	     services.getChannel().setTopic(channel,topic);
-	     services.log(origin,"Chan","Set topic to "+topic,channel);
+	     services->getChannel().updateTopic(channel,topic);
+	     services->getChannel().setTopic(channel,topic);
+	     services->log(origin,"Chan","Set topic to "+topic,channel);
 	     return;
 	  }
 	more = st.hasMoreTokens();
@@ -361,7 +361,7 @@ void
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services.doHelp(origin,getName(),word,parm);
+   services->doHelp(origin,getName(),word,parm);
 }
 
 void
@@ -395,7 +395,7 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>150)
 	  {
 	     StringTokens st (who);
@@ -403,17 +403,17 @@ void
 	     String temp2 = st.rest();
 	     if(temp2.length()<2)
 	       {
-		  User *ptr = services.findUser(temp1);
+		  User *ptr = services->findUser(temp1);
 		  String tban = ptr->getHost();
 		  String toban = "*!*@"+tban;
 		  who = toban;
 	       }
-	     int cid = services.getChannel().getChanID(channel);
-	     services.serverMode(channel,"+b",who);
-	     long newt = services.currentTime + 120;
-	     services.getChannel().addChanBan(cid,who,origin.getNickname(),newt,reason);
+	     int cid = services->getChannel().getChanID(channel);
+	     services->serverMode(channel,"+b",who);
+	     long newt = services->currentTime + 120;
+	     services->getChannel().addChanBan(cid,who,origin.getNickname(),newt,reason);
 	     String rs = "("+origin.getNickname()+"/"+currnick+") "+reason;
-	     services.getChannel().banChan(channel,who,rs);
+	     services->getChannel().banChan(channel,who,rs);
 	     return;
 	  }
      }
@@ -435,7 +435,7 @@ void
 	origin.sendMessage("Error: Channel names must begin with the '#' symbol",getName());
 	return;
      }
-   if(!services.isNickRegistered(origin.getNickname()))
+   if(!services->isNickRegistered(origin.getNickname()))
      {
 	origin.sendMessage("Error: Your nickname is not registered",getName());
 	return;
@@ -445,20 +445,20 @@ void
 	origin.sendMessage("Error: You must be identified, and using the nickname you wish to own the channel",getName());
 	return;
      }
-   int owned = services.getChannel().ownedChannels(origin.getNickname());
+   int owned = services->getChannel().ownedChannels(origin.getNickname());
    if(owned>0)
      {
 	origin.sendMessage("Error: You are only permitted own one channel per nickname on IRCDome",getName());
 	return;
      }
-   if(services.getChannel().isChanRegistered(channel))
+   if(services->getChannel().isChanRegistered(channel))
      {
 	origin.sendMessage("Error: That channel is already registered",getName());
 	return;
      }
-   services.getChannel().registerChannel(channel,origin.getNickname());
+   services->getChannel().registerChannel(channel,origin.getNickname());
    origin.sendMessage("Registration Successful",getName());
-   services.log(origin,"Chan","Registered the channel",channel);
+   services->log(origin,"Chan","Registered the channel",channel);
    return;
 }
 
@@ -487,37 +487,37 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>100)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(!services.isOp(origin.getNickname(),channel))
+		  if(!services->isOp(origin.getNickname(),channel))
 		    {
-		       services.mode("Chan",channel,"+o",origin.getNickname());
-		       services.getChannel().internalOp(origin.getNickname(),channel);
-		       services.log(origin,"Chan","Opped themselves",channel);
+		       services->mode("Chan",channel,"+o",origin.getNickname());
+		       services->getChannel().internalOp(origin.getNickname(),channel);
+		       services->log(origin,"Chan","Opped themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(!services.isOp(foo,channel))
+	     if(!services->isOp(foo,channel))
 	       {
-		  services.mode("Chan",channel,"+o",foo);
-		  services.getChannel().internalOp(foo,channel);
-		  services.log(origin,"Chan","Opped "+foo,channel);
+		  services->mode("Chan",channel,"+o",foo);
+		  services->getChannel().internalOp(foo,channel);
+		  services->log(origin,"Chan","Opped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(!services.isOp(foo,channel))
+		  if(!services->isOp(foo,channel))
 		    {
-		       services.mode("Chan",channel,"+o",foo);
-		       services.getChannel().internalOp(foo,channel);
-		       services.log(origin,"Chan","Opped " +foo,channel);
+		       services->mode("Chan",channel,"+o",foo);
+		       services->getChannel().internalOp(foo,channel);
+		       services->log(origin,"Chan","Opped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -555,37 +555,37 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>100)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(services.isOp(origin.getNickname(),channel))
+		  if(services->isOp(origin.getNickname(),channel))
 		    {
-		       services.mode("Chan",channel,"-o",origin.getNickname());
-		       services.getChannel().internalDeOp(origin.getNickname(),channel);
-		       services.log(origin,"Chan","Deopped themselves",channel);
+		       services->mode("Chan",channel,"-o",origin.getNickname());
+		       services->getChannel().internalDeOp(origin.getNickname(),channel);
+		       services->log(origin,"Chan","Deopped themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(services.isOp(foo,channel))
+	     if(services->isOp(foo,channel))
 	       {
-		  services.mode("Chan",channel,"-o",foo);
-		  services.getChannel().internalDeOp(foo,channel);
-		  services.log(origin,"Chan","Deopped "+foo,channel);
+		  services->mode("Chan",channel,"-o",foo);
+		  services->getChannel().internalDeOp(foo,channel);
+		  services->log(origin,"Chan","Deopped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(services.isOp(foo,channel))
+		  if(services->isOp(foo,channel))
 		    {
-		       services.mode("Chan",channel,"-o",foo);
-		       services.getChannel().internalDeOp(foo,channel);
-		       services.log(origin,"Chan","Deopped " +foo,channel);
+		       services->mode("Chan",channel,"-o",foo);
+		       services->getChannel().internalDeOp(foo,channel);
+		       services->log(origin,"Chan","Deopped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -623,37 +623,37 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>50)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(!services.isVoice(origin.getNickname(),channel))
+		  if(!services->isVoice(origin.getNickname(),channel))
 		    {
-		       services.mode("Chan",channel,"+v",origin.getNickname());
-		       services.getChannel().internalVoice(origin.getNickname(),channel);
-		       services.log(origin,"Chan","Voiced themselves",channel);
+		       services->mode("Chan",channel,"+v",origin.getNickname());
+		       services->getChannel().internalVoice(origin.getNickname(),channel);
+		       services->log(origin,"Chan","Voiced themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(!services.isVoice(foo,channel))
+	     if(!services->isVoice(foo,channel))
 	       {
-		  services.mode("Chan",channel,"+v",foo);
-		  services.getChannel().internalVoice(foo,channel);
-		  services.log(origin,"Chan","Voiced "+foo,channel);
+		  services->mode("Chan",channel,"+v",foo);
+		  services->getChannel().internalVoice(foo,channel);
+		  services->log(origin,"Chan","Voiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(!services.isVoice(foo,channel))
+		  if(!services->isVoice(foo,channel))
 		    {
-		       services.mode("Chan",channel,"+v",foo);
-		       services.getChannel().internalVoice(foo,channel);
-		       services.log(origin,"Chan","Voiced " +foo,channel);
+		       services->mode("Chan",channel,"+v",foo);
+		       services->getChannel().internalVoice(foo,channel);
+		       services->log(origin,"Chan","Voiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -691,37 +691,37 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>50)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
 	       {
-		  if(services.isVoice(origin.getNickname(),channel))
+		  if(services->isVoice(origin.getNickname(),channel))
 		    {
-		       services.mode("Chan",channel,"-v",origin.getNickname());
-		       services.getChannel().internalDeVoice(origin.getNickname(),channel);
-		       services.log(origin,"Chan","DeVoiced themselves",channel);
+		       services->mode("Chan",channel,"-v",origin.getNickname());
+		       services->getChannel().internalDeVoice(origin.getNickname(),channel);
+		       services->log(origin,"Chan","DeVoiced themselves",channel);
 		       return;
 		    }
 		  return;
 	       }
-	     if(services.isVoice(foo,channel))
+	     if(services->isVoice(foo,channel))
 	       {
-		  services.mode("Chan",channel,"-v",foo);
-		  services.getChannel().internalDeVoice(foo,channel);
-		  services.log(origin,"Chan","DeVoiced "+foo,channel);
+		  services->mode("Chan",channel,"-v",foo);
+		  services->getChannel().internalDeVoice(foo,channel);
+		  services->log(origin,"Chan","DeVoiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
 	     while(more==true)
 	       {
 		  String foo = tokens.nextToken();
-		  if(services.isVoice(foo,channel))
+		  if(services->isVoice(foo,channel))
 		    {
-		       services.mode("Chan",channel,"-v",foo);
-		       services.getChannel().internalDeVoice(foo,channel);
-		       services.log(origin,"Chan","DeVoiced " +foo,channel);
+		       services->mode("Chan",channel,"-v",foo);
+		       services->getChannel().internalDeVoice(foo,channel);
+		       services->log(origin,"Chan","DeVoiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -761,18 +761,18 @@ void
    while(more==true)
      {
 	String currnick = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
+	int access = services->getChannel().getChanAccess(channel,currnick);
 	if(access>100)
 	  {
 	     if(who.toLower()=="chan")
 	       {
 		  String rs = "And why would you want to kick me? :-(";
-		  services.serviceKick(channel,origin.getNickname(),rs);
+		  services->serviceKick(channel,origin.getNickname(),rs);
 		  return;
 	       }
 	     String rs = "("+origin.getNickname()+"/"+currnick+") "+reason;
-	     services.serviceKick(channel,who,rs);
-	     services.getChannel().internalDel(who,channel);
+	     services->serviceKick(channel,who,rs);
+	     services->getChannel().internalDel(who,channel);
 	     return;
 	  }
 	more = st.hasMoreTokens();
@@ -799,7 +799,7 @@ void
 	return;
      }
    bool foo = false;
-   foo = services.getChannel().isChanRegistered(channel);
+   foo = services->getChannel().isChanRegistered(channel);
    if(foo==true)
      {
      }
@@ -809,24 +809,24 @@ void
 	return;
      }
    origin.sendMessage("Channel access list for "+channel,getName());
-   int chanid = services.getChannel().getChanID(channel);
+   int chanid = services->getChannel().getChanID(channel);
    String query = "SELECT nickid,access from chanaccess where chanid=" + String::convert(chanid);
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services->getDatabase().query(query);
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
 	String tnickid = ((std::string) row[0]).c_str();
 	String taccess = ((std::string) row[1]).c_str();
-	String tosend = "Nickname \002"+services.getNick(tnickid.toInt())+"\002 Access \002"+taccess+"\002";
+	String tosend = "Nickname \002"+services->getNick(tnickid.toInt())+"\002 Access \002"+taccess+"\002";
 	origin.sendMessage(tosend,getName());
      }
-   services.log(origin,"Chan","Did a channel access",channel);
+   services->log(origin,"Chan","Did a channel access",channel);
    res.free_result();
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Chan(services);
+   return new Chan();
 }
 
 
@@ -838,11 +838,15 @@ const Chan::moduleInfo_type Chan::moduleInfo = {
 
 
 // Start the service
-void Chan::start(void)
+void Chan::start(Exordium::Services& s)
 {
-   services.registerService(getName(), getName(), 
+   // Set the services field appropriately
+   services = &s;
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
-   services.serviceJoin(getName(),"#Debug");
-   services.getChannel().synchChannels();
+   services->serviceJoin(getName(),"#Debug");
+   services->getChannel().synchChannels();
 }

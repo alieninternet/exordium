@@ -88,7 +88,7 @@ bool Modules::loadModule(const String& fileName, String& errString,
    }
 
    // Pull out the service data, this class contains all the other info we need
-   Service* const service = (*initfunc)(services);
+   Service* const service = (*initfunc)();
    
    // Make sure the service was returned appropriately...
    if (service == 0) {
@@ -103,7 +103,7 @@ bool Modules::loadModule(const String& fileName, String& errString,
      service->getModuleInfo().versionMinor << std::endl;
 
    // Temporary
-   service->start();
+   service->start(services);
 
    // Fix up the name, since we use it twice (may as well convert it once)
    String moduleName = service->getName().IRCtoLower();
@@ -115,6 +115,8 @@ bool Modules::loadModule(const String& fileName, String& errString,
       return true;
    }
 
+   // Umm, we should delete and unload module here!
+   
    // If the module exists already, we shouldn't load it..
    return false;
 }

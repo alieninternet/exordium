@@ -46,7 +46,7 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Love(services);
+   return new Love();
 }
 
 
@@ -75,11 +75,15 @@ const Love::commandTable_type Love::commandTable[] =
 /* start - Start the service
  * Original 17/09/2002 simonb
  */
-void Love::start(void)
+void Love::start(Exordium::Services& s)
 {
-   services.registerService(getName(), getName(), 
-			    getConfigData().getHostname(), "+dz",
-			    getConfigData().getDescription());
+   // Set the services field appropriately
+   services = &s;
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
+			     getConfigData().getHostname(), "+dz",
+			     getConfigData().getDescription());
 }
 
 
@@ -136,7 +140,7 @@ LOVE_FUNC(Love::handleCOMMANDS)
 {
    // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength =
-     services.getDaemon().getConfig().getOptionsLimitsMaxMessageLength() - 20;
+     services->getDaemon().getConfig().getOptionsLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
    sendMessage(origin, "Command list for " + getName() + ":");

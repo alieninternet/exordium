@@ -78,9 +78,8 @@ class Game : public Exordium::Service {
    
 public:
    // Our constructor
-   Game(Exordium::Services& s)
-     : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", "Game")
+   Game(void)
+     : configData(moduleInfo.fullName, "somewhere.org", "Game")
      {};
 
    // Our destructor
@@ -89,10 +88,10 @@ public:
 
    // Return the services thingy
    Exordium::Services& getServices(void)
-     { return services; };
+     { return *services; };
    
    // Start the module
-   void start(void);
+   void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
    void stop(void);

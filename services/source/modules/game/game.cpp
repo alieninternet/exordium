@@ -43,7 +43,7 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Game(services); 
+   return new Game();
 }
 
 
@@ -76,9 +76,13 @@ const Game::commandTable_type Game::channelCommandTable[] =
 /* start - Start the service
  * Original 17/09/2002 simonb
  */
-void Game::start(void)
+void Game::start(Exordium::Services& s)
 {
-   services.registerService(getName(), getName(), 
+   // Set the services field appropriately
+   services = &s;
+   
+   // Register ourself to the network
+   services->registerService(getName(), getName(), 
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
 }
@@ -92,9 +96,9 @@ void Game::stop(void)
    // Leave all the channels we're on..
    while (!channelGames.empty()) {
       // Part the channel...
-      services.servicePart(getName(), 
-			   (*(channelGames.begin())).second->getChannel());
-   
+      services->servicePart(getName(), 
+			    (*(channelGames.begin())).second->getChannel());
+      
       // Delete this game..
       delete (*(channelGames.begin())).second;
       channelGames.erase(channelGames.begin());
@@ -111,10 +115,10 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
 {
    // dirty kludge.. at least until the core strips the char properly??
    StringTokens line(line__.rest().substr(1));
-
+   
    // Grab the command
    String command = line.nextToken().toLower();
-
+   
    // Run through the list of commands to find a match
    for (int i = 0; channelCommandTable[i].command != 0; i++) {
       // Does this match?
@@ -132,7 +136,7 @@ void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
       // If the parser returns false, it means we can leave the channel
       if (!(*game).second->parseLine(origin, command, line)) {
 	 // Leave the channel and delete this game..
-	 services.servicePart(getName(), channel);
+	 services->servicePart(getName(), channel);
 	 delete (*game).second;
 	 channelGames.erase(game);
       }
@@ -167,8 +171,8 @@ void Game::parseLine(StringTokens& line, User& origin)
  */
 GAME_FUNC(Game::handleHELP)
 {
-   services.doHelp(origin, getName(), line.nextToken(),
-		   line.nextToken());
+   services->doHelp(origin, getName(), line.nextToken(),
+		    line.nextToken());
 }
 
 
@@ -193,24 +197,24 @@ GAME_FUNC(Game::handleQUOTE)
    }
    
    String query = "SELECT count(*) from fortunes";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services->getDatabase().query(query);
    MysqlRow row;
    int j;
    
    while ((row = res.fetch_row())) {
       String numb = ((std::string) row[0]).c_str();
-      j = services.random(numb.toInt());
+      j = services->random(numb.toInt());
    }
    
    res.free_result();
-   String thequote = services.getQuote(j);
+   String thequote = services->getQuote(j);
    StringTokens st (thequote);
    bool more = false;
    more = st.hasMoreTokens();
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services.servicePrivmsg(Sql::makeSafe(tq), getName(), chan);
+      services->servicePrivmsg(Sql::makeSafe(tq), getName(), chan);
       more = st.hasMoreTokens();
    }
    
@@ -234,17 +238,17 @@ GAME_FUNC(Game::handleSTART)
 	   ChannelGame::channelGameTable[i].creator(*this, chan, origin);
 	 
 	 // Join the channel and say hello
-	 services.serviceJoin(getName(), chan);
-	 services.serverMode(chan, "+o", getName());
-	 services.serviceNotice("Hello " + chan + " (" + origin.getNickname() +
-				" wanted to play " + game + ')',
-				"Game", chan);
+	 services->serviceJoin(getName(), chan);
+	 services->serverMode(chan, "+o", getName());
+	 services->serviceNotice("Hello " + chan + " (" + origin.getNickname() +
+				 " wanted to play " + game + ')',
+				 "Game", chan);
 	 
 	 // Leave the loop
 	 return;
       }
    }
-
+   
    // give them an error???!!
 }
 
@@ -258,7 +262,7 @@ GAME_FUNC(Game::handleLIST)
    for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
       String str = "--- ";
       str += ChannelGame::channelGameTable[i].game;
-
+      
       origin.sendMessage(str, getName());
    }
 }

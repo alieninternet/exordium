@@ -74,9 +74,8 @@ class Love : public Exordium::Service {
    
  public:
    // Our constructor
-   Love(Exordium::Services& s)
-     : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", "Love")
+   Love(void)
+     : configData(moduleInfo.fullName, "somewhere.org", "Love")
      {};
 
    // Our destructor
@@ -84,7 +83,7 @@ class Love : public Exordium::Service {
      {};
    
    // Start the module
-   void start(void);
+   void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
    void stop(void) 

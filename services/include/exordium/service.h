@@ -32,7 +32,7 @@
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
-   Service* x(Exordium::Services& services)
+   Service* x(void)
 
 #define EXORDIUM_SERVICE_INIT_FUNCTION \
    extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
@@ -88,13 +88,14 @@ namespace Exordium {
       };
       
     protected:
-      // Where is services?
-      Exordium::Services& services;
+      /* Where is services? This is a pointer because we will not know
+       * where services is upon initialisation of the class..
+       */
+      Exordium::Services* services;
       
     public:
       // Constructor
-      Service(Exordium::Services& s)
-	: services(s)
+      Service(void)
 	{};
       
       // Destructor
@@ -102,7 +103,7 @@ namespace Exordium {
 	{};
 
       // Start the module
-      virtual void start(void) = 0;
+      virtual void start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
       virtual void stop(void) = 0;

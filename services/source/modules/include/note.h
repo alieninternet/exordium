@@ -52,9 +52,8 @@ private:
   static struct functionTableStruct const functionTable[];
    
 public:
-   Note(Exordium::Services& s)
-   : Exordium::Service(s),
-       configData(moduleInfo.fullName, "somewhere.org", "Note")
+   Note(void)
+   : configData(moduleInfo.fullName, "somewhere.org", "Note")
    {
    };
   ~Note(void) 
@@ -63,7 +62,7 @@ public:
       // Hey, that was a little rude :(  -pickle
    };   
    // Start the module
-   void start(void);
+   void start(Exordium::Services& s);
    
    // Stop the module (called just before a module is unloaded)
    void stop(void) {};

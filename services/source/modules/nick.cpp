@@ -88,15 +88,15 @@ void
 	origin.sendMessage("Error: This nickname is not pending confirmation",getName());
 	return;
      }
-   String authcode = services.getpendingCode(origin.getNickname());
-   services.Debug("\002[\002Auth System\002]\002 The pending code is ->" + authcode);
-   services.Debug("\002[\002Auth System\002]\002 The given code was  ->" + gauth);
+   String authcode = services->getpendingCode(origin.getNickname());
+   services->Debug("\002[\002Auth System\002]\002 The pending code is ->" + authcode);
+   services->Debug("\002[\002Auth System\002]\002 The given code was  ->" + gauth);
    if(authcode==gauth)
      {
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
 	origin.sendMessage("You may now identify your nickname as normal",getName());
 	String query = "DELETE from pendingnicks where nickname='" + origin.getNickname() + "'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
      }
 }
 
@@ -105,7 +105,7 @@ void
   NICK_FUNC (Nick::parseINFO)
 {
    String who = tokens.nextToken().IRCtoLower();
-   User *ptr = services.findUser(who);
+   User *ptr = services->findUser(who);
    if(ptr==0)
      {
 	origin.sendMessage("Error: Could not locate that user (possible bug)",getName());
@@ -118,7 +118,7 @@ void
 	return;
      }
 
-   if(!services.isNickRegistered(origin.getNickname()))
+   if(!services->isNickRegistered(origin.getNickname()))
      {
 	origin.sendMessage("Error: That nickname is not registered",getName());
 	return;
@@ -130,15 +130,15 @@ void
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     String lhost = services.getLastHost(ptr->getNickname());
-	     String lid = services.getLastID(ptr->getNickname());
-	     String lreg = services.getRegDate(ptr->getNickname());
-	     String lemail = services.getEmail(ptr->getNickname());
-	     String licq = services.getICQ(who);
-	     String lmsn = services.getMSN(who);
-	     String laim = services.getAIM(who);
-	     String lurl = services.getURL(who);
-	     String lyah = services.getYAHOO(who);
+	     String lhost = services->getLastHost(ptr->getNickname());
+	     String lid = services->getLastID(ptr->getNickname());
+	     String lreg = services->getRegDate(ptr->getNickname());
+	     String lemail = services->getEmail(ptr->getNickname());
+	     String licq = services->getICQ(who);
+	     String lmsn = services->getMSN(who);
+	     String laim = services->getAIM(who);
+	     String lurl = services->getURL(who);
+	     String lyah = services->getYAHOO(who);
 	     String lqui = ptr->getQuitMessage();
 	     bool deopAway = ptr->deopAway();
 	     bool modNick = ptr->modNick();
@@ -180,14 +180,14 @@ void
 	  }
      }
 
-   String lhost = services.getLastHost(who);
-   String lid = services.getLastID(who);
-   String lreg = services.getRegDate(who);
-   String licq = services.getICQ(who);
-   String lmsn = services.getMSN(who);
-   String laim = services.getAIM(who);
-   String lurl = services.getURL(who);
-   String lyah = services.getYAHOO(who);
+   String lhost = services->getLastHost(who);
+   String lid = services->getLastID(who);
+   String lreg = services->getRegDate(who);
+   String licq = services->getICQ(who);
+   String lmsn = services->getMSN(who);
+   String laim = services->getAIM(who);
+   String lurl = services->getURL(who);
+   String lyah = services->getYAHOO(who);
    String toa = "Nickname Information Report (NON-STAFF) for \002"+who;
    String tob = "Last Host : \002<HIDDEN>";
    String toc = "Last Identified : \002"+lid;
@@ -230,12 +230,12 @@ void
 	     origin.sendMessage(togo,getName());
 	     return;
 	  }
-	String newhash = services.generatePassword(origin.getNickname(),value);
+	String newhash = services->generatePassword(origin.getNickname(),value);
 	String query = "UPDATE nicks set password='" + newhash + "' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "Password has been successfully changed to "+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),String("Changed nickname password"));
+	services->log(origin,getName(),String("Changed nickname password"));
 	return;
      }
    if(command=="modnick")
@@ -318,10 +318,10 @@ void
 	     return;
 	  }
 	String query = "UPDATE nicks set email='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "Email has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),"Changed email address to "+value);
+	services->log(origin,getName(),"Changed email address to "+value);
 	return;
      }
 
@@ -334,10 +334,10 @@ void
 	     return;
 	  }
 	String query = "UPDATE nicks set msn='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "MSN has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),"Changed MSN address to "+value);
+	services->log(origin,getName(),"Changed MSN address to "+value);
 	return;
      }
 
@@ -350,10 +350,10 @@ void
 	     return;
 	  }
 	String query = "UPDATE nicks set aim='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "AIM has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),"Changed AIM address to "+value);
+	services->log(origin,getName(),"Changed AIM address to "+value);
 	return;
      }
 
@@ -366,10 +366,10 @@ void
 	     return;
 	  }
 	String query = "UPDATE nicks set yahoo='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "Yahoo! has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),"Changed Yahoo! address to "+value);
+	services->log(origin,getName(),"Changed Yahoo! address to "+value);
 	return;
      }
 
@@ -382,10 +382,10 @@ void
 	     return;
 	  }
 	String query = "UPDATE nicks set icq='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "ICQ has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),"Changed ICQ address to "+value);
+	services->log(origin,getName(),"Changed ICQ address to "+value);
 	return;
      }
 
@@ -398,10 +398,10 @@ void
 	     return;
 	  }
 	String query = "UPDATE nicks set url='"+value+"' WHERE nickname='"+origin.getNickname()+"'";
-	services.getDatabase().query(query);
+	services->getDatabase().query(query);
 	String togo = "URL has been changed to \002"+value;
 	origin.sendMessage(togo,getName());
-	services.log(origin,getName(),"Changed URL address to "+value);
+	services->log(origin,getName(),"Changed URL address to "+value);
 	return;
      }
    if(command=="privmsg")
@@ -409,14 +409,14 @@ void
 	if(value=="on")
 	  {
 	     String query = "UPDATE nicks set privmsg=1 where nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
+	     services->getDatabase().query(query);
 	     origin.sendMessage("I will now use the private message interface",getName());
 	     return;
 	  }
 	if(value=="off")
 	  {
 	     String query = "UPDATE nicks set privmsg=0 where nickname='"+origin.getNickname()+"'";
-	     services.getDatabase().query(query);
+	     services->getDatabase().query(query);
 	     origin.sendMessage("I will now use the private message interface",getName());
 	     return;
 	  }
@@ -434,14 +434,14 @@ void
    if(nickname!="")
      {
 	String query = "SELECT idas from identified where nick='" + origin.getOnlineIDString()+"'";
-	MysqlRes res = services.getDatabase().query(query);
+	MysqlRes res = services->getDatabase().query(query);
 	MysqlRow row;
 	int i=0;
 	while ((row = res.fetch_row()))
 	  {
 	     i++;
 	     String id = ((std::string) row[0]).c_str();
-	     String idnick = services.getNick(id.toInt());
+	     String idnick = services->getNick(id.toInt());
 	     String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
 	     origin.sendMessage(tosend,getName());
 	  }
@@ -450,14 +450,14 @@ void
      }
    int onlineID = origin.getOnlineID();
    String query = "SELECT idas from identified where nick='" + String::convert(onlineID)+"'";
-   MysqlRes res = services.getDatabase().query(query);
+   MysqlRes res = services->getDatabase().query(query);
    MysqlRow row;
    int i=0;
    while ((row = res.fetch_row()))
      {
 	i++;
 	String id = ((std::string) row[0]).c_str();
-	String idnick = services.getNick(id.toInt());
+	String idnick = services->getNick(id.toInt());
 	String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
 	origin.sendMessage(tosend,getName());
 	res.free_result();
@@ -471,7 +471,7 @@ void
 {
    String password = tokens.nextToken();
    String email = tokens.nextToken();
-   if(services.isNickRegistered(origin.getNickname()))
+   if(services->isNickRegistered(origin.getNickname()))
      {
 	String tosend = "Error - This nickname is already registered";
 	origin.sendMessage (tosend, getName());
@@ -494,9 +494,9 @@ void
    origin.sendMessage("You will shortly receive an email with further instructions",getName());
    origin.sendMessage("This will be delivered to the account :\002"+email+"\002",getName());
    origin.sendMessage("Thank you for using IRCDome!",getName());
-   services.registerNick(origin.getNickname(),password,email);
-   services.log(origin,getName(),"Registered nickname with email "+email);
-   String authcode = services.genAuth(origin.getNickname());
+   services->registerNick(origin.getNickname(),password,email);
+   services->log(origin,getName(),"Registered nickname with email "+email);
+   String authcode = services->genAuth(origin.getNickname());
    String subject = "Your nickname registration";
    String emailtext =
      "This is a sample email - Needs replacing with something much better\n"
@@ -508,7 +508,7 @@ void
      "\n"
      "/msg nick AUTH "+authcode+"\n"
      "\n";
-   services.sendEmail(email,subject,emailtext);
+   services->sendEmail(email,subject,emailtext);
 }
 
 /* Kill */
@@ -517,7 +517,7 @@ void
 {
    String tokill = tokens.nextToken();
    String password = tokens.nextToken();
-   User *ptr = services.findUser(tokill);
+   User *ptr = services->findUser(tokill);
    if(ptr==0)
      {
 	origin.sendMessage("Error - Could not find a pointer for this user - Possible Bug?",getName());
@@ -527,19 +527,19 @@ void
 	     origin.sendMessage(tosend,getName());
 	     return;
 	  }
-	if(!services.isNickRegistered(tokill))
+	if(!services->isNickRegistered(tokill))
 	  {
 	     String tosend = "Error - "+tokill+" is not a registered nickname";
 	     origin.sendMessage(tosend,getName());
 	     return;
 	  }
-	String nickpass = String::convert(services.generatePassword(tokill,password));
-	String givepass = services.getPass(tokill);
+	String nickpass = String::convert(services->generatePassword(tokill,password));
+	String givepass = services->getPass(tokill);
 	if(nickpass == givepass)
 	  {
 	     String reason = "Kill requested by "+origin.getNickname();
-	     services.killnick(tokill,getName(),reason);
-	     services.log(origin,getName(),"Requested a kill on "+tokill);
+	     services->killnick(tokill,getName(),reason);
+	     services->log(origin,getName(),"Requested a kill on "+tokill);
 	     return;
 	  }
 	String tosend = "Error - Incorrect password for nickname "+tokill;
@@ -551,7 +551,7 @@ void
 	     String temp2 = origin.getIdent();
 	     String thehost = String(temp2)+"@"+String(temp1);
 	     String togo = String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	     services.helpme(String(togo),"Serv");
+	     services->helpme(String(togo),"Serv");
 	  }
 
      }
@@ -563,7 +563,7 @@ void
        {
 	  String word = tokens.nextToken();
 	  String parm = tokens.nextToken();
-	  services.doHelp(origin,getName(), word, parm);
+	  services->doHelp(origin,getName(), word, parm);
        }
 
 /* Ghost... */
@@ -572,25 +572,25 @@ void
        {
 	  String toghost = tokens.nextToken();
 	  String password = tokens.nextToken();
-	  if (!services.isNickRegistered( toghost))
+	  if (!services->isNickRegistered( toghost))
 	    {
 	       String tosend = String("Error: Target nickname is not registered");
 	       origin.sendMessage(tosend,getName());
 	       return;
 	    }
-	  String nickpass = String::convert(services.generatePassword(toghost,password));
-	  String givepass = services.getPass(toghost);
+	  String nickpass = String::convert(services->generatePassword(toghost,password));
+	  String givepass = services->getPass(toghost);
 	  if(nickpass == givepass)
 	    {
-	       services.registerService(toghost,"ghost","ghosts.ircdome.org",
+	       services->registerService(toghost,"ghost","ghosts.ircdome.org",
 					"+id","Ghosted by "+origin.getNickname());
 	       String tosend = String("Ghost successful for ")+toghost;
 	       origin.sendMessage(tosend,getName());
-	       services.log(origin,getName(),String("Successfully ghosted ")+toghost);
+	       services->log(origin,getName(),String("Successfully ghosted ")+toghost);
 	       return;
 	    }
 	  String tosend = String("\002Incorrect\002 Password");
-	  services.log(origin,getName(),String("Failed ghost"));
+	  services->log(origin,getName(),String("Failed ghost"));
 	  origin.sendMessage(tosend,getName());
 	  return;
        }
@@ -606,32 +606,32 @@ void
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
-	  if (!services.isNickRegistered (origin.getNickname()))
+	  if (!services->isNickRegistered (origin.getNickname()))
 	    {
 	       String tosend = String ("Error: That nickname is not registered");
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
-	  if(!services.SecurePrivmsg)
+	  if(!services->SecurePrivmsg)
 	    {
 	       String tosend = String ("For security reasons you must use /msg nick@ircdome.org to identify");
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
-	  String nickpass = services.generatePassword(origin.getNickname(),password);
-	  String givepass = services.getPass(origin.getNickname());
+	  String nickpass = services->generatePassword(origin.getNickname(),password);
+	  String givepass = services->getPass(origin.getNickname());
 	  if(nickpass == givepass)
 	    {
 	       int oid = origin.getOnlineID();
-	       int nid = services.getRegisteredNickID(origin.getNickname());
+	       int nid = services->getRegisteredNickID(origin.getNickname());
 	       String query = String("INSERT into identified values('','") +
 		 String::convert(oid) + "','" + String::convert(nid) + "')";
-	       services.getDatabase().query(query);
+	       services->getDatabase().query(query);
 	       query = String("DELETE from kills where nick='") +
 		 origin.getNickname() + "'";
-	       services.getDatabase().query(String(query));
-	       services.modeIdentify(origin.getNickname());
-	       services.updateLastID(origin.getNickname());
+	       services->getDatabase().query(String(query));
+	       services->modeIdentify(origin.getNickname());
+	       services->updateLastID(origin.getNickname());
 	       String temp1 = origin.getHost();
 	       String temp2 = origin.getIdent();
 	       String togo = String(temp2)+"@"+String(temp1);
@@ -648,14 +648,14 @@ void
 	       String temp2 = origin.getIdent();
 	       String thehost = String(temp2)+"@"+String(temp1);
 	       String togo = String("\002Failed\002 identify for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	       services.helpme(String(togo),"Serv");
+	       services->helpme(String(togo),"Serv");
 	    }
 	  return;
        }
 
    EXORDIUM_SERVICE_INIT_FUNCTION
      {
-	return new Nick(services);
+	return new Nick();
      }
 
    // Module information structure
@@ -666,10 +666,14 @@ void
      };
 
    // Start the service
-   void Nick::start(void)
+   void Nick::start(Exordium::Services& s)
      {
-	services.registerService(getName(), getName(), 
+	// Set the services field appropriately
+	services = &s;
+	
+	// Register ourself to the network
+	services->registerService(getName(), getName(), 
 				 getConfigData().getHostname(), "+dz",
 				 getConfigData().getDescription());
-	services.serviceJoin(getName(),"#Debug");
+	services->serviceJoin(getName(),"#Debug");
      }
