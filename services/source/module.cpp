@@ -32,16 +32,12 @@ namespace mod_exordium {
 	logger = new Logger(*config);
 	
 	// Create new SQL Instance
-	db = new Sql(*services, *logger, *config);
+	db = new Sql(*logger, *config);
 	
 	// Create the new services instance - Passing sql + logger YAY :|
-	services = new Services(daemon, *config, *logger, *db);
-	
+	services = new Services(daemon, *logger, *db, *config);
 
-
-	logger->init(*config);
 	logger->logLine("Services started, beginning initalisation");
-	services->init();
 	services->run();
 	logger->logLine("Services terminated - Normal exit");
 	exit(0); // we are naughty using this here..... very naughty.. :(

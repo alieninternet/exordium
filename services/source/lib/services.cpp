@@ -8,24 +8,15 @@
 #include "exordium/services.h"
 #include "exordium/channel.h"
 #include "exordium/nickname.h"
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <queue>
 #include <map>
 #include <set>
-#include <netdb.h>
 #include <iostream>
 #include <sstream>
 #include <cstdio>
 #include <ctime>
 #include <iomanip>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <fstream>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <dlfcn.h>
 #include "exordium/sql.h"
 #include "exordium/log.h"
 #include "exordium/parser.h"
@@ -36,7 +27,13 @@
 #include <kineircd/signals.h>
 
 extern "C" {
-	#include <unistd.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <dlfcn.h>
 };
 
 #include "socket/sockets.h"
@@ -52,55 +49,55 @@ using namespace Exordium;
 #define UPLINK "services-hub.ircdome.org"
 
 
- KINE_SIGNAL_HANDLER_FUNC(Rehash)
+KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
    String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal - commiting database";
-   Services::helpme(reason,"Serv");
-   Sql::query("COMMIT");
+   ((Services *)foo)->helpme(reason,"Serv");
+   ((Services *)foo)->getDatabase().query("COMMIT");
 }
 
- KINE_SIGNAL_HANDLER_FUNC(Death)
+KINE_SIGNAL_HANDLER_FUNC(Death)
 {
-	Sql::query("COMMIT");
-	String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Terminating";
-	Services::helpme(reason, "Serv");
-	Services::shutdown(reason);	
+   ((Services *)foo)->getDatabase().query("COMMIT");
+   String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Terminating";
+   ((Services *)foo)->helpme(reason, "Serv");
+   ((Services *)foo)->shutdown(reason);	
 }
 
 namespace Exordium {
 
 
-namespace Services {
+//namespace Services {
 
-  int sock = -1;
-  int maxSock = -1;
-  char *inputBuffer = 0;
-  unsigned int inputBufferSize = 512;
-  unsigned int inputBufferPosition = 0;
-  struct sockaddr_in addr;
-  String UplinkHost = "";
-  time_t startTime;
-  time_t lastPing;
-  time_t currentTime;
-  time_t serverLastSpoke;
-  time_t disconnectTime = 0;
-  time_t stopTime = 0;
-  time_t lastCheckPoint;
-  time_t lastExpireRun;
-  time_t lastModeRun;
-  bool connected = false;
-  bool stopping = false;
-  bool sentPing = false;
-  bool burstOk = false;
-  unsigned long countTx = 0;
-  unsigned long countRx = 0;
-  unsigned long remoteAddress;
-    std::queue < String > outputQueue;
-    std::queue < String > ModeoutputQueue;
-  bool SecurePrivmsg = false;
-  Core serviceM;
-  Kine::SocketIPv4TCP socky;
-};
+//  int sock = -1;
+//  int maxSock = -1;
+//  char *inputBuffer = 0;
+//  unsigned int inputBufferSize = 512;
+//  unsigned int inputBufferPosition = 0;
+//  struct sockaddr_in addr;
+//  String UplinkHost = "";
+//  time_t startTime;
+//  time_t lastPing;
+//  time_t currentTime;
+//  time_t serverLastSpoke;
+//  time_t disconnectTime = 0;
+//  time_t stopTime = 0;
+//  time_t lastCheckPoint;
+//  time_t lastExpireRun;
+//  time_t lastModeRun;
+//  bool connected = false;
+//  bool stopping = false;
+//  bool sentPing = false;
+//  bool burstOk = false;
+//  unsigned long countTx = 0;
+//  unsigned long countRx = 0;
+//  unsigned long remoteAddress;
+//    std::queue < String > outputQueue;
+//    std::queue < String > ModeoutputQueue;
+//  bool SecurePrivmsg = false;
+//  Core serviceM;
+//  Kine::SocketIPv4TCP socky;
+//};
 
 /* Services run */
 void
@@ -108,7 +105,7 @@ Services::run(void)
 {
   fd_set inputSet, outputSet;
   struct timeval timer;
-  Log::logLine ("Entering main loop...");
+  logger.logLine ("Entering main loop...");
   for (;;)
     {
       time (&currentTime);
@@ -145,8 +142,8 @@ Services::run(void)
             {
               if (!handleInput ())
                 {
-                  Log::logLine ("Error handling server input. Reconnecting.");
-		  Services::helpme("Error in handleInput() - Jumping server","Serv");
+                  logger.logLine ("Error handling server input. Reconnecting.");
+		  helpme("Error in handleInput() - Jumping server","Serv");
 		  connected = false;
 		  disconnectTime = currentTime;
 		  disconnect();
@@ -160,7 +157,7 @@ Services::run(void)
 			//Ok, technically nasty, but if we're in a shutdown
 			//state, do we really care if the connection closes?
 			{
-                  	Log::logLine("Disconnecting... (Queue flushing error)");
+                  	logger.logLine("Disconnecting... (Queue flushing error)");
 	          	connected = false;
 		  	disconnectTime = currentTime;
                   	disconnect ();
@@ -170,7 +167,7 @@ Services::run(void)
 		{
 			if(stopTime < currentTime)
 			{
-			Log::logLine("Disconnecting, QueueFlushed and in stop state");
+			logger.logLine("Disconnecting, QueueFlushed and in stop state");
 			connected = false;
 			exit(0);
 			}
@@ -204,37 +201,36 @@ Services::run(void)
         }
     }
 }
-/* Services Init */
-int
-Services::init(void)
+
+   
+Services::Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c)
+ : daemon(d),
+   logger(l),
+   database(db),
+   config(c)
 {
-   Log::logLine("Setting up signal handlers");
+   logger.logLine("Setting up signal handlers");
    getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
    getDaemon().getSignals().addHandler(&Death,
 				       Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
 				       (void *)this);
    
-	struct hostent *host;
-	queueKill ();
-	startTime = currentTime = lastPing = lastExpireRun = lastCheckPoint = serverLastSpoke = time (NULL);
-	if (!(inputBuffer = (char *) malloc (inputBufferSize)))
-    	{
-      		Log::logLine ("Fatal Error: Could not allocate input buffer");
-      		perror ("malloc");
-      		exit (1);
-    	}
-	memset (&addr, 0, sizeof (addr));
-        addr.sin_family = AF_INET;
-        if ((host = gethostbyname ("chrome.tx.us.ircdome.org")) == NULL)
-        {
-      		Log::logLine ("Fatal Error: Error resolving uplinkhost");
-      		exit (1);
-        }
-        memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
-        addr.sin_port = htons (6667);
-        return true;
-
-
+   struct hostent *host;
+   queueKill ();
+   startTime = currentTime = lastPing = lastExpireRun = lastCheckPoint = serverLastSpoke = time (NULL);
+   if (!(inputBuffer = (char *) malloc (inputBufferSize))) {
+      logger.logLine ("Fatal Error: Could not allocate input buffer");
+      perror ("malloc");
+      exit (1);
+   }
+   memset (&addr, 0, sizeof (addr));
+   addr.sin_family = AF_INET;
+   if ((host = gethostbyname ("chrome.tx.us.ircdome.org")) == NULL) {
+	logger.logLine ("Fatal Error: Error resolving uplinkhost");
+	exit (1);
+     }
+   memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
+   addr.sin_port = htons (6667);
 }
 
 bool Services::writeData (String & line)
@@ -262,7 +258,7 @@ bool Services::handleInput (void)
   while(bufferin.peek()!=-1)
   {
   std::getline(bufferin,line);
-  Log::logLine("RX: "+line);
+  logger.logLine("RX: "+line);
   Parser::parseLine(line);	
   }
 
@@ -273,7 +269,7 @@ bool Services::handleInput (void)
 void
 Services::disconnect (void)
 {
-  Log::logLine ("Closing socket.");
+  logger.logLine ("Closing socket.");
   socky.close();
   connected = false;
 }
@@ -281,10 +277,10 @@ Services::disconnect (void)
 /* Connect to Server */
 bool Services::connect (void)
 {
-  Log::logLine ("Attempting Connection to Uplink");
+  logger.logLine ("Attempting Connection to Uplink");
   if (sock >= 0)
     {
-      Log::logLine ("Closing stale network socket");
+      logger.logLine ("Closing stale network socket");
       socky.close();
       sock = -1;
     }
@@ -295,8 +291,8 @@ bool Services::connect (void)
 		//cout << "Socky.connect() returned an error" << endl;
 		
 	}
-    Exordium::Services::connected = true;
-  Log::logLine ("Beginning handshake with uplink");
+    connected = true;
+  logger.logLine ("Beginning handshake with uplink");
   maxSock = socky.getFD() + 1;
   queueAdd ("PASS pass :TS");
   queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
@@ -335,7 +331,7 @@ Services::doBurst (void)
 String Services::getQuote(int const &number)
 {
 String query = "SELECT body from fortunes where id='" + String::convert(number) + "'";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = database.query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -350,7 +346,7 @@ return String("");
 String Services::getLogCount(void)
 {
 String query = "SELECT count(*) from log";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = database.query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -365,7 +361,7 @@ return String("0");
 String Services::getNoteCount(void)
 {
 String query = "SELECT count(*) from notes";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = database.query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -381,7 +377,7 @@ return String("0");
 String Services::getGlineCount(void)
 {
 String query = "SELECT count(*) from glines";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = database.query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -395,18 +391,19 @@ return String("0");
 
 void Services::shutdown(String const &reason)
 {
-Services::helpme("Services is shutting down "+reason,"IRCDome");
-Services::queueAdd(":Chan QUIT :"+reason);
-Services::queueAdd(":Nick QUIT :"+reason);
-Services::queueAdd(":Love QUIT :"+reason);
-Services::queueAdd(":Note QUIT :"+reason);
-Services::queueAdd(":Serv QUIT :"+reason);
-Services::queueAdd(":IRCDome QUIT :"+reason);
-Services::queueAdd(":Oper QUIT :"+reason);
-Services::queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
+helpme("Services is shutting down "+reason,"IRCDome");
+queueAdd(":Chan QUIT :"+reason);
+queueAdd(":Nick QUIT :"+reason);
+queueAdd(":Love QUIT :"+reason);
+queueAdd(":Note QUIT :"+reason);
+queueAdd(":Serv QUIT :"+reason);
+queueAdd(":IRCDome QUIT :"+reason);
+queueAdd(":Oper QUIT :"+reason);
+queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
 stopping = true;
 stopTime = currentTime + 10;
 }
+   
 void Services::SynchTime(void)
 {
 //Undo any expired glines
@@ -414,7 +411,7 @@ void Services::SynchTime(void)
 //Undo any expired channel bans
 String ctime = String::convert(currentTime);
 String query = "SELECT id,chan,mask from chanbans where expireon<" + ctime;
-MysqlRes res = Sql::query(query);
+MysqlRes res = database.query(query);
 MysqlRow row;
 while (( row = res.fetch_row()))
 	{
@@ -426,9 +423,9 @@ while (( row = res.fetch_row()))
 
 //Lastly commit any outstanding db changes.
 String bquery = "COMMIT";
-Sql::query(bquery);
+database.query(bquery);
 String aquery = "SET autocommit=0";
-Sql::query(aquery);
+database.query(aquery);
 }
 
 void Services::expireRun(void)
@@ -436,13 +433,13 @@ void Services::expireRun(void)
 String nc = Nickname::getRegNickCount();
 String cc = Channel::getChanCount();
 String oc = Nickname::getOnlineCount();
-String lc = Services::getLogCount();
-String gc = Services::getGlineCount();
-String noc = Services::getNoteCount();
-unsigned long rx = Services::getCountRx();
-unsigned long tx = Services::getCountTx();
+String lc = getLogCount();
+String gc = getGlineCount();
+String noc = getNoteCount();
+unsigned long rx = getCountRx();
+unsigned long tx = getCountTx();
 String togo = String("NC [\002")+nc+"\002] CC [\002"+cc+"\002] OC [\002"+oc+"\002] LC [\002"+lc+"\002] GC [\002"+gc+"\002] NOC [\002"+noc+"\002] RX [\002"+String::convert(rx)+"\002] TX [\002"+String::convert(tx)+"\002]";
-Services::servicePrivmsg(String(togo),"Oper","#Debug");
+servicePrivmsg(String(togo),"Oper","#Debug");
 
 }
 
@@ -451,7 +448,7 @@ Services::AddOnlineServer (String const &servername, String const &hops, String 
 {
 	String query = "INSERT into onlineservers values ('','" +
 		servername + "','" + hops + "','" + description + "')";
-	Sql::query(query);
+	database.query(query);
 }
 
 
@@ -479,13 +476,13 @@ if(topic == "")
 	{
 		//No topic, no parm.
 		String query = "SELECT txt from help where service='"+service+"' AND word='' AND parm='' AND lang='"+lang+"' ORDER by id";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = database.query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
 			String line = ((std::string) row[0]).c_str();
-			line = Services::parseHelp(line);
-			Services::serviceNotice(line,service,nick);
+			line = parseHelp(line);
+			serviceNotice(line,service,nick);
 		}
 		res.free_result();
 		return;
@@ -494,25 +491,25 @@ if(parm == "")
 	{
 		//No topic, no parm.
 		String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+lang+"' ORDER by id";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = database.query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
 			String line = ((std::string) row[0]).c_str();
-			line = Services::parseHelp(line);
-			Services::serviceNotice(line,service,nick);
+			line = parseHelp(line);
+			serviceNotice(line,service,nick);
 		}
 		res.free_result();
 		return;
 	} // End
 		String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+lang+"' ORDER by id";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = database.query(query);
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
 			String line = ((std::string) row[0]).c_str();
-			line = Services::parseHelp(line);
-			Services::serviceNotice(line,service,nick);
+			line = parseHelp(line);
+			serviceNotice(line,service,nick);
 		}
 		res.free_result();
 		return;
@@ -522,7 +519,7 @@ void
 Services::sendEmail (String const &to, String const &subject, String const &text)
 {
 String query = "INSERT into emails values ('','"+to+"','"+subject+"','"+text+"')";
-Sql::query(query);
+database.query(query);
 }
 
 String
@@ -558,7 +555,7 @@ Services::log (String const &nickname, String const &service, String const &text
 	String ident = Nickname::getIdent(nickname);
 	String host = Nickname::getHost(nickname);
 	String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"')";
-	Sql::query(query);
+	database.query(query);
 }
 
 void
@@ -568,7 +565,7 @@ Services::log (String const &nickname, String const &service, String const &text
 	String ident = Nickname::getIdent(nickname);
 	String host = Nickname::getHost(nickname);
 	String query = "INSERT DELAYED into log values('','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','')";
-	Sql::query(query);
+	database.query(query);
 }
 
 /* Overload kine's trim to add some stuff of our own! :-) */
@@ -624,7 +621,7 @@ Services::usePrivmsg (String const &nick)
 		return false;
 	}
 String query = String("SELECT privmsg from nicks where nickname='") + nick + "'";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = database.query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -651,9 +648,9 @@ handle = dlopen(fileName.c_str(), RTLD_NOW);
 if(!handle)
 {
 	String togo = "\002[\002Module Error\002]\002 Could not load "+fileName;
-	Services::Debug(String(togo));
+	Debug(String(togo));
 	String foo = dlerror();
-	Services::Debug("\002[\002Module Error\002]\002 dlError() returned: "+foo);
+	Debug("\002[\002Module Error\002]\002 dlError() returned: "+foo);
 	return false;
 }
 Module *(*initfunc)(String const &) =
@@ -661,7 +658,7 @@ Module *(*initfunc)(String const &) =
 if (initfunc == 0) 
 		{
 			String togo = "\002[\002Module Error\002]\002 Module does not contain an init function";
-			Services::Debug(togo);
+			Debug(togo);
 			return false;
         	}
         Module *modInfo = (*initfunc)(name);
@@ -681,7 +678,7 @@ Services::isOp(String const &nickname, String const &channel)
 	int chanid = Channel::getOnlineChanID(channel);
 	int nickid = Nickname::getOnlineNickID(nickname);
 	String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = database.query(query);
 	MysqlRow row;
 	while ((row = res.fetch_row()))
 	{
@@ -702,7 +699,7 @@ Services::isVoice(String const &nickname, String const &channel)
 	int chanid = Channel::getOnlineChanID(channel);
 	int nickid = Nickname::getOnlineNickID(nickname);
 	String query = "SELECT status from chanstatus where chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = database.query(query);
 	MysqlRow row;
 	while ((row = res.fetch_row()))
 	{
@@ -721,7 +718,7 @@ int
 Services::countNotes(String const &who)
 {
 	String query = "select count(*) from notes where nto='" + who + "'";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = database.query(query);
 	MysqlRow row;
 	int j = 0;
 	while (( row = res.fetch_row()))
@@ -740,7 +737,7 @@ void
 Services::sendNote(String const &from, String const &to, String const &text)
 {
 	String query = String("insert into notes values('','")+from+"','"+to+"',NOW(),'"+text+"')";
-	Sql::query(query);
+	database.query(query);
 	int foo = Nickname::getOnlineNickID(to);
 	if(foo>0)
 	{
@@ -748,7 +745,7 @@ Services::sendNote(String const &from, String const &to, String const &text)
 		if(Nickname::isIdentified(to,to))
 		{
 		String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
-		Services::serviceNotice(togo,"Note",to);
+		serviceNotice(togo,"Note",to);
 		}
 	}
 
@@ -759,7 +756,7 @@ Services::checkpoint(void)
 {
 //Any nick mods to be done? :-)
 String query = "SELECT * from kills";
-MysqlRes res = Sql::query(query);
+MysqlRes res = database.query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -789,9 +786,9 @@ while ((row = res.fetch_row()))
 		
 		}
 		String msg = "\002[\002Non-Identification\002]\002 Your nickname is now being changed";
-		Services::serviceNotice(msg,"Nick",tomod);
+		serviceNotice(msg,"Nick",tomod);
 		String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
-		Services::queueAdd(String(togo));
+		queueAdd(String(togo));
 		
 		
 	}
@@ -800,7 +797,7 @@ while ((row = res.fetch_row()))
 		if((killt.toInt()-nowt)>50)
 		{
 			String msg = "\002[\002Identification Warning\002]\002 Less than 60 seconds left to identify";
-			Services::serviceNotice(msg,"Nick",tomod);
+			serviceNotice(msg,"Nick",tomod);
 		}
 	}
 }
