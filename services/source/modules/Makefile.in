@@ -16,7 +16,8 @@ SOURCES=chan.cpp \
 	love.cpp \
 	note.cpp \
 	game.cpp \
-	bot.cpp
+	bot.cpp \
+	oper.cpp 
 	
 OBJECTS=$(SOURCES:.cpp=.so)
 
