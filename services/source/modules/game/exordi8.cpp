@@ -212,6 +212,11 @@ void Exordi8::nextPlayer(const Kine::String& why)
     * need refreshing - especially in games with large numbers of players.
     */
    showHand(*currentPlayer);
+   
+   // Tell the player what they need to get..
+   sendMessage((*currentPlayer).first, 
+	       Kine::String("To discard, you need to match the ") +
+	       lastDiscardedCard.getName());
 }
 
 
