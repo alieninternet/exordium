@@ -31,7 +31,7 @@
 
 
 /* Pack - Pack constructor; populates a fresh pack of cards in 'mint' order
- * Original 29/08/2002 simonb
+ * Original 29/08/2002 pickle
  */
 Cards::Pack::Pack(bool withJoker)
 {
@@ -50,7 +50,7 @@ Cards::Pack::Pack(bool withJoker)
 
 
 /* shuffle - Shuffle the pack of cards
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 void Cards::Pack::shuffle(void)
 {

@@ -131,7 +131,7 @@ const char* Cards::Card::ranksList[13] = {
 
 
 /* Constructor - Converts a name (such as "Queen of hearts") into a valid card
- * Original 31/08/2002 simonb
+ * Original 31/08/2002 pickle
  */
 Cards::Card::Card(const String& name)
   : suit(0),
@@ -190,7 +190,7 @@ Cards::Card::Card(const String& name)
 
 
 /* Less than operator - Check if a card ranks higher than another card
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 bool Cards::Card::operator<(const Card& rhs) const
 {
@@ -207,7 +207,7 @@ bool Cards::Card::operator<(const Card& rhs) const
 
 
 /* findSuit - Help people find a suit
- * Original 31/08/2002 simonb
+ * Original 31/08/2002 pickle
  */
 unsigned char Cards::Card::findSuit(const String& suitName)
 {
@@ -226,7 +226,7 @@ unsigned char Cards::Card::findSuit(const String& suitName)
 
 
 /* nameSuit - Help people name a suit
- * Original 31/08/2002 simonb
+ * Original 31/08/2002 pickle
  */
 const char* Cards::Card::nameSuit(const unsigned char suit)
 {

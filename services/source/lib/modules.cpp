@@ -34,7 +34,7 @@ using LibAIS::StringTokens;
 
 
 /* ~Modules - Shut down all existing modules in the list
- * Original 17/09/2002 simonb
+ * Original 17/09/2002 pickle
  */
 Modules::~Modules(void)
 {
@@ -47,7 +47,7 @@ Modules::~Modules(void)
 
 
 /* ~Module - Delete the server and unload the module
- * Original 17/09/2002 simonb
+ * Original 17/09/2002 pickle
  */
 Modules::Module::~Module(void) 
 { 
@@ -57,9 +57,9 @@ Modules::Module::~Module(void)
 
 
 /* loadModule - Shut down all existing modules in the list
- * Original 17/09/2002 simonb
- * 17/09/2002 simonb - Added checking to confirm the module is not already open
- * 18/09/2002 simonb - Merged with Services::loadModule()
+ * Original 17/09/2002 pickle
+ * 17/09/2002 pickle - Added checking to confirm the module is not already open
+ * 18/09/2002 pickle - Merged with Services::loadModule()
  * Note: Some of the variables passed here are temporary...
  */
 bool Modules::loadModule(const String& fileName, String& errString,
@@ -123,7 +123,7 @@ bool Modules::loadModule(const String& fileName, String& errString,
 
 
 /* unloadModule - Remove a module from the list, and unload it
- * Original 07/06/2002 simonb
+ * Original 07/06/2002 pickle
  */
 void Modules::unloadModule(const String& name) {
    // Locate the module..
@@ -164,7 +164,7 @@ bool Modules::exists(const LibAIS::String& name) const
 
 
 /* throwLine - Throw a line at the appropriate service (sent directly)
- * Original 07/06/2002 simonb
+ * Original 07/06/2002 pickle
  */
 void Modules::throwLine(const String& name, StringTokens& line, User& origin) 
 {
@@ -179,7 +179,7 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin)
 
 
 /* throwLine - Throw a line at the appropriate service (sent to a channel)
- * Original 07/06/2002 simonb
+ * Original 07/06/2002 pickle
  */
 void Modules::throwLine(const String& name, StringTokens& line, User& origin,
 			const String& channel) 
@@ -195,9 +195,9 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
 
 
 /* dumpModules - Dump a list of modules
- * Original 07/06/2002 simonb
+ * Original 07/06/2002 pickle
  * 09/06/2002 james - Added the ability to return the line as a string
- * 17/09/2002 simonb - Went const mad, and stopped all that horrible copying
+ * 17/09/2002 pickle - Went const mad, and stopped all that horrible copying
  */
 LibAIS::String Modules::dumpModules(void) const 
 {

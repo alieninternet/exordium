@@ -33,7 +33,7 @@ using LibAIS::String;
 
 
 /* getHandStr - Grab the name of the cards in this hand
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 String Cards::Hand::getHandStr(void) const
 {

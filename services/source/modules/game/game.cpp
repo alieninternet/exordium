@@ -74,7 +74,7 @@ const Game::commandTable_type Game::channelCommandTable[] =
 
 
 /* start - Start the service
- * Original 17/09/2002 simonb
+ * Original 17/09/2002 pickle
  */
 void Game::start(Exordium::Services& s)
 {
@@ -89,7 +89,7 @@ void Game::start(Exordium::Services& s)
 
 
 /* stop - Stop the service
- * Original 17/09/2002 simonb
+ * Original 17/09/2002 pickle
  */
 void Game::stop(void)
 {
@@ -221,7 +221,7 @@ GAME_FUNC(Game::handleQUOTE)
 }
 
 /* handleSTART - Parse a 'start' command, to trigger the start of game
- * Original 29/08/2002 - simonb
+ * Original 29/08/2002 - pickle
  */
 GAME_FUNC(Game::handleSTART)
 {

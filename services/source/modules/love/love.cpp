@@ -73,7 +73,7 @@ const Love::commandTable_type Love::commandTable[] =
 
 
 /* start - Start the service
- * Original 17/09/2002 simonb
+ * Original 17/09/2002 pickle
  */
 void Love::start(Exordium::Services& s)
 {
@@ -132,7 +132,7 @@ void Love::parseLine(StringTokens& line, User& origin)
 
 
 /* handleCOMMANDS - Throw a quick 'n' dirty list of available commands out
- * Original 20/08/2002 simonb
+ * Original 20/08/2002 pickle
  * Notes: Probably better to move this to the base class, along with getName()
  *        and services..
  */

@@ -36,7 +36,7 @@ using LibAIS::StringTokens;
 
 
 /* Exordi8 - Constructor for a new Exordi8 card game being played on a channel
- * Original 29/08/2002 simonb
+ * Original 29/08/2002 pickle
  */
 Exordi8::Exordi8(Game& game, const String& channel, 
 		 Exordium::User& caller)
@@ -73,7 +73,7 @@ const Exordi8::functionTable_type Exordi8::functionTable[] =
 
 
 /* parseLine - Parse an incoming command from someone
- * Original 29/08/2002 simonb
+ * Original 29/08/2002 pickle
  */
 bool Exordi8::parseLine(Exordium::User& origin, String& command, 
 			StringTokens& tokens)
@@ -94,7 +94,7 @@ bool Exordi8::parseLine(Exordium::User& origin, String& command,
 
 
 /* getPlayer [Various Forms] - Find a player
- * Original 29/08/2002 simonb
+ * Original 29/08/2002 pickle
  * Note: Could be more efficient, but I'm a little too lazy at the moment
  */
 const Exordi8::player_type* const 
@@ -130,7 +130,7 @@ Exordi8::player_type* const Exordi8::getPlayer(const Exordium::User& player)
 
 
 /* Check a player's player status (returning their info if possible)
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 Exordi8::player_type* const 
   Exordi8::checkPlayerStatus(Exordium::User& player, bool quiet)
@@ -162,7 +162,7 @@ Exordi8::player_type* const
 
 
 /* showHand - Show a player's current hand to them
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 void Exordi8::showHand(const player_type& player) const
 {
@@ -176,7 +176,7 @@ void Exordi8::showHand(const player_type& player) const
 
 
 /* nextPlayer - Jump to the next player, telling the channel why parse
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 void Exordi8::nextPlayer(const String& why, bool withMatchNotify)
 {
@@ -250,7 +250,7 @@ void Exordi8::nextPlayer(const String& why, bool withMatchNotify)
 
 
 /* parseDEAL - Parse the DEAL command, which starts the game by dealing cards
- * Original 29/08/2002 simonb
+ * Original 29/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parseDEAL)
 {
@@ -353,7 +353,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 
 
 /* parseDISCARD - Discard a card..
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parseDISCARD)
 {
@@ -562,7 +562,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 
 
 /* parsePASS - Skip/Pass a move (only when the stock is depleted)
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parsePASS)
 {
@@ -597,7 +597,7 @@ EXORDI8_FUNC(Exordi8::parsePASS)
 
 
 /* parsePICKUP - Pick-up a card
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parsePICKUP)
 {
@@ -640,7 +640,7 @@ EXORDI8_FUNC(Exordi8::parsePICKUP)
 
 
 /* parsePLAY - Parse the PLAY command, which registers players
- * Original 29/08/2002 simonb
+ * Original 29/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parsePLAY)
 {
@@ -686,7 +686,7 @@ EXORDI8_FUNC(Exordi8::parsePLAY)
 
 
 /* parseSHOWHAND - Show a player their hand
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parseSHOWHAND)
 {
@@ -711,7 +711,7 @@ EXORDI8_FUNC(Exordi8::parseSHOWHAND)
 
 
 /* parseSTATUS - Show a player information about the current game
- * Original 30/08/2002 simonb
+ * Original 30/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parseSTATUS)
 {
@@ -785,7 +785,7 @@ EXORDI8_FUNC(Exordi8::parseSTATUS)
 
 
 /* parseSUIT - Allow a user to select a suit (if they have discarded an 8)
- * Original 31/08/2002 simonb
+ * Original 31/08/2002 pickle
  */
 EXORDI8_FUNC(Exordi8::parseSUIT)
 {

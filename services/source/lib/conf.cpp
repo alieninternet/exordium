@@ -116,7 +116,7 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 
 
 /* Config - Constructor to set up defaults, mainly. These defaults are dopey :(
- * Original 25/07/2002 simonb
+ * Original 25/07/2002 pickle
  */
 Config::Config(void)
   : defLogfile("services.log"),
@@ -139,8 +139,8 @@ Config::Config(void)
 
 
 /* classHandleModule - Handle a module{}; configuration class
- * Original 21/07/2002 simonb
- * 18/09/2002 simonb - Modified to suit Exordium
+ * Original 21/07/2002 pickle
+ * 18/09/2002 pickle - Modified to suit Exordium
  */
 LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
 {
@@ -158,8 +158,8 @@ LIBAIS_CONFIG_CLASS_HANDLER(Config::classHandleModule)
 
 
 /* varHandleModule - Handle a module; configuration variable
- * Original 21/07/2002 simonb
- * 18/09/2002 simonb - Modified to suit Exordium
+ * Original 21/07/2002 pickle
+ * 18/09/2002 pickle - Modified to suit Exordium
  * Note: This is the same as the class handler, except the module is 
  *       responsible for the configuration of its defaults. Remember that 
  *       the LibAIS::ConfigParser routines are designed to be totally passive..
