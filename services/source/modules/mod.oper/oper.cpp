@@ -96,12 +96,12 @@ OPER_FUNC(Service::parseGLOBAL)
 	origin.sendMessage(GETLANG(oper_GLOBAL_USAGE),getNickname());
 	return;
      }
-   int nbRes = services.getDatabase().dbSelect("servername","onlineservers");
-   CResult *myRes = services.getDatabase().dbGetResultSet();
-   for(int i=0;i<nbRes;i++)
-     {
+//   int nbRes = services.getDatabase().dbSelect("servername","onlineservers");
+//   CResult *myRes = services.getDatabase().dbGetResultSet();
+//   for(int i=0;i<nbRes;i++)
+//     {
 //	services.queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
-     }
+//     }
 
    services.sendGOper(getNickname(),origin.getNickname()+" sent a \002global\002 message ("+txt+")");
 
@@ -318,7 +318,7 @@ OPER_FUNC (Service::parseJUPE)
      {
 	User *ptr = services.findUser(tojupe);
 	Kine::ClientName who = origin.getNickname();
-	User *optr = services.findUser(who);
+//	User *optr = services.findUser(who);
 	if (ptr != 0)
 	  {
 	     services.killnick(tojupe,getNickname(),reason);

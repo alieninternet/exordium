@@ -228,7 +228,7 @@ SERV_FUNC (Service::parseFREEZE)
 	  }
 
 	addFreeze(chan,origin.getNickname(),expires,reason);
-	int cid = services.getChannel().getChanID(chan.IRCtoLower());
+//	int cid = services.getChannel().getChanID(chan.IRCtoLower());
 	int coid = services.getChannel().getOnlineChanID(chan);
 	int nbRes = services.getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(coid)+" AND status=2");
 	CResult *myRes = services.getDatabase().dbGetResultSet();
@@ -330,7 +330,7 @@ SERV_FUNC (Service::parseGETHASH)
 	origin.sendMessage(GETLANG(serv_GETHASH_NOT_PENDING),getNickname());
 	return;
      }
-   int nbRes = services.getDatabase().dbSelect("auth","nickspending","nickname='"+who+"'");
+//   int nbRes = services.getDatabase().dbSelect("auth","nickspending","nickname='"+who+"'");
    String auth = services.getDatabase().dbGetValue();
    String togo = GETLANG(serv_GETHASH_IS,who,auth);
    origin.sendMessage(togo,getNickname());
@@ -942,7 +942,7 @@ SERV_FUNC (Service::parseCLIST)
      }
 
    int totalc = services.getChannel().maxChannels();
-   int userc = services.getChannel().maxChannelsUser(who);
+//   int userc = services.getChannel().maxChannelsUser(who);
    int totala = services.getChannel().maxChannelsAccess();
    int theid = services.getStatic().getRegisteredNickID(who);
    int nbRes = services.getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");

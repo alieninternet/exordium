@@ -46,7 +46,7 @@ CMySQLRes::CMySQLRes(MYSQL_RES ptr)
   memcpy( &mysqlres, &ptr, sizeof(ptr) );
   mysql_data_seek(&mysqlres,0); // Seek back to 0..
   results = mysql_num_rows(&mysqlres);
-  unsigned int num_fields,i,colnum=0,rownum=0;
+  unsigned int num_fields,i/*,colnum=0*/,rownum=0;
   num_fields = mysql_num_fields(&mysqlres);
   while ((mysqlrow = mysql_fetch_row(&mysqlres)))
      {

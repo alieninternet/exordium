@@ -106,6 +106,7 @@ namespace Exordium {
   
         bool unregisterModule(const AISutil::String& name)
         {
+	   return false; /* bad presumption ?? */
         };
 
         const std::list<AISutil::String> listModules(void)

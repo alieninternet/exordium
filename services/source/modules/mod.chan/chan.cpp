@@ -482,9 +482,9 @@ CHAN_FUNC (Service::parseINFO)
 
 	// Privacy is on, only IRCops and people with access may see the information.
 	String modes = origin.getModes();
-	int pos = modes.find("o");
+	std::string::size_type pos = modes.find("o");
 
-	if( ( pos < 0  || pos > modes.length() ) && ptr->getAccess( origin.getNickname() ) < 1 )
+	if( ( (pos < 0)  || (pos > modes.length()) ) && ptr->getAccess( origin.getNickname() ) < 1 )
           return;
      }
 
@@ -794,7 +794,7 @@ CHAN_FUNC (Service::parseOP)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	bool foundmatch = false;
+//	bool foundmatch = false;
 	if(ptr->getAccess(currnick)>99)
 	  {
 	     Kine::ClientName foo = tokens.nextToken();
@@ -1160,7 +1160,7 @@ CHAN_FUNC (Service::parseACCESS)
 
    for (int i = 0; i < nbRes; i++)
      {
-	int foo = myRes->getValue(i,0).toInt();
+//	int foo = myRes->getValue(i,0).toInt();
 	origin.sendMessage(services.getNick(myRes->getValue(i,0).toInt()) + " has level "
 			   +myRes->getValue(i,1)+" access",getNickname());
      }
