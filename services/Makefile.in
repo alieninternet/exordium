@@ -1,3 +1,8 @@
+# Exordium Network Services - (c) 2002 IRCDome Development Team
+# $Name
+# $Author$
+# $Date$
+# $Header$
 
 SUB_DIRS=source/lib source source/modules
 AUTOGEN_SUB_DIRS=include src
