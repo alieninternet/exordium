@@ -457,6 +457,9 @@ if(send=="")
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
+   Services::registerService(name,name,"ircdome.org","+dz",
+			     "\037Serv\037ice :)");
+   Services::serviceJoin(name,"#Debug");
    return new Module("serv", new Serv());
 }
 
