@@ -126,10 +126,10 @@ namespace {
 #endif
 	 
 	 // Create the new services instance - Passing sql YAY :|
-	 services = new Services(daemon, config, *db);
-#ifdef DEBUG
-	 assert(services != 0);
-#endif
+	 if ((services = new Services(daemon, config, *db)) == 0) {
+	    // Be unhappy, we cannot start
+	    return false;
+	 }
 
 #ifdef DEBUG
 	 std::clog << "Services started, beginning initalisation" << std::endl;
