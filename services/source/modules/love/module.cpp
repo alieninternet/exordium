@@ -35,9 +35,6 @@ using namespace Exordium;
  * Note: Using C-style symbols for dlsym()
  */
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   Services::registerService(name, name, "ircdome.org", "+dz",
-			     "Your local love slave(tm)");
-   Services::serviceJoin(name, "#Chapel"); // hehehe, temporary maybe
    return new Module("love", new Love(name));
 }
 
@@ -56,10 +53,22 @@ const Love::commandTable_type Love::commandTable[] = {
 };
 
 
+/* Love - Our constructor, mainly gets us ready to spread our loving..
+ * Original 26/07/2002 simonb
+ */
+Love::Love(const String& mn)
+  : myName(mn)
+{
+   Services::registerService(myName, myName, "ircdome.org", "+dz",
+			     "Your local love slave(tm)");
+   Services::serviceJoin(myName, "#Chapel"); // hehehe, temporary maybe
+}
+
+
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Love::parseLine(const String &line, const String &origin)
+void Love::parseLine(const String& line, const String& origin)
 {   
    // Start breaking up the line
    StringTokens st(line);

@@ -14,7 +14,7 @@
 
 
 # define LOVE_FUNC(x) \
-	void x(const Kine::String &origin, const Kine::StringTokens &tokens)
+	void x(const Kine::String& origin, const Kine::StringTokens& tokens)
 
 
 // The class of lurrve
@@ -32,12 +32,12 @@ class Love : public Exordium::Service {
     * that.. Stop it! Stop it..... okay, OKAY - fine.. I'll go then. :(
     */
    struct commandTable_type {
-      const char *command;		// Command name
-      const unsigned short minParams;	// The minimum number of parameters
-      const unsigned short maxParams;	// Maximum parameters (Any = below)
-      const static unsigned short MAX_PARAMS_UNLIMITED = 65535;
-      const handler_type Love::*handler;// The function (handler) to call
-      const int blahblahblahblahblah;	// For future use..
+      const char* command;			// Command name
+      const unsigned short minParams;		// The min. number of params
+      const unsigned short maxParams;		// Maximum parameters
+      const static unsigned short MAX_PARAMS_UNLIMITED = 65535; // (any for ^^)
+      const handler_type Love::* const handler;	// The function (handler)
+      const int padding;			// For future use..
    } static const commandTable[];
    
    // Who are we?!
@@ -47,7 +47,7 @@ class Love : public Exordium::Service {
    handler_type handleTEST;
 
    // How to send private-messages (stepping-stone)
-   void sendMessage(const String &recipient, const String &message)
+   void sendMessage(const String& recipient, const String& message)
      {
 	// This name should not be hard-coded - icky
 	// It isn't anymore! (ner :( ) - init_func can now take another
@@ -59,21 +59,19 @@ class Love : public Exordium::Service {
    
  public:
    // Our constructor
-   Love(const String &mn)
-     : myName(mn)
-     {};
+   Love(const String& mn);
 
    // Our destructor
    ~Love(void) 
      {};
    
    // Parser for incoming stuff sent on a channel
-   void parseLine(const Kine::String &line, const Kine::String &origin,
-		  const Kine::String &channel)
+   void parseLine(const Kine::String& line, const Kine::String& origin,
+		  const Kine::String& channel)
      { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaehHAEhaE!!! */ };
    
    // Parser for incoming stuff sent directly to us
-   void parseLine(const Kine::String &line, const Kine::String &origin);
+   void parseLine(const Kine::String& line, const Kine::String& origin);
 };
 
 #endif // __LOVE_H_
