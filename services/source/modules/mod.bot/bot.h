@@ -60,7 +60,7 @@ namespace Exordium {
 	 
 	 void sendMessage(const AISutil::String& to,
 			  const AISutil::String& message)
-	   { services->serviceNotice(message,getName(),to); };
+	   { services->serviceNotice(message,getNickname(),to); };
 	 
        public:
 	 Module(void)

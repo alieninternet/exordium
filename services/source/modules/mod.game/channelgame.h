@@ -81,14 +81,14 @@ class ChannelGame {
    // Send a message to the channel
    void sendMessage(const AISutil::String& message) const
      {
-	module.getServices().servicePrivmsg(message, module.getName(), 
+	module.getServices().servicePrivmsg(message, module.getNickname(), 
 					    channel);
      };
 
    // Send a message to someone (specified)
    void sendMessage(Exordium::User& nick,
 		    const AISutil::String& message) const
-     { nick.sendMessage(message, module.getName()); };
+     { nick.sendMessage(message, module.getNickname()); };
 };
    
 #endif // _SOURCE_MODULES_GAME_CHANNELGAME_H_

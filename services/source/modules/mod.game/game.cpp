@@ -87,7 +87,7 @@ bool Module::start(Exordium::Services& s)
    services = &s;
    
    // Register ourself to the network
-   services->registerService(getName(), getUsername(), 
+   services->registerService(getNickname(), getUsername(), 
 			     getHostname(), getDescription());
    
    // We started okay :)
@@ -103,7 +103,7 @@ void Module::stop(const String& reason)
    // Leave all the channels we're on..
    while (!channelGames.empty()) {
       // Part the channel... In the future we should be able to give a reason
-      services->servicePart(getName(), 
+      services->servicePart(getNickname(), 
 			    (*(channelGames.begin())).second->getChannel());
       
       // Delete this game..
@@ -112,7 +112,7 @@ void Module::stop(const String& reason)
    }
    
    // Quit - bye bye!
-   services->serviceQuit(getName(), reason);
+   services->serviceQuit(getNickname(), reason);
 }
 
 
@@ -145,7 +145,7 @@ void Module::parseLine(StringTokens& line__, User& origin,
       // If the parser returns false, it means we can leave the channel
       if (!(*game).second->parseLine(origin, command, line)) {
 	 // Leave the channel and delete this game..
-	 services->servicePart(getName(), channel);
+	 services->servicePart(getNickname(), channel);
 	 delete (*game).second;
 	 channelGames.erase(game);
       }
@@ -174,7 +174,7 @@ std::endl;
       }
    }
    
-   origin.sendMessage("Unrecognized Command", getName());
+   origin.sendMessage("Unrecognized Command", getNickname());
 }
 
 
@@ -183,7 +183,7 @@ std::endl;
  */
 GAME_FUNC(Module::handleHELP)
 {
-   services->doHelp(origin, getName(), line.nextToken(),
+   services->doHelp(origin, getNickname(), line.nextToken(),
 		    line.nextToken());
 }
 
@@ -204,7 +204,7 @@ GAME_FUNC(Module::handleQUOTE)
    }
    
    if(channel == "") {
-      origin.sendMessage("Usage: quote #channel", getName());
+      origin.sendMessage("Usage: quote #channel", getNickname());
       return;
    }
    
@@ -228,7 +228,7 @@ GAME_FUNC(Module::handleQUOTE)
    
    while (more == true) {
       String tq = st.nextToken('\n');
-      services->servicePrivmsg(tq, getName(), chan);
+      services->servicePrivmsg(tq, getNickname(), chan);
       more = st.hasMoreTokens();
    }   
 }
@@ -253,8 +253,8 @@ std::endl;
    {
      channelGames[chan] = chanGame;
      // Join the channel and say hello
-     services->serviceJoin(getName(), chan);
-     services->serverMode(chan, "+o", getName());
+     services->serviceJoin(getNickname(), chan);
+     services->serverMode(chan, "+o", getNickname());
      services->serviceNotice("Hello " + chan + " (" + origin.getNickname() + 
          " wanted to play " + game + ')', "Game", chan);
    }
@@ -274,14 +274,14 @@ GAME_FUNC(Module::handleLIST)
    StringList list = Factory::Instance().listModules();
 
    // Check for the game
-   origin.sendMessage("List of available games:", getName());
+   origin.sendMessage("List of available games:", getNickname());
    for(iter = list.begin(); iter != list.end(); iter++)
    {
    //for (int i = 0; ChannelGame::channelGameTable[i].game != 0; i++) {
       String str = "--- ";
       //str += ChannelGame::channelGameTable[i].game;
       str += (*iter);
-      origin.sendMessage(str, getName());
+      origin.sendMessage(str, getNickname());
    }
 }
 

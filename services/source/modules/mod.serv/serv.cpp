@@ -75,19 +75,19 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	  {
 	     if(!origin.isIdentified(origin.getNickname()))
 	       {
-		  origin.sendMessage("You are not identified to services",getName());
-		  services->sendGOper(origin.getNickname()+" tried to use \002"+command+"\002 when not identified",getName());
+		  origin.sendMessage("You are not identified to services",getNickname());
+		  services->sendGOper(origin.getNickname()+" tried to use \002"+command+"\002 when not identified",getNickname());
 		  return;
 	       }
 
-	     int required = services->getRequiredAccess(getName(),command.toLower());
-	     int access = origin.getAccess(getName());
+	     int required = services->getRequiredAccess(getNickname(),command.toLower());
+	     int access = origin.getAccess(getNickname());
 	     if(required>access)
 	       {
-		  origin.sendMessage("You do not have enough access for that command",getName());
+		  origin.sendMessage("You do not have enough access for that command",getNickname());
 		  String togo = "\002 WARNING!\002 "+origin.getNickname()+" tried to use the \002"+command+"\002 on Serv";
 		  services->logLine(togo, Log::Warning);
-		  services->sendGOper(getName(),togo);
+		  services->sendGOper(getNickname(),togo);
 		  return;
 	       }
 
@@ -96,18 +96,18 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	     return;
 	  }
      }
-   origin.sendMessage ("Unrecognised Command", getName());
+   origin.sendMessage ("Unrecognised Command", getNickname());
 }
 
 SERV_FUNC (Module::parseSTATUS)
 {
-   origin.sendMessage("Exordium services status report",getName());
+   origin.sendMessage("Exordium services status report",getNickname());
    String togo = "Current build : \002" + String::convert(Services::buildNumber) + "\002";
-   origin.sendMessage(togo,getName());
+   origin.sendMessage(togo,getNickname());
    long tx = services->getCountTx();
    long rx = services->getCountRx();
    String tofo = "Tx : \002" + String::convert(tx) + "\002 Rx : \002" + String::convert(rx) + "\002";
-   origin.sendMessage(tofo,getName());
+   origin.sendMessage(tofo,getNickname());
    time_t start_day;
    time_t now_day;
 
@@ -115,13 +115,13 @@ SERV_FUNC (Module::parseSTATUS)
    String ntime = ctime( &now_day );
    //start_day = time ( services->startTime);
    //String stime = ctime ( &start_day);
-   origin.sendMessage("Current Time : \002"+ntime,getName());
+   origin.sendMessage("Current Time : \002"+ntime,getNickname());
 }
 
 SERV_FUNC (Module::parseCOMMANDS)
 {
    String::size_type lineLength = 200;
-   origin.sendMessage("Command list for " + getName() + ":",getName());
+   origin.sendMessage("Command list for " + getNickname() + ":",getNickname());
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++)
      {
@@ -131,7 +131,7 @@ SERV_FUNC (Module::parseCOMMANDS)
 	if (list.str().length() >= lineLength)
 	  {
 	     // Dump it and reset the string stream thingy
-	     origin.sendMessage(list.str(),getName());
+	     origin.sendMessage(list.str(),getNickname());
 	     list.str() = " -=>";
 	  }
      }
@@ -139,10 +139,10 @@ SERV_FUNC (Module::parseCOMMANDS)
    // Anything left to send still?
    if (list.str().length() > 4)
      {
-	origin.sendMessage(list.str(),getName());
+	origin.sendMessage(list.str(),getNickname());
      }
    // Send the footer (this shouldn't be hard-coded)
-   origin.sendMessage("End of command list",getName());
+   origin.sendMessage("End of command list",getNickname());
 
 }
 
@@ -151,12 +151,12 @@ SERV_FUNC (Module::parseDIE)
    String reason = tokens.rest();
    if(reason=="")
      {
-	origin.sendMessage("Usage: die reason for shutdown here",getName());
+	origin.sendMessage("Usage: die reason for shutdown here",getNickname());
 	return;
      }
    String tofo = origin.getNickname()+" issued an immediate services \002shutdown\002 for \002"+reason;
 
-   services->sendGOper(getName(),tofo);
+   services->sendGOper(getNickname(),tofo);
    String togo = "\002"+origin.getNickname()+"\002 - "+reason;
    services->shutdown(togo);
 }
@@ -165,7 +165,7 @@ SERV_FUNC (Module::parseFREEZE)
    String func = tokens.nextToken();
    if(func=="")
      {
-	origin.sendMessage("Usage: freeze add/del/list",getName());
+	origin.sendMessage("Usage: freeze add/del/list",getNickname());
 	return;
      }
    if(func=="add")
@@ -174,12 +174,12 @@ SERV_FUNC (Module::parseFREEZE)
 	String reason = tokens.rest();
 	if(chan=="" | reason=="")
 	  {
-	     origin.sendMessage("Usage: freeze add #channel reason",getName());
+	     origin.sendMessage("Usage: freeze add #channel reason",getNickname());
 	     return;
 	  }
         if(!services->getChannel().isChanRegistered(chan))
 	  {
-	     origin.sendMessage("Error: That channel is not registered",getName());
+	     origin.sendMessage("Error: That channel is not registered",getNickname());
 	     return;
 	  }
 	int times = services->timesFreezed(chan);
@@ -223,7 +223,7 @@ SERV_FUNC (Module::parseFREEZE)
 
 	if(times==6)
 	  {
-	     origin.sendMessage("Error: That channel has already been frozen 6 times",getName());
+	     origin.sendMessage("Error: That channel has already been frozen 6 times",getNickname());
 	     return;
 	  }
 
@@ -237,7 +237,7 @@ SERV_FUNC (Module::parseFREEZE)
 	  {
 	     String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
 	     std::cout << inick << std::endl;
-	     services->mode(getName(),chan,"-o",inick);
+	     services->mode(getNickname(),chan,"-o",inick);
 	  }
 	delete myRes;
 	int mbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(coid)+" AND status=1");
@@ -248,15 +248,15 @@ SERV_FUNC (Module::parseFREEZE)
 	     for(int j=0;j<mbRes;j++)
 	       {
 		  String inick = services->getOnlineNick(mvRes->getValue(j,0).toInt());
-		  services->mode(getName(),chan,"-v",inick);
+		  services->mode(getNickname(),chan,"-v",inick);
 	       }
 	     delete mvRes;
 	  }
 
-	services->mode(getName(),chan,"+ntm-ilsl","");
+	services->mode(getNickname(),chan,"+ntm-ilsl","");
 	String topic = "This channel has been frozen by "+origin.getNickname()+" because \002"+reason;
 	services->getChannel().setTopic(chan,topic);
-	services->sendGOper(getName(),origin.getNickname()+" set a \002freeze\002 on "+chan+" for \002"+reason+"\002 ("+flong+")");
+	services->sendGOper(getNickname(),origin.getNickname()+" set a \002freeze\002 on "+chan+" for \002"+reason+"\002 ("+flong+")");
 	return;
 
      }
@@ -265,7 +265,7 @@ SERV_FUNC (Module::parseFREEZE)
 	String channel = tokens.nextToken();
 	if(!services->isFreezed(channel))
 	  {
-	     origin.sendMessage("Error: That channel is not frozen",getName());
+	     origin.sendMessage("Error: That channel is not frozen",getNickname());
 	     return;
 	  }
 
@@ -278,7 +278,7 @@ SERV_FUNC (Module::parseFREEZE)
 	String channel = tokens.nextToken();
 	if(channel=="")
 	  {
-	     origin.sendMessage("Usage: freeze list #channel",getName());
+	     origin.sendMessage("Usage: freeze list #channel",getNickname());
 	     return;
 	  }
 
@@ -288,10 +288,10 @@ SERV_FUNC (Module::parseFREEZE)
 	CResult *myRes = services->getDatabase().dbGetResultSet();
 	if(nbRes==0)
 	  {
-	     origin.sendMessage("No freeze's found for "+channel,getName());
+	     origin.sendMessage("No freeze's found for "+channel,getNickname());
 	     return;
 	  }
-	origin.sendMessage("Freeze history for channel "+channel,getName());
+	origin.sendMessage("Freeze history for channel "+channel,getNickname());
 
 	for(int i=0;i<nbRes;i++)
 	  {
@@ -300,7 +300,7 @@ SERV_FUNC (Module::parseFREEZE)
 	     String seton = myRes->getValue(i,3);
 	     String expires = myRes->getValue(i,4);
 	     String reason = myRes->getValue(i,5);
-	     origin.sendMessage("\002["+id+"]\002 Setby: \002"+setby+"\002 SetOn: \002"+seton+"\002 Expires: \002"+expires+"\002 Reason: \002"+reason,getName());
+	     origin.sendMessage("\002["+id+"]\002 Setby: \002"+setby+"\002 SetOn: \002"+seton+"\002 Expires: \002"+expires+"\002 Reason: \002"+reason,getNickname());
 	  }
 	delete myRes;
 
@@ -313,24 +313,24 @@ SERV_FUNC (Module::parseGETHASH)
    String who = tokens.nextToken();
    if(who=="")
      {
-	origin.sendMessage("Usage: gethash nickname",getName());
+	origin.sendMessage("Usage: gethash nickname",getNickname());
 	return;
      }
    if(!services->isNickRegistered(who))
      {
-	origin.sendMessage("Error: Nickname is not registered",getName());
+	origin.sendMessage("Error: Nickname is not registered",getNickname());
 	return;
      }
    if(!services->getDatabase().dbSelect("id","nickspending","nickname='"+who+"'"))
      {
-	origin.sendMessage("Error: That nickname is not in a pending status",getName());
+	origin.sendMessage("Error: That nickname is not in a pending status",getNickname());
 	return;
      }
    int nbRes = services->getDatabase().dbSelect("auth","nickspending","nickname='"+who+"'");
    String auth = services->getDatabase().dbGetValue();
    String togo = "The authorisation code for the nickname \002"+who+"\002 is \002"+auth;
-   origin.sendMessage(togo,getName());
-   services->sendGOper(getName(),origin.getNickname()+" did a \002gethash\002 on "+who);
+   origin.sendMessage(togo,getNickname());
+   services->sendGOper(getNickname(),origin.getNickname()+" did a \002gethash\002 on "+who);
    return;
 }
 
@@ -341,22 +341,22 @@ SERV_FUNC (Module::parseSETPASS)
    if(who=="" | newpass=="")
      {
 	String togo = "Usage: setpass nickname newpassword";
-	origin.sendMessage(togo,getName());
+	origin.sendMessage(togo,getNickname());
 	return;
      }
    if(!services->isNickRegistered(who))
      {
 
-	origin.sendMessage("Error: Nickname is not registered",getName());
+	origin.sendMessage("Error: Nickname is not registered",getNickname());
 	return;
      }
-   if((services->getAccess(getName(),who)>0))
+   if((services->getAccess(getNickname(),who)>0))
      {
 	/* Ok staff nickname, unless the user is a level 500, reject it. */
-	if(services->getAccess(getName(),origin.getNickname())<500)
+	if(services->getAccess(getNickname(),origin.getNickname())<500)
 	  {
-	     origin.sendMessage("Error: You may not perform that command on staff",getName());
-	     services->sendGOper(getName(),"\002Warning\002 "+origin.getNickname()+" tried to perform a \002setpass\002 on a staff nickname ("+who+")");
+	     origin.sendMessage("Error: You may not perform that command on staff",getNickname());
+	     services->sendGOper(getNickname(),"\002Warning\002 "+origin.getNickname()+" tried to perform a \002setpass\002 on a staff nickname ("+who+")");
 	     return;
 	  }
 
@@ -366,7 +366,7 @@ SERV_FUNC (Module::parseSETPASS)
    services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
    services->logLine(togo);
-   services->sendGOper(getName(),togo);
+   services->sendGOper(getNickname(),togo);
 }
 
 SERV_FUNC (Module::parseRAW)
@@ -375,7 +375,7 @@ SERV_FUNC (Module::parseRAW)
    services->queueAdd(c);
    String togo = origin.getNickname()+" did a services \002raw\002 - "+c;
    services->logLine(String(togo), Log::Warning);
-   services->sendGOper(getName(),togo);
+   services->sendGOper(getNickname(),togo);
 }
 
 SERV_FUNC (Module::parseNEWS)
@@ -383,7 +383,7 @@ SERV_FUNC (Module::parseNEWS)
    String command = tokens.nextToken();
    if(command=="")
      {
-	origin.sendMessage("Usage: news add/del/list",getName());
+	origin.sendMessage("Usage: news add/del/list",getNickname());
 	return;
      }
    if(command=="list")
@@ -392,7 +392,7 @@ SERV_FUNC (Module::parseNEWS)
 
 	if(nbRes==0)
 	  {
-	     origin.sendMessage("No News found",getName());
+	     origin.sendMessage("No News found",getNickname());
 	     return;
 	  }
 	CResult *myRes = services->getDatabase().dbGetResultSet();
@@ -404,7 +404,7 @@ SERV_FUNC (Module::parseNEWS)
 	     String expires = myRes->getValue(i,2);
 	     String txt = myRes->getValue(i,3);
 	     String togo = "ID \002[\002"+id+"\002]\002 Level \002[\002"+level+"\002]\002 Expires \002[\002"+expires+"\002]\002 Text \002[\002"+txt+"\002]\002";
-	     origin.sendMessage(togo,getName());
+	     origin.sendMessage(togo,getNickname());
 	  }
 	delete myRes;
 
@@ -414,12 +414,12 @@ SERV_FUNC (Module::parseNEWS)
 	String id = tokens.nextToken();
 	if(id.empty())
 	  {
-	     origin.sendMessage("\002[\002Fatal Error\002]\002 Usage: del ID",getName());
+	     origin.sendMessage("\002[\002Fatal Error\002]\002 Usage: del ID",getNickname());
 	     return;
 	  }
 	services->getDatabase().dbDelete("news", "id="+id);
-	origin.sendMessage("News has been deleted",getName());
-	services->sendGOper(getName(),origin.getNickname()+" \002deleted\002 news item "+id);
+	origin.sendMessage("News has been deleted",getNickname());
+	services->sendGOper(getNickname(),origin.getNickname()+" \002deleted\002 news item "+id);
 	return;
      }
 
@@ -430,22 +430,22 @@ SERV_FUNC (Module::parseNEWS)
 	String text = tokens.rest();
 	if(type=="" | expires=="" | text=="")
 	  {
-	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here",getName());
+	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here",getNickname());
 	     return;
 	  }
 	if(type.toInt()!=0 || type.toInt()!=1)
 	  {
-	     origin.sendMessage("Error: Type must be either 0 (all users) or 1 (staff)",getName());
+	     origin.sendMessage("Error: Type must be either 0 (all users) or 1 (staff)",getNickname());
 	     return;
 	  }
 	if(expires.toInt()<services->currentTime)
 	  {
-	     origin.sendMessage("Error: The expire time cannot be before now",getName());
+	     origin.sendMessage("Error: The expire time cannot be before now",getNickname());
 	     return;
 	  }
 	if(expires.toInt()>services->currentTime+ 36000)
 	  {
-	     origin.sendMessage("Error: Expire time is to far in the future",getName());
+	     origin.sendMessage("Error: Expire time is to far in the future",getNickname());
 	     return;
 	  }
 
@@ -453,12 +453,12 @@ SERV_FUNC (Module::parseNEWS)
 	nexpires = services->currentTime + (nexpires * 3600);
 	if(services->currentTime>nexpires)
 	  {
-	     origin.sendMessage("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past",getName());
+	     origin.sendMessage("\002[\002Fatal Error\002]\002 Your expiry time cannot be in the past",getNickname());
 	     return;
 	  }
 	services->getDatabase().dbInsert("news", "'','"+type+"','"+String::convert(nexpires)+"','"+text+"'");
-	origin.sendMessage("New news item added successfully",getName());
-	services->sendGOper(getName(),origin.getNickname() + "\002Added\002 a new news item");
+	origin.sendMessage("New news item added successfully",getNickname());
+	services->sendGOper(getNickname(),origin.getNickname() + "\002Added\002 a new news item");
      }
 
 }
@@ -469,7 +469,7 @@ SERV_FUNC (Module::parseCHAN)
    String channel = tokens.nextToken();
    if(command=="")
      {
-	origin.sendMessage("Usage: chan add/del/mod",getName());
+	origin.sendMessage("Usage: chan add/del/mod",getNickname());
 	return;
      }
    if(command=="mod")
@@ -477,17 +477,17 @@ SERV_FUNC (Module::parseCHAN)
 	String newowner = tokens.nextToken();
 	if(channel=="" || newowner=="")
 	  {
-	     origin.sendMessage("Usage: chan mod #channel NewOwner",getName());
+	     origin.sendMessage("Usage: chan mod #channel NewOwner",getNickname());
 	     return;
 	  }
 	if(!services->isNickRegistered(newowner))
 	  {
-	     origin.sendMessage("Error: New owner's nickname is not registered",getName());
+	     origin.sendMessage("Error: New owner's nickname is not registered",getNickname());
 	     return;
 	  }
 	if(!services->getChannel().isChanRegistered(channel))
 	  {
-	     origin.sendMessage("Error: That channel is not registered",getName());
+	     origin.sendMessage("Error: That channel is not registered",getNickname());
 	     return;
 	  }
 
@@ -501,8 +501,8 @@ SERV_FUNC (Module::parseCHAN)
 	services->getChannel().chanDelAccess(channel,oldowner);
 	services->getChannel().chanAddAccess(channel,newowner,"500");
 	services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
-	services->log(origin,getName(),String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
-	services->sendGOper(getName(),origin.getNickname()+" \002Modified\002 channel ownedship of "+channel+" "+oldowner+"->"+newowner);
+	services->log(origin,getNickname(),String("Changed ownership of ")+channel+" to "+newowner+" ("+oldowner+")");
+	services->sendGOper(getNickname(),origin.getNickname()+" \002Modified\002 channel ownedship of "+channel+" "+oldowner+"->"+newowner);
 	return;
      }
    if(command=="del")
@@ -510,12 +510,12 @@ SERV_FUNC (Module::parseCHAN)
 	String reason = tokens.rest();
 	if(channel=="" || reason=="")
 	  {
-	     origin.sendMessage("Usage: chan del #channel reason",getName());
+	     origin.sendMessage("Usage: chan del #channel reason",getNickname());
 	     return;
 	  }
 	if(!services->getChannel().isChanRegistered(channel))
 	  {
-	     origin.sendMessage("That channel is not registered",getName());
+	     origin.sendMessage("That channel is not registered",getNickname());
 	     return;
 	  }
 
@@ -524,11 +524,11 @@ SERV_FUNC (Module::parseCHAN)
 	services->getChannel().deregisterChannel(channel);
 
         togo = "This channel has been deregistered \002"+reason;
-        services->serviceNotice((String)togo,getName(),channel);
-        origin.sendMessage("Channel " + channel + " dropped successfully",getName());
+        services->serviceNotice((String)togo,getNickname(),channel);
+        origin.sendMessage("Channel " + channel + " dropped successfully",getNickname());
 
-	services->log(origin,getName(),String("Deregistered ")+channel+" for "+reason);
-	services->sendGOper(getName(),origin.getNickname()+" \002Deregistered\002 channel "+channel+" for "+reason);
+	services->log(origin,getNickname(),String("Deregistered ")+channel+" for "+reason);
+	services->sendGOper(getNickname(),origin.getNickname()+" \002Deregistered\002 channel "+channel+" for "+reason);
 	return;
      }
    if(command=="add")
@@ -536,24 +536,24 @@ SERV_FUNC (Module::parseCHAN)
 	String thenick = tokens.nextToken();
 	if(channel=="" || thenick=="")
 	  {
-	     origin.sendMessage("Usage: chan add #channel owner",getName());
+	     origin.sendMessage("Usage: chan add #channel owner",getNickname());
 	     return;
 	  }
 	if(services->getChannel().isChanRegistered(channel))
 	  {
-	     origin.sendMessage("That channel is already registered - Try mod",getName());
+	     origin.sendMessage("That channel is already registered - Try mod",getNickname());
 	     return;
 	  }
 	if(!services->isNickRegistered(thenick))
 	  {
-	     origin.sendMessage("Target nickname does not exist",getName());
+	     origin.sendMessage("Target nickname does not exist",getNickname());
 	     return;
 	  }
 	String togo = origin.getNickname() + "\002 registered\002 " + channel + " to "+thenick;
 	services->logLine(String(togo));
 	services->getChannel().registerChannel(channel,thenick);
-	services->log(origin,getName(),String("Registered ")+channel+" to "+thenick);
-	services->sendGOper(getName(),origin.getNickname()+" \002Registered\002 "+channel+" to "+thenick);
+	services->log(origin,getNickname(),String("Registered ")+channel+" to "+thenick);
+	services->sendGOper(getNickname(),origin.getNickname()+" \002Registered\002 "+channel+" to "+thenick);
 	return;
      }
 }
@@ -562,9 +562,9 @@ SERV_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services->doHelp(origin,getName(),word,parm);
+   services->doHelp(origin,getNickname(),word,parm);
    String tolog = "Did HELP on word " + word + " parm " + parm;
-   services->log(origin,getName(),String(tolog));
+   services->log(origin,getNickname(),String(tolog));
 }
 
 SERV_FUNC (Module::parseUSER)
@@ -572,54 +572,54 @@ SERV_FUNC (Module::parseUSER)
    String command = tokens.nextToken();
    String toadd = tokens.nextToken();
    String level = tokens.nextToken();
-   int access = origin.getAccess(getName());
+   int access = origin.getAccess(getNickname());
    if(command=="")
      {
-	origin.sendMessage("Commands are : add/del/mod/list",getName());
+	origin.sendMessage("Commands are : add/del/mod/list",getNickname());
 	return;
      }
    if(command=="mod")
      {
 	if(toadd=="" || level=="")
 	  {
-	     origin.sendMessage("Usage: user mod nickname level",getName());
+	     origin.sendMessage("Usage: user mod nickname level",getNickname());
 	     return;
 	  }
 	if(toadd==origin.getNickname())
 	  {
-	     origin.sendMessage("Silly billy... you can't mod yourself!",getName());
+	     origin.sendMessage("Silly billy... you can't mod yourself!",getNickname());
 	     return;
 	  }
 	int ilevel = level.toInt();
 	if(ilevel<1 || ilevel>499)
 	  {
-	     origin.sendMessage("Error: Level must be between 1 and 499",getName());
+	     origin.sendMessage("Error: Level must be between 1 and 499",getNickname());
 	     return;
 	  }
 
 	if(ilevel>access || ilevel==access)
 	  {
-	     origin.sendMessage("Error: You cannot set someones access higher than, or equal to your own",getName());
+	     origin.sendMessage("Error: You cannot set someones access higher than, or equal to your own",getNickname());
 	     return;
 	  }
-	int taccess = origin.getAccess(getName());
+	int taccess = origin.getAccess(getNickname());
 	if(taccess>access)
 	  {
-	     origin.sendMessage("Error: That person has higher access than you",getName());
+	     origin.sendMessage("Error: That person has higher access than you",getNickname());
 	     String togo = origin.getNickname()+" tried to modify access for a higher user than themselves ("+toadd+")";
 	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
 	if(taccess==access)
 	  {
-	     origin.sendMessage("Error: That person has the same access as you",getName());
+	     origin.sendMessage("Error: That person has the same access as you",getNickname());
 	     return;
 	  }
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+String::convert(ilevel);
 	services->logLine(togo);
-	services->sendGOper(getName(),togo);
+	services->sendGOper(getNickname(),togo);
 	services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+toadd+"'");
-	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+String::convert(level));
+	services->log(origin,getNickname(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+String::convert(level));
 	return;
      }
    if(command=="list")
@@ -632,7 +632,7 @@ SERV_FUNC (Module::parseUSER)
 	     String nickname = myRes->getValue(i,1);
 	     String access = myRes->getValue(i,3);
 	     String togo = "\002"+nickname+"\002 has level \002"+access;
-	     origin.sendMessage(String(togo),getName());
+	     origin.sendMessage(String(togo),getNickname());
 	  }
 	delete myRes;
 	return;
@@ -641,88 +641,88 @@ SERV_FUNC (Module::parseUSER)
      {
 	if(toadd=="")
 	  {
-	     origin.sendMessage("Usage is user del nickname",getName());
+	     origin.sendMessage("Usage is user del nickname",getNickname());
 	     return;
 	  }
-	String blah = getName();
+	String blah = getNickname();
 	if(services->getAccess(blah,toadd)==0)
 	  {
-	     origin.sendMessage("That person does not have access to serv",getName());
+	     origin.sendMessage("That person does not have access to serv",getNickname());
 	     return;
 	  }
 	int faccess = services->getAccess(blah,toadd);
 	if(faccess>access)
 	  {
-	     origin.sendMessage("You do not have enough access to perform that operation on a staff nickname",getName());
+	     origin.sendMessage("You do not have enough access to perform that operation on a staff nickname",getNickname());
 	     String togo = origin.getNickname() + " tried to use \002userdel\002 on a \002staff\002 nickname";
 	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
 	services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
-	origin.sendMessage("Command complete",getName());
+	origin.sendMessage("Command complete",getNickname());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
 	services->logLine(String(togo), Log::Warning);
-	services->sendGOper(getName(),togo);
-	services->log(origin,getName(),"Deleted "+toadd+" from Serv");
+	services->sendGOper(getNickname(),togo);
+	services->log(origin,getNickname(),"Deleted "+toadd+" from Serv");
 	return;
      }
    if(command=="add")
      {
 	if(toadd=="" || level=="")
 	  {
-	     origin.sendMessage("Usage: user add nickname level",getName());
+	     origin.sendMessage("Usage: user add nickname level",getNickname());
 	     return;
 	  }
 	if(origin.getNickname().toLower()==toadd.toLower())
 	  {
-	     origin.sendMessage("You can't adduser yourself, silly.",getName());
+	     origin.sendMessage("You can't adduser yourself, silly.",getNickname());
 	     return;
 	  }
 	if(!services->isNickRegistered(toadd))
 	  {
-	     origin.sendMessage("That nickname is not registered",getName());
+	     origin.sendMessage("That nickname is not registered",getNickname());
 	     return;
 	  }
 	// Again temp.
-	String foo = getName();
+	String foo = getNickname();
 	if(services->getAccess(foo,toadd)>0)
 	  {
-	     origin.sendMessage("That person already has access, try mod",getName());
+	     origin.sendMessage("That person already has access, try mod",getNickname());
 	     return;
 	  }
 	if(level.toInt()<1)
 	  {
-	     origin.sendMessage("Error: You cannot add someone with less than 1 access",getName());
+	     origin.sendMessage("Error: You cannot add someone with less than 1 access",getNickname());
 	     return;
 	  }
 	if(level.toInt()>499)
 	  {
-	     origin.sendMessage("Error: You cannot add someone with higher than 499 access",getName());
+	     origin.sendMessage("Error: You cannot add someone with higher than 499 access",getNickname());
 	     return;
 	  }
 	services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
-	origin.sendMessage("Command completed",getName());
+	origin.sendMessage("Command completed",getNickname());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
 	services->logLine(String(togo), Log::Warning);
-	services->sendGOper(getName(),togo);
+	services->sendGOper(getNickname(),togo);
 	String tolog = "Added "+toadd+" to Serv with level "+toadd;
-	services->log(origin,getName(),String(tolog));
+	services->log(origin,getNickname(),String(tolog));
 	return;
      }
-   origin.sendMessage("Uncognised sub-command",getName());
+   origin.sendMessage("Uncognised sub-command",getNickname());
    return;
 }
 
 SERV_FUNC (Module::parseHELPON)
 {
-   int access = origin.getAccess(getName());
+   int access = origin.getAccess(getNickname());
    if(access>50)
      {
-	origin.sendMessage("You are now a PeopleChat services assistant",getName());
+	origin.sendMessage("You are now a PeopleChat services assistant",getNickname());
 	String tosend = ":services.peoplechat.org SVSMODE "+origin.getNickname()+" +gsao";
 	services->queueAdd(String(tosend));
-	services->log(origin,getName(),origin.getNickname()+ " became a services helper at level "+String::convert(access));
-	services->sendGOper(getName(),origin.getNickname() + " became a services helper at level "+String::convert(access));
+	services->log(origin,getNickname(),origin.getNickname()+ " became a services helper at level "+String::convert(access));
+	services->sendGOper(getNickname(),origin.getNickname() + " became a services helper at level "+String::convert(access));
 
 	return;
      }
@@ -737,7 +737,7 @@ SERV_FUNC (Module::parseNLIST)
    String dest = tokens.nextToken();
    if(tomatch=="")
      {
-	origin.sendMessage("Usage: nlist <match> <optinal destination>",getName());
+	origin.sendMessage("Usage: nlist <match> <optinal destination>",getNickname());
 	return;
      }
    int nbRes = services->getDatabase().dbSelect("nickname,lasthost,email", "nicks", "lasthost like '"+tomatch+"'");
@@ -748,7 +748,7 @@ SERV_FUNC (Module::parseNLIST)
 	User *tmp = services->findUser(dest);
 	if(tmp==0)
 	  {
-	     origin.sendMessage("Error: That user (%p0) is not online",getName());
+	     origin.sendMessage("Error: That user (%p0) is not online",getNickname());
 	     return;
 	  }
 	delete tmp;
@@ -765,13 +765,13 @@ SERV_FUNC (Module::parseNLIST)
 	String tosend = "\002["+String::convert(i)+"]\002 Nickname: \002"+tnick+"\002 Last ID'd Host: \002"+thost+"\002 Email Address: \002"+temail+"\002";
 	if(f>30)
 	  {
-	     origin.sendMessage("More than 30 results found! Please be more specific in your search",getName());
+	     origin.sendMessage("More than 30 results found! Please be more specific in your search",getNickname());
 	     return;
 	  }
 
 	if(dest=="")
 	  {
-	     origin.sendMessage(String(tosend),getName());
+	     origin.sendMessage(String(tosend),getNickname());
 	  }
 	else
 	  {
@@ -780,7 +780,7 @@ SERV_FUNC (Module::parseNLIST)
      }
    if(nbRes==0)
      {
-	origin.sendMessage("No Results found!",getName());
+	origin.sendMessage("No Results found!",getNickname());
      }
 
    delete myRes;
@@ -798,7 +798,7 @@ SERV_FUNC (Module::parseNLIST)
      }
 
    services->logLine(togo);
-   services->sendGOper(getName(),togo);
+   services->sendGOper(getNickname(),togo);
 }
 
 SERV_FUNC (Module::parseELIST)
@@ -807,7 +807,7 @@ SERV_FUNC (Module::parseELIST)
    String dest = tokens.nextToken();
    if(tomatch=="")
      {
-	origin.sendMessage("Usage: elist <match> <optional destination>",getName());
+	origin.sendMessage("Usage: elist <match> <optional destination>",getNickname());
 	return;
      }
    int nbRes = services->getDatabase().dbSelect("nickname, lasthost, email", "nicks", "email like '"+tomatch+"'");
@@ -817,7 +817,7 @@ SERV_FUNC (Module::parseELIST)
 	User *tmp = services->findUser(dest);
 	if(tmp==0)
 	  {
-	     origin.sendMessage("Error: That user (%p0) is not online",getName());
+	     origin.sendMessage("Error: That user (%p0) is not online",getNickname());
 	     return;
 	  }
 	delete tmp;
@@ -831,12 +831,12 @@ SERV_FUNC (Module::parseELIST)
 	String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
 	if(i>30)
 	  {
-	     origin.sendMessage("More than 30 results found! Please be more specific",getName());
+	     origin.sendMessage("More than 30 results found! Please be more specific",getNickname());
 	     return;
 	  }
 
 	if(dest=="")
-	  origin.sendMessage(tosend,getName());
+	  origin.sendMessage(tosend,getNickname());
 	else
 	  services->serviceNotice(String(tosend),"Serv",dest);
 
@@ -844,7 +844,7 @@ SERV_FUNC (Module::parseELIST)
      }
    if(nbRes==0)
      {
-	origin.sendMessage("No Results found!",getName());
+	origin.sendMessage("No Results found!",getNickname());
      }
 
    if(dest=="")
@@ -852,7 +852,7 @@ SERV_FUNC (Module::parseELIST)
 	services->log(origin,"Serv","Did an elist on "+tomatch);
 	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch;
 	services->logLine(togo);
-	services->sendGOper(getName(),togo);
+	services->sendGOper(getNickname(),togo);
      }
    else
      {
@@ -860,7 +860,7 @@ SERV_FUNC (Module::parseELIST)
 	services->log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
 	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
 	services->logLine(togo);
-	services->sendGOper(getName(),togo);
+	services->sendGOper(getNickname(),togo);
      }
    delete myRes;
 
@@ -872,22 +872,22 @@ SERV_FUNC (Module::parseDELNICK)
    String reason = tokens.rest();
    if(who=="" || reason=="")
      {
-	origin.sendMessage("Usage: delnick nickname reason",getName());
+	origin.sendMessage("Usage: delnick nickname reason",getNickname());
 	return;
      }
    if(!services->isNickRegistered(who))
      {
-	origin.sendMessage("Error: Nickname is not registered",getName());
+	origin.sendMessage("Error: Nickname is not registered",getNickname());
 	return;
      }
    /* Are we trying to delete a staff nickname? */
-   if(services->getAccess(getName(),who)>0)
+   if(services->getAccess(getNickname(),who)>0)
      {
 	/* Yep... Unless a 500 tell em to get stuffed */
-	if(services->getAccess(getName(),origin.getNickname())<500)
+	if(services->getAccess(getNickname(),origin.getNickname())<500)
 	  {
-	     origin.sendMessage("Error: You may not perform that command on a staff nick",getName());
-	     services->sendGOper(getName(),origin.getNickname()+" tried to perform a \002delnick\002 on a staff nickname ("+who+")");
+	     origin.sendMessage("Error: You may not perform that command on a staff nick",getNickname());
+	     services->sendGOper(getNickname(),origin.getNickname()+" tried to perform a \002delnick\002 on a staff nickname ("+who+")");
 	     return;
 	  }
 
@@ -895,7 +895,7 @@ SERV_FUNC (Module::parseDELNICK)
 
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
    services->logLine(togo, Log::Warning);
-   services->sendGOper(getName(),togo);
+   services->sendGOper(getNickname(),togo);
    services->getDatabase().dbDelete("nicks", "nickname='"+who+"'");
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
@@ -906,13 +906,13 @@ SERV_FUNC (Module::parseCLIST)
    String send = tokens.nextToken();
    if(who=="")
      {
-	origin.sendMessage("Usage: clist nickname <optional nick to send to>",getName());
+	origin.sendMessage("Usage: clist nickname <optional nick to send to>",getNickname());
 	return;
      }
 
    if(!services->isNickRegistered(who))
      {
-	origin.sendMessage("That nickname is not registered",getName());
+	origin.sendMessage("That nickname is not registered",getNickname());
 	return;
      }
    if(send!="")
@@ -921,7 +921,7 @@ SERV_FUNC (Module::parseCLIST)
 	User *ptr = services->findUser(send);
 	if(ptr==0)
 	  {
-	     origin.sendMessage("That nickname is not online",getName());
+	     origin.sendMessage("That nickname is not online",getNickname());
 	     return;
 	  }
 
@@ -937,15 +937,15 @@ SERV_FUNC (Module::parseCLIST)
      " channels and "+String::convert(totala)+" access entries";
    if(send!="")
      togo = togo + " and sent it to "+send;
-   services->sendGOper(getName(),togo);
+   services->sendGOper(getNickname(),togo);
 
    CResult *myRes = services->getDatabase().dbGetResultSet();
    if(send=="")
-     origin.sendMessage("Channel Access list for "+who,getName());
+     origin.sendMessage("Channel Access list for "+who,getNickname());
    else
      {
-	origin.sendMessage("Sending channel access list for "+who+" to "+send,getName());
-	services->serviceNotice("Channel access list for "+who+" sent by "+origin.getNickname(),getName(),send);
+	origin.sendMessage("Sending channel access list for "+who+" to "+send,getNickname());
+	services->serviceNotice("Channel access list for "+who+" sent by "+origin.getNickname(),getNickname(),send);
      }
 
    for(int i=0; i<nbRes; i++)
@@ -956,13 +956,13 @@ SERV_FUNC (Module::parseCLIST)
 	String tosend = "Channel: \002"+ccname+"\002 with level \002"+caxs;
 	if(send=="")
 
-	  origin.sendMessage(tosend,getName());
+	  origin.sendMessage(tosend,getNickname());
 	else
 	  services->serviceNotice(String(tosend),"Serv",send);
 	services->getDatabase().dbGetRow();
      }
    if(nbRes==0)
-     origin.sendMessage("No Results Found!",getName());
+     origin.sendMessage("No Results Found!",getNickname());
    services->log(origin,"Serv","Did a clist on "+who);
 }
 
@@ -993,7 +993,7 @@ bool Module::start(Exordium::Services& s)
      }
 
    // Register ourself to the network
-   services->registerService(getName(), getUsername(),
+   services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
 
    // We started okay :)

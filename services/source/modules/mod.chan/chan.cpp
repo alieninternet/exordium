@@ -106,7 +106,7 @@ void
 	  }
 	
      }
-   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND,command),getName());
+   origin.sendMessage(GETLANG(ERROR_UNKNOWN_COMMAND,command),getNickname());
 }
 
 CHAN_FUNC (Module::parseCOMMANDS)
@@ -114,28 +114,28 @@ CHAN_FUNC (Module::parseCOMMANDS)
 {
 
    String::size_type lineLength = 200;
-   origin.sendMessage(GETLANG(COMMAND_LIST_START,getName()),getName());
+   origin.sendMessage(GETLANG(COMMAND_LIST_START,getNickname()),getNickname());
    std::ostringstream list(" -=>");
    for (int i = 0; functionTable[i].command != 0; i++)
      {
 	list << " " << functionTable[i].command;
 	if (list.str().length() >= lineLength)
 	  {
-	     origin.sendMessage(list.str(),getName());
+	     origin.sendMessage(list.str(),getNickname());
 	     list.str() = " -=>";
 	  }
      }
    if (list.str().length() > 4)
      {
-	origin.sendMessage(list.str(),getName());
+	origin.sendMessage(list.str(),getNickname());
      }
-   origin.sendMessage(GETLANG(COMMAND_LIST_END),getName());
+   origin.sendMessage(GETLANG(COMMAND_LIST_END),getNickname());
 
 }
 
 CHAN_FUNC (Module::parseSEEN)
 {
-   origin.sendMessage(GETLANG(ERROR_COMMAND_DISABLED),getName());
+   origin.sendMessage(GETLANG(ERROR_COMMAND_DISABLED),getNickname());
    return;
 }
 
@@ -152,13 +152,13 @@ CHAN_FUNC (Module::parseSET)
      }
    if(channel.empty())
      {
-	origin.sendMessage(GETLANG(chan_USAGE_SET),getName());
+	origin.sendMessage(GETLANG(chan_USAGE_SET),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -168,13 +168,13 @@ CHAN_FUNC (Module::parseSET)
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-        origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
+        origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getNickname());
 	return;
      }
    String la = origin.getIDList();
@@ -193,16 +193,16 @@ CHAN_FUNC (Module::parseSET)
 		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanLog(true);
-		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_TRUE),getName());
+		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_TRUE),getNickname());
                        return;
 		    }
 		  else
 		    {
 		       ptr->setChanLog(false);
-		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
+		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getNickname());
                        return;
 		    }
-		  origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
+		  origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getNickname());
 		  return;
 	       } // Log
 
@@ -212,16 +212,16 @@ CHAN_FUNC (Module::parseSET)
 		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanSecure(true);
-		       origin.sendMessage(GETLANG(chan_SET_SECURE_TRUE),getName());
+		       origin.sendMessage(GETLANG(chan_SET_SECURE_TRUE),getNickname());
                        return;
 		    }
 		  else
 		    {
 		       ptr->setChanSecure(false);
-		       origin.sendMessage(GETLANG(chan_SET_SECURE_FALSE),getName());
+		       origin.sendMessage(GETLANG(chan_SET_SECURE_FALSE),getNickname());
                        return;
 		    }
-		  origin.sendMessage(GETLANG(chan_SET_SECURE_USAGE),getName());
+		  origin.sendMessage(GETLANG(chan_SET_SECURE_USAGE),getNickname());
 		  return;
 	       } // Secure
 
@@ -230,16 +230,16 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setEnforceBans(true);
-                       origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_TRUE), getName());
+                       origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setEnforceBans(false);
-                       origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_FALSE), getName());
+                       origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_FALSE), getNickname());
                        return;
                     }
-                  origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_USAGE),getName());
+                  origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_USAGE),getNickname());
                   return;
 
                } // Enforcebans
@@ -249,16 +249,16 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setTrackTopics(true);
-                       origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_TRUE), getName());
+                       origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setTrackTopics(false);
-                       origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_FALSE), getName());
+                       origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_FALSE), getNickname());
                        return;
                     }
-                  origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_USAGE),getName());
+                  origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_USAGE),getNickname());
                   return;
 
                }
@@ -268,16 +268,16 @@ CHAN_FUNC (Module::parseSET)
                   if(AISutil::Utils::toBool(value)==1)
                     {
                        ptr->setModeLock(true);
-                       origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_TRUE), getName());
+                       origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_TRUE), getNickname());
                        return;
                     }
                   else
                     {
                        ptr->setModeLock(false);
-                       origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_FALSE), getName());
+                       origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_FALSE), getNickname());
                        return;
                     }
-                  origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_USAGE),getName());
+                  origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_USAGE),getNickname());
                   return;
 
                }
@@ -291,15 +291,15 @@ CHAN_FUNC (Module::parseSET)
                       if ( value[0] == '+' || value[0] == '-' )
                       {
                            ptr->setChannelModes( value );
-                           origin.sendMessage(GETLANG(chan_SET_MODE, value), getName());
+                           origin.sendMessage(GETLANG(chan_SET_MODE, value), getNickname());
                       }
                       else
-                        origin.sendMessage(GETLANG(chan_SET_MODE_USAGE),getName());
+                        origin.sendMessage(GETLANG(chan_SET_MODE_USAGE),getNickname());
                   }
                   else
                   {
                       ptr->setChannelModes( String("") );
-                      origin.sendMessage(GETLANG(chan_SET_MODE, ""), getName());
+                      origin.sendMessage(GETLANG(chan_SET_MODE, ""), getNickname());
                   }
 
                   return;
@@ -317,9 +317,9 @@ CHAN_FUNC (Module::parseSET)
                      ptr->setEntryMsg(line);
 
                   if(value.length()>0)
-                      origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG), getName());
+                      origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG), getNickname());
                   else
-                      origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG_OFF), getName());
+                      origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG_OFF), getNickname());
 
                   return;
                }
@@ -336,21 +336,21 @@ CHAN_FUNC (Module::parseSET)
 
 
                   if(value.length()>0)
-                      origin.sendMessage(GETLANG(chan_SET_PART_MSG), getName());
+                      origin.sendMessage(GETLANG(chan_SET_PART_MSG), getNickname());
                   else
-                      origin.sendMessage(GETLANG(chan_SET_PART_MSG_OFF), getName());
+                      origin.sendMessage(GETLANG(chan_SET_PART_MSG_OFF), getNickname());
 
                   return;
                }
 
 
 
-	     origin.sendMessage(GETLANG(chan_SET_UNSUPPORTED_OPTION),getName());
+	     origin.sendMessage(GETLANG(chan_SET_UNSUPPORTED_OPTION),getNickname());
 	     return;
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -368,31 +368,31 @@ CHAN_FUNC (Module::parseLISTBAN)
 
    if(channel.empty())
      {
-	origin.sendMessage(GETLANG(chan_LISTBAN_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_LISTBAN_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
+	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getNickname());
 	return;
      }
       if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
    
    String tempnick = origin.getNickname();
-   ptr->sendBans(tempnick,getName());
+   ptr->sendBans(tempnick,getNickname());
 }
 
 CHAN_FUNC (Module::parseINFO)
@@ -409,34 +409,34 @@ CHAN_FUNC (Module::parseINFO)
 
    if(channel.empty())
      {
-	origin.sendMessage(GETLANG(chan_INFO_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_INFO_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-        origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
+        origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getNickname());
 	return;
      }
       if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
    
-   origin.sendMessage(GETLANG(chan_INFO_START,channel),getName());
-   origin.sendMessage(GETLANG(chan_INFO_OWNER,ptr->getOwner()),getName());
+   origin.sendMessage(GETLANG(chan_INFO_START,channel),getNickname());
+   origin.sendMessage(GETLANG(chan_INFO_OWNER,ptr->getOwner()),getNickname());
    origin.sendMessage(GETLANG(chan_INFO_UNIQUEIDS,
 		      String::convert(ptr->getRegisteredID()),
-		      String::convert(ptr->getOnlineID())),getName());
+		      String::convert(ptr->getOnlineID())),getNickname());
 }
 
 CHAN_FUNC (Module::parseADDUSER)
@@ -454,27 +454,27 @@ CHAN_FUNC (Module::parseADDUSER)
    String level = tokens.nextToken();
    if(channel=="" | nickname=="" | level=="")
      {
-	origin.sendMessage(GETLANG(chan_ADDUSER_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_ADDUSER_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
  /* Can't use a user pointer here, because the user may not be online */
     if(!services->isNickRegistered(nickname))
      {
-	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getNickname());
 	return;
      }
    
     if(!ptr->isRegistered())
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
  
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -492,18 +492,18 @@ CHAN_FUNC (Module::parseADDUSER)
 	int taccess = ptr->getAccess(nickname);
 	if(waccess==access || waccess>access || waccess<1 || waccess>499)
 	  {
-	     origin.sendMessage(GETLANG(chan_ADDUSER_LEVEL_MISMATCH),getName());
+	     origin.sendMessage(GETLANG(chan_ADDUSER_LEVEL_MISMATCH),getNickname());
 	     return;
 	  }
 	if(taccess>0)
 	  {
-	     origin.sendMessage(GETLANG(chan_ADDUSER_ALREADY_ADDED),getName());
+	     origin.sendMessage(GETLANG(chan_ADDUSER_ALREADY_ADDED),getNickname());
 	     return;
 	  }
 	std::cout << "At throwing into user pointer ptr thingy" << std::endl;
 	ptr->addAccess(nickname,level);
-	ptr->log(origin,getName(),"Added "+nickname+" with level "+level,channel);
-	origin.sendMessage(GETLANG(chan_ADDUSER_SUCCESS),getName());
+	ptr->log(origin,getNickname(),"Added "+nickname+" with level "+level,channel);
+	origin.sendMessage(GETLANG(chan_ADDUSER_SUCCESS),getNickname());
 	return;
      }
    std::cout << "User doesn't have access to add? Bug? Feature?" << std::endl;
@@ -523,13 +523,13 @@ CHAN_FUNC (Module::parseTOPIC)
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -545,13 +545,13 @@ CHAN_FUNC (Module::parseTOPIC)
 	if(ptr->getAccess(currnick)>150)
 	  {
 	     ptr->updateTopic(topic);
-	     ptr->setTopic(getName(),topic);
-	     ptr->log(origin, getName() ,"Set topic to "+topic,channel);
+	     ptr->setTopic(getNickname(),topic);
+	     ptr->log(origin, getNickname() ,"Set topic to "+topic,channel);
 	     return;
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -559,7 +559,7 @@ CHAN_FUNC (Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services->doHelp(origin,getName(),word,parm);
+   services->doHelp(origin,getNickname(),word,parm);
 }
 
 CHAN_FUNC (Module::parseBAN)
@@ -580,7 +580,7 @@ CHAN_FUNC (Module::parseBAN)
    if(channel=="")
      {
 
-	origin.sendMessage(GETLANG(chan_BAN_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_BAN_USAGE),getNickname());
 	return;
      }
 
@@ -588,14 +588,14 @@ CHAN_FUNC (Module::parseBAN)
    if(ptr==0)
      {
 
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    String who = tokens.nextToken();
    String reason = tokens.rest();
    if(who=="")
      {
-	origin.sendMessage(GETLANG(chan_BAN_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_BAN_USAGE),getNickname());
 	return;
      }
    if(reason=="")
@@ -606,19 +606,19 @@ CHAN_FUNC (Module::parseBAN)
    User *uptr = services->findUser(who);
    if(uptr==0)
      {
-	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getName());
+	origin.sendMessage(GETLANG(ERROR_COULDNT_FIND_USER),getNickname());
 	return;
      }
       if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
    
-   ptr->ban(*uptr,getName(),reason,origin.getNickname());
-   origin.sendMessage(GETLANG(chan_BAN_SUCCESS),getName());
+   ptr->ban(*uptr,getNickname(),reason,origin.getNickname());
+   origin.sendMessage(GETLANG(chan_BAN_SUCCESS),getNickname());
 }
 
 CHAN_FUNC (Module::parseREGISTER)
@@ -626,46 +626,46 @@ CHAN_FUNC (Module::parseREGISTER)
    String channel = tokens.nextToken();
    if (channel=="")
      {
-        origin.sendMessage(GETLANG(chan_REGISTER_USAGE),getName());
+        origin.sendMessage(GETLANG(chan_REGISTER_USAGE),getNickname());
 	return;
      }
    if ( channel[0] != '#' )
      {
-	origin.sendMessage(GETLANG(chan_REGISTER_NO_HASH),getName());
+	origin.sendMessage(GETLANG(chan_REGISTER_NO_HASH),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
 
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
 
    if(!origin.isRegistered())
      {
-	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getName());
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_REGISTERED),getNickname());
 	return;
      }
    if(!origin.isIdentified(origin.getNickname()))
      {
-	origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getName());
+	origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getNickname());
 	return;
      }
    int owned = services->getChannel().ownedChannels(origin.getNickname());
    if(owned>0)
      {
-	origin.sendMessage(GETLANG(chan_REGISTER_GREEDY_USER,Kine::config().getNetworkName()),getName());
+	origin.sendMessage(GETLANG(chan_REGISTER_GREEDY_USER,Kine::config().getNetworkName()),getNickname());
 	return;
      }
    if(ptr->isRegistered())
      {
-	origin.sendMessage(GETLANG(chan_REGISTER_ALREADY),getName());
+	origin.sendMessage(GETLANG(chan_REGISTER_ALREADY),getNickname());
 	return;
      }
    services->getChannel().registerChannel(channel,origin.getNickname());
-   origin.sendMessage(GETLANG(chan_REGISTER_SUCCESS),getName());
-   ptr->log(origin, getName(),"Registered the channel",channel);
+   origin.sendMessage(GETLANG(chan_REGISTER_SUCCESS),getNickname());
+   ptr->log(origin, getNickname(),"Registered the channel",channel);
    return;
 }
 
@@ -674,18 +674,18 @@ CHAN_FUNC (Module::parseOP)
    String channel = tokens.nextToken();
    if(channel=="")
      {
-	origin.sendMessage(GETLANG(chan_OP_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_OP_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
-	origin.sendMessage("Error: That channel is frozen",getName());
+	origin.sendMessage("Error: That channel is frozen",getNickname());
 	return;
      }
    
@@ -705,9 +705,9 @@ CHAN_FUNC (Module::parseOP)
 	       {
 		  if(!ptr->isOp(origin.getNickname()))
 		    {
-		       ptr->mode(getName(),"+o",origin.getNickname());
+		       ptr->mode(getNickname(),"+o",origin.getNickname());
 		       ptr->addUser(origin,2);
-		       ptr->log(origin,getName(),"Opped themselves",channel);
+		       ptr->log(origin,getNickname(),"Opped themselves",channel);
 		       return;
 		    }
 		  return;
@@ -717,9 +717,9 @@ CHAN_FUNC (Module::parseOP)
 
 	     if(!ptr->isOp(foo))
 	       {
-		  ptr->mode(getName(),"+o",foo);
+		  ptr->mode(getNickname(),"+o",foo);
 		  ptr->addUser(*fptr,2);
-		  ptr->log(origin,getName(),"Opped "+foo,channel);
+		  ptr->log(origin,getNickname(),"Opped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -728,12 +728,12 @@ CHAN_FUNC (Module::parseOP)
 		  String foo = tokens.nextToken();
 		  if(!ptr->isOp(foo))
 		    {
-		       ptr->mode(getName(),"+o",foo);
+		       ptr->mode(getNickname(),"+o",foo);
 		       User *fptr = services->findUser(foo);
 		       if(fptr==0)
 			 return;
 		       ptr->addUser(*fptr,2);
-		       ptr->log(origin,getName(),"Opped " +foo,channel);
+		       ptr->log(origin,getNickname(),"Opped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -742,7 +742,7 @@ CHAN_FUNC (Module::parseOP)
 
 	return;
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -760,19 +760,19 @@ CHAN_FUNC (Module::parseDEOP)
 
    if(channel=="")
      {
-	origin.sendMessage(GETLANG(chan_DEOP_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_DEOP_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -791,9 +791,9 @@ CHAN_FUNC (Module::parseDEOP)
 	       {
 		  if(ptr->isOp(origin.getNickname()))
 		    {
-		       ptr->mode(getName(),"-o",origin.getNickname());
+		       ptr->mode(getNickname(),"-o",origin.getNickname());
 		       ptr->addUser(origin,0);
-		       ptr->log(origin,getName(),"Deopped themselves",channel);
+		       ptr->log(origin,getNickname(),"Deopped themselves",channel);
 		       return;
 		    }
 		  return;
@@ -803,9 +803,9 @@ CHAN_FUNC (Module::parseDEOP)
 	       return;
 	     if(ptr->isOp(foo))
 	       {
-		  ptr->mode(getName(),"-o",foo);
+		  ptr->mode(getNickname(),"-o",foo);
 		  ptr->addUser(*fptr,0);
-		  ptr->log(origin,getName(),"Deopped "+foo,channel);
+		  ptr->log(origin,getNickname(),"Deopped "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -817,9 +817,9 @@ CHAN_FUNC (Module::parseDEOP)
 		    return;
 		  if(ptr->isOp(foo))
 		    {
-		       ptr->mode(getName(),"-o",foo);
+		       ptr->mode(getNickname(),"-o",foo);
 		       ptr->addUser(*fptr,0);
-		       ptr->log(origin,getName(),"Deopped " +foo,channel);
+		       ptr->log(origin,getNickname(),"Deopped " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -828,7 +828,7 @@ CHAN_FUNC (Module::parseDEOP)
 
 	return;
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -846,19 +846,19 @@ CHAN_FUNC (Module::parseVOICE)
 
    if(channel=="")
      {
-	origin.sendMessage(GETLANG(chan_VOICE_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_VOICE_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -877,9 +877,9 @@ CHAN_FUNC (Module::parseVOICE)
 	       {
 		  if(!ptr->isVoice(origin.getNickname()))
 		    {
-		       ptr->mode(getName(),"+v",origin.getNickname());
+		       ptr->mode(getNickname(),"+v",origin.getNickname());
 		       ptr->addUser(origin,1);
-		       ptr->log(origin,getName(),"Voiced themselves",channel);
+		       ptr->log(origin,getNickname(),"Voiced themselves",channel);
 		       return;
 		    }
 		  return;
@@ -889,9 +889,9 @@ CHAN_FUNC (Module::parseVOICE)
 	       return;
 	     if(!ptr->isVoice(foo))
 	       {
-		  ptr->mode(getName(),"+v",foo);
+		  ptr->mode(getNickname(),"+v",foo);
 		  ptr->addUser(*fptr,1);
-		  ptr->log(origin,getName(),"Voiced "+foo,channel);
+		  ptr->log(origin,getNickname(),"Voiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -903,9 +903,9 @@ CHAN_FUNC (Module::parseVOICE)
 		    return;
 		  if(!ptr->isVoice(foo))
 		    {
-		       ptr->mode(getName(),"+v",foo);
+		       ptr->mode(getNickname(),"+v",foo);
 		       ptr->addUser(*fptr,1);
-		       ptr->log(origin,getName(),"Voiced " +foo,channel);
+		       ptr->log(origin,getNickname(),"Voiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -914,7 +914,7 @@ CHAN_FUNC (Module::parseVOICE)
 
 	return;
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -932,19 +932,19 @@ CHAN_FUNC (Module::parseDEVOICE)
 
    if(channel=="")
      {
-	origin.sendMessage(GETLANG(chan_DEVOICE_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_DEVOICE_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -963,9 +963,9 @@ CHAN_FUNC (Module::parseDEVOICE)
 	       {
 		  if(ptr->isVoice(origin.getNickname()))
 		    {
-		       ptr->mode(getName(),"-v",origin.getNickname());
+		       ptr->mode(getNickname(),"-v",origin.getNickname());
 		       ptr->addUser(origin,0);
-		       ptr->log(origin,getName(),"DeVoiced themselves",channel);
+		       ptr->log(origin,getNickname(),"DeVoiced themselves",channel);
 		       return;
 		    }
 		  return;
@@ -975,9 +975,9 @@ CHAN_FUNC (Module::parseDEVOICE)
 	       return;
 	     if(ptr->isVoice(foo))
 	       {
-		  ptr->mode(getName(),"-v",foo);
+		  ptr->mode(getNickname(),"-v",foo);
 		  ptr->addUser(*fptr,0);
-		  ptr->log(origin,getName(),"DeVoiced "+foo,channel);
+		  ptr->log(origin,getNickname(),"DeVoiced "+foo,channel);
 	       }
 	     bool more = false;
 	     more = tokens.hasMoreTokens();
@@ -989,9 +989,9 @@ CHAN_FUNC (Module::parseDEVOICE)
 		    return;
 		  if(ptr->isVoice(foo))
 		    {
-		       ptr->mode(getName(),"-v",foo);
+		       ptr->mode(getNickname(),"-v",foo);
 		       ptr->addUser(*fptr,0);
-		       ptr->log(origin,getName(),"DeVoiced " +foo,channel);
+		       ptr->log(origin,getNickname(),"DeVoiced " +foo,channel);
 		    }
 		  more = tokens.hasMoreTokens();
 	       }
@@ -1000,7 +1000,7 @@ CHAN_FUNC (Module::parseDEVOICE)
 
 	return;
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -1020,19 +1020,19 @@ CHAN_FUNC (Module::parseKICK)
    String reason = tokens.rest();
    if(channel=="" | who=="" | reason=="")
      {
-	origin.sendMessage(GETLANG(chan_KICK_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_KICK_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
@@ -1046,12 +1046,12 @@ CHAN_FUNC (Module::parseKICK)
 	String currnick = st.nextToken();
 	if(ptr->getAccess(currnick)>99)
 	  {
-	     if(who.toLower()==getName())
+	     if(who.toLower()==getNickname())
 	       {
-		  ptr->kick(getName(),origin.getNickname(),"Trying to kick me isn't nice");
+		  ptr->kick(getNickname(),origin.getNickname(),"Trying to kick me isn't nice");
 		  return;
 	       }
-	     ptr->kick(getName(),who,"("+origin.getNickname()+"/"+currnick+") "+reason);
+	     ptr->kick(getNickname(),who,"("+origin.getNickname()+"/"+currnick+") "+reason);
 	     User *fptr = services->findUser(who);
 	     if(fptr==0)
 	       return;
@@ -1060,7 +1060,7 @@ CHAN_FUNC (Module::parseKICK)
 	  }
 	more = st.hasMoreTokens();
      }
-   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+   origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
    return;
 }
 
@@ -1078,31 +1078,31 @@ CHAN_FUNC (Module::parseACCESS)
 
    if(channel=="")
      {
-	origin.sendMessage(GETLANG(chan_ACCESS_USAGE),getName());
+	origin.sendMessage(GETLANG(chan_ACCESS_USAGE),getNickname());
 	return;
      }
    dChan *ptr = services->findChan(channel);
    if(ptr==0)
      {
-	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+	origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
 	return;
      }
 
    if(!ptr->isRegistered())
      {
-	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
+	origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getNickname());
 	return;
      }
    if(services->isFreezed(channel))
      {
 	
-	        origin.sendMessage("Error: That channel is frozen",getName());
+	        origin.sendMessage("Error: That channel is frozen",getNickname());
 	        return;
      }
    
    
    origin.sendMessage(GETLANG(chan_ACCESS_START,channel),
-		      getName());
+		      getNickname());
 
    int nbRes =
      services->getDatabase().dbSelect("nickid,access", "chanaccess",
@@ -1117,10 +1117,10 @@ CHAN_FUNC (Module::parseACCESS)
      {
 	int foo = myRes->getValue(i,0).toInt();
 	origin.sendMessage(services->getNick(myRes->getValue(i,0).toInt()) + " has level "
-			   +myRes->getValue(i,1)+" access",getName());
+			   +myRes->getValue(i,1)+" access",getNickname());
      }
-   origin.sendMessage(GETLANG(chan_ACCESS_FINISH,channel),getName());
-   ptr->log(origin,getName(),"Did a channel access",channel);
+   origin.sendMessage(GETLANG(chan_ACCESS_FINISH,channel),getNickname());
+   ptr->log(origin,getNickname(),"Did a channel access",channel);
    //Finished with result set! Clean up
    delete myRes;
 }
@@ -1142,7 +1142,7 @@ CHAN_FUNC (Module::parseDROP)
 
    if(channel=="" || reason=="")
      {
-        origin.sendMessage(GETLANG(chan_DROP_USAGE),getName());
+        origin.sendMessage(GETLANG(chan_DROP_USAGE),getNickname());
         return;
      }
 
@@ -1150,7 +1150,7 @@ CHAN_FUNC (Module::parseDROP)
 
    if(dptr==NULL)
    {
-        origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getName());
+        origin.sendMessage(GETLANG(chan_CANNOT_LOCATE_CHAN),getNickname());
         return;
    }
 
@@ -1162,22 +1162,22 @@ CHAN_FUNC (Module::parseDROP)
            {
                services->getChannel().deregisterChannel(channel);
                String togo = "This channel has been deregistered \002"+reason;
-               services->serviceNotice(String(togo),getName(),channel);
-               origin.sendMessage(GETLANG(chan_DROP_SUCCESS),getName());
+               services->serviceNotice(String(togo),getNickname(),channel);
+               origin.sendMessage(GETLANG(chan_DROP_SUCCESS),getNickname());
            }
            else
            {
-               origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getName());
+               origin.sendMessage(GETLANG(ERROR_NICK_NOT_IDENTIFIED),getNickname());
            }
       }
       else
       {
-           origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getName());
+           origin.sendMessage(GETLANG(chan_NOT_ENOUGH_ACCESS),getNickname());
       }
    }
    else
    {
-      origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getName());
+      origin.sendMessage(GETLANG(chan_CHAN_NOT_REGISTERED),getNickname());
    }
 
 }
@@ -1224,7 +1224,7 @@ void
 {
 
   // If the TOPIC was sent by myself(chan) we just return
-  if( origin.toLower() == getName().toLower() )
+  if( origin.toLower() == getNickname().toLower() )
     return;
 
   User *source = services->findUser( (String&)origin );
@@ -1233,7 +1233,7 @@ void
   // Also, if the channel is freezed we revert back.
   if( source == NULL || services->isFreezed( channel.getName() ) )
   {
-     channel.setTopic( getName(), channel.getTopic() );
+     channel.setTopic( getNickname(), channel.getTopic() );
   }
 
   // Else it's from a user, we must check access
@@ -1242,7 +1242,7 @@ void
 
      // If the user doesnt have required access we revert back
      if( channel.getAccess( origin ) <= 100 )
-         channel.setTopic( getName(), channel.getTopic() );
+         channel.setTopic( getNickname(), channel.getTopic() );
      else
      {
          if( channel.getTrackTopics() )
@@ -1261,7 +1261,7 @@ void
    String msg = channel.getEntryMsg();
 
    if( msg.length() > 0 )
-      origin.sendMessage( msg, getName() );
+      origin.sendMessage( msg, getNickname() );
 
 
    if( status < 2 )
@@ -1270,9 +1270,9 @@ void
        {
            if(channel.getAccess(origin.getNickname())>99)
            {
-                channel.mode(getName(),"+o",origin.getNickname());
+                channel.mode(getNickname(),"+o",origin.getNickname());
                 channel.addUser(origin,2);
-                channel.log(origin,getName(),"Autoopped on join",channel.getName());
+                channel.log(origin,getNickname(),"Autoopped on join",channel.getName());
            }
 
        }
@@ -1283,7 +1283,7 @@ void
        {
            if(channel.getAccess(origin.getNickname())<100)
            {
-                channel.mode(getName(), "-o", origin.getNickname());
+                channel.mode(getNickname(), "-o", origin.getNickname());
                 channel.addUser(origin, status-2);
            }
        }
@@ -1299,7 +1299,7 @@ void
    String msg = channel.getPartMsg();
 
    if( msg.length() > 0 )
-      origin.sendMessage( msg, getName() );
+      origin.sendMessage( msg, getNickname() );
 }
 
 
@@ -1346,7 +1346,7 @@ void
        {
            if(add)
            {
-                if(target.toLower()==getName().toLower())
+                if(target.toLower()==getNickname().toLower())
                     return;
   
                 std::cout << "Checking to see if " << target << " has access in " << channel.getName() << std::endl;
@@ -1366,7 +1366,7 @@ void
                          std::cout << " ^- Deop the bitch" << std::endl;
                          /* Hey not allowed to be opped!! */
 
-                         channel.mode(getName(), "-o",target);
+                         channel.mode(getNickname(), "-o",target);
                          /* Tell origin off! */
 
                     }
@@ -1377,7 +1377,7 @@ void
            
            if(take)
            {
-                if(target.toLower()==getName().toLower())
+                if(target.toLower()==getNickname().toLower())
                      return;
 
                  User *ptr = services->findUser( targ );
@@ -1394,7 +1394,7 @@ void
                     {
                          std::cout << " ^- Reop the user who was deopped by non-privileged user" << std::endl;
 
-                         channel.mode(getName(), "+o",target);
+                         channel.mode(getNickname(), "+o",target);
 
                     }
                     else
@@ -1411,14 +1411,14 @@ void
        {
            if(add)
            {
-                 if(target.toLower()==getName().toLower())
+                 if(target.toLower()==getNickname().toLower())
                      return;
                  User *ptr = services->findUser( targ );
                  channel.addUser(*ptr,1);
            }
            if(take)
            {
-                 if(target.toLower()==getName().toLower())
+                 if(target.toLower()==getNickname().toLower())
                      return;
                  User *ptr = services->findUser( targ );
                  channel.addUser(*ptr,0);
@@ -1477,7 +1477,7 @@ bool Module::start(Exordium::Services& s)
      }
    Kine::langs().registerMap(Language::tagMap);
    // Register ourself to the network
-   services->registerService(getName(), getUsername(),
+   services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
 
    // This should be internal :(
@@ -1491,5 +1491,5 @@ bool Module::start(Exordium::Services& s)
 void Module::stop(const String& reason)
 {
    // Quit :(
-   services->serviceQuit(getName(), reason);
+   services->serviceQuit(getNickname(), reason);
 }

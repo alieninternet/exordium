@@ -61,7 +61,7 @@ namespace Exordium {
 	 // How to send private-messages (stepping-stone)
 	 void sendMessage(Exordium::User& recipient,
 			  const AISutil::String& message)
-	   { recipient.sendMessage(message, getName()); };
+	   { recipient.sendMessage(message, getNickname()); };
 	 
        public:
 	 // Our constructor

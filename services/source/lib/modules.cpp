@@ -109,7 +109,7 @@ Service* const Modules::loadModule(const String& fileName,
 #endif
 
    // Fix up the name, since we use it twice (may as well convert it once)
-   String moduleName = service->getName().IRCtoLower();
+   String moduleName = service->getNickname().IRCtoLower();
 
    // Make sure this does not exist..
    if (!exists(moduleName)) {

@@ -81,7 +81,7 @@ bool Module::start(Exordium::Services& s)
    services = &s;
    
    // Register ourself to the network
-   services->registerService(getName(), getUsername(),
+   services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
    
    // We started okay :)
@@ -117,7 +117,7 @@ std::endl;
       }
    }
    
-   origin.sendMessage("Unrecognized Command", getName());
+   origin.sendMessage("Unrecognized Command", getNickname());
 }
 
 
@@ -126,7 +126,7 @@ std::endl;
  */
 CREDITS_FUNC(Module::handleHELP)
 {
-   services->doHelp(origin, getName(), line.nextToken(),
+   services->doHelp(origin, getNickname(), line.nextToken(),
 		    line.nextToken());
 }
 
@@ -139,10 +139,10 @@ CREDITS_FUNC(Module::handleBALANCE)
   int balance = bank.getBalance(origin);
   if(balance > 0)
   {
-    origin.sendMessage("Your current balance is " + balance, getName());
+    origin.sendMessage("Your current balance is " + balance, getNickname());
   }
   else
   {
-    origin.sendMessage("Your account is empty", getName());
+    origin.sendMessage("Your account is empty", getNickname());
   }
 }

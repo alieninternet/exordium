@@ -54,14 +54,14 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
          return;
       }
    }
-   origin.sendMessage("Unrecognised Command", getName());
+   origin.sendMessage("Unrecognised Command", getNickname());
 }
 
 HELP_FUNC(Module::parseHELP)
 {
    String word = tokens.nextToken();
    String parm = tokens.nextToken();
-   services->doHelp(origin,getName(),word,parm);
+   services->doHelp(origin,getNickname(),word,parm);
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION
@@ -83,7 +83,7 @@ bool Module::start(Exordium::Services& s)
    services = &s;
 
    // Register ourself to the network
-   services->registerService(getName(), getUsername(),
+   services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
    
    // We started okay :)

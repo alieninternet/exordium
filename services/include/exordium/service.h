@@ -188,10 +188,6 @@ namespace Exordium {
       virtual const ConfigData& getConfigData(void) const = 0;
       virtual ConfigData& getConfigData(void) = 0;
 
-      // Return the nickname of the module (for lazy people)
-      const AISutil::String& getName(void) const
-	{ return getConfigData().getName(); };
-      
       /*
        * 
        * The follow is defined as virtuals from Kine::Service and need to be
@@ -200,6 +196,10 @@ namespace Exordium {
        * 
        */
 
+      // Return the nickname of the module
+      const AISutil::String& getNickname(void) const
+	{ return getConfigData().getName(); };
+      
       // Return the username/identity of the service
       const std::string& getUsername(void) const
 	{ return getConfigData().getIdent(); };

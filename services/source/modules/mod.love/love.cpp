@@ -102,7 +102,7 @@ bool Module::start(Exordium::Services& s)
    }
    
    // Register ourself to the network
-   services->registerService(getName(), getUsername(),
+   services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
    
    // We started okay :)
@@ -150,7 +150,7 @@ LOVE_FUNC(Module::handleCOMMANDS)
      Kine::config().getLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
-   sendMessage(origin, "Command list for " + getName() + ":");
+   sendMessage(origin, "Command list for " + getNickname() + ":");
 
    // Start formulating the data..
    std::ostringstream list(" -=>");

@@ -59,8 +59,8 @@ NOTE_FUNC(Module::parseDEL)
    if (num == "all") {
       services->getDatabase().dbDelete("notes",
 				       "nto='" + origin.getNickname() + "'");
-      origin.sendMessage(GETLANG(note_DEL_NOTES_ERASED), getName());
-      services->log(origin,getName(),"Erased all notes");
+      origin.sendMessage(GETLANG(note_DEL_NOTES_ERASED), getNickname());
+      services->log(origin,getNickname(),"Erased all notes");
       return;
    }
    
@@ -77,7 +77,7 @@ NOTE_FUNC(Module::parseDEL)
       
       if (j == num.toInt()) {
 	 origin.sendMessage(GETLANG(note_DEL_NOTE_ERASED,num),
-			    getName());
+			    getNickname());
 	 String ntext = myRes->getValue(i,0);
 	 services->getDatabase().dbDelete("notes", "id='" + ntext + "'");
 	 services->log(origin, "Note", "Deleted a single note");
@@ -106,8 +106,8 @@ NOTE_FUNC(Module::parseREAD)
 	 String ntext = myRes->getValue(i,2);
 	 origin.sendMessage(GETLANG(note_READ_NOTE_ONE,String::convert(j),
 				    nfrom,
-				    nsent),getName());
-	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext), getName());
+				    nsent),getNickname());
+	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext), getNickname());
       }
       services->log(origin, "Note", "Read all notes");
       delete myRes;
@@ -127,14 +127,14 @@ NOTE_FUNC(Module::parseREAD)
 			       String::convert(j),
 			       nfrom,
 			       nsent);
-	 origin.sendMessage(togo,getName());
-	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext),getName());
+	 origin.sendMessage(togo,getNickname());
+	 origin.sendMessage(GETLANG(note_READ_NOTE_TWO,ntext),getNickname());
 	 services->log(origin, "Note", "Read a single note");
 	 return;
       }
    }
    
-   origin.sendMessage(GETLANG(note_READ_NOTE_NO_SUCH_NOTE), getName());
+   origin.sendMessage(GETLANG(note_READ_NOTE_NO_SUCH_NOTE), getNickname());
    return;
 
 }
@@ -155,14 +155,14 @@ NOTE_FUNC(Module::parseLIST) {
 			    String::convert(j),
 			    nfrom,
 			    nsent);
-       origin.sendMessage(togo, getName());
+       origin.sendMessage(togo, getNickname());
    }
    delete myRes;
    if(j == 0) {
-      origin.sendMessage(GETLANG(note_LIST_NOTES_NO_NOTES), getName());
+      origin.sendMessage(GETLANG(note_LIST_NOTES_NO_NOTES), getNickname());
       return;
    }
-   origin.sendMessage(GETLANG(note_LIST_INSTRUCTIONS), getName());
+   origin.sendMessage(GETLANG(note_LIST_INSTRUCTIONS), getNickname());
    services->log(origin, "Note", "Listed their notes");
 }
 
@@ -172,7 +172,7 @@ NOTE_FUNC(Module::parseSEND) {
    String note = tokens.rest();
    
    if (nto == "" || note=="") {
-      origin.sendMessage(GETLANG(note_SEND_USAGE),getName());
+      origin.sendMessage(GETLANG(note_SEND_USAGE),getNickname());
       return;
    }
    
@@ -180,7 +180,7 @@ NOTE_FUNC(Module::parseSEND) {
    if(nto[0] == '#') {
       //Channel Note
       if(!services->getChannel().isChanRegistered(nto)) {
-	 origin.sendMessage("That channel is not registered",getName());
+	 origin.sendMessage("That channel is not registered",getNickname());
 	 return;
       }
       
@@ -208,7 +208,7 @@ NOTE_FUNC(Module::parseSEND) {
       
       String toao = String("Your note was successfully sent to \002") + 
 	String::convert(j) + "\002 people on " + nto;
-      origin.sendMessage(toao, getName());
+      origin.sendMessage(toao, getNickname());
       services->log(origin, "Note","Sent a channel note to " + nto);
       delete myRes;
       return;
@@ -216,13 +216,13 @@ NOTE_FUNC(Module::parseSEND) {
    
    if(!services->isNickRegistered(nto)) {
       origin.sendMessage("Error: Destination nickname is not registered",
-			 getName());
+			 getNickname());
       return;
    }
    
    services->sendNote(origin.getNickname(), nto, note);
    origin.sendMessage("Your note was successfully sent to \002"+ nto + "\002",
-		      getName());
+		      getNickname());
    services->log(origin, "Note", "Sent a private note to " + nto);
 }
 
@@ -231,7 +231,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    if (!origin.isIdentified(origin.getNickname())) {
       origin.sendMessage("Sorry - You must be identified to use this service",
-			 getName());
+			 getNickname());
       return;
    }
    
@@ -246,7 +246,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
       }
    }
    
-   origin.sendMessage("Unrecognised Command", getName());
+   origin.sendMessage("Unrecognised Command", getNickname());
 }
 
 
@@ -282,7 +282,7 @@ bool Module::start(Exordium::Services& s)
    }
    
    // Register ourself to the network
-   services->registerService(getName(), getUsername(),
+   services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
    
    // We started okay :)
@@ -294,5 +294,5 @@ bool Module::start(Exordium::Services& s)
 void Module::stop(const String& reason)
 {
    Kine::langs().deregisterMap(Language::tagMap);
-   services->serviceQuit(getName(), reason);
+   services->serviceQuit(getNickname(), reason);
 }

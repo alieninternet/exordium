@@ -83,13 +83,13 @@ void
 	     return;
 	  }
      }
-   origin.sendMessage("Unrecognized Command", getName());
+   origin.sendMessage("Unrecognized Command", getNickname());
 }
 
 
 BOT_FUNC(Module::parseHELP)
 {
-   services->doHelp(origin,getName(),tokens.nextToken(),tokens.nextToken());
+   services->doHelp(origin,getNickname(),tokens.nextToken(),tokens.nextToken());
 }
 
 
@@ -112,7 +112,7 @@ bool Module::start(Exordium::Services& s)
    services = &s;
    
    // Register ourself to the network
-   services->registerService(getName(), getUsername(), 
+   services->registerService(getNickname(), getUsername(), 
 			     getHostname(), getDescription());
    
    // We started okay :)
