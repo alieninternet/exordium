@@ -464,7 +464,7 @@ void PARSER_FUNC (Parser::parseN)
    while ((row = res.fetch_row()))
      {
 	String foo = ((std::string) row[0]).c_str();
-	services.serviceNotice("\002[\002IRCDome Global News\002]\002"+foo,"IRCDome",nick);
+	services.serviceNotice("\002[\002IRCDome Global News\002]\002 "+foo,"IRCDome",nick);
      }
    services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
    if(num>2)
