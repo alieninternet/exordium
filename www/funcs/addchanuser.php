@@ -6,18 +6,20 @@ if ($_POST[submit])
   $c=0;
   if (!$_POST[nickname])
     $err[$c++] = "You need to enter a nickname you want to add to your room.";
+
   if (!$_POST[level])
     $err[$c++] = "You need to select a level to add your user at.";
+
   if (!$nickid = $NICK->isNickRegistered($_POST[nickname]))
     $err[$c++] = "The nickname you specified is not registered with services.";
 
-  if ($CHAN->getChanAccess($_POST[nickname]))
-    $err[$c++] = "The nickname you want to add already has access in the room you specified.";
+  if ($access = $CHAN->getChanAccess($_POST[chanid], $_POST[nickname]))
+    $err[$c++] = "$_POST[nickname] already has access of $access in the room you specified.";
   
   if ($err > 0)
   {
     echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
-    echo "<tr id=\"header\"><td colspan=\"2\">Error!! Adding a new user to the channel.</td></tr>";
+    echo "<tr id=\"header\"><td colspan=\"2\">Error!! Adding a new user to the room.</td></tr>";
     echo "<tr><td id=\"field\"><br>";
  	  echo "<ul>";
 	  for ($i=0;$i < count($err); $i++)
@@ -34,10 +36,10 @@ if ($_POST[submit])
     {
       $nick = $_SESSION[SESSION][nickname];
       event_log("$nick added $_POST[nickname] to the chanid $_POST[chanid].");
-      echo "<meta http-equiv=\"Refresh\" content=\"2;  URL=$_SERVER[PHP_SELF]\">\n";
+      //echo "<meta http-equiv=\"Refresh\" content=\"2;  URL=$_SERVER[PHP_SELF]\">\n";
       echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
       echo "<tr id=\"header\"><td>Added user successfully</td></tr>";
-      echo "<tr id=\"field\"><td>You have successfully added $_POST[nickname] to the channel's access list.<br>";
+      echo "<tr id=\"field\"><td>You have successfully added $_POST[nickname] to the room's access list.<br>";
       echo "</td></tr></table>";
     }
   }

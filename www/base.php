@@ -1,81 +1,95 @@
 <?
 include $_SERVER[DOCUMENT_ROOT]."/include/global.inc";
 check_auth();
-switch ($_POST[action])
+
+if ($_POST[action])
+  $axion = $_POST[action];
+else
+  $axion = $_GET[action];
+  
+switch ($axion)
 {
 // Help
   case "addhelp":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "modhelp":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "delhelp":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "listhelp":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 // Build
   case "addbuild":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "modbuild":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "delbuild":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "listbuilds":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 // Commands
   case "addcommand":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "modcommand":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "delcommand":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "listcommands":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
   case "listlog":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 // User Info
   case "moduserinfo":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 // Channel Activities
   case "listchan":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 
   case "managechan":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
     
   case "modchan":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
+    break;
+
+  case "listchanusers":
+    include "./funcs/$axion.php";
     break;
 
   case "addchanuser":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 
   case "modchanuser":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 
   case "delchanuser":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
     break;
 
   case "regchan":
-    include "./funcs/$_POST[action].php";
+    include "./funcs/$axion.php";
+    break;
+
+  case "deregchan":
+    include "./funcs/$axion.php";
     break;
 
 // LogOut
@@ -103,7 +117,7 @@ default_page()
   echo "<tr><td colspan=\"3\"><br></td></tr>";
   echo "<tr>";
   echo "  <td>";
-  echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+  echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
   echo "      <tr>";
   echo "        <td>\n";
   echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
@@ -117,7 +131,7 @@ default_page()
   echo "  <td width=\"50\" bgcolor=\"#ffffff\">&nbsp;</td>";
   echo "  <td>";
 // stuff
-  echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+  echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
   echo "      <tr>";
   echo "        <td>\n";
   echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
@@ -149,7 +163,7 @@ default_page()
   echo "  <td>";
   if (has_serv_access())
   {
-    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
     echo "      <tr>";
     echo "        <td>\n";
     echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
@@ -159,7 +173,7 @@ default_page()
     echo "        </td>";
     echo "      </tr>";
     echo "    </table><br>";
-    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
     echo "      <tr>";
     echo "        <td>\n";
     echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
@@ -169,7 +183,7 @@ default_page()
     echo "        </td>";
     echo "      </tr>";
     echo "    </table><br>";
-    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
     echo "      <tr>";
     echo "        <td>\n";
     echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
@@ -188,7 +202,7 @@ default_page()
   echo "  <td>";
   if (has_serv_access())
   {
-    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
     echo "      <tr>";
     echo "        <td>\n";
     echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
@@ -201,7 +215,7 @@ default_page()
     echo "        </td>";
     echo "      </tr>";
     echo "    </table><br>";
-    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" bgcolor=\"#006699\">";
+    echo "    <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\" width=\"200\" id=\"normtable\">";
     echo "      <tr>";
     echo "        <td>\n";
     echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";

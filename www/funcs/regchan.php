@@ -45,34 +45,13 @@ if ($_POST[submit])
       echo "</td></tr></table>";
       exit;
     }
-    $nick = $_SESSION[SESSION][nickname];
-    if (is_array($_POST[chanmode]))
+    if ($CHAN->registerChannel($name))
     {
-      $mode_str = "+";
-      foreach ($_POST[chanmode] as $k => $v)
-      {
-        $mode_str .= $k;
-      }
-      if ($_POST[chanmode][k])
-        $mode_str .= " $_POST[chankey]";
-      if ($_POST[chanmode][l])
-        $mode_str .= " $_POST[chanlimit]";
+  
     }
-    $_POST[topic] = addslashes($_POST[topic]);
-    $_POST[cdesc] = addslashes($_POST[cdesc]);
-    $_POST[url] = addslashes($_POST[url]);
-    $sql = "INSERT INTO chans VALUES('', '$name', '$nick', '$_POST[topic]', '$mode_str', '$_POST[cdesc]', '$_POST[url]', '$_POST[clog]')";
-    if ($debug)
-      echo $sql;
-    if ($MYSQL->db_query($sql))
+    else
     {
-      $CHAN->AddAccess($name, $nick, "500");      
-      event_log("$nick registered the channel $_POST[name].");
-      echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
-      echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
-      echo "<tr id=\"header\"><td>Successfully registered your room.</td></tr>";
-      echo "<tr id=\"field\"><td>You have successfully registered your room named <b>$_POST[name]</b><br>";
-      echo "</td></tr></table>";
+
     }
   }
 }
@@ -85,6 +64,8 @@ else
   echo "<tr><td id=\"label\">topic</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"topic\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">room description</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"cdesc\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">room url</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"url\" size=\"25\" maxlength=\"255\" /></td></tr>";
+  echo "<tr><td id=\"label\">room entry message</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"entrymsg\" size=\"25\" maxlength=\"255\" /></td></tr>";
+  echo "<tr><td id=\"label\">room part message</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"partmsg\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\" colspan=\"2\">set your channel modes</td></tr>";
   echo "<td id=\"field\" colspan=\"2\">";
   $CHAN->chan_mode_checkboxes();

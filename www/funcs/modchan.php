@@ -20,7 +20,9 @@ if ($_POST[submit])
     $_POST[topic] = addslashes($_POST[topic]);
     $_POST[cdesc] = addslashes($_POST[cdesc]);
     $_POST[url] = addslashes($_POST[url]);
-    $sql = "UPDATE chans SET topic='$_POST[topic]', modes='$mode_str', cdesc='$_POST[cdesc]', url='$_POST[url]', clog='$_POST[clog]' WHERE id='$_POST[chan_id]'";
+    $_POST[entrymsg] = addslashes($_POST[entrymsg]);
+    $_POST[partmsg] = addslashes($_POST[partmsg]);
+    $sql = "UPDATE chans SET topic='$_POST[topic]', modes='$mode_str', cdesc='$_POST[cdesc]', url='$_POST[url]', entrymsg='$_POST[entrymsg]', partmsg='$POST[partmsg]', clog='$_POST[clog]' WHERE id='$_POST[chan_id]'";
     if ($debug)
       echo $sql;
     if ($MYSQL->db_query($sql))
@@ -36,7 +38,7 @@ if ($_POST[submit])
 }
 else if ($_POST[chan_id])
 {
-  if ($r = $MYSQL->db_query("SELECT id, name, owner, topic, modes, cdesc, url, clog FROM chans WHERE id='$_POST[chan_id]'"))
+  if ($r = $MYSQL->db_query("SELECT id, name, owner, topic, modes, cdesc, url, entrymsg, partmsg, clog FROM chans WHERE id='$_POST[chan_id]'"))
   {
     if ($MYSQL->db_numrows($r) > 0)
     {
@@ -47,6 +49,8 @@ else if ($_POST[chan_id])
       echo "<tr><td id=\"label\">topic</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"topic\" size=\"25\" maxlength=\"255\" value=\"".stripslashes($c->topic)."\"/></td></tr>\n";
       echo "<tr><td id=\"label\">room description</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"cdesc\" size=\"25\" maxlength=\"255\"  value=\"".stripslashes($c->cdesc)."\"/></td></tr>\n";
       echo "<tr><td id=\"label\">room url</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"url\" size=\"25\" maxlength=\"255\" value=\"".stripslashes($c->url)."\"/></td></tr>\n";
+      echo "<tr><td id=\"label\">room entry message</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"entrymsg\" size=\"25\" maxlength=\"255\" value=\"".stripslashes($c->entrymsg)."\"/></td></tr>\n";
+      echo "<tr><td id=\"label\">room part message</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"partmsg\" size=\"25\" maxlength=\"255\" value=\"".stripslashes($c->partmsg)."\"/></td></tr>\n";
       echo "<tr><td id=\"label\" colspan=\"2\">set your channel modes</td></tr>";
       echo "<td id=\"field\" colspan=\"2\">";
       $CHAN->chan_mode_mk_checkboxes();

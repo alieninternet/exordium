@@ -19,6 +19,11 @@ default_page()
 {
   global $MYSQL;
   page_start();
+  echo "You do not appear to be logged in currently. <form method=\"POST\" action=\"$_SERVER[PHP_SELF]\">";
+  echo "<input type=\"hidden\" name=\"action\" value=\"regnick\">If you have a registered nickname, please log-in above<br>or<br>\n";
+  echo "<input id=\"submit\" type=\"submit\" value=\"click here\"><br>to register a nickname.";
+  echo "</form>";
+/*
   echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"300\" id=\"login\">\n";
   echo "<form method=\"POST\" action=\"$_SERVER[PHP_SELF]\">";
   echo "<tr id=\"header\"><td colspan=\"2\">Log-in to PeopleChat</td></tr>";
@@ -35,13 +40,14 @@ default_page()
   echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" value=\"Register a nickname\"></td></tr>";
   echo "</form>";
   echo "</table>";
+  */
   page_end();
 }
 
 function
 user_login()
 {
-  global $MYSQL;
+  global $MYSQL, $NICK;
   if ($_POST[nickname] && $_POST[password])
   {
     $status = user_authenticate($_POST[nickname], $_POST[password]);
@@ -53,6 +59,7 @@ user_login()
       session_register("SESSION");
       $_SESSION[SESSION] = array("nickname" => $_POST[nickname]);
       event_log("$_POST[nickname] successfully logged into web-interface.");
+      $NICK->updateLogin();
       header("Location: /base.php");
       exit();
     }
