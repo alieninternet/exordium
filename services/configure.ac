@@ -201,13 +201,7 @@ dnl finish off the line
 echo
 
 
-AC_CONFIG_FILES([source/Makefile
-		 source/libbank/Makefile
-		 source/modules/Makefile
-		 source/modules/mod.credits/Makefile
-		 source/modules/mod.game/Makefile
-		 source/modules/mod.game/cards/Makefile
-		 Makefile
+AC_CONFIG_FILES([Makefile
 		 ])
 
 AC_OUTPUT

@@ -99,7 +99,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
   // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength = 200;
 
-   // Send the banner (this shouldn't be hard-coded)
+   // Send the banner 
    origin.sendMessage(GETLANG(COMMAND_LIST_START, getNickname()),
 		      getNickname());
    // Start formulating the data..
@@ -121,7 +121,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
       origin.sendMessage(list.str(),getNickname());
    }
 
-   // Send the footer (this shouldn't be hard-coded)
+   // Send the footer
    origin.sendMessage(GETLANG(COMMAND_LIST_END),
 		      getNickname());
 
@@ -178,7 +178,7 @@ NICK_FUNC (Module::parseAUTH)
   NICK_FUNC (Module::parseINFO)
 {
    String who = tokens.nextToken().IRCtoLower();
-   if(who=="")
+   if(who.empty())
 	{
 		origin.sendMessage(GETLANG(nick_USAGE_INFO),
 				   getNickname());
@@ -228,6 +228,7 @@ NICK_FUNC (Module::parseAUTH)
    
    origin.sendMessage(GETLANG(nick_INFO_OPTIONS, tol.str()),
 		      getNickname());
+   origin.log(getNickname(),"Requested Nickname information on "+ptr->getNickname());
    
    
    if(origin.getAccess("Serv")>0 || origin.getAccess("Oper")>0)
@@ -240,6 +241,7 @@ NICK_FUNC (Module::parseAUTH)
 				getNickname());
 	     origin.sendMessage(GETLANG(nick_INFO_EMAIL, ptr->getEmail()),
 				getNickname());
+	     origin.log(getNickname(),"Was sent staff information with nick information report on "+ptr->getNickname());
  	     return;
 	  }
      }
@@ -283,7 +285,7 @@ NICK_FUNC (Module::parseAUTH)
 	origin.setPassword(value);
 	origin.sendMessage(GETLANG(nick_PASSWORD_CHANGED, value),
 			   getNickname());
-	origin.log(getNickname(),String("Changed nickname password"));
+	origin.log(getNickname(),String("Changed nickname password to [HIDDEN]"));
 	return;
      }
    if(command=="modnick")
@@ -300,6 +302,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setModNick(true);
 	     origin.sendMessage(GETLANG(nick_MODNICK_NOW_ON),
 				getNickname());
+	     origin.log(getNickname(),"Changed nickname enforcement to enabled");
 	     return;
 	  }
 
@@ -308,6 +311,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setModNick(false);
 	     origin.sendMessage(GETLANG(nick_MODNICK_NOW_OFF),
 				getNickname());
+	     origin.log(getNickname(),"Changed nickname enforcement to disabled");
 	     return;
 	  }
 	origin.sendMessage(GETLANG(ERROR_NOT_BOOLEAN),
@@ -328,6 +332,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setDeopAway(true);
 	     origin.sendMessage(GETLANG(nick_DEOPAWAY_NOW_ON),
 				getNickname());
+	     origin.log(getNickname(),"Changed deoponaway to enabled");
 	     return;
 	  }
 	if(value=="false")
@@ -335,6 +340,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setDeopAway(false);
 	     origin.sendMessage(GETLANG(nick_DEOPAWAY_NOW_OFF),
 				getNickname());
+	     origin.log(getNickname(),"Changed deoponaway to disabled");
 	     return;
 	  }
 	origin.sendMessage(GETLANG(ERROR_NOT_BOOLEAN),
@@ -355,30 +361,31 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setLanguage("en");
 	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "English"),
 				getNickname());
+	     origin.log(getNickname(),"Changed language interface to English");
 	     return;
 	  }
 	if((value=="german") || (value=="deutsch") || (value=="de"))
 	   {
-	      std::cout << "Setting language to GERMAN!!" << std::endl;
 	      origin.setLanguage("de");
 	      origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Deutsch"),
 				 getNickname());
+	      origin.log(getNickname(),"Changed language interface to German");
 	      return;
 	   }
 	if((value=="norsk") || (value=="norwegian") || (value=="no"))
 	  {
-	     std::cout << "Setting NORSK!" << std::endl;
 	     origin.setLanguage("no");
 	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Norske"),
 				getNickname());
+	     origin.log(getNickname(),"Changed language interface to Norweigan");
 	     return;
 	  }
 	if((value=="turkish") || (value=="tr") || (value=="turkiye"))
 	  {
-	     std::cout << "Setting Turkish!" << std::endl;
 	     origin.setLanguage("tr");
 	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Turkiye"),
 				getNickname());
+	     origin.log(getNickname(),"Changed language interface to Turkish");
 	     return;
 	  }
 	
@@ -489,6 +496,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setPrivmsg(true);
 	     origin.sendMessage(GETLANG(nick_PRIVMSG_NOW_ON),
 				getNickname());
+	     origin.log(getNickname(),"Changed privmsg interface to enabled");
 	     return;
 	  }
 	if(value=="off" || value=="false" || value=="no")
@@ -496,6 +504,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.setPrivmsg(false);
 	     origin.sendMessage(GETLANG(nick_PRIVMSG_NOW_OFF),
 				getNickname());
+	     origin.log(getNickname(),"Changed privmsg interface to disabled");
 	     return;
 	  }
 	origin.sendMessage(GETLANG(ERROR_NOT_BOOLEAN),
@@ -526,6 +535,7 @@ NICK_FUNC (Module::parseAUTH)
    origin.sendMessage(GETLANG(nick_ACCESS_LIST_START, nickname),
 		      getNickname());
    origin.sendMessage(ptr->getIDList(),getNickname());
+   origin.log(getNickname(),"Requested an access list on "+ptr->getNickname());
 }
 
 
