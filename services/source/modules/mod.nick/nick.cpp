@@ -52,6 +52,7 @@ struct Module::functionTableStruct const
      {"access", &Module::parseACCESS},
      {"set", &Module::parseSET},
      {"info", &Module::parseINFO},
+     {"nick", &Module::parseNICK},
      {0, 0}
 };
 
@@ -96,7 +97,24 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    return;
 }
 
+  NICK_FUNC (Module::parseNICK)
 
+{
+   String command = tokens.nextToken().toLower();
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == functionTable[i].command) {
+         // Run the command and leave
+         (this->*(functionTable[i].function))(origin, tokens, safe);
+         return;
+      }
+   }
+
+   origin.sendMessage("Unrecognised Command", getName());
+   return;
+
+
+}
   NICK_FUNC (Module::parseAUTH)
 {
    String gauth = tokens.nextToken();

@@ -434,7 +434,7 @@ bool ServicesInternal::handleInput (void)
 	
 	// I do not like this.. oh well..  - pickle
 	if (config.getConsoleEnabled()) {
-	   queueAdd(":IRCDome QUIT :"+reason);
+	   queueAdd(":PeopleChat QUIT :"+reason);
 	}
 	
 	queueAdd(":" + Kine::config().getOptionsServerName() +
@@ -1231,7 +1231,7 @@ void ServicesInternal::registerNick(String const &nick, String const &password,
    //String gpass = "foo";
    // oh, this is revoltingly hard-coded! :(
    std::cout << "Registering nickname" << std::endl;
-   database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1");
+   database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.peoplechat.org',0,'None Set','None Set','No Quit Message Recorded',1");
 }
 
 

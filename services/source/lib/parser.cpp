@@ -126,7 +126,7 @@ void
    if (!services.isAuthorised (serverName)) {
       services.queueAdd(":" + Kine::config().getOptionsServerName() + 
 			" SQUIT " + serverName + 
-			" :Unauthorised Links are not permitted on IRCDome "
+			" :Unauthorised Links are not permitted on PeopleChat "
 			"- The network administration has been notified");
       return;
    }
@@ -444,11 +444,11 @@ void PARSER_FUNC (Parser::parseN)
 *   // NOTE: hardcoded bot nick?
 *   for (int i=0; i<nbRes; i++)
 *   {
-*      newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
+*      newNick->sendMessage("\002[\002PeopleChat Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
 *      services.getDatabase().dbGetRow();
 *   }
 *
-*   services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
+*   services.queueAdd(":PeopleChat WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
 *   if(num>2)
 *     {
 *	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
@@ -529,7 +529,7 @@ void
 	return;
      }
    //Hard check for nick if its @ircdome.org ......
-   if(target.toLower()=="nick@peoplechat.org")
+   if(target.toLower()=="nick@services.peoplechat.org")
      {
 	//Safety check for the module.. :-)
 	if(!services.getConfigInternal().getModules().exists("nick"))

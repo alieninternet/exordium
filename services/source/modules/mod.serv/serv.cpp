@@ -35,6 +35,11 @@
 #include <exordium/utils.h>
 #include <kineircd/str.h>
 
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
+
+
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium::ServModule;
@@ -48,14 +53,14 @@ const Module::functionTableStruct Module::functionTable[] = {
      { "helpon",	&Module::parseHELPON },
      { "help",		&Module::parseHELP },
      { "user",		&Module::parseUSER },
-//     { "raw",		&Module::parseRAW },
+     { "raw",		&Module::parseRAW },
      { "chan",		&Module::parseCHAN },
      { "die",		&Module::parseDIE },
      { "news",		&Module::parseNEWS },
      { "setpass",	&Module::parseSETPASS },
+     { "status",	&Module::parseSTATUS },
      { 0, 0}
 };
-
 
 void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
@@ -83,6 +88,12 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    origin.sendMessage ("Unrecognised Command", getName());
 }
 
+  SERV_FUNC (Module::parseSTATUS)
+{
+	origin.sendMessage("Exordium services status report",getName());
+	String togo = "Current build : \002" + String::convert(Services::buildNumber) + "\002";
+	origin.sendMessage(togo,getName());
+}
 
   SERV_FUNC (Module::parseDIE)
 {
@@ -121,13 +132,13 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 }
 
 
-//  SERV_FUNC (Module::parseRAW)
-//{
-//   std::string c = tokens.rest();
-//   services->queueAdd(c);
-//   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
-//   services->logLine(String(togo), Log::Warning);
-//}
+  SERV_FUNC (Module::parseRAW)
+{
+   std::string c = tokens.rest();
+   services->queueAdd(c);
+   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
+   services->logLine(String(togo), Log::Warning);
+}
 
 
   SERV_FUNC (Module::parseNEWS)
@@ -420,7 +431,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    if(access>50)
      {
 	origin.sendMessage("You are now an IRCDome services assistant",getName());
-	String tosend = ":services->ircdome.org HELPER "+origin.getNickname()+" "+String::convert(access);
+	String tosend = ":services.peoplechat.org HELPER "+origin.getNickname()+" "+String::convert(access);
 	services->queueAdd(String(tosend));
 	services->log(origin,getName(),"Become a services helper at level "+String::convert(access));
 	return;

@@ -58,6 +58,7 @@ namespace Exordium {
 	{};
       
     public:
+      static const int buildNumber = 1;
       time_t currentTime;
       
       // Destructor

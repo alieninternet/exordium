@@ -281,7 +281,7 @@ void RegisteredUserList::registerNick(RegisteredUser *newregnick)
     {
        databaseFwd.dbInsert("nicks", 
                 "'','"+newregnick->getName()+"','"+newregnick->getPass().data()+"','"+newregnick->getEmail() + 
-                "',NOW(),NOW(),'',0, 'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1");
+                "',NOW(),NOW(),'',0, 'english','0','None','http://www.peoplechat.org',0,'None Set','None Set','No Quit Message Recorded',1");
 
 
        if(databaseFwd.affectedRows()>0)
