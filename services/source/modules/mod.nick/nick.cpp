@@ -631,7 +631,7 @@ NICK_FUNC (Module::parseHELP)
 // String parm = tokens.nextToken();
 // services->doHelp(origin,getNickname(), word, parm);
 
-   String command = tokens.nextToken();
+   String command = tokens.nextToken().toLower();
    
    // this should be elsewhere.
    struct Callout : public Kine::Languages::callFunction_type {
@@ -664,6 +664,27 @@ NICK_FUNC (Module::parseHELP)
 	 // this also should be elsewhere.
 	 Callout callout(origin, getNickname());
 	 
+	 // Subcommand?
+	 String subcommand = tokens.nextToken().toLower();
+	 
+	 if (!subcommand.empty() &&
+	     (Commands::commandTable[i].subcommands != 0)) {
+	    // Look for the subcommand info..
+	    for (int j = 0; 
+		 (*Commands::commandTable[i].subcommands)[j].command != 0;
+		 j++) {
+	       // match?
+	       if (subcommand == 
+		   (*Commands::commandTable[i].subcommands)[j].command) {
+		  // Okay, send this..
+		  Kine::langs().get(origin.getLanguage(),
+				    *(*Commands::commandTable[i].subcommands)[j].help,
+				    callout);
+		  return;
+	       }
+	    }
+	 }
+
 	 // send the help appropriately
 	 Kine::langs().get(origin.getLanguage(),
 			   *Commands::commandTable[i].help,

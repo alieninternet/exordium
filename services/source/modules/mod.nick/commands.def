@@ -26,9 +26,8 @@ autogen definitions commands;
 
 command = {
    name = "help";
-   data_en = "This is a test";
-
 };
+
 command = {
    name = "access";
 };
@@ -69,4 +68,51 @@ command = {
 
 command = {
    name = "set";
+
+   subcommand = {
+      name = "aim";
+   };
+   
+   subcommand = {
+      name = "deopaway";
+   };
+   
+   subcommand = {
+      name = "email";
+   };
+
+   subcommand = {
+      name = "icq";
+   };
+
+   subcommand = {
+      name = "language";
+      alias = "lang";
+   };
+   
+   subcommand = {
+      name = "modnick";
+   };
+   
+   subcommand = {
+      name = "msn";
+   };
+   
+   subcommand = {
+      name = "password";
+      alias = "pass";
+      alias = "passwd";
+   };
+
+   subcommand = {
+      name = "privmsg";
+   };
+
+   subcommand = {
+      name = "url";
+   };
+
+   subcommand = {
+      name = "yahoo";
+   };
 };

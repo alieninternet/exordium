@@ -1823,6 +1823,61 @@ langtag = {
 };
 
 langtag = {
+   name = "nick_HELP_SET_AIM";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_DEOPAWAY";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_EMAIL";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_ICQ";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_LANGUAGE";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_MODNICK";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_MSN";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_PASSWORD";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_PRIVMSG";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_URL";
+   component = "mod_nick";
+};
+
+langtag = {
+   name = "nick_HELP_SET_YAHOO";
+   component = "mod_nick";
+};
+
+langtag = {
    name = "nick_ICQ_CHANGED";
    component = "mod_nick";
    data_en = "ICQ handle has been changed to :%p0";

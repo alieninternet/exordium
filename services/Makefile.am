@@ -201,7 +201,7 @@ mod_nick_la_SOURCES=\
 		    source/modules/mod.nick/tables.cpp \
 		    source/modules/mod.nick/tables.h
 
-source/modules/mod.nick/commands.cpp: source/modules/mod.nick/commands.tpl source/modules/mod.nick/commands.def
+source/modules/mod.nick/commands.cpp source/modules/mod.nick/commands.h: source/modules/mod.nick/commands.tpl source/modules/mod.nick/commands.def
 	$(AUTOGEN) \
 		-b $(basename $@) \
 		-T source/modules/mod.nick/commands.tpl \
