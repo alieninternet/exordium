@@ -29,9 +29,11 @@
 
 #include "exordium/service.h"
 #include "exordium/services.h"
+#include "exordium/user.h"
+
 #include <kineircd/str.h>
 
-# define CHAN_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
+#define CHAN_FUNC(x)           x(Exordium::User& origin, Kine::StringTokens &tokens, Kine::String &chan)
 
 using Kine::String;
 
@@ -59,8 +61,8 @@ public:
   ~Chan(void)
 	{
 	};
-  void parseLine (String const &, String const &);
-  void parseLine (String const &, String const &, String const &);
+   void parseLine (Kine::StringTokens& line, Exordium::User& origin);
+   void parseLine (Kine::StringTokens& line, Exordium::User& origin,String const &);
 private:
    void CHAN_FUNC (parseHELP);
    void CHAN_FUNC (parseACCESS);
