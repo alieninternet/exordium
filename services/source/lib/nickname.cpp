@@ -30,14 +30,14 @@ Nickname::setDeopAway(String const &nick, bool const &value)
 	{
 		query = "UPDATE nicks set deopaway=0 where nickname='"+nick+"'";
 	}
-	Sql::query(query);
+	services.getDatabase().query(query);
 }
 
 bool
 Nickname::deopAway(String const &nick)
 {
 	String query = "SELECT deopaway from nicks where nickname='"+nick+"'";
-	MysqlRes res = Sql::query(String(query));
+	MysqlRes res = services.getDatabase().query(String(query));
 	MysqlRow row;
 	while ((row = res.fetch_row()))
 	{
@@ -57,7 +57,7 @@ void
 Nickname::updateHost (String const &nick, String const &host)
 {
         String query = "UPDATE nicks set lasthost='" + host + "' where nickname='" + nick + "'";
-        Sql::query(String(query));
+        services.getDatabase().query(String(query));
         return;
 }
 
@@ -65,7 +65,7 @@ String
 Nickname::getRegNickCount(void)
 { 
 String query = "SELECT count(*) from nicks";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = services.getDatabase().query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -81,7 +81,7 @@ String
 Nickname::getOnlineCount(void)
 {
 String query = "SELECT count(*) from onlineclients";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = services.getDatabase().query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -98,7 +98,7 @@ int
 Nickname::getAccess(String const &service, String const &who)
 {
         String query = "SELECT access from access where nickname='" + who + "' and service='" + service + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -114,18 +114,18 @@ String
 Nickname::generatePassword(String const &nickname, String const &password)
 {
  String pw =
-        Utils::SHA1::digestToStr(Password::makePassword(nickname,
-                                                            password),
-                                 Services::PasswordStrBase,
-                                 Services::PasswordStrBaseLongPad);
-return pw;
+     Kine::Utils::SHA1::digestToStr(Password::makePassword(nickname,
+							   password),
+				    services.PasswordStrBase,
+				    services.PasswordStrBaseLongPad);
+   return pw;
 }
 
 bool
 Nickname::isAuthorised(String const &server)
 {
 String query = "SELECT id from serverlist where name='" + server + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -142,10 +142,10 @@ return false;
 void
 Nickname::addCheckidentify(String const &nick)
 {   
-        Services::serviceNotice("\002[\002Identification Request\002]\002 This nickname is Registered. Please identify","Nick",nick);
-	int rfac = Services::random(60);
-        String query = "INSERT into kills values('','"+nick+"','" + String::convert(Services::currentTime + 120 + rfac) + "')";
-        Sql::query(query);
+        services.serviceNotice("\002[\002Identification Request\002]\002 This nickname is Registered. Please identify","Nick",nick);
+	int rfac = services.random(60);
+        String query = "INSERT into kills values('','"+nick+"','" + String::convert(services.currentTime + 120 + rfac) + "')";
+        services.getDatabase().query(query);
  
 }   
 
@@ -154,7 +154,7 @@ Nickname::addClient (String nick, String hops, String timestamp, String username
                String host, String vwhost, String server, String modes,
                String realname)
 {
-  Sql::query (String ("insert into onlineclients values('','") + nick +String ("','") + hops + String ("','") + timestamp +String ("','") + username + String ("','") + host + String ("','") + vwhost + String ("','") + server + String ("','") + modes + String ("','") + Sql::makeSafe(realname) +String ("')"));
+  services.getDatabase().query (String ("insert into onlineclients values('','") + nick +String ("','") + hops + String ("','") + timestamp +String ("','") + username + String ("','") + host + String ("','") + vwhost + String ("','") + server + String ("','") + modes + String ("','") + services.getDatabase().makeSafe(realname) +String ("')"));
                
 }            
 
@@ -162,7 +162,7 @@ int
 Nickname::countHost(String const &hostname)
 {
 String query = "select id from onlineclients where hostname='"+hostname+"'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 int num = res.num_fields();
 res.free_result();
 return num;
@@ -173,7 +173,7 @@ int
 Nickname::getRequiredAccess(String const &service, String const &command)
 {       
         String query = "SELECT access from commands where service='"+ service + "' AND command='" + command + "'";
-        MysqlRes res = Sql::query(query);
+        MysqlRes res = services.getDatabase().query(query);
         MysqlRow row;
         while ((row = res.fetch_row()))
         {       
@@ -190,7 +190,7 @@ bool
 Nickname::isNickRegistered (String const &nick)
 {
         String query = String("select id from nicks where nickname='") + nick + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -208,7 +208,7 @@ String
 Nickname::getPass (String const &nick)
 {  
         String query = "select password from nicks where nickname='" + nick + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -224,7 +224,7 @@ int
 Nickname::getOnlineNickID(String const &nick)
 {
 String query = "select id from onlineclients where nickname='" + nick + "'";
-MysqlRes res = Sql::query(String(query));
+MysqlRes res = services.getDatabase().query(String(query));
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -240,7 +240,7 @@ int
 Nickname::getRegisteredNickID(String const &nick)
 {
         String query = "select id from nicks where nickname='" + nick + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -256,7 +256,7 @@ void
 Nickname::modeIdentify (String const &nick)
 {
         String tosend = String(":services.ircdome.org SVSMODE ")+nick+" +r";
-        Services::queueAdd(String(tosend));
+        services.queueAdd(String(tosend));
         return;
 }
 
@@ -265,7 +265,7 @@ Nickname::updateLastID (String const &nick)
 {
         String query = String("UPDATE nicks set lastid=NOW() 
         where nickname='") + nick + "'";
-        Sql::query(String(query));
+        services.getDatabase().query(String(query));
         return;
 }
 
@@ -274,7 +274,7 @@ Nickname::getHost(String const &nick)
 {
         String query = String("SELECT hostname from onlineclients 
         where nickname='") + nick + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -291,7 +291,7 @@ Nickname::getIdent(String const &nick)
 {
         String query = "SELECT username from onlineclients where nickname=
         '" + nick + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -308,7 +308,7 @@ Nickname::isIdentified(String const &nick)
 {
         int onlineID = getOnlineNickID(nick);
         String query = "SELECT idas from identified where nick='"+String::convert(onlineID)+"'";
-        MysqlRes res = Sql::query(query);
+        MysqlRes res = services.getDatabase().query(query);
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -326,7 +326,7 @@ Nickname::isIdentified (String const &nick, String const &as)
 {
 int onlineID = getOnlineNickID(nick);
 String query = "SELECT idas from identified where nick='"+String::convert(onlineID)+"'";
-        MysqlRes res = Sql::query(query);
+        MysqlRes res = services.getDatabase().query(query);
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -347,7 +347,7 @@ String
 Nickname::getNick(int const &id)
 {
 String query = "SELECT nickname from nicks where id='"+String::convert(id)+"'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -363,7 +363,7 @@ String
 Nickname::getOnlineNick(int const &id)
 {
 String query = "SELECT nickname from onlineclients where id='"+String::convert(id)+"'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -382,7 +382,7 @@ Nickname::getIDList(String const &nick)
 int onlineID = getOnlineNickID(nick);
 String thelist = "";
 String query = "SELECT idas from identified where nick='"+String::convert(onlineID)+"'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -399,7 +399,7 @@ String
 Nickname::getpendingCode(String const &nick)
 {
         String query = "SELECT auth from pendingnicks where nickname='" + nick + "'";
-        MysqlRes res = Sql::query(String(query));
+        MysqlRes res = services.getDatabase().query(String(query));
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -415,7 +415,7 @@ bool
 Nickname::isPending(String const &nick)
 {
 String query = "SELECT id from pendingnicks where nickname='"+nick+"'";   
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
 {
@@ -432,20 +432,20 @@ return false;
 void  
 Nickname::registerNick(String const &nick, String const &password, String const &email)
 {
-String gpass = Nickname::generatePassword(nick.toLower(),password);
+String gpass = generatePassword(nick.toLower(),password);
 String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'','','','')";
-Sql::query(query);
+services.getDatabase().query(query);
 }    
 
 String
 Nickname::genAuth(String const &nickname)
 {   
-String authcode = Nickname::generatePassword("AUTHENTICATION",nickname);
+String authcode = generatePassword("AUTHENTICATION",nickname);
 String query = "INSERT into pendingnicks values ('','"+nickname+"','" +authcode+"')";
-Sql::query(query);
+services.getDatabase().query(query);
 String tosend = "\002[\002New Registration\002]\002 Nickname "+nickname+"
 -> "+authcode;
-Services::Debug(tosend);
+services.Debug(tosend);
 return authcode;
 }
 
@@ -453,7 +453,7 @@ void
 Nickname::setLanguage (String const &nick, String const &lang)
 {
         String query = "UPDATE nicks set lang='" + lang + "' WHERE nickname='" + nick + "'";
-        Sql::query(query);
+        services.getDatabase().query(query);
         
 }     
 
@@ -462,7 +462,7 @@ String
 Nickname::getURL(String const &nick)
 {
 String query = "SELECT url from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -478,7 +478,7 @@ String
 Nickname::getMSN(String const &nick)
 {
 String query = "SELECT msn from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -494,7 +494,7 @@ String
 Nickname::getYAHOO(String const &nick)
 {
 String query = "SELECT yahoo from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -511,7 +511,7 @@ String
 Nickname::getAIM(String const &nick)
 {
 String query = "SELECT aim from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -528,7 +528,7 @@ String
 Nickname::getICQ(String const &nick)
 {
 String query = "SELECT icq from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -549,7 +549,7 @@ Nickname::getLanguage(String const &nick)
                 return String("english");
         }
         String query = "SELECT lang from nicks where nickname='" + nick + "'";
-        MysqlRes res = Sql::query(query);
+        MysqlRes res = services.getDatabase().query(query);
         MysqlRow row;
         while ((row = res.fetch_row()))
         {
@@ -565,7 +565,7 @@ String
 Nickname::getEmail(String const &nick)
 {
 String query = "SELECT email from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -581,7 +581,7 @@ String
 Nickname::getRegDate(String const &nick)
 {
 String query = "SELECT registered from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -597,7 +597,7 @@ String
 Nickname::getLastID(String const &nick)
 {
 String query = "SELECT lastid from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
@@ -614,7 +614,7 @@ String
 Nickname::getLastHost(String const &nick)
 {
 String query = "SELECT lasthost from nicks where nickname='" + nick + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 while ((row = res.fetch_row()))
         {
