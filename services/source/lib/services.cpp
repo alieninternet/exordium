@@ -162,7 +162,18 @@ void
 	     // Something from the socket?
 	     if (FD_ISSET (socky.getFD(), &inputSet))
 	       {
-		  handleInput();
+		  try 
+		    {
+		       handleInput();
+		       catch(1)
+			 {
+			    std::cout << "Fatal Error.. terminating" << std::endl;
+			    exit(1); // OUCH!
+			 }
+		    }
+		  
+		  
+		 
 	       }
 	     if (FD_ISSET (socky.getFD(), &outputSet))
 	       {
@@ -296,7 +307,8 @@ bool ServicesInternal::handleInput (void)
    if(!socky.read(bufferin))
      {
 	std::cout << "Read failed!" << std::endl;
-	return false; /* Fatal error - should d/c */
+	throw(1); /* Fatal error!*/
+//	return false; /* Fatal error - should d/c */
      }
 
    if(!bufferin.str().empty())

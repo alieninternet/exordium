@@ -1,12 +1,12 @@
 #!/usr/local/bin/php -q
 <?
 set_time_limit(0);
-$mnick = "cloneymaster";
+$mnick = "PraeClone";
 $uplink = "172.18.200.5";
 $uport = 6667;
 $chan = "#Exordium";
 $choice = 0;
-$max = 700;
+$max = 1200;
 $curr = 1;
 
 function make_seed() {
@@ -20,7 +20,8 @@ function register($client,$sock)
 {
     fputs($sock,"NICK $client\r\n");
     fputs($sock,"USER $client $client $client $client\r\n");
-    sleep(1);
+    //sleep(1);
+    usleep(1000);
     fputs($sock,":$client JOIN #Exordium\r\n");
 }
 
@@ -44,6 +45,18 @@ if(!fp) {
 } else {
     register($mnick,$fp);
     msg($mnick,$fp,$chan,"Giggle! What Shall i Do?");
+    //load 100 clones..
+    $j = 1;
+    do
+    {
+	$clients[$curr] = fsockopen($uplink,$uport,$errno,$errstr,30);
+	stream_set_blocking($clients[$curr],FALSE);
+	register("F$curr",$clients[$curr]);
+	echo "1\r\n";
+	usleep(100);
+	$curr++;
+	$j++;
+    } while($j<80);
     while (!feof($fp)) {
 	$goaway = fgets($fp,128);
 //	usleep(10000);
@@ -56,7 +69,7 @@ if(!fp) {
 	    fgets($clients[$i],128);
 	    $i++;
 	} while ($i<$curr);
-	if($choice=="1" || $choice=="6")
+	if($choice=="1" || $choice=="4" || $choice=="5")
 	{
 	    //Spew a new clone!
 	    if($curr>$max)
@@ -66,6 +79,7 @@ if(!fp) {
 	    else
 	    {
 		//msg($mnick,$fp,$chan,"Performing asexual reproduction!");
+//		sleep(5);
 		$clients[$curr] = fsockopen($uplink,$uport,$errno,$errstr,30);
 		stream_set_blocking($clients[$curr],FALSE);
 		if(!$clients[$curr])

@@ -59,7 +59,21 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
-
+AC_MSG_CHECKING([Whether to enable new protocol system])
+AC_ARG_ENABLE(new-protocol,[
+	--enable-new-protocol		(Default is disabled)
+	This enables the new protocol system plv is working on
+	which is temporary for the time being :-)
+	],[
+	if test "$enableval" = "no"; then
+		AC_MSG_RESULT(no)
+	else
+		AC_MSG_RESULT(yes)
+		AC_DEFINE(NEWPROTO, 1, [Define for new protocol])
+  fi
+ ],[
+    AC_MSG_RESULT([no (default)])
+])
 AC_MSG_CHECKING([Whether to enable Debug mode])
 AC_ARG_ENABLE(debug-mode,[
 	--enable-debug-mode		(Default is disabled)
@@ -89,6 +103,7 @@ AC_ARG_ENABLE(language,
 ],[LANGUAGE="English"])
 AC_MSG_RESULT([English (default)])
 AC_SUBST(LANGUAGE)
+
 
 AC_ARG_ENABLE(mysql-path,
 [
