@@ -21,11 +21,11 @@ class Log
 {
 private:
 	String logFilename;
-	static std::ofstream logFile;
+	 std::ofstream logFile;
 
 public:
-	static void init(const Config &);
-	static void logLine (String const &);
+	 void init(const Config &);
+	 void logLine (String const &);
 
 };
 

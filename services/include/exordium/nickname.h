@@ -15,48 +15,48 @@ using Kine::String;
 namespace Exordium {
 	class Nickname {
 		public:
-        	static String getRegNickCount(void);
-        	static String getOnlineCount(void);
-        	static void updateHost(String const &, String const &);
-        	static String generatePassword(String const &, String const &);
-        	static int getAccess(String const &, String const &);
-        	static bool isAuthorised(String const &);
-        	static void addCheckidentify(String const &);
-        	static void addClient (String nick, String hops, String timestamp,
+        	 String getRegNickCount(void);
+        	 String getOnlineCount(void);
+        	 void updateHost(String const &, String const &);
+        	 String generatePassword(String const &, String const &);
+        	 int getAccess(String const &, String const &);
+        	 bool isAuthorised(String const &);
+        	 void addCheckidentify(String const &);
+        	 void addClient (String nick, String hops, String timestamp,
                          String username, String host, String vwhost,
                          String server, String modes, String realname);
-        	static int countHost(String const &);
-        	static int getRequiredAccess(String const &, String const &);
-  		static bool isNickRegistered (String const &);
-  		static String getPass (String const &);
-  		static int getOnlineNickID(String const &);    
-  		static int getRegisteredNickID(String const &);
-  		static void modeIdentify (String const &);
-  		static void updateLastID(String const &);
-  		static String getHost(String const &);
-  		static String getIdent(String const &);
-  		static bool isIdentified(String const &);
-  		static bool isIdentified(String const &, String const &);
-  		static String getNick(int const &);
-  		static String getOnlineNick(int const &);
-  		static String getIDList(String const &);
-  		static String getpendingCode(String const &);  
-  		static bool isPending(String const &);
-  		static void registerNick(String const &,String const &,String const &);
-  		static String genAuth(String const &);   
-  		static void setLanguage(String const &,String const &);
-  		static String getICQ (String const &nick);
-  		static String getMSN (String const &nick);
-  		static String getYAHOO (String const &nick);
-  		static String getAIM (String const &nick);
-  		static String getURL (String const &nick);
-  		static String getLanguage(String const &nick);
-  		static String getEmail (const String & nick);
-  		static String getLastHost (const String &nick);
-  		static String getLastID (const String &nick);  
-  		static String getRegDate (const String &nick);
-		static void setDeopAway(String const &, bool const &);
-		static bool deopAway(String const &);
+        	 int countHost(String const &);
+        	 int getRequiredAccess(String const &, String const &);
+  		 bool isNickRegistered (String const &);
+  		 String getPass (String const &);
+  		 int getOnlineNickID(String const &);    
+  		 int getRegisteredNickID(String const &);
+  		 void modeIdentify (String const &);
+  		 void updateLastID(String const &);
+  		 String getHost(String const &);
+  		 String getIdent(String const &);
+  		 bool isIdentified(String const &);
+  		 bool isIdentified(String const &, String const &);
+  		 String getNick(int const &);
+  		 String getOnlineNick(int const &);
+  		 String getIDList(String const &);
+  		 String getpendingCode(String const &);  
+  		 bool isPending(String const &);
+  		 void registerNick(String const &,String const &,String const &);
+  		 String genAuth(String const &);   
+  		 void setLanguage(String const &,String const &);
+  		 String getICQ (String const &nick);
+  		 String getMSN (String const &nick);
+  		 String getYAHOO (String const &nick);
+  		 String getAIM (String const &nick);
+  		 String getURL (String const &nick);
+  		 String getLanguage(String const &nick);
+  		 String getEmail (const String & nick);
+  		 String getLastHost (const String &nick);
+  		 String getLastID (const String &nick);  
+  		 String getRegDate (const String &nick);
+		 void setDeopAway(String const &, bool const &);
+		 bool deopAway(String const &);
 	};
 
 

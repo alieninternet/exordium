@@ -23,10 +23,10 @@ private:
     char const *command;
     void IRCDOME_FUNC ((*function));
   };
-  static struct functionTableStruct const functionTable[];
-  static void IRCDOME_FUNC (parseMODULE);
+   struct functionTableStruct const functionTable[];
+   void IRCDOME_FUNC (parseMODULE);
 public: 
-  static void parseLine( String &, String const &);
+   void parseLine( String &, String const &);
 };
 
 

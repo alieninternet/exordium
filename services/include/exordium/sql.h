@@ -20,11 +20,11 @@ namespace Exordium {
 class Sql
 {
 private: 
-	static int sock;
+	 int sock;
 public:
-	static void init(const Config &);
-	static MysqlRes query(String const &);
-	static String makeSafe(String const &);
+	 void init(const Config &);
+	 MysqlRes query(String const &);
+	 String makeSafe(String const &);
 };
 
 

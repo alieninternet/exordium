@@ -52,14 +52,14 @@ using namespace Exordium;
 #define UPLINK "services-hub.ircdome.org"
 
 
-static KINE_SIGNAL_HANDLER_FUNC(Rehash)
+ KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
    String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal - commiting database";
    Services::helpme(reason,"Serv");
    Sql::query("COMMIT");
 }
 
-static KINE_SIGNAL_HANDLER_FUNC(Death)
+ KINE_SIGNAL_HANDLER_FUNC(Death)
 {
 	Sql::query("COMMIT");
 	String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Terminating";

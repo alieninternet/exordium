@@ -25,22 +25,22 @@ private:
     		char const *command;
     		void PARSER_FUNC ((*function));
   	};
-	static struct functionTableStruct const functionTable[];
+	 struct functionTableStruct const functionTable[];
 
 public:
-  	static void parseLine (String &);
+  	 void parseLine (String &);
 private:
-  static void PARSER_FUNC (parsePASS);
-  static void PARSER_FUNC (parsePRIVMSG);
-  static void PARSER_FUNC (parsePART);
-  static void PARSER_FUNC (parseM);
-  static void PARSER_FUNC (parseS);
-  static void PARSER_FUNC (parseN);
-  static void PARSER_FUNC (parsePING);
-  static void PARSER_FUNC (parseQUIT);
-  static void PARSER_FUNC (parseSQUIT);
-  static void PARSER_FUNC (parseSJOIN);
-  static void PARSER_FUNC (parseAWAY);
+   void PARSER_FUNC (parsePASS);
+   void PARSER_FUNC (parsePRIVMSG);
+   void PARSER_FUNC (parsePART);
+   void PARSER_FUNC (parseM);
+   void PARSER_FUNC (parseS);
+   void PARSER_FUNC (parseN);
+   void PARSER_FUNC (parsePING);
+   void PARSER_FUNC (parseQUIT);
+   void PARSER_FUNC (parseSQUIT);
+   void PARSER_FUNC (parseSJOIN);
+   void PARSER_FUNC (parseAWAY);
 };
 
 #endif
