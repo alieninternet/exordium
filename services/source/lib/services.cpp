@@ -1128,6 +1128,12 @@ bool
    return false;
 };
 
+/* addClient(...)
+ * 
+ * Add a user and setup a new map entry for them...
+ * ..
+ */
+
 User*
   Services::addClient(String const &nick, String const &hops,
 		      String const &timestamp, String const &username,

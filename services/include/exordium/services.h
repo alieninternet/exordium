@@ -371,6 +371,8 @@ namespace Exordium {
 	User* addClient(String const &, String const &, String const &,
 			String const &, String const &, String const &,
 			String const &, String const &, String const &);
+	int getRequiredAccess(String const &, String const &);
+	
 	
      };
 }; // namespace Exordium
