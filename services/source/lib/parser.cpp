@@ -105,14 +105,15 @@ void PARSER_FUNC (Parser::parseAWAY)
 	  }
 	else
 	  {
-             services.getDatabase().dbSelect("chanid", "chanstatus", "nickid="+origin->getOnlineIDString()+" AND status=2");
-
-             String foo = services.getDatabase().dbGetValue();
-	     String cname = services.getChannel().getChanIDName(foo.toInt());
-	     String cstr = OLDorigin+" "+OLDorigin;
-	     services.serverMode(cname,"-o+v",cstr);
-	     services.getChannel().internalVoice(OLDorigin,cname);
-	     services.getChannel().internalDeOp(OLDorigin,cname);
+             if( services.getDatabase().dbSelect("chanid", "chanstatus", "nickid="+origin->getOnlineIDString()+" AND status=2") > 0 )
+             {
+               String foo = services.getDatabase().dbGetValue();
+               String cname = services.getChannel().getChanIDName(foo.toInt());
+	       String cstr = OLDorigin+" "+OLDorigin;
+	       services.serverMode(cname,"-o+v",cstr);
+	       services.getChannel().internalVoice(OLDorigin,cname);
+	       services.getChannel().internalDeOp(OLDorigin,cname);
+             }
 	  }
      }
 }

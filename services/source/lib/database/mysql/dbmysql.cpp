@@ -114,19 +114,26 @@ int CMySQL::dbQuery(String const &query)
 
 String CMySQL::dbGetValue(void)
 {
-  return mysqlrow[0];
+  if( mysqlres != NULL )
+    return mysqlrow[0];
+  else
+    return "";
 }
 
 
 String CMySQL::dbGetValue(int field)
 {
-  return mysqlrow[field];
+  if( mysqlres != NULL )
+    return mysqlrow[field];
+  else
+    return "";
 }
 
 
 void CMySQL::dbGetRow(void)
 {
-  mysqlrow = mysql_fetch_row(mysqlres);
+  if( mysqlres != NULL )
+    mysqlrow = mysql_fetch_row(mysqlres);
 }
 
 
