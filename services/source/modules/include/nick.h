@@ -24,17 +24,18 @@ private:
   struct functionTableStruct
   {
     char const *command;
-    void NICK_FUNC ((*function));
+     void NICK_FUNC ((Nick::* const function));
   };
   static struct functionTableStruct const functionTable[];
+   Exordium::Services& services;
   const String myName;
   void sendMessage(const String &to, const String &message)
 	{
-		Exordium::Services::serviceNotice(message,myName,to);
+		services.serviceNotice(message,myName,to);
 	}
 public:
-  Nick(const String &mn)
-   : myName(mn)
+   Nick(Exordium::Services& s, const String &mn)
+   : services(s), myName(mn)
    {
    };
 
@@ -47,15 +48,15 @@ public:
 
 private:
 
-  static void NICK_FUNC (parseIDENTIFY);
-  static void NICK_FUNC (parseHELP);
-  static void NICK_FUNC (parseKILL);
-  static void NICK_FUNC (parseREGISTER);
-  static void NICK_FUNC (parseGHOST);
-  static void NICK_FUNC (parseACCESS);
-  static void NICK_FUNC (parseSET);
-  static void NICK_FUNC (parseINFO);
-  static void NICK_FUNC (parseAUTH);
+  void NICK_FUNC (parseIDENTIFY);
+  void NICK_FUNC (parseHELP);
+  void NICK_FUNC (parseKILL);
+  void NICK_FUNC (parseREGISTER);
+  void NICK_FUNC (parseGHOST);
+  void NICK_FUNC (parseACCESS);
+  void NICK_FUNC (parseSET);
+  void NICK_FUNC (parseINFO);
+  void NICK_FUNC (parseAUTH);
 };
 
 
