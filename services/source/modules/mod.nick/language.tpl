@@ -43,7 +43,7 @@ static Kine::Language::tagMap_type Exordium::NickModule::Lang::tagMap = {[+ FOR 
 #ifndef _SOURCE_MODULES_NICK_LANGUAGE_H_
 # define _SOURCE_MODULES_NICK_LANGUAGE_H_ 1
 
-# include <kineircd/language.h>
+# include <kineircd/languages.h>
 
 namespace Exordium {
    namespace NickModule {
