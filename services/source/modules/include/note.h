@@ -14,6 +14,7 @@
 using Kine::String;
 
 #include "exordium/service.h"
+#include "exordium/services.h"
 
 namespace Exordium {
 
@@ -23,13 +24,14 @@ private:
   struct functionTableStruct
   {
     char const *command;
-    void NOTE_FUNC ((*function));
+     void NOTE_FUNC ((Note::* const function));
   };
   static struct functionTableStruct const functionTable[];
-
+   Exordium::Services& services;
+   
 public:
-  Note(void)
-   : Service()
+   Note(Exordium::Services& s)
+   : Service(), services(s)
    {
 	std::cout << "Hi im an instance. :(" << std::endl;
    };
@@ -39,10 +41,10 @@ public:
    };   
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
- static void NOTE_FUNC (parseSEND);
- static void NOTE_FUNC (parseLIST);
- static void NOTE_FUNC (parseREAD);
- static void NOTE_FUNC (parseDEL);
+  void NOTE_FUNC (parseSEND);
+  void NOTE_FUNC (parseLIST);
+  void NOTE_FUNC (parseREAD);
+  void NOTE_FUNC (parseDEL);
 };
 
 

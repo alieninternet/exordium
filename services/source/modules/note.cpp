@@ -23,13 +23,13 @@ namespace Exordium {
 
 struct Note::functionTableStruct const
   Note::functionTable[] = {
-  {"send", parseSEND},
-  {"list", parseLIST},
-  {"read", parseREAD},
-  {"del", parseDEL},
-  {"delete", parseDEL},
-  {"erase", parseDEL},
-  {0}
+  {"send", &Note::parseSEND},
+  {"list", &Note::parseLIST},
+  {"read", &Note::parseREAD},
+  {"del", &Note::parseDEL},
+  {"delete", &Note::parseDEL},
+  {"erase", &Note::parseDEL},
+  {0, 0}
 };
 void
 NOTE_FUNC (Note::parseDEL)
@@ -38,13 +38,13 @@ String num = tokens.nextToken();
 if(num=="all")
 	{
 		String query = "DELETE from notes where nto='" + origin + "'";
-		Sql::query(query);
-		Services::serviceNotice("All notes erased.","Note",origin);
-		Services::log(origin,"Note","Erased all notes");
+		services.getDatabase().query(query);
+		services.serviceNotice("All notes erased.","Note",origin);
+		services.log(origin,"Note","Erased all notes");
 		return;
 	}
 String query = "SELECT id from notes where nto='" + origin + "'";
-MysqlRes res = Sql::query(query);
+MysqlRes res = services.getDatabase().query(query);
 MysqlRow row;
 int j = 0;
 while ((row = res.fetch_row()))
@@ -53,11 +53,11 @@ while ((row = res.fetch_row()))
 	if(j==num.toInt())
 	{
 		String togo = String("Note #\002")+num+"\002 deleted";
-		Services::serviceNotice(togo,"Note",origin);
+		services.serviceNotice(togo,"Note",origin);
 		String ntext = ((std::string) row[0]).c_str();
 		String query = "DELETE from notes where id='" + ntext + "'";
-		Sql::query(query);
-		Services::log(origin,"Note","Deleted a single note");
+		services.getDatabase().query(query);
+		services.log(origin,"Note","Deleted a single note");
 		res.free_result();
 		return;
 	}
@@ -71,7 +71,7 @@ NOTE_FUNC (Note::parseREAD)
 	if(num.toLower()=="all")
 	{
 		String query = "SELECT nfrom,nsent,note from notes where nto='" + origin + "'";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		int j = 0;
 		while ((row = res.fetch_row()))
@@ -81,16 +81,16 @@ NOTE_FUNC (Note::parseREAD)
 			String nsent = ((std::string) row[1]).c_str();
 			String ntext = ((std::string) row[2]).c_str();
 			String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-			Services::serviceNotice(togo,"Note",origin);
+			services.serviceNotice(togo,"Note",origin);
 			String tofo = ntext;
-			Services::serviceNotice(tofo,"Note",origin);
+			services.serviceNotice(tofo,"Note",origin);
 		}
-		Services::log(origin,"Note","Read all notes");
+		services.log(origin,"Note","Read all notes");
 		res.free_result();
 		return;
 	}
 	String query = "SELECT nfrom,nsent,note from notes where nto='" + origin + "'";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = services.getDatabase().query(query);
 	MysqlRow row;
 	int j = 0;
 	while ((row = res.fetch_row()))
@@ -102,23 +102,23 @@ NOTE_FUNC (Note::parseREAD)
 		String nsent = ((std::string) row[1]).c_str();
 		String ntext = ((std::string) row[2]).c_str();
 		String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-		Services::serviceNotice(togo,"Note",origin);
+		services.serviceNotice(togo,"Note",origin);
 		String tofo = ntext;
-		Services::serviceNotice(tofo,"Note",origin);
-		Services::log(origin,"Note","Read a single note");
+		services.serviceNotice(tofo,"Note",origin);
+		services.log(origin,"Note","Read a single note");
 		res.free_result();
 		return;
 		}
 	}	
 	res.free_result();
-	Services::serviceNotice("No such note!","Note",origin);
+	services.serviceNotice("No such note!","Note",origin);
 	return;
 }
 void
 NOTE_FUNC (Note::parseLIST)
 {
 	String query = "select nfrom,nsent,note from notes where nto='" + origin + "'";
-	MysqlRes res = Sql::query(query);
+	MysqlRes res = services.getDatabase().query(query);
 	MysqlRow row;
 	int j = 0;
 	while ((row = res.fetch_row()))
@@ -128,16 +128,16 @@ NOTE_FUNC (Note::parseLIST)
 		String nsent = ((std::string) row[1]).c_str();
 		String ntext = ((std::string) row[2]).c_str();
 		String togo = String("Note #\002")+String::convert(j)+"\002 From: \002"+nfrom+"\002 Sent: \002"+nsent+"\002";
-		Services::serviceNotice(togo,"Note",origin);
+		services.serviceNotice(togo,"Note",origin);
 	}
 	if(j==0)
 	{
-		Services::serviceNotice("You have no notes stored","note",origin);
+		services.serviceNotice("You have no notes stored","note",origin);
 		return;
 	}
 	String tofo = String("To read a note, type /msg Note read Number");
-	Services::serviceNotice(tofo,"Note",origin);
-	Services::log(origin, "Note", "Listed their notes");
+	services.serviceNotice(tofo,"Note",origin);
+	services.log(origin, "Note", "Listed their notes");
 	res.free_result();
 }
 void
@@ -148,58 +148,58 @@ NOTE_FUNC (Note::parseSEND)
 	if(nto=="")
 	{
 		String togo = String("Usage is: /msg note send Nickname/#Channel Your Message Here");
-		Services::serviceNotice(String(togo),"Serv",origin);
+		services.serviceNotice(String(togo),"Serv",origin);
 		return;
 	}
 	if(note=="")
 	{
 		String togo = String("Usage is: /msg note send Nickname Your Message Here");
-		Services::serviceNotice(String(togo),"Serv",origin);
+		services.serviceNotice(String(togo),"Serv",origin);
 		return;
 	}
 	String it = (nto[0]);
 	if(nto[0]=='#')
 	{
 		//Channel Note
-		if(!Channel::isChanRegistered(nto))
+		if(!services.getChannel().isChanRegistered(nto))
 		{
 		String tofo = String("That channel is not registered");
-		Services::serviceNotice(String(tofo),"Note",origin);
+		services.serviceNotice(String(tofo),"Note",origin);
 		return;
 		}
-		int chanid = Channel::getChanID(nto);
+		int chanid = services.getChannel().getChanID(nto);
 		String query = "SELECT nickid from chanaccess where chanid='" + String::convert(chanid) + "'";
-		MysqlRes res = Sql::query(query);
+		MysqlRes res = services.getDatabase().query(query);
 		MysqlRow row;
 		int j = 0;
 		while ((row = res.fetch_row()))
 		{
 			String nnid = ((std::string) row[0]).c_str();
 			int nid = nnid.toInt();
-			String nick = Nickname::getNick(nid);
+			String nick = services.getNickname().getNick(nid);
 			if(nick.toLower()!=origin.toLower())
 			{
 				j++;
 				String txt = String("\002")+nto+"\002: "+note;
-				Services::sendNote(origin,nick,txt);
+				services.sendNote(origin,nick,txt);
 			}
 		}		
 		String toao = String("Your note was successfully sent to \002")+String::convert(j)+"\002 people on "+nto;
-		Services::serviceNotice(String(toao),"Note",origin);
-		Services::log(origin,"Note","Sent a channel note to "+nto);
+		services.serviceNotice(String(toao),"Note",origin);
+		services.log(origin,"Note","Sent a channel note to "+nto);
 		res.free_result();
 		return;
 	}
 	
-	if(!Nickname::isNickRegistered(nto))
+	if(!services.getNickname().isNickRegistered(nto))
 	{
 		String togo = String("Error: Destination nickname is not registered");
-		Services::serviceNotice(togo,"Serv",origin);
+		services.serviceNotice(togo,"Serv",origin);
 		return;
 	}
-	Services::sendNote(origin,nto,note);
-	Services::serviceNotice("Your note was successfully sent to \002"+nto+"\002","Note",origin);
-	Services::log(origin,"Note","Sent a private note to "+nto);
+	services.sendNote(origin,nto,note);
+	services.serviceNotice("Your note was successfully sent to \002"+nto+"\002","Note",origin);
+	services.log(origin,"Note","Sent a private note to "+nto);
 }
 
 void
@@ -213,9 +213,9 @@ Note::parseLine (String const &line, String const &requestor)
 {   
   StringTokens st (line);
   String origin = requestor;
-  if(!Nickname::isIdentified(requestor,requestor))
+  if(!services.getNickname().isIdentified(requestor,requestor))
 	{
-		Services::serviceNotice("Sorry - You must be identified to use this service","Note",origin);
+		services.serviceNotice("Sorry - You must be identified to use this service","Note",origin);
 		return;
 	}
   String command = st.nextToken ().toLower ();
@@ -225,19 +225,19 @@ Note::parseLine (String const &line, String const &requestor)
       if (command == functionTable[i].command)
         {
           // Run the command and leave
-          functionTable[i].function (origin, st);
+          (this->*(functionTable[i].function))(origin, st);
           return;
         }
     }
-  Services::serviceNotice ("Unrecognized Command", "Note", requestor);
+  services.serviceNotice ("Unrecognized Command", "Note", requestor);
 }
 
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   Services::registerService(name,name,"ircdome.org","+dz",
+   services.registerService(name,name,"ircdome.org","+dz",
 			     "Note service thingy that James forgot :(");
-   Services::serviceJoin(name,"#Debug");
-   return new Module("note", new Note());
+   services.serviceJoin(name,"#Debug");
+   return new Module("note", new Note(services));
 }
 
 }
