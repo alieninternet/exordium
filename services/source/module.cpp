@@ -1,9 +1,29 @@
 /*
- This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
- $Author$
- $Date$
- $Id$
-*/
+ *  * Exordium Network Services
+ *  * Copyright (C) 2002 IRCDome Development Team
+ *  *
+ *  * This file is a part of Exordium.
+ *  *
+ *  * $Id$
+ *  *
+ *  * This program is free software; you can redistribute it and/or modify
+ *  * it under the terms of the GNU General Public License as published by
+ *  * the Free Software Foundation; either version 2 of the License, or
+ *  * (at your option) any later version.
+ *  *
+ *  * This program is distributed in the hope that it will be useful,
+ *  * but WITHOUT ANY WARRANTY; without even the implied
+ *  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *  * See the GNU General Public License for more details.
+ *  *
+ *  * You should have received a copy of the GNU General Public License
+ *  * along with this program; if not, write to the Free Software
+ *  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307,USA
+ *  *
+ *  * For contact details for the IRCDome Development Team please see the
+ *  * enclosed README file.
+ *  *
+ * */
 
 #include <iostream>
 #include <exordium/log.h>
@@ -25,6 +45,13 @@ namespace
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
      {
+	// Dump some copyright info.
+	std::cout << std::endl << "Exordium Network Services, Copyright
+				    (C) 2002 IRCDome Development Team" << std::endl;
+	std::cout << "Exordium comes with ABSOLUTELY NO WARRANTY; for details see" << std::endl;
+	std::cout << "The enclosed LICENSE file.  This is free software"<<std::endl;
+	std::cout << "And you are welcome to redistribute it under certain" << std::endl;
+	std::cout << "conditions; please see the enclosed LICENSE file" << std::endl;
 	std::cout << "mod_exordium::moduleStart()" << std::endl;
 
 	// New Logger (the config file will have been created by now)
