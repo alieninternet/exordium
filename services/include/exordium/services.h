@@ -151,6 +151,9 @@ namespace Exordium {
 				  AISutil::String const &service, 
 				  AISutil::String const &target) = 0;
       
+      virtual void serviceQuit(const AISutil::String& name,
+			       const AISutil::String& reason) = 0;
+      
       // This does not modify a server mode, it should be renamed.
       virtual void serverMode(AISutil::String const &chan,
 			      AISutil::String const &mode,
@@ -181,6 +184,8 @@ namespace Exordium {
 			AISutil::String const &) = 0;
       virtual bool isVoice(AISutil::String const &,
 			   AISutil::String const &) = 0;
+      // And this should be removed when the new channel classes are done.
+      virtual void queueAdd(const AISutil::String&) = 0;
       
       
       // This should be moved to the NOTE MODULE
@@ -217,9 +222,6 @@ namespace Exordium {
       virtual void delOper(AISutil::String const &) = 0;
       virtual bool isOper(AISutil::String const &) = 0;
       virtual void validateOper(AISutil::String &) = 0;
-      
-      // temporary rubbish below..
-      virtual void queueAdd (const AISutil::String& line) = 0;
    }; // class Services
 }; // namespace Exordium
 

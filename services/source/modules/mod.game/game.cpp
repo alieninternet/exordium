@@ -110,15 +110,16 @@ void Module::stop(const String& reason)
       channelGames.erase(channelGames.begin());
    }
    
-   // Umm, we should QUIT from the network here.. but how?
+   // Quit - bye bye!
+   services->serviceQuit(getName(), reason);
 }
 
 
 /* parseLine - Parse an incoming message (which was sent to a channel)
  * Original 13/07/2002 james
  */
-void Module::parseLine(StringTokens& line__, User& origin, const String&
-channel)
+void Module::parseLine(StringTokens& line__, User& origin,
+		       const String& channel)
 {
    // dirty kludge.. at least until the core strips the char properly??
    StringTokens line(line__.rest().substr(1));
@@ -221,8 +222,7 @@ GAME_FUNC(Module::handleQUOTE)
       String tq = st.nextToken('\n');
       services->servicePrivmsg(tq, getName(), chan);
       more = st.hasMoreTokens();
-   }
-   
+   }   
 }
 
 /* handleSTART - Parse a 'start' command, to trigger the start of game
@@ -248,9 +248,9 @@ std::endl;
 	 // Join the channel and say hello
 	 services->serviceJoin(getName(), chan);
 	 services->serverMode(chan, "+o", getName());
-	 services->serviceNotice("Hello " + chan + " (" +
-origin.getNickname() +
-				 " wanted to play " + game + ')',
+	 services->serviceNotice("Hello " + chan + " (" + 
+				 origin.getNickname() + " wanted to play " +
+				 game + ')',
 				 "Game", chan);
 	 
 	 // Leave the loop

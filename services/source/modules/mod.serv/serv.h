@@ -85,7 +85,7 @@ namespace Exordium {
 	 SERV_FUNC(parseUSER);
 	 SERV_FUNC(parseCHAN);
 	 SERV_FUNC(parseDIE);
-	 SERV_FUNC(parseRAW);
+//	 SERV_FUNC(parseRAW);
 	 SERV_FUNC(parseNEWS);
 	 SERV_FUNC(parseSYNCH);
 	 SERV_FUNC(parseSETPASS);

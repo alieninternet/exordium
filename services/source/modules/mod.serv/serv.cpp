@@ -47,7 +47,7 @@ const Module::functionTableStruct Module::functionTable[] = {
      { "helpon",	&Module::parseHELPON },
      { "help",		&Module::parseHELP },
      { "user",		&Module::parseUSER },
-     { "raw",		&Module::parseRAW },
+//     { "raw",		&Module::parseRAW },
      { "chan",		&Module::parseCHAN },
      { "die",		&Module::parseDIE },
      { "news",		&Module::parseNEWS },
@@ -121,13 +121,13 @@ void
 }
 
 
-  SERV_FUNC (Module::parseRAW)
-{
-   std::string c = tokens.rest();
-   services->queueAdd(c);
-   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
-   services->logLine(String(togo), Log::Warning);
-}
+//  SERV_FUNC (Module::parseRAW)
+//{
+//   std::string c = tokens.rest();
+//   services->queueAdd(c);
+//   String togo = origin.getNickname()+" did \002RAW\002 - "+c;
+//   services->logLine(String(togo), Log::Warning);
+//}
 
 
   SERV_FUNC (Module::parseNEWS)

@@ -197,6 +197,12 @@ namespace Exordium {
 	   queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	}
       
+      void serviceQuit(const AISutil::String& name,
+		       const AISutil::String& reason)
+	{
+	   queueAdd(":" + name + " QUIT :" + reason);
+	};
+      
       // This does not modify a server mode, it should be renamed.
       void serverMode(AISutil::String const &chan, AISutil::String const &mode,
 		      AISutil::String const &target)

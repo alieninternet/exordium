@@ -912,6 +912,6 @@ bool Module::start(Exordium::Services& s)
 // Stop the service - bye bye!
 void Module::stop(const String& reason)
 {
-   // Yes, we would like to QUIT here properly.. :( This is dodgey  -pickle
-   services->queueAdd(":" + getName() + " QUIT :" + reason);
+   // Quit :(
+   services->serviceQuit(getName(), reason);
 }

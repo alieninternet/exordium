@@ -69,7 +69,11 @@ void
 	       }
 	  }
      }
-   services->queueAdd(":"+getName()+" WALLOPS :New User Signon by the name of "+origin.getNickname());
+   
+/* this would be horrible on a live network :) If this is indeed only for
+ * debugging, it should be removed entirely.
+ */
+//   services->queueAdd(":"+getName()+" WALLOPS :New User Signon by the name of "+origin.getNickname());
    return;
 }
 
