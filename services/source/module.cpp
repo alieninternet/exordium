@@ -131,15 +131,6 @@ namespace {
 	    return false;
 	 }
 
-#ifdef DEBUG
-	 std::clog << "Services started, beginning initalisation" << std::endl;
-#endif
-	 services->run();
-#ifdef DEBUG
-	 std::clog << "Services terminated - Normal exit" << std::endl;
-#endif
-	 exit(0); // we are naughty using this here..... very naughty.. :(
-	 
 	 // Tell Kine that we started happily
 	 return true;
       };
