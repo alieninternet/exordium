@@ -266,11 +266,12 @@ namespace Exordium {
       bool isOper(AISutil::String const &);
       void validateOper(AISutil::String &);
       void sendGOper(AISutil::String const &, AISutil::String const &);
-      
-      unsigned long getCountTx(void) const
-	{ return countTx; };
-      unsigned long getCountRx(void) const
-	{ return countRx; };
+      void sendHelpme(AISutil::String const &, AISutil::String const &);
+      void setMode(AISutil::String const &, AISutil::String const &);      
+      unsigned long getCountTx(void);
+//	{ return countTx; };
+      unsigned long getCountRx(void);
+//	{ return countRx; };
    }; // class ServicesInternal
 }; // namespace Exordium
 

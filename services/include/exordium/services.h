@@ -210,6 +210,12 @@ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask);
       virtual void validateOper(AISutil::String &) = 0;
       virtual void sendGOper(AISutil::String const &,
 			AISutil::String const &) = 0;
+      virtual void sendHelpme(AISutil::String const &,
+			AISutil::String const &) = 0;
+      virtual void setMode(AISutil::String const &,
+			AISutil::String const &) = 0;
+      virtual unsigned long getCountTx(void) = 0;
+      virtual unsigned long getCountRx(void) = 0;
    }; // class Services
 }; // namespace Exordium
 

@@ -114,6 +114,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	  struct timeval timer;
 	  disconnectTime = 0;
 	  connected = false;
+	  lastExpireRun = 0;
 	  srand(time(NULL));
 	  logLine ("Cleaning out (any) stale entries from the DB");
 	  database.dbDelete("onlineclients");
@@ -206,7 +207,7 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 		    lastCheckPoint = currentTime;
 		    checkpoint ();
 		 }
-	       if (currentTime > (time_t) (lastExpireRun + 120))
+	       if (currentTime > (time_t) (lastExpireRun + 360))
 		 {
 		    lastExpireRun = currentTime;
 		    SynchTime ();
@@ -421,6 +422,8 @@ void
 	   // I smell a configuration variable.. *sniff sniff* can you?
 	   serviceJoin(config.getConsoleName(), "#Debug");
 	   mode("PeopleChat","#Debug","+o","PeopleChat");
+	   setMode("PeopleChat","+oz");
+	   
 
 	}
 	
@@ -482,7 +485,7 @@ void
  * Perform various tasks that need doing on an ongoing basis
  * those being;
  * 	Expire any channel bans that need expiring
- *
+ *	Update ServerWide Time.
  */
 
    void ServicesInternal::SynchTime(void)
@@ -491,16 +494,15 @@ void
 
 	//Undo any expired channel bans
 	String ctime = String::convert(currentTime);
-
+	sendGOper("Oper","Performing net-wide time synch to "+ctime);
+	queueAdd(":services.peoplechat.org SETTIME "+ctime+" *");
         int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
-
         for(int i=0; i<nbRes; i++)
 	  {
 	     channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
              database.dbGetRow();
 	  }
 
-	//Lastly commit any outstanding db changes.
      }
 
    /* AddOnlineServer(ServerName,Hops,Description)
@@ -520,6 +522,13 @@ ServicesInternal::sendGOper(String const &from, String const &text)
 	queueAdd(":"+from+" GLOBOPS :"+text);
 
 }
+
+void
+ServicesInternal::sendHelpme(String const &from, String const &text)
+{
+	queueAdd(":"+from+" HELPME :"+text);
+}
+
 
    /* DelOnlineServer(ServerName)
     *
@@ -619,6 +628,12 @@ ServicesInternal::sendGOper(String const &from, String const &text)
           database.dbInsert("emails", "'','"+to+"','"+subject+"','"+text+"'");
        }
 
+void
+ServicesInternal::setMode(String const &who, String const &mode)
+{
+queueAdd(":services.peoplechat.org MODE "+who+" "+mode);
+
+}
 /* parseHelp(In)
  *
  * This parses our special codes in the help files
@@ -657,6 +672,17 @@ ServicesInternal::sendGOper(String const &from, String const &text)
 	  return retstr;
        }
 
+unsigned long
+  ServicesInternal::getCountTx(void)
+{
+return countTx;
+}
+
+unsigned long
+  ServicesInternal::getCountRx(void)
+{
+return countRx;
+}
 /* log(String,String,String)
  *
  * Logs the given information into the database

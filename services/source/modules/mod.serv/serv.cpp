@@ -94,10 +94,10 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	origin.sendMessage("Exordium services status report",getName());
 	String togo = "Current build : \002" + String::convert(Services::buildNumber) + "\002";
 	origin.sendMessage(togo,getName());
-
-//	String tofo = "Rx Bytes : " +
-//String::convert(services->getCountTx()) + " : ";
-//	origin.sendMessage(tofo,getName());
+	long tx = services->getCountTx();
+        long rx = services->getCountRx();
+	String tofo = "Tx : " + String::convert(tx) + " Rx : " + String::convert(tx);
+	origin.sendMessage(tofo,getName());
 }
 
 SERV_FUNC (Module::parseCOMMANDS)
