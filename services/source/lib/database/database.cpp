@@ -49,10 +49,12 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
       {
          std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
          exit(1); // YUK, gotta find a way to exit more nicely
-      }
+      }      
 
-     CMySQL *newdb=new CMySQL(config, logger);
-     database =(CBase*) newdb;
+     #ifdef HAVE_MYSQL
+      database =(CBase*) new CMySQL(config, logger);
+     #endif
+
      db_engines = db_mysql;
    }
 
@@ -66,9 +68,11 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
          exit(1); // YUK, gotta find a way to exit more nicely
       }
 
-     database =(CBase*) new CPgSQL(config,logger);
-     db_engines = db_pgsql;
+     #ifdef HAVE_PGSQL
+       database =(CBase*) new CPgSQL(config,logger);
+     #endif
 
+     db_engines = db_pgsql;
    }
 
   else 
