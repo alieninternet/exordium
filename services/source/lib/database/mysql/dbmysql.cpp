@@ -91,7 +91,7 @@ int CMySQL::dbQuery(String const &query)
   logger.logLine("DEBUG: Query=" + query);
 
   // If mysql_real_query returns 0 it means it succeeded
-  if(mysql_real_query(mysql, query.c_str(), query.length()) == 0)
+  if(mysql_real_query(mysql, query.data(), query.length()) == 0)
    {
      mysqlres = mysql_store_result(mysql);
      
