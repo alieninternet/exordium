@@ -274,6 +274,7 @@ bool Module::start(Exordium::Services& s)
    // Set the services field appropriately
    services = &s;
 
+   Kine::langs().registerMap(Language::tagMap);
    // Attempt to affirm our database table..
    if (!services->getDatabase().affirmTable(Tables::notesTable)) {
       services->logLine("Unable to affirm mod_note database table 'notes'",

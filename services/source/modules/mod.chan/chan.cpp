@@ -567,6 +567,13 @@ CHAN_FUNC (Module::parseOP)
      {
 	String currnick = st.nextToken();
 	bool foundmatch = false;
+	std::cout << "parseOP() : Checking " << currnick << std::endl;
+	if(currnick=="")
+	  {
+	     std::cout << "Null nick!" << std::endl;
+	     continue;
+	  }
+	
 	if(ptr->getAccess(currnick)>100)
 	  {
 	     String foo = tokens.nextToken();

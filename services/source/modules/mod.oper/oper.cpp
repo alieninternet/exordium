@@ -122,15 +122,27 @@ OPER_FUNC(Module::parseMDEOP)
 
    int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
    CResult *myRes = services->getDatabase().dbGetResultSet();
-
+   dChan *dptr = services->findChan(channel);
+   if(dptr==0)
+     {
+	origin.sendMessage("Error: Cannot locate that channel",getName());
+	return;
+     }
+   
    for (int i=0; i<nbRes; i++)
      {
 	String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
 	std::cout << inick << std::endl;
-	services->mode(getName(),channel,"-o",inick);
+	services->mode(getName(),channel,"-ov",inick);
+	User *ptr = services->findUser(inick);
+	dptr->delUser(*ptr);
+	dptr->addUser(*ptr,0);
+	
      }
+   
+   
    services->sendGOper(getName(),origin.getNickname()+" performed a \002massdeop\002 in "+channel);
-
+   delete dptr;
    delete myRes;
 
 }
