@@ -1,0 +1,12 @@
+/* $Id$ */
+/* You should not change this file, instead pass the appropiate options
+   to configure in the base directory 
+*/
+
+
+/* Do you want (very) verbose output from services? */
+#undef DEBUG
+
+/* Language for services to use (as default)*/
+#undef LANGUAGE
+

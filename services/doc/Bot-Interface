@@ -1,0 +1,26 @@
+This documents purpose is to describe the bot 'friendly' interface to services, designed
+to provide a simplier interface to services for those users that wish to run bots.
+
+Queries will only be allowed from nicknames which have the Bot flag enabled on their nickname
+(and obviously identified) - Bots would be able to be 'registered' at the services channel, or
+via the webpage.
+
+Queries from bots are received by the service 'Bot' in private message format, and formatted as follows:
+
+PRIVMSG Bot :<Numerical Query Code> <Arguments>
+
+The numercial question codes/responses are as follows:
+
+Code	Arguments		Information Requested				Response Codes
+
+100	Single Nickname		Is this person identified as this nickname	0 = Not identified
+										1 = Identified as that nick
+										2 = Nickname not online
+										3 = Nickname not registered
+
+101	Single Nickname		Is this person online				0 = No
+										1 = Yes
+
+
+
+

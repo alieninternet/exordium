@@ -1,0 +1,28 @@
+
+SUB_DIRS=source/lib source source/modules
+AUTOGEN_SUB_DIRS=include src
+
+########################################################################
+
+.PHONY: all install clean distclean autogen dready sums distro fresh
+
+
+# Make the package
+all:
+	for d in $(SUB_DIRS); \
+		do $(MAKE) -C $$d; \
+	done
+
+
+clean:
+	for d in $(SUB_DIRS); \
+		do $(MAKE) -C $$d clean; \
+	done
+	$(RM) *~ include/*~ Makefile
+
+distclean:
+	for d in $(SUB_DIRS); \
+		do $(MAKE) -C $$d distclean; \
+	done
+	$(RM) -r *~ include/*~ autom* config* Makefile
+	
