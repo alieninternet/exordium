@@ -6,6 +6,9 @@ switch ($_POST[action])
   case "login":
     user_login();
     break;
+  case "regnick":
+    include "./funcs/$_POST[action].php";
+    break;
   default:
     default_page();
     break;
@@ -20,9 +23,16 @@ default_page()
   echo "<form method=\"POST\" action=\"$_SERVER[PHP_SELF]\">";
   echo "<tr id=\"header\"><td colspan=\"2\">Log-in to PeopleChat</td></tr>";
   echo "<input type=\"hidden\" name=\"action\" value=\"login\" \>";
-  echo "<tr><td id=\"label\">username</td><td><input id=\"q\" type=\"text\" name=\"nickname\" size=\"15\" maxlength=\"255\" /></td></tr>";
+  echo "<tr><td id=\"label\">nickname</td><td><input id=\"q\" type=\"text\" name=\"nickname\" size=\"15\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">password</td><td><input id=\"q\" type=\"password\" name=\"password\" size=\"15\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" value=\"Log In\"></td></tr>";
+  echo "</form>";
+  echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+  echo "<tr id=\"header\"><td colspan=\"2\">New to PeopleChat?</td></tr>";
+  echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+  echo "<form method=\"POST\" action=\"$_SERVER[PHP_SELF]\">";
+  echo "<input type=\"hidden\" name=\"action\" value=\"regnick\">\n";
+  echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" value=\"Register a nickname\"></td></tr>";
   echo "</form>";
   echo "</table>";
   page_end();

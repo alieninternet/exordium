@@ -114,12 +114,28 @@ class Channel
     if ($r = $MYSQL->db_query("SELECT name FROM chans WHERE name='$name'"))
     {
       if ($MYSQL->db_numrows($r) > 0)
-        return 0;
-      else
         return 1;
+      else
+        return 0;
     }
     return 0;
   }
+
+  function
+  has_access($nickid, $chanid)
+  {
+    global $MYSQL;
+    
+    if ($r = $MYSQL->db_get("SELECT chanid, nickid FROM chanaccess WHERE nickid='$nickid' AND chanid='$chanid'"))
+    {
+      if ($MYSQL->db_numrows($r) > 0)
+        return 1;
+      else
+        return 0;
+    }
+    return 0;
+  }
+
 
   function
   has_chans()
@@ -168,7 +184,7 @@ class Channel
         while ($c = $MYSQL->db_fetch_object($r))
         {
           echo "<tr><td id=\"header\">$c->name</td></tr>";
-          echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><tr><td align=\"center\"><small><small>modify your channel settings, manage your users, etc.</small></small><input type=\"hidden\" name=\"action\" value=\"managechan\"><input type=\"hidden\" name=\"chan_id\" value=\"$c->id\"><input id=\"submit\" type=\"submit\" name=\"sub\" value=\"manage your room\"><br></td></tr></form>\n";
+          echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><tr><td align=\"center\"><input type=\"hidden\" name=\"action\" value=\"managechan\"><input type=\"hidden\" name=\"chan_id\" value=\"$c->id\"><input id=\"submit\" type=\"submit\" name=\"sub\" value=\"manage your room\"><br></td></tr></form>\n";
         }
         echo "</table></p>";
       }

@@ -29,7 +29,6 @@ if ($_POST[submit])
       $name = "#".$name;
     if ($CHAN->is_registered($name))
     {
-      event_log("$nick registered the channel $_POST[name].");
       echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
       echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
       echo "<tr id=\"header\"><td>Error registering room.</td></tr>";
@@ -39,7 +38,6 @@ if ($_POST[submit])
     }
     if ($CHAN->has_chans())
     {
-      event_log("$nick registered the channel $_POST[name].");
       echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
       echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
       echo "<tr id=\"header\"><td>Error registering room.</td></tr>";
@@ -98,7 +96,7 @@ else
   echo "<input id=\"q\" type=\"checkbox\" name=\"chanmode[l]\"> set a channel user limit?<br>";
   echo "&nbsp;&nbsp;<input id=\"q\" type=\"text\" name=\"chanlimit\" size=\"3\" maxlength=\"4\"> <small>enter the limit here</small><br><br>\n";
   echo "<input id=\"q\" type=\"checkbox\" name=\"clog\" value=\"1\"> enable services logging?<br>";
-  echo "</td></td>\n";
+  echo "</td></tr>\n";
   echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" name=\"submit\" value=\"Register this room\"></form>";
   echo "</table>";
 }

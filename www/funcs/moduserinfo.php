@@ -1,4 +1,5 @@
 <?
+$NICK = new Nick();
 page_start();
 if ($_POST[submit])
 {
@@ -21,7 +22,7 @@ else
   echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><input type=\"hidden\" name=\"action\" value=\"moduserinfo\"><input type=\"hidden\" name=\"id\" value=\"$_GET[id]\">";
   echo "<tr id=\"header\"><td colspan=\"2\">Modify User Information</td></tr>\n";
   echo "<tr><td id=\"label\">nickname</td><td id=\"field\">$n->nickname</td></tr>\n";
-  echo "<tr><td id=\"label\">email</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"email\" size=\"15\" maxlength=\"15\" value=\"$n->email\"/></td></tr>\n";
+  echo "<tr><td id=\"label\">email</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"email\" size=\"25\" maxlength=\"45\" value=\"$n->email\"/></td></tr>\n";
   echo "<tr><td id=\"label\">url</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"url\" size=\"25\" maxlength=\"35\" value=\"$n->url\"/></td></tr>\n";
   echo "<tr><td id=\"label\">language</td><td id=\"field\">";select_languages("lang", $c->lang);echo "</td></tr>";
 
