@@ -785,7 +785,9 @@ Services::~Services()
 	    {
 	       return false;
 	    }
-          database.dbSelect("privmsg", "nicks", "nickname='"+nick+"'");
+
+          if( database.dbSelect("privmsg", "nicks", "nickname='"+nick+"'") < 1 )
+            return false;
 
           if( database.dbGetValue() == "1")
             return true;
@@ -804,7 +806,8 @@ Services::~Services()
        {
 	  int chanid = channel.getOnlineChanID(chan);
 	  int nickid = locateID(nick);
-          database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'");
+          if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1)
+            return false;
 
           if( database.dbGetValue().toInt() == 2 )
             return true;
@@ -817,7 +820,8 @@ Services::~Services()
        {
           int chanid = channel.getOnlineChanID(chan);
           int nickid = locateID(nick);
-          database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'");
+          if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1 )
+            return false;
 
           if( database.dbGetValue().toInt() == 1 )
             return true;

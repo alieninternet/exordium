@@ -95,7 +95,8 @@ void
 bool
   Channel::ChanLog(String const &channel)
 {
-   services.getDatabase().dbSelect("clog", "chanopts", "'" + channel.toLower() + "'");
+   if( services.getDatabase().dbSelect("clog", "chanopts", "'" + channel.toLower() + "'") < 1 )
+      return false;
 
    if(services.getDatabase().dbGetValue() == "1")
       return true;

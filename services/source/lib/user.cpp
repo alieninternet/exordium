@@ -122,7 +122,8 @@ bool
 {
    std::cout << "MY NICKNAME IS" << nickname << std::endl;
 
-   services.getDatabase().dbSelect("modnick", "nicks", "nickname='"+nickname+"'");
+   if( services.getDatabase().dbSelect("modnick", "nicks", "nickname='"+nickname+"'") < 1 )
+      return false;
 
    if (services.getDatabase().dbGetValue() == "1")
       return true;
@@ -134,9 +135,10 @@ bool
 String
   User::getModes(void)
 {
-   services.getDatabase().dbSelect("modes", "onlineclients", "id="+getOnlineIDString());
-
-   return services.getDatabase().dbGetValue();
+   if( services.getDatabase().dbSelect("modes", "onlineclients", "id="+getOnlineIDString()) < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 }
 
 
@@ -150,7 +152,8 @@ String
 bool
   User::deopAway(void)
 {
-   services.getDatabase().dbSelect("deopaway", "nicks", "nickname='"+nickname+"'");
+   if( services.getDatabase().dbSelect("deopaway", "nicks", "nickname='"+nickname+"'") < 1 )
+      return false;
 
    if( services.getDatabase().dbGetValue() == "1" )
       return true;
@@ -178,8 +181,10 @@ void
 String
   User::getQuitMessage(void)
 {
-   services.getDatabase().dbSelect("quitmsg", "nicks", "nickname='"+nickname+"'");
-   return services.getDatabase().dbGetValue();
+   if( services.getDatabase().dbSelect("quitmsg", "nicks", "nickname='"+nickname+"'") < 1)
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 };
 
 /* getAccess(String)
@@ -232,8 +237,10 @@ int
 String
   User::getHost(void)
 {
-   services.getDatabase().dbSelect("hostname", "onlineclients", "id='"+getOnlineIDString()+"'");
-   return services.getDatabase().dbGetValue();
+   if( services.getDatabase().dbSelect("hostname", "onlineclients", "id='"+getOnlineIDString()+"'") < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 };
 
 /*
@@ -246,8 +253,10 @@ String
 String
   User::getIdent(void)
 {
-   services.getDatabase().dbSelect("username", "onlineclients", "id='"+getOnlineIDString()+"'");
-   return services.getDatabase().dbGetValue();
+   if( services.getDatabase().dbSelect("username", "onlineclients", "id='"+getOnlineIDString()+"'") < 1 )
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
 }
 
 /*
@@ -323,7 +332,8 @@ String
 bool
   User::isPending(void)
 {
-   services.getDatabase().dbSelect("id", "pendingnick", "nickname='"+nickname+"'");
+   if( services.getDatabase().dbSelect("id", "pendingnick", "nickname='"+nickname+"'") < 1 )
+     return false;
 
    if ( services.getDatabase().dbGetValue().toInt() > 0 )
      return true;
