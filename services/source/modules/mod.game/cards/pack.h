@@ -30,6 +30,8 @@
 
 # include <vector>
 
+# include "shuffler.h"
+
 namespace Cards {
    // The populator functor
    template < class T > class _populator {
@@ -50,6 +52,9 @@ namespace Cards {
       // Our cards
       cards_type cards;
 
+      // Our shuffler functor
+      //Shuffler<cards_type> shuffler;
+
     public:
       // Constructor (populates the pack, all cards are in 'mint' order)
       Pack(bool withJoker = false) 
@@ -65,32 +70,10 @@ namespace Cards {
       
       // Shuffle the pack
       void shuffle(void)
-        {
-          cards_type newCardList;
-          newCardList.reserve(cards.size());
-                
-          // Until the main list of cards is empty, dump the cards in the above vector
-          while (!cards.empty()) {
-             typename cards_type::iterator iter;
-
-             int iterationCount = (int)((float)cards.size() * rand() /
-                 (RAND_MAX + 1.0));
-
-             // Loop to that location
-             for (iter = cards.begin(); iterationCount > 1; iter++) {
-                iterationCount--;
-             }
-
-             // Copy the card..
-             newCardList.push_back(*iter);
-             
-             // Delete the card..
-             cards.erase(iter);
-          }
-          
-          // Swap the two lists..
+        { 
+          cards_type newCardList = shuffler<cards_type>(cards);
           cards.swap(newCardList);
-        };
+        }
       
       // Remove a card from the pack
       CardType removeCard(void)

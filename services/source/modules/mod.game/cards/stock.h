@@ -32,6 +32,7 @@
 # include <stack>
 
 # include "pack.h"
+# include "shuffler.h"
 
 namespace Cards {
    template < class CardType >
@@ -74,7 +75,7 @@ namespace Cards {
        void addCard(CardType card) 
          { stock.push(card); }
 
-       unsigned int total(void)
+       unsigned int total(void) const
          { return stock.size(); }
 
        CardType removeCard(void)
@@ -91,30 +92,8 @@ namespace Cards {
       // Shuffle the stock
       void shuffle(void)
         {
-          stock_type newCardList;
-          newCardList.reserve(stock.size());
-                
-          // Until the main list of cards is empty, dump the cards in the above vector
-          while (!stock.empty()) {
-             typename stock_type::iterator iter;
-
-             int iterationCount = (int)((float)stock.size() * rand() /
-                 (RAND_MAX + 1.0));
-
-             // Loop to that location
-             for (iter = stock.begin(); iterationCount > 1; iter++) {
-                iterationCount--;
-             }
-
-             // Copy the card..
-             newCardList.push_back(*iter);
-             
-             // Delete the card..
-             stock.erase(iter);
-          }
-          
-          // Swap the two lists..
-          cards.swap(newCardList);
+          stock_type newCardList = shuffler<stock_type>(stock);
+          stock.swap(newCardList);
         };
    };
 }; // namespace Cards

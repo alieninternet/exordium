@@ -33,11 +33,11 @@
 namespace Cards {
    // The shuffler class
    template < class ContainerType >
-   struct shuffler : public std::unary_function < ContainerType, ContainerType > 
+   ContainerType shuffler(ContainerType cardList)
    {
       // Shuffle the stock
-      ContainerType operator()(ContainerType cardList)
-      {
+//      ContainerType operator()(ContainerType cardList)
+//      {
          ContainerType newCardList;
          newCardList.reserve(cardList.size());
                 
@@ -62,7 +62,7 @@ namespace Cards {
          }
           
          return newCardList;
-      };
+//      };
    };
 }; // namespace Cards
    
