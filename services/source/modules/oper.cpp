@@ -31,7 +31,6 @@
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include <kineircd/str.h>
-#include "exordium/module.h"
 #include <map>
 #include "exordium/sql.h"
 
@@ -121,6 +120,6 @@ EXORDIUM_SERVICE_INIT_FUNCTION
    services.registerService(name,name,"ircdome.org", "+dz",
 			    "IRC Operator Services");
    services.serviceJoin(name,"#Debug");
-   return new Module("oper",new Oper(services, name));
+   return new Oper(services, name);
 }
 

@@ -29,7 +29,6 @@
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include <kineircd/str.h>
-#include "exordium/module.h"
 #include <map>
 #include "exordium/sql.h"
 
@@ -831,6 +830,6 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 			    "Channel Registration Services");
    services.serviceJoin(name,"#Debug");
    services.getChannel().synchChannels();
-   return new Module("chan", new Chan(services, name));
+   return new Chan(services, name);
 }
 

@@ -63,6 +63,7 @@ extern "C" {
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
 //#include "exordium/userbase.h"
+#include "exordium/modules.h"
 
 
 namespace Exordium {
@@ -147,7 +148,7 @@ namespace Exordium {
   	void run (void);
 	bool handleInput (void);
 	bool SecurePrivmsg;
-	Core serviceM;
+	Modules serviceM;
 	// Function Declrations below here.
 	void shutdown(const LibAIS::String &);
 	void SynchTime(void);

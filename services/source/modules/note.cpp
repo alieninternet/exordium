@@ -31,7 +31,6 @@
 #include "exordium/nickname.h"
 #include <kineircd/str.h>
 #include "exordium/sql.h"
-#include "exordium/module.h"
 #include <map>
 
 using LibAIS::String;
@@ -258,7 +257,7 @@ namespace Exordium
 	services.registerService(name,name,"ircdome.org","+dz",
 				 "Note service thingy that James forgot :(");
 	services.serviceJoin(name,"#Debug");
-	return new Module("note", new Note(services));
+	return new Note(services);
      }
 
 }

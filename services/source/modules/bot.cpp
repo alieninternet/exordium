@@ -30,7 +30,6 @@
 #include "exordium/service.h"
 #include "exordium/services.h"
 #include <kineircd/str.h>
-#include "exordium/module.h"
 #include <map>
 #include "exordium/sql.h"
 
@@ -97,6 +96,6 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 //   services.registerService(name,name,"ircdome.org", "+dz",
 //			    "Bot Interface to Services");
 //   services.serviceJoin(name,"#Debug");
-   return new Module("bot",new Bot(services, name));
+   return new Bot(services, name);
 }
 

@@ -27,7 +27,6 @@
 #include <exordium/channel.h>
 #include <exordium/service.h>
 #include <exordium/services.h>
-#include <exordium/module.h>
 #include <exordium/sql.h>
 #include <kineircd/str.h>
 #include <map>
@@ -44,7 +43,7 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Module("game", new Game(services, name));
+   return new Game(services, name);
 }
 
 

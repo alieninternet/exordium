@@ -29,7 +29,6 @@
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
 #include "exordium/sql.h"
-#include "exordium/module.h"
 #include <map>
 #include <sstream>
 
@@ -655,6 +654,6 @@ void
 	services.registerService(name,name,"ircdome.org", "+dz",
 				 "Nickname Registration Services");
 	services.serviceJoin(name,"#Debug");
-	return new Module(myName, new Nick(services, name));
+	return new Nick(services, name);
      }
 

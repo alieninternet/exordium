@@ -30,7 +30,6 @@
 #include "exordium/channel.h"
 #include <kineircd/str.h>
 #include "exordium/sql.h"
-#include "exordium/module.h"
 #include <sys/time.h>
 
 using LibAIS::String;
@@ -85,7 +84,7 @@ namespace Exordium
 	services.registerService(name,name,"ircdome.org","+dz",
 				 "Network Voting Service");
 	services.serviceJoin(name,"#Debug");
-	return new Module("vote", new Vote(services));
+	return new Vote(services);
      }
 
 };

@@ -41,7 +41,6 @@
 #include "exordium/parser.h"
 #include "exordium/service.h"
 #include <kineircd/utils.h>
-#include "exordium/module.h"
 #include <kineircd/kineircdconf.h>
 #include <kineircd/signals.h>
 
@@ -868,13 +867,20 @@ namespace Exordium
 
 	  if (initfunc == 0)
 	    {
-	       String togo = "\002[\002Module Error\002]\002 Module does not contain an init function";
-	       Debug(togo);
+	       Debug("\002[\002Module Error\002]\002 Module does not contain "
+		     "an init function");
 	       return false;
 	    }
 
-	  Module *modInfo = (*initfunc)(*this, name);
-	  serviceM.addModule(modInfo->modName, *modInfo->modService, handle);
+	  Service *service = (*initfunc)(*this, name);
+	  
+	  if (service == 0) {
+	     Debug("\002[\002Module Error\002]\002 Module contains an invalid "
+		   "init function, or the init function returned null");
+	     return false;
+	  }
+	  
+	  serviceM.addModule(*service, handle);
 	  return true;
        }
 

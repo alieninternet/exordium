@@ -27,7 +27,6 @@
 #include <map>
 #include <sstream>
 #include <exordium/config.h>
-#include <exordium/module.h>
 
 #ifdef DEBUG
 # include <cassert>
@@ -47,7 +46,7 @@ using namespace Exordium;
  */
 EXORDIUM_SERVICE_INIT_FUNCTION
 {
-   return new Module("love", new Love(services, name));
+   return new Love(services, name);
 }
 
 
