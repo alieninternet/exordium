@@ -374,6 +374,14 @@ NICK_FUNC (Module::parseAUTH)
 				getName());
 	     return;
 	  }
+	if((value=="turkish") || (value=="tr") || (value=="turkiye"))
+	  {
+	     std::cout << "Setting Turkish!" << std::endl;
+	     origin.setLanguage("tr");
+	     origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Turkiye"),
+				getName());
+	     return;
+	  }
 	
 	origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
 			   getName());

@@ -68,6 +68,7 @@ const struct Parser::functionTableStruct Parser::functionTable[] =
      { "MOTD", &Parser::parseMOTD },
      { "VERSION", &Parser::parseMOTD },
      { "TOPIC", &Parser::parseTOPIC },
+     { "GNOTICE", &Parser::parseGNOTICE },
      { 0, 0 }
 };
 
@@ -105,6 +106,14 @@ void Parser::parseLine(const String& line)
    services.logLine("Unparsed Input!: " + line,
 		    Log::Debug);
 };
+
+void PARSER_FUNC (Parser::parseGNOTICE)
+{
+// OLDorigin = server
+// txt = the rest.
+String txt = tokens.rest();   
+
+}
 
 void PARSER_FUNC (Parser::parseAWAY)
 {

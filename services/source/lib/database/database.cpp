@@ -140,11 +140,12 @@ int CDatabase::dbSelect(AISutil::String const &fields, AISutil::String const &ta
 }
 void CDatabase::dbDelayedInsert(String const &table, String const &values)
 {
-   database->dbLock(table);
+// No locking on a delayed insert! :)
+//   database->dbLock(table);
    database->dbBeginTrans();
    database->dbQuery("INSERT DELAYED into " + table + " VALUES ("+values+")");
    database->dbCommit();
-   database->dbUnlock();
+//   database->dbUnlock();
    database->dbClearRes();
 }
 
