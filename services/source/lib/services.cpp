@@ -227,10 +227,11 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	    }
        }
 
-   ServicesInternal::ServicesInternal(Kine::Daemon& d, Config& c, CDatabase& db)
-     : Services(d, c, db),
+   ServicesInternal::ServicesInternal(Kine::Daemon& d, ConfigInternal& c, CDatabase& db)
+     : Services(d, db),
        parser(*this),
        console(*this),
+       config(c),
        sock(-1),
        maxSock(-1),
        inputBufferPosition(0),
@@ -383,7 +384,12 @@ bool ServicesInternal::handleInput (void)
  * lifespan in anycase.. - pickle
  */
 	queueAdd ("SERVER " + config.getServicesHostname() + " 1 :" + config.getServicesDescription());
-	queueAdd ("SERVER " + config.getConsoleHostname() + " 2 :" + config.getConsoleDescription());
+	
+	// Do we have an underling?
+	if (!config.getUnderlingHostname().empty()) {
+	   queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
+	}
+	
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
 	queueAdd (":" + config.getServicesHostname()  + " EOB");
 	queueAdd ("BURST");

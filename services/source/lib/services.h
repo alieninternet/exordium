@@ -33,13 +33,16 @@
 
 # include "parser.h"
 # include "console.h"
+# include "config.h"
 
 namespace Exordium {
    class ServicesInternal : public Services {
     private:
       Parser parser;
       Console console;
-      
+
+      ConfigInternal& config;
+
       typedef std::map <AISutil::String, User *> user_map;
       typedef std::map <AISutil::String, dChan *> chan_map;
       user_map users;
@@ -101,12 +104,20 @@ namespace Exordium {
 	
     public:
       // Constructor
-      ServicesInternal(Kine::Daemon& d, Config& c, CDatabase& db);
+      ServicesInternal(Kine::Daemon& d, ConfigInternal& c, CDatabase& db);
 	
       // Destructor
       ~ServicesInternal(void)
 	{};
 
+      // Grab the configuration reference
+      const Config& getConfig(void) const
+	{ return config; };
+      
+      // Grab the configuration reference, however for internal use
+      ConfigInternal& getConfigInternal(void)
+	{ return config; };
+      
       // *sigh* grab the console object :(
       Console& getConsole(void)
 	{ return console; };

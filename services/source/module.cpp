@@ -32,8 +32,8 @@
 #ifdef DEBUG
 # include <cassert>
 #endif
-#include <exordium/conf.h>
 #include <exordium/database/database.h>
+#include "lib/config.h"
 #include "lib/services.h"
 #include <kineircd/module.h>
 #include "version.h"
@@ -76,16 +76,16 @@ namespace {
       Kine::Module::Flags::UNIQUE_INSTANCE,
 
       // Configuration information
-      &Config::definitionTable
+      &ConfigInternal::definitionTable
    };
 
    
    class mod_exordium : public Kine::Module {
     private:
-      Config config;
+      ConfigInternal config;
       ServicesInternal* services;
 
-      // this shouldn't be here.. the Config:: one should replace it
+      // this shouldn't be here.. the ConfigInternal:: one should replace it
       CDatabase* db;
 
     public:

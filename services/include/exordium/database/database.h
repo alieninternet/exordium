@@ -31,7 +31,7 @@
 
 #include <aisutil/string/string.h>
 #include <exordium/database/base.h>
-#include <exordium/conf.h>
+#include <exordium/config.h>
 
 
 namespace Exordium {

@@ -112,7 +112,7 @@ void PARSER_FUNC (Parser::parseAWAY)
      }
  
    /* From here on i'm fiddling with away */
-   services.getConfig().getModules().handleAway(*origin,reason);
+   services.getConfigInternal().getModules().handleAway(*origin,reason);
 
 }
 void
@@ -431,7 +431,7 @@ void PARSER_FUNC (Parser::parseN)
       return;
    }
 
-   services.getConfig().getModules().handleClientSignon(*newNick);
+   services.getConfigInternal().getModules().handleClientSignon(*newNick);
 /*   if (modes.find("o"))
      services.validateOper(nick);
 */
@@ -444,7 +444,7 @@ void PARSER_FUNC (Parser::parseN)
 *   // NOTE: hardcoded bot nick?
 *   for (int i=0; i<nbRes; i++)
 *   {
-*      newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfig().getConsoleName());
+*      newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
 *      services.getDatabase().dbGetRow();
 *   }
 *
@@ -497,7 +497,7 @@ void
 	return;
      }
    if ((target.IRCtoLower ()) == 
-       services.getConfig().getConsoleName().IRCtoLower())
+       services.getConfigInternal().getConsoleName().IRCtoLower())
      {
 	services.getConsole().parseLine(message,OLDoriginl);
 	return;
@@ -508,7 +508,7 @@ void
    if(target[0]=='#')
      {
 	//Oke channel msg :>
-	if(!services.getConfig().getModules().exists("chan"))
+	if(!services.getConfigInternal().getModules().exists("chan"))
 	  {
 	     String togo = "Sorry - Channel services are currently disabled for maintenance";
 	     services.serviceNotice(String(togo),target,OLDoriginl);
@@ -516,13 +516,13 @@ void
 	  }
 	
 	// dodgey? YES.. YES IT IS.. :(
-//	services.getConfig().getModules().throwLine("chan",message,OLDoriginl,target);
-//	services.getConfig().getModules().throwLine("game",message,OLDoriginl,target);
+//	services.getConfigInternal().getModules().throwLine("chan",message,OLDoriginl,target);
+//	services.getConfigInternal().getModules().throwLine("game",message,OLDoriginl,target);
 	StringTokens dodgeydodgeydodgey(message);
-	services.getConfig().getModules().throwLine("chan", dodgeydodgeydodgey, *origin,
+	services.getConfigInternal().getModules().throwLine("chan", dodgeydodgeydodgey, *origin,
 				    target);
 	StringTokens dodgeydodgeydodgeyAGAIN(message);
-	services.getConfig().getModules().throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
+	services.getConfigInternal().getModules().throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
 				    target);
 	return;
      }
@@ -531,27 +531,27 @@ void
      {
 	services.SecurePrivmsg = true;
 	//Safety check for the module.. :-)
-	if(!services.getConfig().getModules().exists("nick"))
+	if(!services.getConfigInternal().getModules().exists("nick"))
 	  {
 	     String togo = "Sorry - This part of services is currently undergoing construction";
 	     services.serviceNotice(String(togo),target,OLDoriginl);
 	  }
 	StringTokens bloodydodgeytoo(message);
-	services.getConfig().getModules().throwLine("nick", bloodydodgeytoo, *origin);
+	services.getConfigInternal().getModules().throwLine("nick", bloodydodgeytoo, *origin);
 	return;
      }
    services.SecurePrivmsg = false;
-   if(!services.getConfig().getModules().exists(target))
+   if(!services.getConfigInternal().getModules().exists(target))
      {
 	services.serviceNotice("Sorry - This part of Services is currently "
 			       "offline for maintenance - please try again "
 			       "later",
-			       services.getConfig().getServicesHostname(),
+			       services.getConfigInternal().getServicesHostname(),
 			       OLDoriginl);
 	return;
      }
    StringTokens dodgeybutnotanymoredodgeythanthelastonewas(message);
-   services.getConfig().getModules().throwLine(target.toLower(),
+   services.getConfigInternal().getModules().throwLine(target.toLower(),
 			       dodgeybutnotanymoredodgeythanthelastonewas,
 			       *origin);
 
@@ -726,7 +726,7 @@ void
 {
    User *origin = services.findUser(OLDorigin);
 
-   origin->sendMessage("AddANiceMessageHereWithVersionEtc", services.getConfig().getServicesHostname(), false);
+   origin->sendMessage("AddANiceMessageHereWithVersionEtc", services.getConfigInternal().getServicesHostname(), false);
 }
 
 

@@ -17,7 +17,7 @@ if EXORDIUM_COMPILE_DB_PGSQL
   EXORDIUM_TARGET_DB_PGSQL=lib/database/postgresql/dbpgsql.cpp
 endif
 
-libexordium_la_SOURCES = lib/conf.cpp \
+libexordium_la_SOURCES = lib/config.cpp \
 			 lib/console.cpp \
 		       	 lib/channel.cpp \
 			 lib/dchan.cpp \

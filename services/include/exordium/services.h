@@ -33,23 +33,20 @@
 # include <kineircd/password.h>
 # include <kineircd/daemon.h>
 
-# include <exordium/conf.h>
+# include <exordium/config.h>
 # include <exordium/channel.h>
-# include <exordium/user.h>
 # include <exordium/dchan.h>
 # include <exordium/log.h>
 
 
 namespace Exordium {
    class CDatabase;  
+   class User;
    
    class Services {
     protected:
       // Where the KineIRCd daemon instance is
       Kine::Daemon& daemon;
-      
-      // Our configuration
-      Config& config;
       
       // Our database handler, however this should be in the config class..
       CDatabase& database;
@@ -58,9 +55,8 @@ namespace Exordium {
       Channel channel;
       
       // Constructor
-      Services(Kine::Daemon& d, Config& c, CDatabase& db)
+      Services(Kine::Daemon& d, CDatabase& db)
 	: daemon(d),
-          config(c),
           database(db),
           channel(*this)
 	{};
@@ -87,8 +83,7 @@ namespace Exordium {
 	{ return database; };
       
       // Grab the configuration reference
-      Config& getConfig(void)
-	{ return config; };
+      virtual const Config& getConfig(void) const = 0;
       
       // Return the channel thingy
       Channel& getChannel(void)
@@ -251,5 +246,6 @@ namespace Exordium {
 }; // namespace Exordium
 
 # include <exordium/database/database.h>
+# include <exordium/user.h>
 
 #endif // _INCLUDE_EXORDIUM_SERVICES_H_

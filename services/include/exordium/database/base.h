@@ -87,7 +87,7 @@ namespace Exordium {
 
 }; // namespace Exordium
 
-# include <exordium/conf.h>
+# include <exordium/config.h>
 
 
 #endif // _INCLUDE_EXORDIUM_DATABASE_BASE_H_

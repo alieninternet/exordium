@@ -31,7 +31,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iomanip>
-#include "exordium/modules.h"
+#include "modules.h"
 
 using namespace Exordium;
 using AISutil::String;

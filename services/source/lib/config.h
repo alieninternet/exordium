@@ -24,16 +24,15 @@
  *
  */
 
-#ifndef _INCLUDE_EXORDIUM_CONF_H_
-# define _INCLUDE_EXORDIUM_CONF_H_ 1
+#ifndef _SOURCE_LIB_CONFIG_H_
+# define _SOURCE_LIB_CONFIG_H_ 1
 
-# include <aisutil/config/data.h>
-# include <aisutil/string/string.h>
-# include <exordium/database/database.h>
-# include <exordium/modules.h>
+# include "exordium/config.h"
+# include "exordium/database/database.h"
+# include "modules.h"
 
 namespace Exordium {
-   class Config : public AISutil::ConfigData {
+   class ConfigInternal : public Exordium::Config {
     public:
       // The definition table used by Kine's configuration parser
       static const AISutil::ConfigParser::defTable_type definitionTable;
@@ -42,6 +41,7 @@ namespace Exordium {
       // Variables (top class from the definition table above)
       AISutil::String defServicesDescription;   // Services description (aka realname)
       AISutil::String defServicesHostname;      // Services hostname
+      AISutil::String defUnderlingDescription;	// Underling server description
       AISutil::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
 
@@ -61,34 +61,30 @@ namespace Exordium {
       static LIBAISUTIL_CONFIG_CLASS_HANDLER(classHandleModule);
       static LIBAISUTIL_CONFIG_VARIABLE_HANDLER(varHandleModule);
       
-      // 'SQL' class and variables
+      // 'SQL' class
       static const AISutil::ConfigParser::defTable_type defClassSql;
-      AISutil::String defSqlDatabase;		// MySql server database name
-      AISutil::String defSqlHostname;		// MySql server hostname
-      AISutil::String defSqlPassword;		// MySql server password
-      unsigned short defSqlPort;		// MySql server port
-      AISutil::String defSqlUsername;		// MySql server username
-      AISutil::String defSqlEngine;             // Database engine
-      
+
     public:
-      // Constructor (sets up defaults mainly)
-      Config(void);
+      // Constructor
+      ConfigInternal(void);
       
       // Destructor
-      ~Config(void);
+      ~ConfigInternal(void);
       
       // Check the configuration (fail-safe for when the module starts)
-      bool checkConfig(void);
+      const bool checkConfig(void) const;
       
       // Top variables
-      const AISutil::String& getUplinkHost(void) const
-	{ return defUplinkHost; };      
-      const unsigned short getUplinkPort(void) const
-        { return defUplinkPort; };
       const AISutil::String& getServicesHostname(void) const
         { return defServicesHostname; };
       const AISutil::String& getServicesDescription(void) const
         { return defServicesDescription; };
+      const AISutil::String& getUnderlingDescription(void) const
+	{ return defUnderlingDescription; };      
+      const AISutil::String& getUplinkHost(void) const
+	{ return defUplinkHost; };      
+      const unsigned short getUplinkPort(void) const
+        { return defUplinkPort; };
 
       // 'CONSOLE' class
       const AISutil::String& getConsoleDescription(void) const
@@ -107,22 +103,7 @@ namespace Exordium {
       // 'MODULE' class
       Modules& getModules(void)
 	{ return defModules; };
-      
-      // 'SQL' class
-      const AISutil::String& getSqlDatabase(void) const
-	{ return defSqlDatabase; };
-      const AISutil::String& getSqlHostname(void) const
-	{ return defSqlHostname; };
-      const AISutil::String& getSqlPassword(void) const
-	{ return defSqlPassword; };
-      const unsigned short getSqlPort(void) const
-	{ return defSqlPort; };
-      const AISutil::String& getSqlUsername(void) const
-	{ return defSqlUsername; };
-      const AISutil::String& getSqlEngine(void) const
-        { return defSqlEngine; };
    };
 }; // namespace Exordium
 
-#endif // _INCLUDE_EXORDIUM_CONF_H_
-
+#endif // _SOURCE_LIB_CONFIG_H_

@@ -32,8 +32,6 @@
 # include <exordium/services.h>
 
 namespace Exordium {
-   class Services;
-
    class User {
     private:
       AISutil::String nickname;

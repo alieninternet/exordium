@@ -57,7 +57,8 @@ void Console::parseLine(const String &line, const String &requestor)
    }
    
    services.serviceNotice("Unrecognized Command", 
-			  services.getConfig().getConsoleName(), requestor);
+			  services.getConfigInternal().getConsoleName(),
+			  requestor);
 }
 
 
@@ -66,10 +67,12 @@ void CONSOLE_FUNC(Console::parseMODULE)
    String command = tokens.nextToken();
    
    if(command == "list") {
-      String foo = services.getConfig().getModules().dumpModules();
+      String foo = services.getConfigInternal().getModules().dumpModules();
       services.serviceNotice("The currently loaded service modules are:",
-			     services.getConfig().getConsoleName(), origin);
-      services.serviceNotice(foo, services.getConfig().getConsoleName(),
+			     services.getConfigInternal().getConsoleName(),
+			     origin);
+      services.serviceNotice(foo,
+			     services.getConfigInternal().getConsoleName(),
 			     origin);
       return;
    }
@@ -77,10 +80,11 @@ void CONSOLE_FUNC(Console::parseMODULE)
    if (command == "unload") {
       String name = tokens.nextToken();
       services.serviceNotice("Unloading module " + name,
-			     services.getConfig().getConsoleName(), origin);
-      services.getConfig().getModules().unloadModule(name,
-						     origin +
-						     " unloaded me :(");
+			     services.getConfigInternal().getConsoleName(),
+			     origin);
+      services.getConfigInternal().getModules().unloadModule(name,
+							     origin +
+							     " unloaded me :(");
       return;
    }
    
@@ -89,14 +93,16 @@ void CONSOLE_FUNC(Console::parseMODULE)
       (void)tokens.nextToken();
       String filename = tokens.nextToken();
       services.serviceNotice("Attempting to load module",
-			     services.getConfig().getConsoleName(), origin);
+			     services.getConfigInternal().getConsoleName(),
+			     origin);
       String errString;
       Service* const service = 
-	services.getConfig().getModules().loadModule(filename, errString);
+	services.getConfigInternal().getModules().loadModule(filename,
+							     errString);
       
       if (service == 0) {
 	 services.serviceNotice("Error loading module: " + errString,
-				services.getConfig().getConsoleName(),
+				services.getConfigInternal().getConsoleName(),
 				origin);
 	 return;
       }
@@ -105,6 +111,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
       service->start(services);
       
       services.serviceNotice("Module loaded successfully",
-			     services.getConfig().getConsoleName(), origin);
+			     services.getConfigInternal().getConsoleName(),
+			     origin);
    }
 }

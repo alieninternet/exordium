@@ -28,7 +28,7 @@
 # include "autoconf.h"
 #endif
 
-#include "exordium/conf.h"
+#include "config.h"
 
 #ifdef DEBUG
 # include <cassert>
@@ -38,7 +38,7 @@ using namespace Exordium;
 
 
 // Information used by the configuration parser
-const AISutil::ConfigParser::defTable_type Config::definitionTable =
+const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
 {
      {
 	"CONSOLE", 7,
@@ -47,22 +47,22 @@ const AISutil::ConfigParser::defTable_type Config::definitionTable =
      },
      {
 	"DATABASE", 4,
-	  (void *)&Config::defDatabase, 0,
+	  (void *)&ConfigInternal::defDatabase, 0,
 	  0, &classHandleDatabase
      },
      {
 	"MODULE", 3,
-	  (void *)&Config::defModules, &varHandleModule,
+	  (void *)&ConfigInternal::defModules, &varHandleModule,
 	  0, &classHandleModule
      },
      { // This should be temporary, being a server is Kine's job
         "SERVICESDESCRIPTION", 12,
-          (void *)&Config::defServicesDescription, &varHandleString,
+          (void *)&ConfigInternal::defServicesDescription, &varHandleString,
           0, 0
      },
      { // This should be temporary, being a server is Kine's job
         "SERVICESHOSTNAME", 12,
-          (void *)&Config::defServicesHostname, &varHandleHostName,
+          (void *)&ConfigInternal::defServicesHostname, &varHandleHostName,
           0, 0
      },
      {
@@ -70,14 +70,24 @@ const AISutil::ConfigParser::defTable_type Config::definitionTable =
 	  0, 0,
 	  &defClassSql, 0
      },
+     {
+	"UNDERLINGDESCRIPTION", 13,
+	  (void *)&ConfigInternal::defUnderlingDescription, &varHandleString,
+	  0, 0
+     },
+     {
+	"UNDERLINGHOSTNAME", 13,
+	  (void *)&Config::defUnderlingHostname, &varHandleHostName,
+	  0, 0
+     },
      { // This should be temporary, being a server is Kine's job
 	"UPLINKHOST", 10,
-	  (void *)&Config::defUplinkHost, &varHandleHostName,
+	  (void *)&ConfigInternal::defUplinkHost, &varHandleHostName,
 	  0, 0
      },
      { // This should be temporary, being a server is Kine's job
         "UPLINKPORT", 10,
-          (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
+          (void *)&ConfigInternal::defUplinkPort, &varHandleUnsignedShortNoZero,
           0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
@@ -85,26 +95,26 @@ const AISutil::ConfigParser::defTable_type Config::definitionTable =
 
 
 // 'CONSOLE' class definition table
-const AISutil::ConfigParser::defTable_type Config::defClassConsole =
+const AISutil::ConfigParser::defTable_type ConfigInternal::defClassConsole =
 {
      {
         "DESCRIPTION", 4,
-          (void *)&Config::defConsoleDescription, &varHandleString,
+          (void *)&ConfigInternal::defConsoleDescription, &varHandleString,
           0, 0
      },
      {
         "ENABLED", 6,
-          (void *)&Config::defConsoleEnabled, &varHandleBoolean,
+          (void *)&ConfigInternal::defConsoleEnabled, &varHandleBoolean,
           0, 0
      },
      {
         "HOSTNAME", 4,
-          (void *)&Config::defConsoleHostname, &varHandleHostName,
+          (void *)&ConfigInternal::defConsoleHostname, &varHandleHostName,
           0, 0
      },
      {
         "NAME", 4,
-          (void *)&Config::defConsoleName, &varHandleStringOneWord,
+          (void *)&ConfigInternal::defConsoleName, &varHandleStringOneWord,
           0, 0
      },
      { 0, 0, 0, 0, 0, 0 }
@@ -112,7 +122,7 @@ const AISutil::ConfigParser::defTable_type Config::defClassConsole =
 
 
 // 'SQL' class definition table
-const AISutil::ConfigParser::defTable_type Config::defClassSql =
+const AISutil::ConfigParser::defTable_type ConfigInternal::defClassSql =
 {
      {
         "DATABASE", 8,
@@ -152,8 +162,24 @@ const AISutil::ConfigParser::defTable_type Config::defClassSql =
  * Original 25/07/2002 pickle
  */
 Config::Config(void)
+  : defUnderlingHostname(/* intentionally empty */),
+
+    // 'SQL' class
+    defSqlDatabase("services"),
+    defSqlHostname("localhost"),
+    defSqlPassword(""),
+    defSqlPort(3306), // mysql port, as assigned by the iana
+    defSqlUsername("root")
+{}
+
+
+/* ConfigInternal - Constructor
+ * Original 25/07/2002 pickle
+ */
+ConfigInternal::ConfigInternal(void)
   : defServicesDescription("Exordium Network Services"), // temporary
     defServicesHostname("services.exordium.somewhere"), // temporary
+    defUnderlingDescription(/* intentionally empty */),
     defUplinkHost("irc.somenetwork.somewhere"), // temporary
     defUplinkPort(6667), // temporary
 
@@ -164,23 +190,14 @@ Config::Config(void)
     defConsoleName("Exordium"),
 
     // 'DATABASE' class
-    defDatabase(0),
-
-    // 'SQL' class
-    defSqlDatabase("services"),
-    defSqlHostname("localhost"),
-    defSqlPassword(""),
-    defSqlPort(3306), // mysql port, as assigned by the iana
-    defSqlUsername("root")
-{
-   // nothing here!
-}
+    defDatabase(0)
+{}
 
 
-/* ~Config - Destructor
+/* ~ConfigInternal - Destructor
  * Original 03/10/2002 pickle
  */
-Config::~Config(void)
+ConfigInternal::~ConfigInternal(void)
 {
    // Delete the database engine
    if (defDatabase != 0) {
@@ -192,7 +209,7 @@ Config::~Config(void)
 /* checkConfig - Check the configuration has been done correctly (fail-safe)
  * Original 03/10/2002 pickle
  */
-bool Config::checkConfig(void)
+const bool ConfigInternal::checkConfig(void) const
 {
    // If the database engine has not been initialised, we are broken
    if (defDatabase == 0) {
@@ -207,7 +224,7 @@ bool Config::checkConfig(void)
 /* classHandleDatabase - Handle a database{}; configuration class
  * Original ...
  */
-LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleDatabase)
+LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleDatabase)
 {
    // Check if the first value is empty (the database engine type field)
    if (values.empty() || values.front().empty()) {
@@ -229,7 +246,7 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleDatabase)
  * Original 21/07/2002 pickle
  * 18/09/2002 pickle - Modified to suit Exordium
  */
-LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleModule)
+LIBAISUTIL_CONFIG_CLASS_HANDLER(ConfigInternal::classHandleModule)
 {
 #ifdef DEBUG
    // Preserve sanity..
@@ -270,7 +287,7 @@ LIBAISUTIL_CONFIG_CLASS_HANDLER(Config::classHandleModule)
  *       the AISutil::ConfigParser routines are designed to be totally 
  *       passive..
  */
-LIBAISUTIL_CONFIG_VARIABLE_HANDLER(Config::varHandleModule)
+LIBAISUTIL_CONFIG_VARIABLE_HANDLER(ConfigInternal::varHandleModule)
 {
 #ifdef DEBUG
    // Preserve sanity..

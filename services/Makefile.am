@@ -6,10 +6,9 @@ include_HEADERS=\
 	include/exordium/database/database.h \
 	include/exordium/database/table.h \
 	include/exordium/channel.h \
-	include/exordium/conf.h \
+	include/exordium/config.h \
 	include/exordium/dchan.h \
 	include/exordium/log.h \
-	include/exordium/modules.h \
 	include/exordium/service.h \
 	include/exordium/services.h \
 	include/exordium/user.h
