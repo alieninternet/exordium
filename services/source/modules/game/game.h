@@ -18,6 +18,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * For contact details for the IRCDome Development Team please see the
+ * enclosed README file.
+ *
  */
 
 #ifndef __GAME_H_

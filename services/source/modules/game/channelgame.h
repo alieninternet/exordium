@@ -1,7 +1,8 @@
 /* $Id$
- * The ChannelGame class - an abstract class for games played on channels
  * 
- * Copyright (c) 2002 Simon Butcher <simonb@alien.net.au>
+ * Exordium Network Services
+ * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (c) 2002 Simon Butcher <pickle@alien.net.au>
  *
  * This file is a part of Exordium.
  * 
@@ -18,6 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * For contact details for the IRCDome Development Team please see the
+ * enclosed README file.
+ *
  */
 
 #ifndef __CHANNELGAME_H__
