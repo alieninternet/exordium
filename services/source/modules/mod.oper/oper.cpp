@@ -121,8 +121,6 @@ if(channel=="")
 
 	/* Get the id.. */
 	int cid = services->getChannel().getOnlineChanID(channel);
-	services->serviceJoin(getName(),channel);
-	services->mode(getName(),channel,"+o",getName());
 	/* Iterate over members.. */
 
 int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
@@ -130,10 +128,13 @@ CResult *myRes = services->getDatabase().dbGetResultSet();
    
 for (int i=0; i<nbRes; i++)
 	{
-		String inick = services->getNick(myRes->getValue(i,0).toInt());
+		String inick = services->getOnlineNick(myRes->getValue(i,0).toInt());
 		std::cout << inick << std::endl;
 	   	services->mode(getName(),channel,"-o",inick);
 	}		
+   services->sendGOper(getName(),origin.getNickname()+" performed a \002massdeop\002 in "+channel);
+   
+  
 delete myRes;
 
 }
@@ -171,7 +172,7 @@ if(command=="add")
 	String togo = origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)";
 	services->sendGOper("Oper",togo);
 	services->queueAdd("SQLINE "+mask+" :"+reason);
-	origin.sendMessage("Gline added",getName());
+	origin.sendMessage("qline added",getName());
 	return;
 }
 

@@ -591,6 +591,12 @@ SERV_FUNC (Module::parseNLIST)
 	String thost = myRes->getValue(i,1);
 	String temail = myRes->getValue(i,2);
 	String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002 "+temail+"\002";
+	if(f>30)
+	  {
+	     origin.sendMessage("More than 30 results found! Please be more specific in your search",getName());
+	     return;
+	  }
+	
 	if(dest=="")
 	  {
 	     origin.sendMessage(String(tosend),getName());
@@ -651,6 +657,12 @@ SERV_FUNC (Module::parseELIST)
 	String lasthost = myRes->getValue(i,1);
 	String email = myRes->getValue(i,2);
 	String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
+	if(i>30)
+	  {
+	     origin.sendMessage("More than 30 results found! Please be more specific",getName());
+	     return;
+	  }
+	
 	if(dest=="")
 	  origin.sendMessage(tosend,getName());
 	else
