@@ -32,6 +32,7 @@
 #include "exordium/user.h"
 #include "exordium/utils.h"
 #include <kineircd/str.h>
+#include <kineircd/config.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -684,6 +685,8 @@ const void User::updateIdentified(void)
 {
    services.getDatabase().dbInsert("nicksidentified","'','"+String::convert(getOnlineID())+"','"+String::convert(getRegisteredNickID())+"'");
    services.getDatabase().dbDelete("kills","nick='"+nickname+"'");
+   services.queueAdd(":"+Kine::config().getOptionsServerName()+" SVSMODE " + nickname + " +r");
+   updateHost(getIdent()+"@"+getHost());
 }
 
 /*
