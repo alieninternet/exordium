@@ -206,7 +206,6 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	       if (currentTime > (time_t) (lastExpireRun + 120))
 		 {
 		    lastExpireRun = currentTime;
-		    expireRun ();
 		    SynchTime ();
 
 		 }
@@ -398,38 +397,25 @@ bool ServicesInternal::handleInput (void)
 	queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
 	queueAdd ("BURST");
 	//	queueFlush();
-	doBurst ();
+
+	// Start all the modules
+	config.getModules().startAll(*this);
+	
+	// Is the console actually wanted?
+	if (config.getConsoleEnabled()) {
+	   registerService(config.getConsoleName(), config.getConsoleName(),
+			   config.getConsoleHostname(),
+			   config.getConsoleDescription());
+	   // I smell a configuration variable.. *sniff sniff* can you?
+	   serviceJoin(config.getConsoleName(), "#Exordium");
+	}
+	
+	connected = true;
+	
 	queueAdd ("BURST 0");
 	return true;
      };
 
-/* doBurst()
- *
- * Load our modules... (move to a config option thingie)
- * and send our burst stuff to the uplink
- *
- */
-
-   void
-     ServicesInternal::doBurst (void)
-       {
-	  // Start all the modules
-	  config.getModules().startAll(*this);
-	  
-	  // Is the console actually wanted?
-	  if (config.getConsoleEnabled()) {
-	     registerService(config.getConsoleName(), config.getConsoleName(),
-			     config.getConsoleHostname(),
-			     config.getConsoleDescription());
-	     // I smell a configuration variable.. *sniff sniff* can you?
-	     serviceJoin(config.getConsoleName(), "#Exordium");
-	  }
-
-	  connected = true;
-	  // this is dodgey.
-	  config.getModules().dumpModules();
-	  return;
-       }
 /* getQuote(int)
  *
  * This proberly doesn't belong here...
@@ -444,38 +430,6 @@ bool ServicesInternal::handleInput (void)
            return "";
         else
            return database.dbGetValue();
-     }
-
-/* getLogCount()
- *
- * Count the total number of log entries in our database..
- *
- */
-
-   String ServicesInternal::getLogCount(void)
-     {
-        return String::convert(database.dbCount("log"));
-     }
-
-/* getNoteCount()
- *
- * Count and return the total number of notes in our database
- *
- */
-
-   String ServicesInternal::getNoteCount(void)
-     {
-        return String::convert(database.dbCount("notes"));
-     }
-/* getGlineCount()
- *
- * Count and return the total number of glines in our database
- *
- */
-
-   String ServicesInternal::getGlineCount(void)
-     {
-        return String::convert(database.dbCount("glines"));
      }
 
 /* shutdown(String)
@@ -538,29 +492,6 @@ bool ServicesInternal::handleInput (void)
 	  }
 
 	//Lastly commit any outstanding db changes.
-     }
-
-/* expireRun()
- *
- * Again, perform any tasks that need doing at a regular interval
- *
- * These being expiring glines, and statistical counts for information
- * purposes
- *
- */
-
-   void ServicesInternal::expireRun(void)
-     {
-	String nc = getRegNickCount();
-	String cc = channel.getChanCount();
-	String oc = getOnlineCount();
-	String lc = getLogCount();
-	String gc = getGlineCount();
-	String noc = getNoteCount();
-	unsigned long rx = getCountRx();
-	unsigned long tx = getCountTx();
-	String togo = String("NC [\002")+nc+"\002] CC [\002"+cc+"\002] OC [\002"+oc+"\002] LC [\002"+lc+"\002] GC [\002"+gc+"\002] NOC [\002"+noc+"\002] RX [\002"+String::convert(rx)+"\002] TX [\002"+String::convert(tx)+"\002]";
-	servicePrivmsg(String(togo),"Oper","#Debug");
      }
 
    /* AddOnlineServer(ServerName,Hops,Description)
@@ -1109,16 +1040,6 @@ void ServicesInternal::setNick(User &who, String &newnick)
    database.dbUpdate("onlineclients", "nickname='"+fixedNewNick+"'", "id="+who.getOnlineIDString());
 };
 
-/* getRegNickCount()
- *
- * Return the total number of registered nicknames (as a String)
- *
- */
-
-String ServicesInternal::getRegNickCount(void)
-{
-   return String::convert(database.dbCount("nicks"));
-};
 
 /* generatePassword(String,String)
  *
@@ -1241,30 +1162,6 @@ bool ServicesInternal::isNickRegistered(String const &nick)
    }
 }
 
-/*
- * getPass(String)
- *
- * Return the password for the given nickname
- *
- */
-
-String ServicesInternal::getPass(String const &nick)
-{
-   if( database.dbSelect("password", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-   {
-     String ret(database.dbGetValue().data(),(String::size_type)20);
-#ifdef DEBUG
-      logLine("Pass DEBUG: Size of return is" + String::convert(ret.length()),
-	      Log::Debug);
-#endif
-     return ret;
-   }
-
-//	String password((char *)row[0],(String::size_type)20);
-}
-
 
 /* getRegisteredNickID(String)
  *
@@ -1382,120 +1279,6 @@ String ServicesInternal::genAuth(String const &nickname)
    logLine("New registration: "+nickname, Log::Debug);
 #endif
    return authcode;
-}
-
-/* getURL(String)
- *
- * Find and return the URL for the given nickname.
- *
- */
-
-String ServicesInternal::getURL(String const &nick)
-{
-   if( database.dbSelect("url", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-};
-
-/* getMSN(String)
- *
- * Find and return the MSN for a nick.
- *
- */
-
-String ServicesInternal::getMSN(String const &nick)
-{
-   if( database.dbSelect("msn", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-}
-
-/* getYAHOO(String)
- *
- * Find and return the YAHOO! for a nick.
- *
- */
-
-String ServicesInternal::getYAHOO(String const &nick)
-{
-   if( database.dbSelect("yahoo", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-};
-
-/* getAIM(String)
- *
- * Return the AIM setting for a nickname.
- *
- */
-
-String ServicesInternal::getAIM(String const &nick)
-{
-   if( database.dbSelect("aim", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-};
-
-/* getICQ()
- *
- * Return the ICQ for a nick.
- *
- */
-
-String ServicesInternal::getICQ(String const &nick)
-{
-   if( database.dbSelect("icq", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-}
-
-/* getEmail
- *
- * Retrieve the nicknames email
- *
- */
-
-String ServicesInternal::getEmail(String const &nick)
-{
-   if( database.dbSelect("email", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-}
-
-/* getRegDate - return the registration date for a client.
- */
-
-String ServicesInternal::getRegDate(String const &nick)
-{
-   if( database.dbSelect("registered", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-}
-
-/* getLastID - return the date a client last identified */
-
-String ServicesInternal::getLastID(String const &nick)
-{
-   if( database.dbSelect("lastid", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
-}
-
-/* getLastHost - get last host */
-String ServicesInternal::getLastHost(String const &nick)
-{
-   if( database.dbSelect("lasthost", "nicks", "nickname='"+nick+"'") < 1 )
-     return "";
-   else
-     return database.dbGetValue();
 }
 
 void ServicesInternal::addOper(String const &nick, int access)

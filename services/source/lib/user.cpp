@@ -349,28 +349,179 @@ bool
      return false;
 }
 
+
 /* setLanguage(String)
  * 
  * Update language setting for us.
  * 
  */
-
-void
-  User::setLanguage(String const &lang)
+void User::setLanguage(const String& lang)
 {
-   services.getDatabase().dbUpdate("nicks", "lang='"+lang+"'", "nickname='"+nickname+"'");
+   services.getDatabase().dbUpdate("nicks", "lang='"+lang+"'",
+				   "nickname='" + nickname + "'");
 }
+
 
 /* getLanguage()
  *
  * return users language
  */
-
-String
-  User::getLanguage()
+String User::getLanguage(void)
 {
-   if ( services.getDatabase().dbSelect("lang", "nicks", "nickname='"+nickname+"'") > 0 )
-     return services.getDatabase().dbGetValue();
-   else
-     return "english";
+   if (services.getDatabase().dbSelect("lang", "nicks", 
+				       "nickname='" + nickname + "'") > 0) {
+      return services.getDatabase().dbGetValue();
+   }
+   
+   return "en";
+}
+
+
+/*
+ * getPass(String)
+ *
+ * Return the password for the given nickname
+ *
+ */
+const String User::getPass(void)
+{
+   if (services.getDatabase().dbSelect("password", "nicks", 
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+   
+   return String(services.getDatabase().dbGetValue().data(),
+		 (String::size_type)20);
+}
+
+
+/* getURL(String)
+ *
+ * Find and return the URL for the given nickname.
+ *
+ */
+const String User::getURL(void)
+{
+   if (services.getDatabase().dbSelect("url", "nicks", 
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+   
+   return services.getDatabase().dbGetValue();
+}
+
+
+/* getMSN(String)
+ *
+ * Find and return the MSN for a nick.
+ *
+ */
+const String User::getMSN(void)
+{
+   if (services.getDatabase().dbSelect("msn", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+   
+   return services.getDatabase().dbGetValue();
+}
+
+
+/* getYAHOO(String)
+ *
+ * Find and return the YAHOO! for a nick.
+ *
+ */
+const String User::getYAHOO(void)
+{
+   if (services.getDatabase().dbSelect("yahoo", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+   
+   return services.getDatabase().dbGetValue();
+}
+
+
+/* getAIM(String)
+ *
+ * Return the AIM setting for a nickname.
+ *
+ */
+const String User::getAIM(void)
+{
+   if (services.getDatabase().dbSelect("aim", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+   
+   return services.getDatabase().dbGetValue();
+}
+
+
+/* getICQ()
+ *
+ * Return the ICQ for a nick.
+ *
+ */
+const String User::getICQ(void)
+{
+   if (services.getDatabase().dbSelect("icq", "nicks", 
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+    
+   return services.getDatabase().dbGetValue();
+}
+
+
+/* getEmail
+ *
+ * Retrieve the nicknames email
+ *
+ */
+const String User::getEmail(void)
+{
+   if (services.getDatabase().dbSelect("email", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+    
+   return services.getDatabase().dbGetValue();
+}
+
+
+// getRegDate - return the registration date for a client.
+const String User::getRegDate(void)
+{
+   if (services.getDatabase().dbSelect("registered", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+    
+   return services.getDatabase().dbGetValue();
+}
+
+
+// getLastID - return the date a client last identified
+const String User::getLastID(void)
+{
+   if (services.getDatabase().dbSelect("lastid", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+    
+   return services.getDatabase().dbGetValue();
+}
+
+
+// getLastHost - get last host
+const String User::getLastHost(void)
+{
+   if (services.getDatabase().dbSelect("lasthost", "nicks",
+				       "nickname='" + nickname + "'") < 1) {
+      return "";
+   }
+   
+   return services.getDatabase().dbGetValue();
 }

@@ -113,7 +113,6 @@ namespace Exordium {
       virtual dChan* findChan(AISutil::String &) = 0;
       
       virtual void setNick(User &,AISutil::String &) = 0;
-      virtual AISutil::String getRegNickCount(void) = 0;
       
       virtual void mode(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &, AISutil::String const &) = 0;
@@ -200,7 +199,6 @@ namespace Exordium {
       virtual bool isNickRegistered(AISutil::String const &) = 0;
       
       // This should be in the NICK MODULE
-      virtual AISutil::String getPass(AISutil::String const &) = 0;
       virtual void modeIdentify(AISutil::String const &) = 0;
       virtual void updateLastID(AISutil::String const &) = 0;
       
@@ -214,17 +212,6 @@ namespace Exordium {
 				AISutil::String const &,
 				AISutil::String const &) = 0;
       virtual AISutil::String genAuth(AISutil::String const &) = 0;
-      
-      // These definately should be in the NICK MODULE or USER CLASS !!! :(
-      virtual AISutil::String getURL(AISutil::String const &) = 0;
-      virtual AISutil::String getMSN(AISutil::String const &) = 0;
-      virtual AISutil::String getYAHOO(AISutil::String const &) = 0;
-      virtual AISutil::String getAIM(AISutil::String const &) = 0;
-      virtual AISutil::String getICQ(AISutil::String const &) = 0;
-      virtual AISutil::String getEmail(AISutil::String const &) = 0;
-      virtual AISutil::String getRegDate(AISutil::String const &) = 0;
-      virtual AISutil::String getLastID(AISutil::String const &) = 0;
-      virtual AISutil::String getLastHost(AISutil::String const &) = 0;
       
       virtual void addOper(AISutil::String const &, int access) = 0;
       virtual void delOper(AISutil::String const &) = 0;

@@ -85,21 +85,11 @@ namespace Exordium {
 	};
       
       void SynchTime(void);
-      void expireRun(void);
       void disconnect(void);
       bool connect(void);
-      AISutil::String getLogCount(void);
-      AISutil::String getGlineCount(void);
-      AISutil::String getNoteCount(void);
-      void doBurst(void);
       bool queueFlush(void);
       AISutil::String parseHelp(AISutil::String const &);
       
-      AISutil::String getOnlineCount(void) const
-	{
-	   return AISutil::String::convert(users.size());
-	};
-	
       void checkpoint(void);
 	
     public:
@@ -146,7 +136,6 @@ namespace Exordium {
       dChan* findChan(AISutil::String &);
       
       void setNick(User &,AISutil::String &);
-      AISutil::String getRegNickCount(void);
       
       void mode(AISutil::String const &, AISutil::String const &,
 		AISutil::String const &, AISutil::String const &);
@@ -270,7 +259,6 @@ namespace Exordium {
       bool isNickRegistered(AISutil::String const &);
       
       // This should be in the NICK MODULE
-      AISutil::String getPass(AISutil::String const &);
       void modeIdentify(AISutil::String const &);
       void updateLastID(AISutil::String const &);
       
@@ -283,17 +271,6 @@ namespace Exordium {
       void registerNick(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &);
       AISutil::String genAuth(AISutil::String const &);
-      
-      // These definately should be in the NICK MODULE or USER CLASS !!! :(
-      AISutil::String getURL(AISutil::String const &);
-      AISutil::String getMSN(AISutil::String const &);
-      AISutil::String getYAHOO(AISutil::String const &);
-      AISutil::String getAIM(AISutil::String const &);
-      AISutil::String getICQ(AISutil::String const &);
-      AISutil::String getEmail(AISutil::String const &);
-      AISutil::String getRegDate(AISutil::String const &);
-      AISutil::String getLastID(AISutil::String const &);
-      AISutil::String getLastHost(AISutil::String const &);
       
       void addOper(AISutil::String const &, int access);
       void delOper(AISutil::String const &);

@@ -143,21 +143,26 @@ void
 	return;
      }
 
+   
+   /* Get ready to projectile vomit ... 8-/
+    *    - pickle
+    */
+   
    int saccess = origin.getAccess("Serv");
    int oaccess = origin.getAccess("Oper");
    if(saccess>0 || oaccess>0)
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     String lhost = services->getLastHost(ptr->getNickname());
-	     String lid = services->getLastID(ptr->getNickname());
-	     String lreg = services->getRegDate(ptr->getNickname());
-	     String lemail = services->getEmail(ptr->getNickname());
-	     String licq = services->getICQ(who);
-	     String lmsn = services->getMSN(who);
-	     String laim = services->getAIM(who);
-	     String lurl = services->getURL(who);
-	     String lyah = services->getYAHOO(who);
+	     String lhost = ptr->getLastHost();
+	     String lid = ptr->getLastID();
+	     String lreg = ptr->getRegDate();
+	     String lemail = ptr->getEmail();
+	     String licq = ptr->getICQ();
+	     String lmsn = ptr->getMSN();
+	     String laim = ptr->getAIM();
+	     String lurl = ptr->getURL();
+	     String lyah = ptr->getYAHOO();
 	     String lqui = ptr->getQuitMessage();
 	     bool deopAway = ptr->deopAway();
 	     bool modNick = ptr->modNick();
@@ -199,14 +204,14 @@ void
 	  }
      }
 
-   String lhost = services->getLastHost(who);
-   String lid = services->getLastID(who);
-   String lreg = services->getRegDate(who);
-   String licq = services->getICQ(who);
-   String lmsn = services->getMSN(who);
-   String laim = services->getAIM(who);
-   String lurl = services->getURL(who);
-   String lyah = services->getYAHOO(who);
+   String lhost = ptr->getLastHost();
+   String lid = ptr->getLastID();
+   String lreg = ptr->getRegDate();
+   String licq = ptr->getICQ();
+   String lmsn = ptr->getMSN();
+   String laim = ptr->getAIM();
+   String lurl = ptr->getURL();
+   String lyah = ptr->getYAHOO();
    String toa = "Nickname Information Report (NON-STAFF) for \002"+who;
    String tob = "Last Host : \002<HIDDEN>";
    String toc = "Last Identified : \002"+lid;
@@ -546,7 +551,7 @@ void
 	     return;
 	  }
 	String nickpass = String::convert(services->generatePassword(tokill,password));
-	String givepass = services->getPass(tokill);
+	String givepass = ptr->getPass();
 	if(nickpass == givepass)
 	  {
 	     String reason = "Kill requested by "+origin.getNickname();
@@ -590,8 +595,16 @@ void
 	       origin.sendMessage(tosend,getName());
 	       return;
 	    }
-	  String nickpass = String::convert(services->generatePassword(toghost,password));
-	  String givepass = services->getPass(toghost);
+	  String nickpass = String::convert(services->generatePassword(toghost,password));	
+	  
+	  User *ptr = services->findUser(toghost);
+
+	  if (ptr == 0) {
+	     /* ?? */
+	     return;
+	  }
+	  
+	  String givepass = ptr->getPass();
 	  if(nickpass == givepass)
 	    {
 	       /* Okay, well, this is not really a service. This is a user..
@@ -636,7 +649,7 @@ void
 	       return;
 	    }
 	  String nickpass = services->generatePassword(origin.getNickname(),password);
-	  String givepass = services->getPass(origin.getNickname());
+	  String givepass = origin.getPass();
 	  if(nickpass == givepass)
 	    {
 	       int oid = origin.getOnlineID();

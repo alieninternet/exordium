@@ -218,6 +218,19 @@ namespace Exordium {
        */
       AISutil::String getLanguage(void);
       
+      // Grab a user's password
+      const AISutil::String getPass(void);
+
+      const AISutil::String getURL(void);
+      const AISutil::String getMSN(void);
+      const AISutil::String getYAHOO(void);
+      const AISutil::String getAIM(void);
+      const AISutil::String getICQ(void);
+      const AISutil::String getEmail(void);
+      const AISutil::String getRegDate(void);
+      const AISutil::String getLastID(void);
+      const AISutil::String getLastHost(void);
+      
       /* Our constructor definition */
       User(AISutil::String const &nick, int const &oid, Services &s)
 	: nickname(nick), //their current nickname.. duh
