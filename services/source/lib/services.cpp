@@ -214,6 +214,7 @@ namespace Exordium
    ircdome(*this)
 
      {
+
 	sock = -1;
 	maxSock = -1;
 	inputBufferPosition = 0;
@@ -241,15 +242,14 @@ namespace Exordium
 	  }
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
-/* Hard Coding is icky --- needs to move to a config option */
-	if ((host = gethostbyname ("chrome.tx.us.ircdome.org")) == NULL)
+
+	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
 	     logger.logLine ("Fatal Error: Error resolving uplinkhost");
 	     exit (1);
 	  }
 	memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
-	/* Same here... */
-	addr.sin_port = htons (6667);
+	addr.sin_port = htons (config.getUplinkPort());
      }
 
    bool Services::writeData (String & line)
@@ -321,9 +321,12 @@ namespace Exordium
 	     socky.close();
 	     sock = -1;
 	  }
-/* Again, hard coded, needs to be shifted to a config option */
-	socky.setRemoteAddress("209.51.139.254");
-	socky.setRemotePort(6667);
+
+        
+	socky.setRemoteAddress(config.getUplinkHost());
+
+        // Note: Maybe add an option for port?
+	socky.setRemotePort(config.getUplinkPort());
 	if(!socky.connect())
 	  {
 	     std::cout << "Socky.connect() returned an error" << std::endl;

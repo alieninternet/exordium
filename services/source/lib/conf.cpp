@@ -38,9 +38,14 @@ const Kine::ConfigParser::defTable_type Config::definitionTable =
 	  0, 0
      },
      {
-	"UPLINK",
-	  (void *)&Config::defUplink, &varHandleString,
+	"UPLINKHOST",
+	  (void *)&Config::defUplinkHost, &varHandleString,
 	  0, 0
+     },
+     {
+        "UPLINKPORT",
+          (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,
+          0, 0
      },
      {
 	"SQL",
