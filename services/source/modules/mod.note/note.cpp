@@ -29,11 +29,9 @@
 #endif
 
 #include "note.h"
-#include <exordium/service.h>
-#include <exordium/services.h>
+#include "tables.h"
 #include <exordium/channel.h>
 #include <kineircd/str.h>
-#include <map>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -275,6 +273,13 @@ void Module::start(Exordium::Services& s)
 {
    // Set the services field appropriately
    services = &s;
+
+   // Attempt to affirm our database tables..
+   if (!services->getDatabase().affirmTable(Tables::notes)) {
+      services->logLine("Unable to affirm mod_note database table 'notes'",
+			Log::Fatality);
+      return; // How do we tell services we did not start happily?!
+   }
    
    // Register ourself to the network
    services->registerService(getName(), getName(), 

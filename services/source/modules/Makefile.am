@@ -56,9 +56,15 @@ mod_chan_la_LDFLAGS = -avoid-version -module
 mod_nick_la_SOURCES = mod.nick/nick.cpp
 mod_nick_la_LIBADD = ../libexordium.la
 mod_nick_la_LDFLAGS = -avoid-version -module
-mod_note_la_SOURCES = mod.note/note.cpp
-mod_note_la_LIBADD = ../libexordium.la
-mod_note_la_LDFLAGS = -avoid-version -module
+
+mod_note_la_LIBADD=\
+	../libexordium.la
+mod_note_la_LDFLAGS=\
+	-avoid-version -module
+mod_note_la_SOURCES=\
+	mod.note/note.cpp \
+	mod.note/tables.cpp
+
 mod_oper_la_SOURCES = mod.oper/oper.cpp
 mod_oper_la_LIBADD = ../libexordium.la
 mod_oper_la_LDFLAGS = -avoid-version -module
