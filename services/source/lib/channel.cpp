@@ -27,8 +27,10 @@ Channel::getChanCount(void)
    while ((row = res.fetch_row()))
      {
 	String foo = ((std::string) row[0]).c_str();
-        return foo;
+	res.free_result();  
+      return foo;
      }
+   res.free_result();
    return String("0");
 }
 
@@ -115,8 +117,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo.toInt();
 }
+res.free_result();
 return 0;
 }
 
@@ -130,8 +134,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo.toInt();
 }
+res.free_result();
 return 0;
 }
 
@@ -145,6 +151,7 @@ Channel::isChanRegistered(String const &name)
         while ((row = res.fetch_row()))
         {
                 String foo  = ((std::string) row[0]).c_str();
+		res.free_result();
                 Services::Debug(foo);
                 if(foo.toInt() > 0)
                         {
@@ -169,8 +176,10 @@ Channel::getChanAccess(String const &name, String const &nick)
         while ((row = res.fetch_row()))
         {
                 String foo = ((std::string) row[0]).c_str();   
+		res.free_result();
                 return foo.toInt();
         }
+res.free_result();
 return 0;
 }
 
@@ -184,8 +193,12 @@ Channel::ifChanExists (String const &name)
         while ((row = res.fetch_row()))
         {
                 if((int) row[0]>0)
+				{
+			res.free_result();
                         return true;
+			}
         }
+res.free_result();
 return false;
 }
 
@@ -199,8 +212,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
                 String max = ((std::string)row[0]).c_str();
+		res.free_result();
                 return max.toInt();
         }
+res.free_result();
 return 0;
 }
 
@@ -214,8 +229,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
                 String max = ((std::string)row[0]).c_str();
+		res.free_result();
                 return max.toInt();
         }
+res.free_result();
 return 0;
 }
 
@@ -231,8 +248,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
                 String max = ((std::string)row[0]).c_str();
+		res.free_result();
                 return max.toInt();
         }
+res.free_result();
 return 0;
 }
 
@@ -247,8 +266,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String name = ((std::string) row[0]).c_str();
+	res.free_result();
         return name;
 }
+res.free_result();
 return String("");
 }
 
@@ -284,8 +305,10 @@ Channel::getChanOwner(int const &number)
         while ((row = res.fetch_row()))
         {
                 String name = ((std::string) row[0]).c_str();
+		res.free_result();
                 return name;
         }
+res.free_result();
 return "";
 }
 
@@ -341,6 +364,7 @@ Channel::synchChannels(void)
                 String modes = ((std::string) row[2]).c_str();
                 synchChannel(name,topic,modes);
         }
+res.free_result();
 }
 
 /* Synch a single channel :) */
@@ -378,8 +402,10 @@ Channel::ownedChannels(String const &nickname)
         while ((row = res.fetch_row()))
         {
                 String number = ((std::string) row[0]).c_str();
+		res.free_result();
                 return number.toInt();
         }
+res.free_result();
 return 0;
 }
 /* Add a ban to a channel db ban list */
@@ -407,6 +433,7 @@ Channel::banChan(String const &chan, String const &mask, String const &reason)
                 String ident = Nickname::getIdent(tnick);   
                 String host = Nickname::getHost(tnick);
                 String full = String(tnick)+"!"+ident+"@"+host;
+		res.free_result();
                 Services::Debug(String::convert(foo));
                 Services::Debug(tnick);  
                 Services::Debug(ident);

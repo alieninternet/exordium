@@ -224,14 +224,14 @@ public:
       			}
 			else
 			{
-				cout << "Socky write fubared... disconnecting :(" << endl;
+				std::cout << "Socky write fubared... disconnecting :(" << std::endl;
 				Exordium::Services::connected = false;
 				return false;
 			}
 			}
 			else
 			{
-				cout << "Socky is dead" << endl;
+				std::cout << "Socky is dead" << std::endl;
 				Exordium::Services::connected = false;
 				return false;
 			}
@@ -240,7 +240,7 @@ public:
 		}
 		else
 		{
-		cout << "Trying to queueflush when disconnected ?!" << endl;
+		std::cout << "Trying to queueflush when disconnected ?!" << std::endl;
     		return false;
 		}
   	};

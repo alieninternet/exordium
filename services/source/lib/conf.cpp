@@ -63,11 +63,11 @@ Config::Config(void)
   : defLogfile("services.log"),
 
     // 'SQL' class
-    defSqlDatabase("exordium"),
+    defSqlDatabase("services"),
     defSqlHostname("localhost"),
-    defSqlPassword("exordium"),
+    defSqlPassword(""),
     defSqlPort(3306), // mysql port, as assigned by the iana
-    defSqlUsername("exordium")
+    defSqlUsername("root")
 {
    // nothing here!
 };

@@ -25,7 +25,7 @@ class Module {
      {};
    ~Module()
 	{
-		cout << "Module terminating " << *modName << endl;
+		std::cout << "Module terminating " << *modName << std::endl;
 	};
 
 };

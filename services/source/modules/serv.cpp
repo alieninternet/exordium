@@ -76,7 +76,7 @@ exit(0);
 void
 SERV_FUNC (Serv::parseRAW)
 {
-string c = tokens.rest();
+std::string c = tokens.rest();
 Services::queueAdd(c);
 String togo = origin+" did \002RAW\002 - "+c;
 Services::helpme(String(togo),"Serv");
@@ -224,11 +224,12 @@ SERV_FUNC (Serv::parseUSER)
 		MysqlRow row;
 		while (( row  = res.fetch_row()))
 		{
-			String nickname = ((string) row[1]).c_str();
-			String access = ((string) row[3]).c_str();
+			String nickname = ((std::string) row[1]).c_str();
+			String access = ((std::string) row[3]).c_str();
 			String togo = "\002"+nickname+"\002 has level \002"+access;
 			Services::serviceNotice(String(togo),"Serv",origin);
 		}
+	res.free_result();
 	return;
 	}
 	if(command=="del")
@@ -336,9 +337,9 @@ SERV_FUNC (Serv::parseNLIST)
 	while ((row = res.fetch_row()))
 	{
 		f++;
-		String tnick = ((string) row[0]).c_str();
-		String thost = ((string) row[1]).c_str();
-		String temail = ((string) row[2]).c_str();
+		String tnick = ((std::string) row[0]).c_str();
+		String thost = ((std::string) row[1]).c_str();
+		String temail = ((std::string) row[2]).c_str();
 		String tosend = String("\002")+tnick+"\002 with last address \002"+thost+"\002"+temail+"\002";
 		if(dest=="")
 		{
@@ -352,6 +353,7 @@ SERV_FUNC (Serv::parseNLIST)
 	Services::log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
 	String togo = origin+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
 	Services::helpme(togo,"Serv");
+	res.free_result();
 }
 void
 SERV_FUNC (Serv::parseELIST)
@@ -371,15 +373,16 @@ if(dest=="")
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
-			String nickname = ((string) row[0]).c_str();
-			String lasthost = ((string) row[1]).c_str();
-			String email = ((string) row[2]).c_str();
+			String nickname = ((std::string) row[0]).c_str();
+			String lasthost = ((std::string) row[1]).c_str();
+			String email = ((std::string) row[2]).c_str();
 			String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
 			Services::serviceNotice(tosend,"Serv",origin);
 		}
 		Services::log(origin,"Serv","Did an elist on "+tomatch);
 		String togo = origin + " did an \002elist\002 on "+tomatch;
 		Services::helpme(togo,"Serv");
+		res.free_result();
 		return;
 	}
 //Else send to given client
@@ -388,15 +391,16 @@ if(dest=="")
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
-			String nickname = ((string) row[0]).c_str();
-			String lasthost = ((string) row[1]).c_str();
-			String email = ((string) row[2]).c_str();
+			String nickname = ((std::string) row[0]).c_str();
+			String lasthost = ((std::string) row[1]).c_str();
+			String email = ((std::string) row[2]).c_str();
 			String tosend = "\002"+nickname+"\002 with last address \002"+lasthost+"\002 and email \002"+email+"\002";
 			Services::serviceNotice(tosend,"Serv",dest);
 		}
 		Services::log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
 		String togo = origin + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
 		Services::helpme(togo,"Serv");
+		res.free_result();
 
 
 }
@@ -445,13 +449,14 @@ if(send=="")
 		MysqlRow row;
 		while ((row = res.fetch_row()))
 		{
-			String cname = ((string) row[0]).c_str();
-			String caxs = ((string) row[1]).c_str();
+			String cname = ((std::string) row[0]).c_str();
+			String caxs = ((std::string) row[1]).c_str();
 			String ccname = Channel::getChanName(cname.toInt());
 			String tosend = ccname+" with "+caxs;
 			Services::serviceNotice(tosend,"Serv",origin);
 		}
 		Services::log(origin,"Serv","Did a clist on "+who);
+		res.free_result();
 		return;
 	}
 }

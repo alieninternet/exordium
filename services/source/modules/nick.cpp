@@ -344,11 +344,12 @@ NICK_FUNC (Nick::parseACCESS)
 		while ((row = res.fetch_row()))
 			{
 				i++;
-				String id = ((string) row[0]).c_str();
+				String id = ((std::string) row[0]).c_str();
 				String idnick = Nickname::getNick(id.toInt());
 				String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
 				Services::serviceNotice(tosend,"Nick",origin);
 			}
+		res.free_result();
 	return;
 	}
 		int onlineID = Nickname::getOnlineNickID(origin);
@@ -359,10 +360,11 @@ NICK_FUNC (Nick::parseACCESS)
 		while ((row = res.fetch_row()))
 			{
 				i++;
-				String id = ((string) row[0]).c_str();
+				String id = ((std::string) row[0]).c_str();
 				String idnick = Nickname::getNick(id.toInt());
 				String tosend = String("\002")+String::convert(i)+"\002. "+idnick;
 				Services::serviceNotice(tosend,"Nick",origin);
+				res.free_result();
 				return;
 			}
 	

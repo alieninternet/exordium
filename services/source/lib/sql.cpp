@@ -1,3 +1,4 @@
+
 /*   
  This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                           $
  $Author$
@@ -22,34 +23,23 @@ Mysql
     mysql;
 MysqlRes Sql::query(String const &query)
 {
-    struct timeval
-	start;
+    struct timeval start;
     Log::logLine(String("MySQL Query Debug: ") + query);
     gettimeofday(&start, NULL);
     if (mysql.query(query.c_str())) {
 	Log::logLine(String("MySQL Error: ") + mysql.error());
-	String
-	    toshout = (String("MySQL Error: ") + mysql.error());
+	String toshout = (String("MySQL Error: ") + mysql.error());
 	Services::helpme(toshout, "Serv");
     }
-    struct timeval
-	finish;
+    struct timeval finish;
     gettimeofday(&finish, NULL);
-    long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec) -
-		      (((long long)start.tv_sec * 1000000) + start.tv_usec));
-    String
-	tolog =
-	String("MySQL Query Took ") +
-	String::convert(time) +
-	" microseconds";
+    long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec) - (((long long)start.tv_sec * 1000000) + start.tv_usec));
+    String tolog = String("MySQL Query Took ") + String::convert(time) + " microseconds";
     Log::logLine(tolog);
     Services::Debug(query);
     Services::Debug(tolog);
-    MysqlRes
-	togo =
-	mysql.
-	store_result();
-    return togo;
+    //MysqlRes togo = mysql.store_result();
+    return mysql.store_result();
 }
 
 String
@@ -87,7 +77,7 @@ Sql::makeSafe(String const &line)
 void
   Sql::init(const Config &config)
 {
-   ostringstream tolog;
+   std::ostringstream tolog;
    tolog << "MySQL Configuration: " << config.getSqlHostname() << ' ' <<
      config.getSqlUsername() << ' ' << config.getSqlPassword() << ' ' <<
      config.getSqlDatabase();

@@ -60,7 +60,7 @@ static KINE_SIGNAL_HANDLER_FUNC(Rehash)
    Log::logLine(debugOut.str());
 }
 
-Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH, 0};
+//Signals::handlerInfo_type rehashSignalHandler = {&Rehash, Signals::REHASH, 0};
 
 static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
@@ -68,7 +68,7 @@ static KINE_SIGNAL_HANDLER_FUNC(Death)
 	exit(0);
 }
 
-Signals::handlerInfo_type deathSignalHandler = {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
+//Signals::handlerInfo_type deathSignalHandler = {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
 
 namespace Exordium {
 
@@ -196,10 +196,10 @@ Services::run(void)
 int
 Services::init(void)
 {
-   rehashSignalHandler.foo = (void *)this;
-   getDaemon().getSignals().addHandler(rehashSignalHandler);
-   deathSignalHandler.foo = (void *)this;
-   getDaemon().getSignals().addHandler(deathSignalHandler);
+//   rehashSignalHandler.foo = (void *)this;
+//   getDaemon().getSignals().addHandler(rehashSignalHandler);
+//   deathSignalHandler.foo = (void *)this;
+//   getDaemon().getSignals().addHandler(deathSignalHandler);
    
 	struct hostent *host;
 	queueKill ();
@@ -243,7 +243,7 @@ bool Services::writeData (String & line)
 /* Handle Input */
 bool Services::handleInput (void)
 {
-  stringstream bufferin;
+  std::stringstream bufferin;
   socky.read(bufferin);
   String line;
   while(bufferin.peek()!=-1)
@@ -326,8 +326,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
 return String("");
 }
 
@@ -339,8 +341,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
 return String("0");
 }
 
@@ -352,8 +356,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
 return String("0");
 }
 
@@ -366,8 +372,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
 return String("0");
 }
 
@@ -431,6 +439,7 @@ if(topic == "")
 			line = Services::parseHelp(line);
 			Services::serviceNotice(line,service,nick);
 		}
+		res.free_result();
 		return;
 	} // End
 if(parm == "")
@@ -445,6 +454,7 @@ if(parm == "")
 			line = Services::parseHelp(line);
 			Services::serviceNotice(line,service,nick);
 		}
+		res.free_result();
 		return;
 	} // End
 		String query = "SELECT txt from help where service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+lang+"' ORDER by id";
@@ -456,6 +466,7 @@ if(parm == "")
 			line = Services::parseHelp(line);
 			Services::serviceNotice(line,service,nick);
 		}
+		res.free_result();
 		return;
 	
 }
@@ -572,6 +583,7 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
 	String foo = ((std::string) row[0]).c_str();
+	res.free_result();
 	Services::Debug(foo);
 	if(foo=="1")
 		return true;
@@ -630,6 +642,7 @@ Services::isOp(String const &nickname, String const &channel)
 	while ((row = res.fetch_row()))
 	{
 		String status = ((std::string) row[0]).c_str();
+		res.free_result();
 		if(status.toInt() == 2)
 			{
 			Services::Debug("Already opped");
@@ -652,6 +665,7 @@ Services::isVoice(String const &nickname, String const &channel)
 	while ((row = res.fetch_row()))
 	{
 		String status = ((std::string) row[0]).c_str();
+		res.free_result();
 		if(status.toInt() == 1)
 			{
 			Services::Debug("Already voiced");
@@ -674,6 +688,7 @@ Services::countNotes(String const &who)
 	{
 		j++;
 		String foo = ((std::string) row[0]).c_str();
+		res.free_result();
 		return foo.toInt(); 
 	}
 	//No notes.
@@ -712,6 +727,7 @@ while ((row = res.fetch_row()))
 	String killt = ((std::string) row[2]).c_str();
 	int nowt = currentTime;
 	String tomod = ((std::string) row[1]).c_str();
+	res.free_result();
 	if(killt.toInt() < nowt)
 	{
 		String query = "DELETE from kills where id='" + id + "'";

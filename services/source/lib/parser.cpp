@@ -372,6 +372,7 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
 	String idt = ((std::string) row[0]).c_str();
+	res.free_result();
 	int foo = idt.toInt();
 	String qt = "DELETE from identified where nick='"+String::convert(foo)+"'";
 	Sql::query(qt);

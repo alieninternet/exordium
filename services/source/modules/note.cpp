@@ -58,6 +58,7 @@ while ((row = res.fetch_row()))
 		String query = "DELETE from notes where id='" + ntext + "'";
 		Sql::query(query);
 		Services::log(origin,"Note","Deleted a single note");
+		res.free_result();
 		return;
 	}
 	
@@ -85,6 +86,7 @@ NOTE_FUNC (Note::parseREAD)
 			Services::serviceNotice(tofo,"Note",origin);
 		}
 		Services::log(origin,"Note","Read all notes");
+		res.free_result();
 		return;
 	}
 	String query = "SELECT nfrom,nsent,note from notes where nto='" + origin + "'";
@@ -104,9 +106,11 @@ NOTE_FUNC (Note::parseREAD)
 		String tofo = ntext;
 		Services::serviceNotice(tofo,"Note",origin);
 		Services::log(origin,"Note","Read a single note");
+		res.free_result();
 		return;
 		}
 	}	
+	res.free_result();
 	Services::serviceNotice("No such note!","Note",origin);
 	return;
 }
@@ -129,6 +133,7 @@ NOTE_FUNC (Note::parseLIST)
 	String tofo = String("To read a note, type /msg Note read Number");
 	Services::serviceNotice(tofo,"Note",origin);
 	Services::log(origin, "Note", "Listed their notes");
+	res.free_result();
 }
 void
 NOTE_FUNC (Note::parseSEND)
@@ -177,6 +182,7 @@ NOTE_FUNC (Note::parseSEND)
 		String toao = String("Your note was successfully sent to \002")+String::convert(j)+"\002 people on "+nto;
 		Services::serviceNotice(String(toao),"Note",origin);
 		Services::log(origin,"Note","Sent a channel note to "+nto);
+		res.free_result();
 		return;
 	}
 	

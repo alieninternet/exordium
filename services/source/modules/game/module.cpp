@@ -113,6 +113,7 @@ GAME_FUNC (Game::parseQUOTE)
 		j = Services::random(numb.toInt());
 		Services::Debug("I choose "+String::convert(j));
 	}
+	res.free_result();
 	String thequote = Services::getQuote(j);
 	StringTokens st (thequote);
 	bool more = false;
@@ -127,7 +128,7 @@ GAME_FUNC (Game::parseQUOTE)
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {
-   cout << "I am called " << name << endl;
+   std::cout << "I am called " << name << std::endl;
    Services::registerService("game","game","ircdome.org", "+dz", "Network Games!");
    Services::serviceJoin("game", "#Debug");
    return new Module("game", new Game()

@@ -35,8 +35,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
 return String("0");
 }
 
@@ -49,8 +51,11 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
+
 return String("0");
 }
 
@@ -63,8 +68,10 @@ Nickname::getAccess(String const &service, String const &who)
         while ((row = res.fetch_row()))
         {
                 String axs = ((std::string) row[0]).c_str();
+		res.free_result();
                 return axs.toInt();
         }
+res.free_result();
 return 0;
 }
 
@@ -88,8 +95,12 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         if((int)row[0]>0)
+		{
+		res.free_result();
                 return true;
+		}
 }
+res.free_result();
 return false;
 }
 
@@ -118,6 +129,7 @@ Nickname::countHost(String const &hostname)
 String query = "select id from onlineclients where hostname='"+hostname+"'";
 MysqlRes res = Sql::query(query);
 int num = res.num_fields();
+res.free_result();
 return num;
 }
  
@@ -131,8 +143,10 @@ Nickname::getRequiredAccess(String const &service, String const &command)
         while ((row = res.fetch_row()))
         {       
                 String access = ((std::string) row[0]).c_str();
+		res.free_result();
                 return access.toInt();
         }
+res.free_result();
 //If no entry.... return >max
 return 999;
 }
@@ -146,8 +160,12 @@ Nickname::isNickRegistered (String const &nick)
         while ((row = res.fetch_row()))
         {
         if((int)row[0]>0)   
+		{
+		res.free_result();
                 return true;
+		}
         }
+res.free_result();
 return false;
 }
 
@@ -160,8 +178,10 @@ Nickname::getPass (String const &nick)
         while ((row = res.fetch_row()))
         {
                 String password = ((std::string) row[0]).c_str ();
+		res.free_result();
                 return password;
         }
+res.free_result();
 return String("");
 }  
 
@@ -176,9 +196,11 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
                 String id = ((std::string) row[0]).c_str();
+		res.free_result();
                 Services::Debug("---->Which is "+id);
                 return id.toInt();
 }
+res.free_result();
 return 0;
 }
 
@@ -193,9 +215,11 @@ Nickname::getRegisteredNickID(String const &nick)
         while ((row = res.fetch_row()))
         {
                 String id = ((std::string) row[0]).c_str();
+		res.free_result();
                 Services::Debug("---->Which is "+id);
                 return id.toInt();
         }
+res.free_result();
 return 0;
 }
 
@@ -226,8 +250,10 @@ Nickname::getHost(String const &nick)
         while ((row = res.fetch_row()))
         {
                 String host = ((std::string) row[0]).c_str();
+		res.free_result();
                 return host;
         }
+res.free_result();
 return String("");
 }
 
@@ -241,8 +267,10 @@ Nickname::getIdent(String const &nick)
         while ((row = res.fetch_row()))
         {
                 String ident = ((std::string) row[0]).c_str();
+		res.free_result();
                 return ident;
         }
+res.free_result();
 return String("");
 }
 
@@ -256,9 +284,11 @@ Nickname::isIdentified(String const &nick)
         while ((row = res.fetch_row()))
         {
                 String temp = ((std::string) row[0]).c_str();
+		res.free_result();
                 if(temp.toInt() > 0)
                         return true;
         }
+	res.free_result();
         return false;
 }
 
@@ -274,6 +304,7 @@ String query = "SELECT idas from identified where nick='"+String::convert(online
         {
                 String temp = ((std::string) row[0]).c_str();
                 String idnick = getNick(temp.toInt());
+		res.free_result();
                 Services::Debug("--->Does "+temp+" equal "+idnick);
                 if(idnick.toLower()==as.toLower())
                 {
@@ -283,6 +314,7 @@ String query = "SELECT idas from identified where nick='"+String::convert(online
                 Services::Debug("---->No - Loop");
         
         }
+	res.free_result();
         return false;
 }
 
@@ -295,8 +327,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
+res.free_result();
 return String("");
 };
 
@@ -309,9 +343,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         String foo = ((std::string) row[0]).c_str();
+	res.free_result();
         return foo;
 }
-
+res.free_result();
 return String("");
 }
 
@@ -331,6 +366,7 @@ while ((row = res.fetch_row()))
         thelist = String(thelist)+" "+String(idnick);
 
 }
+res.free_result();
 return thelist;
 }
 
@@ -343,8 +379,10 @@ Nickname::getpendingCode(String const &nick)
         while ((row = res.fetch_row()))
         {
                 String ident = ((std::string) row[0]).c_str();
+		res.free_result();
                 return ident;
         }
+res.free_result();
 return String("");
 }
 
@@ -357,8 +395,12 @@ MysqlRow row;
 while ((row = res.fetch_row()))
 {
         if((int)row[0]>0)
+		{
+		res.free_result();
                 return true;
+		}
 }
+res.free_result();
 return false;
 }
 
@@ -400,9 +442,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
 
@@ -415,6 +458,7 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
         
         }
@@ -430,9 +474,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
 
@@ -446,9 +491,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
 
@@ -462,9 +508,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
 
@@ -482,8 +529,10 @@ Nickname::getLanguage(String const &nick)
         while ((row = res.fetch_row()))
         {
                 String lang = ((std::string) row[0]).c_str();
+		res.free_result();
                 return lang;
         }
+res.free_result();
 return String("english");
 }
 
@@ -496,8 +545,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
         }
+res.free_result();
 return String("");
 }
 
@@ -510,9 +561,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
 
@@ -525,9 +577,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
  
@@ -541,9 +594,10 @@ MysqlRow row;
 while ((row = res.fetch_row()))
         {
         String temp = ((std::string) row[0]).c_str();
+	res.free_result();
         return temp;
-        
         }
+res.free_result();
 return String("");
 }
 

@@ -127,7 +127,7 @@ class MysqlRes
   		void         free_result() {mysql_free_result(mysql_res);}
 
   		MysqlRes () {mysql_res = new MYSQL_RES;}
-  		~MysqlRes () {/*delete mysql_Res;*/}
+  		~MysqlRes () {delete mysql_res;}
 
   		int          eof () {return mysql_eof(mysql_res);}
   		void         data_seek (uint offset) {mysql_data_seek(mysql_res, offset);}

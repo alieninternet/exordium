@@ -680,6 +680,7 @@ CHAN_FUNC (Chan::parseACCESS)
 		Services::serviceNotice(tosend,"Chan",origin);
 	}
 	Services::log(origin,"Chan","Did a channel access",channel);
+	res.free_result();
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION {

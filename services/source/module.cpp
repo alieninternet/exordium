@@ -24,7 +24,7 @@ namespace mod_exordium {
    // called just before the module is actually going to be used
    static KINE_MODULE_START(moduleStart)
      {
-	cout << "mod_exordium::moduleStart()" << endl;
+	std::cout << "mod_exordium::moduleStart()" << std::endl;
 
 	// My, it looks an awful lot like main.cpp from here on... :) This is
 	// temporary, naturally.
@@ -49,7 +49,7 @@ namespace mod_exordium {
    // called just before unloading the module
    static KINE_MODULE_STOP(moduleStop)
      {
-	cout << "mod_exordium::moduleStop()" << endl;
+	std::cout << "mod_exordium::moduleStop()" << std::endl;
 	delete services;
 	delete config;
      }

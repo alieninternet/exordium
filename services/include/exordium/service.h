@@ -41,7 +41,7 @@ class Core {
           {};
      ~ServiceModule(void)
 	{
-		cout << "Dead module??" << endl;
+		std::cout << "Dead module??" << std::endl;
 		dlclose(handle);
 	}
    };
