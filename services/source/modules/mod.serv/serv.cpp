@@ -448,20 +448,20 @@ SERV_FUNC (Service::parseNEWS)
 	     origin.sendMessage(GETLANG(serv_NEWS_ADD_TYPE_USAGE),getNickname());
 	     return;
 	  }
-	if(expires.toInt()<services.currentTime)
+	if(expires.toInt()<Kine::daemon().getTime().seconds)
 	  {
 	     origin.sendMessage(GETLANG(serv_NEWS_ADD_EXPIRE_IN_PAST),getNickname());
 	     return;
 	  }
-	if(expires.toInt()>services.currentTime+ 36000)
+	if(expires.toInt()>Kine::daemon().getTime().seconds+ 36000)
 	  {
 	     origin.sendMessage(GETLANG(serv_NEWS_ADD_EXPIRE_TIME_MACHINE_NEEDED),getNickname());
 	     return;
 	  }
 
 	int nexpires = expires.toInt();
-	nexpires = services.currentTime + (nexpires * 3600);
-	if(services.currentTime>nexpires)
+	nexpires = Kine::daemon().getTime().seconds + (nexpires * 3600);
+	if(Kine::daemon().getTime().seconds>nexpires)
 	  {
 	     origin.sendMessage(GETLANG(serv_NEWS_ADD_EXPIRE_IN_PAST),getNickname());
 	     return;
@@ -998,7 +998,7 @@ bool Service::isFreezed(Kine::ChannelName const &chan)
 {
    if(services.getDatabase().dbSelect("id","chanfreeze","name='"
 				       +String::convert(services.getChannel().getChanID(chan.IRCtoLower()))
-				       +"' AND expires>"+String::convert(services.getCurrentTime())) < 1)
+				       +"' AND expires>"+String::convert(Kine::daemon().getTime().seconds)) < 1)
      return false;
    else
      return true;

@@ -80,8 +80,6 @@ lastCheckPoint(time(NULL)),
 lastExpireRun(time(NULL)),
 stopping(false)
 {
-   currentTime = time(NULL);
-
    database.dbConnect();
 
    srand(time(NULL));
@@ -128,7 +126,7 @@ ServicesInternal::~ServicesInternal(void)
 //	    reason);
 
    stopping = true;
-   stopTime = currentTime + 15;
+   stopTime = Kine::daemon().getTime().seconds + 15;
 
    // Clean up before we die
    database.dbDelete("onlineclients");
@@ -435,7 +433,7 @@ void ServicesInternal::checkpoint(void)
      {
 	String id = database.dbGetValue(0);
 	String killt = database.dbGetValue(2);
-	int nowt = currentTime;
+	int nowt = Kine::daemon().getTime().seconds;
 	Kine::ClientName tomod = database.dbGetValue(1);
 	database.dbGetRow();
 

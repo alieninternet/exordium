@@ -1474,7 +1474,7 @@ bool Service::isFreezed(Kine::ChannelName const &chan)
 
    if(services.getDatabase().dbSelect("id","chanfreeze","name='"
 				       +String::convert(services.getChannel().getChanID(chan.IRCtoLower()))
-				       +"' AND expires>"+String::convert(services.getCurrentTime())) < 1)
+				      +"' AND expires>"+String::convert(Kine::daemon().getTime().seconds)) < 1)
      return false;
    else
      return true;

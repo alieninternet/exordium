@@ -253,7 +253,7 @@ void
    sendMessage(Kine::langs().get(
    getLanguage(),Language::tagMap[Language::core_NICK_IDENTIFY_REQUEST].tagID),
    "Nick");
-   services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(services.currentTime + 120 + (Utils::random(60)))+"'");
+   services.getDatabase().dbInsert("kills", "'','"+nickname+"','"+String::convert(Kine::daemon().getTime().seconds + 120 + (Utils::random(60)))+"'");
    return;
 };
 

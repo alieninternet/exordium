@@ -196,9 +196,7 @@ String
 void
   Channel::setTopic(String const &name, String const &topic)
 {
-   time_t currentTime;
-   currentTime = time(NULL);
-   String temp = String(":Chan TOPIC ")+name+" Chan " +String::convert(currentTime)+" :"+topic;
+//   String temp = String(":Chan TOPIC ")+name+" Chan " +String::convert(currentTime)+" :"+topic;
 //   services.queueAdd(String(temp));
 }
 

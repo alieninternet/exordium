@@ -64,9 +64,7 @@ namespace Exordium {
       
     public:
       static const int buildNumber = 1;
-      time_t currentTime; // redundant
       time_t startTime;
-      
       
       // Destructor
       virtual ~Services(void)
@@ -212,7 +210,6 @@ namespace Exordium {
       void setMode(AISutil::String const &,
 		   AISutil::String const &) {};
       time_t getStartTime(void) { return startTime; };
-      time_t getCurrentTime(void) { return currentTime; }; // useless?
    }; // class Services
 }; // namespace Exordium
 

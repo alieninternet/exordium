@@ -179,8 +179,6 @@ void const dChan::updateTopic(String const &topic)
 
 void const dChan::setTopic(String const &service, String const &topic)
 {
-   time_t currentTime;
-   currentTime = time(NULL);
 //   services.queueAdd(":"+service+" TOPIC "+name+" Chan "+String::convert(currentTime)+" :"+topic);   
 }
 
@@ -236,7 +234,7 @@ void const dChan::kick(String const &service,String const &nick,String const &re
 void const dChan::ban(User &user, String const &service, String const &reason, String const &setby)
 {
 String host = "*!*@"+user.getHost();
-int expire = services.currentTime + 3600;
+   int expire = Kine::daemon().getTime().seconds + 3600;
 //services.queueAdd(":"+service+" MODE "+name+" +b "+host);
 String query = "'','"+String::convert(getRegisteredID())+
                "','"+host+"','"+setby+"',NOW(),'"+
