@@ -54,7 +54,8 @@ void IRCDome::parseLine(const String &line, const String &requestor)
 	     return;
 	  }
      }
-   services.serviceNotice ("Unrecognized Command", "IRCDome", requestor);
+   services.serviceNotice ("Unrecognized Command", 
+			   services.getConfig().getConsoleName(), requestor);
 }
 
 void
@@ -64,14 +65,17 @@ void
    if(command=="list")
      {
 	String foo = services.getConfig().getModules().dumpModules();
-	services.serviceNotice("The currently loaded service modules are","IRCDome",origin);
-	services.serviceNotice(foo,"IRCDome",origin);
+	services.serviceNotice("The currently loaded service modules are:",
+			       services.getConfig().getConsoleName(), origin);
+	services.serviceNotice(foo, services.getConfig().getConsoleName(),
+			       origin);
 	return;
      }
    if(command=="unload")
      {
 	String name = tokens.nextToken();
-	services.serviceNotice("Unloading module "+name,"IRCDome",origin);
+	services.serviceNotice("Unloading module " + name,
+			       services.getConfig().getConsoleName(), origin);
 	services.getConfig().getModules().unloadModule(name);
      }
    if(command=="load")
@@ -79,20 +83,23 @@ void
 //	String name = tokens.nextToken();
 	(void)tokens.nextToken();
 	String filename = tokens.nextToken();
-	services.serviceNotice("Attempting to load module","IRCDome",origin);
+	services.serviceNotice("Attempting to load module",
+			       services.getConfig().getConsoleName(), origin);
 	String errString;
 	Service* const service = 
 	  services.getConfig().getModules().loadModule(filename, errString);
 	if(service == 0) {
 	   services.serviceNotice("Error loading module: " + errString,
-				  "IRCDome", origin);
+				  services.getConfig().getConsoleName(),
+				  origin);
 	   return;
 	}
 	
 	// Start the module, now that it has been loaded..
 	service->start(services);
 	
-	services.serviceNotice("Module loaded successfully","IRCDome",origin);
+	services.serviceNotice("Module loaded successfully",
+			       services.getConfig().getConsoleName(), origin);
 
      }
 

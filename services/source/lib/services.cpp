@@ -349,7 +349,7 @@ namespace Exordium
  * lifespan in anycase.. - pickle
  */
 	queueAdd ("SERVER " + config.getServicesHostname() + " 1 :" + config.getServicesDescription());
-	queueAdd ("SERVER " + config.getServicesConsoleHostname() + " 2 :" + config.getServicesConsoleDescription());
+	queueAdd ("SERVER " + config.getConsoleHostname() + " 2 :" + config.getConsoleDescription());
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
 	queueAdd (":" + config.getServicesHostname()  + " EOB");
 	queueAdd ("BURST");
@@ -372,12 +372,16 @@ namespace Exordium
 	  // Start all the modules
 	  config.getModules().startAll(*this);
 	  
-	  // Umm, register the console.. uhh.. dodgey :(
-	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
-			  "The service James forgot :(");
-	  serviceJoin ("IRCDome", "#debug");
-	  serviceJoin ("IRCDome", "#Exordium");
+	  // Is the console actually wanted?
+	  if (config.getConsoleEnabled()) {
+	     registerService(config.getConsoleName(), config.getConsoleName(),
+			     config.getConsoleHostname(), "+dz",
+			     config.getConsoleDescription());
+	     serviceJoin (config.getConsoleName(), "#debug");
+	     serviceJoin (config.getConsoleName(), "#Exordium");
+	  }
 	  connected = true;
+	  // this is dodgey.
 	  config.getModules().dumpModules();
 	  return;
        }
@@ -472,7 +476,9 @@ namespace Exordium
 
    void Services::shutdown(String const &reason)
      {
-	helpme("Services is shutting down "+reason,"IRCDome");
+	helpme("Services is shutting down " + reason, config.getConsoleName());
+
+	// This hard-coded crap is revolting.
 	queueAdd(":Chan QUIT :"+reason);
 	queueAdd(":Nick QUIT :"+reason);
 	queueAdd(":Love QUIT :"+reason);
@@ -482,6 +488,7 @@ namespace Exordium
 	queueAdd(":Oper QUIT :"+reason);
 	queueAdd(":Game QUIT :"+reason);
 	queueAdd(":Stats QUIT :"+reason);
+	
 	queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
 	stopping = true;
 	stopTime = currentTime + 5;

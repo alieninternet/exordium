@@ -40,13 +40,18 @@ namespace Exordium {
     private:
       // Variables (top class from the definition table above)
       LibAIS::String defLogfile;		// Log filename
-      LibAIS::String defServicesConsoleDescription;// Console's description
-      LibAIS::String defServicesConsoleHostname;// Console's hostname
       LibAIS::String defServicesDescription;    // Services description (aka realname)
       LibAIS::String defServicesHostname;       // Services hostname
       LibAIS::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
 
+      // 'CONSOLE' class and variables
+      static const LibAIS::ConfigParser::defTable_type defClassConsole;
+      LibAIS::String defConsoleDescription;	// Console's real name field
+      bool defConsoleEnabled;			// Is the console active?
+      LibAIS::String defConsoleHostname;	// The console's host name
+      LibAIS::String defConsoleName;		// The console's nickname
+      
       // 'MODULE' class/variable stuff
       Modules defModules;			// Loaded modules
       static LIBAIS_CONFIG_CLASS_HANDLER(classHandleModule);
@@ -75,11 +80,17 @@ namespace Exordium {
         { return defServicesHostname; };
       const LibAIS::String& getServicesDescription(void) const
         { return defServicesDescription; };
-      const LibAIS::String& getServicesConsoleHostname(void) const
-        { return defServicesConsoleHostname; };
-      const LibAIS::String& getServicesConsoleDescription(void) const
-        { return defServicesConsoleDescription; };
 
+      // 'CONSOLE' class
+      const LibAIS::String& getConsoleDescription(void) const
+	{ return defConsoleDescription; };
+      const bool getConsoleEnabled(void) const
+	{ return defConsoleEnabled; };
+      const LibAIS::String& getConsoleHostname(void) const
+	{ return defConsoleHostname; };
+      const LibAIS::String& getConsoleName(void) const
+	{ return defConsoleName; };
+      
       // 'MODULE' class
       Modules& getModules(void)
 	{ return defModules; };

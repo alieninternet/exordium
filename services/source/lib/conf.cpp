@@ -36,14 +36,9 @@ using namespace Exordium;
 const LibAIS::ConfigParser::defTable_type Config::definitionTable =
 {
      {
-        "CONSOLEDESCRIPTION",
-          (void *)&Config::defServicesConsoleDescription, &varHandleString,
-          0, 0
-     },
-     {
-        "CONSOLEHOSTNAME",
-          (void *)&Config::defServicesConsoleHostname, &varHandleHostName,
-          0, 0
+	"CONSOLE",
+	  0, 0,
+	  &defClassConsole, 0
      },
      {
 	"LOGFILE",
@@ -83,6 +78,34 @@ const LibAIS::ConfigParser::defTable_type Config::definitionTable =
      { 0, 0, 0, 0, 0 }
 };
 
+
+// 'CONSOLE' class definition table
+const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
+{
+     {
+        "DESCRIPTION",
+          (void *)&Config::defConsoleDescription, &varHandleString,
+          0, 0
+     },
+     {
+        "ENABLED",
+          (void *)&Config::defConsoleEnabled, &varHandleBoolean,
+          0, 0
+     },
+     {
+        "HOSTNAME",
+          (void *)&Config::defConsoleHostname, &varHandleHostName,
+          0, 0
+     },
+     {
+        "NAME",
+          (void *)&Config::defConsoleName, &varHandleString,
+          0, 0
+     },
+     { 0, 0, 0, 0, 0 }
+};
+
+
 // 'SQL' class definition table
 const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 {
@@ -120,12 +143,16 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
  */
 Config::Config(void)
   : defLogfile("services.log"),
-    defServicesConsoleDescription("Exordium Console"),
-    defServicesConsoleHostname("exordium.somewhere"),
     defServicesDescription("Exordium Network Services"), // temporary
     defServicesHostname("services.exordium.somewhere"), // temporary
     defUplinkHost("irc.somenetwork.somewhere"), // temporary
     defUplinkPort(6667), // temporary
+
+    // 'CONSOLE' class
+    defConsoleDescription("Exordium Services Console"),
+    defConsoleEnabled(false),
+    defConsoleHostname("somewhere.org"),
+    defConsoleName("Exordium"),
 
     // 'SQL' class
     defSqlDatabase("services"),

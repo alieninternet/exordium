@@ -465,7 +465,8 @@ void PARSER_FUNC (Parser::parseN)
    while ((row = res.fetch_row()))
      {
 	String foo = ((std::string) row[0]).c_str();
-	newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+foo,"IRCDome");
+	newNick->sendMessage("\002[\002IRCDome Global News\002]\002 "+foo,
+			     services.getConfig().getConsoleName());
      }
    services.queueAdd(":IRCDome WALLOPS :\002[\002Sign On\002]\002 "+nick+" ("+username+"@"+host+") ["+server+"]");
    if(num>2)
@@ -513,7 +514,8 @@ void
 	  }
 	return;
      }
-   if ((target.toLower ()) == "ircdome")
+   if ((target.IRCtoLower ()) == 
+       services.getConfig().getConsoleName().IRCtoLower())
      {
 	services.getIRCDome().parseLine(message,OLDoriginl);
 	return;
