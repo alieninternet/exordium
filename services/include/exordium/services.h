@@ -112,7 +112,7 @@ namespace Exordium {
 //	UserBase clients;
 	static const Kine::Utils::base_type PasswordStrBase = 85;
 	static const Kine::String::size_type PasswordStrBaseLongPad = 5;
-	User* addUser(Kine::String &, int &);
+	User* addUser(const Kine::String&);
 	bool delUser(Kine::String &);
 	User* findUser(Kine::String &);
 	void setNick(User &,Kine::String &);

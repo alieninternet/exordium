@@ -288,14 +288,6 @@ void PARSER_FUNC (Parser::parseN)
 {
    User *origin = services.findUser(OLDorigin);
    
-   // make sure this user doesn't already exist
-   if (origin != 0) {
-      return;
-   }
-   
-   // JAMES, add the user here or something?
-   std::cout << "Me gots an N: " << OLDorigin << std::endl;
-   
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
@@ -326,6 +318,13 @@ void PARSER_FUNC (Parser::parseN)
      }
    String nick = tokens.nextToken();
    std::cout << "NEW CLIENT" << nick << std::endl;
+   User *newNick = services.addUser(nick);
+   if (newNick == 0) {
+      std::cout << "That client wasn't such a nice fellow afterall :(" << 
+	std::endl;
+      return;
+   }
+   
    if(services.getNickname().isNickRegistered(nick))
      {
 	if(!services.getNickname().isPending(nick))
@@ -333,7 +332,7 @@ void PARSER_FUNC (Parser::parseN)
 	     if(origin->modNick())
 	       {
 		  
-	  services.getNickname().addCheckidentify(nick);
+		  services.getNickname().addCheckidentify(nick);
 	       }
 	     
 	  }

@@ -1016,14 +1016,21 @@ bool
 	return false;
      }
 };
-/* addUser(String,Int)
+/* addUser(String)
  * 
  * Add the user to our users map
  * 
  */
 User*
-  Services::addUser(Kine::String &name, int &oid)
+  Services::addUser(const Kine::String& name)
 {
+   
+   int oid = 0;
+   
+   // Umm.. here.. should go.. like some sql routines.. which adds it and
+   // gets the oid back so the oid can be correctly done SEAMLESSLY... and
+   // stuff.. :(
+   
    users[name] = new User(name,oid,*this);
    return users[name];
 };
