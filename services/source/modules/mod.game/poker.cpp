@@ -304,14 +304,9 @@ EXORDI8_FUNC(Poker::parseDEAL)
 	numPlayers -= 6;
      };
 
-   // Obtain our packs, shuffling each deck.
-   std::vector < Cards::Pack < Cards::Card > > packs;
-   while (numPacks > 0)
-     {
-	packs.push_back(Cards::Pack<Cards::Card>());
-	packs.back().shuffle();
-	numPacks--;
-     }
+   // Obtain our packs, and shuffle
+   stock = Cards::Stock< Cards::Card >(numPacks);
+   stock.shuffle();
 
    // Deal five cards to each person, doing it like a real dealer (hehehe)
    for (int c = 0; c != 5; c++)
@@ -320,13 +315,7 @@ EXORDI8_FUNC(Poker::parseDEAL)
 	     p != players.end(); p++)
 	  {
 	     // Add a card to this player's hand direct from the pack
-	     (*p).second.addCard(packs.back().removeCard());
-
-	     // If this pack is now empty, ditch it and move onto the next one
-	     if (packs.back().isEmpty())
-	       {
-		  packs.pop_back();
-	       }
+	     (*p).second.addCard(stock.removeCard());
 	  }
      }
 
@@ -338,25 +327,13 @@ EXORDI8_FUNC(Poker::parseDEAL)
 	showHand((*it));
      }
 
-   // The balance of the cards left in the shuffled pack(s) turn into the stock
-   while (!packs.empty())
-     {
-	while (!packs.back().isEmpty())
-	  {
-	     stock.push(packs.back().removeCard());
-	  }
-
-	// Turf the empty pack
-	packs.pop_back();
-     }
-
    // Set the first player and note that we have begun play
    currentPlayer = players.begin();
    playing = true;
 
    // Start assembling a string to tell the channel what is happening
    std::ostringstream out;
-   out << "There are " << stock.size() << " cards left in the stock. It is "
+   out << "There are " << stock.total() << " cards left in the stock. It is "
      <<
      (*(*currentPlayer).first).getNickname();
 
