@@ -69,86 +69,6 @@ namespace Exordium
 
        }
 
-   void
-     Nickname::setModNick(String const &nick, bool const &value)
-       {
-	  String query;
-	  if(value)
-	    {
-	       query = "UPDATE nicks set modnick=1 where nickname='" +nick+"'";
-	    }
-	  else
-	    {
-	       query = "UPDATE nicks set modnick=0 where nickname='" + nick + "'";
-	    }
-	  services.getDatabase().query(query);
-       }
-
-   void
-     Nickname::setDeopAway(String const &nick, bool const &value)
-       {
-	  String query;
-	  if(value)
-	    {
-	       query = "UPDATE nicks set deopaway=1 where nickname='"+nick+"'";
-	    }
-	  else
-	    {
-	       query = "UPDATE nicks set deopaway=0 where nickname='"+nick+"'";
-	    }
-	  services.getDatabase().query(query);
-       }
-
-   bool
-     Nickname::modNick(String const &nick)
-       {
-	  String query = "SELECT modnick from nicks where nickname='"+nick+"'";
-	  MysqlRes res = services.getDatabase().query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-	    {
-	       String foo = ((std::string) row[0]);
-	       if(foo=="1")
-		 {
-		    return true;
-		 }
-	       else
-		 {
-		    return false;
-		 }
-	    }
-	  return false;
-       }
-
-   bool
-     Nickname::deopAway(String const &nick)
-       {
-	  String query = "SELECT deopaway from nicks where nickname='"+nick+"'";
-	  MysqlRes res = services.getDatabase().query(query);
-	  MysqlRow row;
-	  while ((row = res.fetch_row()))
-	    {
-	       String foo = ((std::string) row[0]);
-	       if(foo=="1")
-		 {
-		    services.Debug("DeopAway is true - SHOULD BE DEOPED");
-		    return true;
-		 }
-	       else
-		 {
-		    services.Debug("DeopAway is false - Leave em alone");
-		    return false;
-		 }
-	    }
-	  return false;
-       }
-   void
-     Nickname::updateHost (String const &nick, String const &host)
-       {
-	  String query = "UPDATE nicks set lasthost='" + host + "' where nickname='" + nick + "'";
-	  services.getDatabase().query(query);
-	  return;
-       }
 
    String
      Nickname::getQuitMessage(String const &nick)
@@ -261,7 +181,6 @@ namespace Exordium
 	  //Now retrieve that id that has just been given.....
 	  int foo = getOnlineNickID(nick);
 	  User *ptr = services.clients.addUser(nick,foo);
-	  ptr->test();
        }
 
    int

@@ -30,7 +30,10 @@
 
 #include "exordium/service.h"
 #include "exordium/services.h"
+#include "exordium/user.h"
+
 #include <kineircd/str.h>
+
 
 # define BOT_FUNC(x)           x(Kine::String &origin, Kine::StringTokens &tokens, Kine::String &chan)
 
@@ -39,7 +42,8 @@ using Kine::String;
 
 class Bot : public Exordium::Service
 {
-private:
+   class Exordium::User;
+ private:
   struct functionTableStruct
   {
     char const *command;
@@ -62,8 +66,8 @@ public:
 	{
 		std::cout << "Dead Bot" << std::endl;
 	};
-  void parseLine (String const &, String const &);
-  void parseLine (String const &, String const &, String const &);
+   void parseLine (String const &, String const &);
+   void parseLine (String const &, String const &, String const &);
 private:
   void BOT_FUNC (parseHELP);
   void BOT_FUNC (parseQUOTE);

@@ -43,10 +43,12 @@ class Service
 		Service() {};
 		virtual ~Service() {};
 		virtual void parseLine(Kine::String const &, 
-				       Kine::String const &) =0;
+				       Kine::String const &
+				       ) =0;
 		virtual void parseLine(Kine::String const &, 
 				       Kine::String const &, 
-				       Kine::String const &) =0;
+				       Kine::String const &
+				       ) =0;
 	};
 
 

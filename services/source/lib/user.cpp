@@ -34,11 +34,155 @@ using Kine::String;
 using Kine::StringTokens;
 using namespace Exordium;
 
-//Simple test function to prove access to the User class
+/* sendMessage(String,String,<bool>)
+ * 
+ * Two versions of sendMessage, the first which will use
+ * the settings from the nickname to determine whether
+ * they have choosen the privmsg or notice interface for services.
+ * 
+ * The latter version allowing you to dictate how you wish to send
+ * the message to the user by setting the boolean value to TRUE 
+ * for a privmsg, FALSE for a notice.
+ * 
+ */
+
 void
-  User::test(void)
+  User::sendMessage(String const &message,String const &origin)
 {
-   std::cout << "Hello World" << std::endl;
+   services.serviceNotice(message,origin,nickname);
+}
+
+void 
+  User::sendMessage(String const &message, String const &origin, bool const &privmsg)
+{
+    if(privmsg)
+     {
+	services.servicePrivmsg(message,origin,nickname);
+     }
+   else
+     {
+	services.serviceNoticeForce(message,origin,nickname);
+     }
+   
+}
+
+/* setModNick(bool)
+ * 
+ * Updates the setting for modnick in the database
+ * modnick controls whether services will force a user 
+ * to identify as a nickname when it is in use (true)
+ * or just require identification before any services
+ * are used (false)
+ * 
+ */
+
+void
+  User::setModNick(bool const &val)
+{
+   String query;
+   if(val)
+     {
+	query = "UPDATE nicks set modnick=1 where nickname='"+nickname+"'";
+     }
+   else
+     {
+	query = "UPDATE nicks set modnick=0 where nickname='"+nickname+"'";
+     }
+   services.getDatabase().query(query);
+   
+};
+
+/* setDeopAway(bool)
+ * 
+ * Updates the setting for Deop on Away in the database.
+ * 
+ * Deop On Away will deop (and voice) the user in any channels
+ * they are opped in when the user goes away.
+ *
+ */
+
+void
+  User::setDeopAway(bool const &val)
+{
+   String query;
+   if(val)
+     {
+	query = "UPDATE nicks set deopaway=1 where nickname='"+nickname+"'";
+     }
+   else
+     {
+	query = "UPDATE nicks set deopaway=0 where nickname='"+nickname+"'";
+     }
+   services.getDatabase().query(query);
+};
+
+/* modNick()
+ * 
+ * Return TRUE if the user has enabled modNick, otherwise FALSE
+ * 
+ */
+
+bool
+  User::modNick(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT modnick from nicks where nickname='"+nickname+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	if(row[0]=="1")
+	  {
+	     return true;
+	  }
+	else
+	  {
+	     return false;
+	  }
+     }
+   return false;
+};
+
+/* deopAway(void)
+ * 
+ * Return TRUE if the user wishing to use the Deop On Away functionality
+ * otherwise FALSE.
+ * 
+ */
+
+bool
+  User::deopAway(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT deopaway from nicks where nickname='"+nickname+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	if(row[0]=="1")
+	  {
+	     return true;
+	  }
+	else
+	  {
+	     return false;
+	  }
+     }
+   return false;
+};
+
+/* updateHost(String)
+ * 
+ * Update the database to show the users new host.
+ * 
+ */
+
+void
+  User::updateHost(String const &host)
+{
+   services.getDatabase().query("UPDATE nicks set lasthost='"+host+"' WHERE nickname='"+nickname+"'");
 };
 
 
+void
+  User::setNick(String const &newnick)
+{
+   nickname = newnick.IRCtoLower();
+   services.getDatabase().query("UPDATE onlineclients set nickname='"+nickname+"' WHERE id='"+String::convert(onlineID)+"'");
+}

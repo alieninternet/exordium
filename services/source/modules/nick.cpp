@@ -243,7 +243,8 @@ void
 	
 	if(value=="true")
 	  {
-	     services.getNickname().setModNick(origin,true);
+	     User *ptr = services.clients.findUser(origin);
+	     ptr->setModNick(true);
 	     String togo = "Nickname enforcement is now enabled";
 	     services.serviceNotice(togo,"Nick",origin);
 	     return;

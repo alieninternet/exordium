@@ -35,6 +35,11 @@ using Kine::String;
 using Kine::StringTokens;
 using namespace Exordium;
 
+/* Add a user into our map thingy :*(
+ * and return its new record just to be nice (if they want it)
+ *
+ */
+
 User*
   UserBase::addUser(Kine::String &name, int &oid)
 {
@@ -53,9 +58,21 @@ User*
 User*
   UserBase::findUser(Kine::String &name)
 {
-   
-   
+   int uid = services.locateID(name);
+   if(uid==0) /* The user was not found... */
+     {
+	return 0;
+     }
+   User *ptr = users[uid];
+   return ptr;
 };
+
+
+/* delUser(who)
+ * 
+ * Deletes the record for the given user... returns true on success
+ * 
+ */
 bool
   UserBase::delUser(Kine::String &name)
 {

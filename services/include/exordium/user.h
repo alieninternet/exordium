@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __USER_H_
-# define __USER_H_
+#ifndef _USER_H_
+# define _USER_H_
 
 # include <kineircd/str.h>
 # include <map>
@@ -53,8 +53,23 @@ namespace Exordium
 	  {
 	     return onlineID;
 	  };
-	void test(void);
+	String getOnlineIDString(void)
+	  {
+	     return String::convert(onlineID);
+	  };
 	
+	/* Take note. Their are two sendMessages, the latter allowing
+	 * you to override services default behaviour of using the 
+	 * nicknames settings of notice/privmsg
+	 */
+	void sendMessage(String const &message,String const &origin);
+	void sendMessage(String const &message,String const &origin, bool const &privmsg);
+	void setModNick(bool const &);
+	bool modNick(void);
+	void setDeopAway(bool const &);
+        bool deopAway(void);
+	void updateHost(String const &);
+	void setNick(String const &);
 	User(String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh
 	    onlineID(oid), //as dictated by the sql server..

@@ -65,7 +65,8 @@ void Parser::parseLine(const String& line)
 	origin = st.nextToken ().substr (1);
 	origin = origin.IRCtoLower();
      }
-
+   //Find the associated user for this origin...
+   User *ptr = services.clients.findUser(origin);
    String command = st.nextToken ();
    for (int i = 0; functionTable[i].command != 0; i++)
      {
@@ -73,7 +74,7 @@ void Parser::parseLine(const String& line)
 	if (command == functionTable[i].command)
 	  {
 	     // Run the command and leave
-	     (this->*(functionTable[i].function))(origin, st);
+	     (this->*(functionTable[i].function))(origin, st, ptr);
 	     return;
 	  }
      }
@@ -84,19 +85,16 @@ void Parser::parseLine(const String& line)
 void PARSER_FUNC (Parser::parseAWAY)
 {
    String reason = tokens.rest();
-   services.Debug("\002[\002Away\002]\002 "+origin+" has set away with reason "+reason);
-   if(services.getNickname().deopAway(origin))
+   if(ptr->deopAway())
      {
 	if(reason=="")
 	  {
-	     services.Debug("User is coming back");
+	     //Don't do anything user is coming back
 	     return;
 	  }
 	else
 	  {
-	     services.Debug("User is going away");
-	     int nid = services.getNickname().getOnlineNickID(origin);
-	     String query = "SELECT chanid from chanstatus where nickid="+String::convert(nid)+" AND status=2";
+	     String query = "SELECT chanid from chanstatus where nickid="+ptr->getOnlineIDString()+" AND status=2";
 	     MysqlRes res = services.getDatabase().query(query);
 	     MysqlRow row;
 	     while ((row = res.fetch_row()))
@@ -283,24 +281,21 @@ void
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
-	String newnick = tokens.nextToken();
-	newnick = newnick.IRCtoLower();
-	String query = "UPDATE onlineclients set nickname='" + newnick + "' where nickname='"+origin+"'";
+	ptr->setNick(tokens.nextToken());
+	String query = "DELETE from kills WHERE nick='"+origin+"'";
 	services.getDatabase().query(query);
-	query = "DELETE from kills WHERE nick='"+origin+"'";
-	services.getDatabase().query(query);
-	if(services.getNickname().isNickRegistered(newnick))
+	if(services.getNickname().isNickRegistered(ptr->getNickname()))
 	  {
-	     if(!services.getNickname().isIdentified(newnick))
+	     if(!services.getNickname().isIdentified(ptr->getNickname()))
 	       {
-		  if(!services.getNickname().isPending(newnick))
+		  if(!services.getNickname().isPending(ptr->getNickname()))
 		    {
 			/* Not identified as new nickname */
 		       /* Added this for raff. */
-		       if(services.getNickname().modNick(newnick))
+		       if(services.getNickname().modNick(ptr->getNickname()))
 			 {
 			    
-		       services.getNickname().addCheckidentify(newnick);
+		       services.getNickname().addCheckidentify(ptr->getNickname());
 			 }
 		       
 		    }

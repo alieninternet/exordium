@@ -205,6 +205,11 @@ namespace Exordium {
 		queueAdd(":" + service + " NOTICE " + target + " :" + line);
 	     }
 	  }
+	void serviceNoticeForce(String const &line, String const &service,
+				String const &target)
+	  {
+	     queueAdd(":" + service + " NOTICE " + target + " :" + line);
+	  }
 	
 	void servicePrivmsg(String const &line, String const &service, 
 			    String const &target)
