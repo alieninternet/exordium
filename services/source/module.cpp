@@ -110,7 +110,7 @@ namespace {
 	{ return &config; };
       
       // this is called just before the module is actually going to be used
-      bool start(Kine::Daemon& daemon) {
+      bool start(void) {
 /* Uncomment this when the database engine config thing is complete       
 	 // Check the configuration was completely setup, otherwise get cranky
 	 if (!config.checkConfig()) {
@@ -126,7 +126,7 @@ namespace {
 #endif
 	 
 	 // Create the new services instance - Passing sql YAY :|
-	 services = new ServicesInternal(daemon, config, *db);
+	 services = new ServicesInternal(config, *db);
 #ifdef DEBUG
 	 assert(services != 0);
 #endif

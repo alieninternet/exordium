@@ -104,7 +104,7 @@ namespace Exordium {
 	
     public:
       // Constructor
-      ServicesInternal(Kine::Daemon& d, ConfigInternal& c, CDatabase& db);
+      ServicesInternal(ConfigInternal& c, CDatabase& db);
 	
       // Destructor
       ~ServicesInternal(void)

@@ -45,9 +45,6 @@ namespace Exordium {
    
    class Services {
     protected:
-      // Where the KineIRCd daemon instance is
-      Kine::Daemon& daemon;
-      
       // Our database handler, however this should be in the config class..
       CDatabase& database;
       
@@ -55,9 +52,8 @@ namespace Exordium {
       Channel channel;
       
       // Constructor
-      Services(Kine::Daemon& d, CDatabase& db)
-	: daemon(d),
-          database(db),
+      Services(CDatabase& db)
+	: database(db),
           channel(*this)
 	{};
       
@@ -74,10 +70,6 @@ namespace Exordium {
       virtual ~Services(void)
 	{};
       
-      // Grab the daemon reference
-      Kine::Daemon& getDaemon(void) const
-	{ return daemon; };
-      
       // Grab the database reference
       CDatabase& getDatabase(void)
 	{ return database; };
@@ -92,7 +84,7 @@ namespace Exordium {
       // Log a line of text..
       void logLine(const std::string& line,
 		   const Log::mask_type mask = Log::Informative)
-	{ daemon.log(line, (Kine::Logger::Mask::type)mask); };
+	{ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); };
 
       static unsigned long random(unsigned long max);
       static AISutil::String generatePassword(AISutil::String const &,

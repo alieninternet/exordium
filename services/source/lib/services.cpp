@@ -227,8 +227,8 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	    }
        }
 
-   ServicesInternal::ServicesInternal(Kine::Daemon& d, ConfigInternal& c, CDatabase& db)
-     : Services(d, db),
+   ServicesInternal::ServicesInternal(ConfigInternal& c, CDatabase& db)
+     : Services(db),
        parser(*this),
        console(*this),
        config(c),
@@ -255,10 +255,13 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 	logLine("Setting up signal handlers",
 		Log::Debug);
 #endif
-	getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
-	getDaemon().getSignals().addHandler(&Death,
-					    Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
-					    (void *)this);
+	Kine::signals().addHandler(&Rehash,
+				   Signals::REHASH,
+				   (void *)this);
+	Kine::signals().addHandler(&Death,
+				   Signals::VIOLENT_DEATH |
+				   Signals::PEACEFUL_DEATH,
+				   (void *)this);
 
 
         database.dbConnect();

@@ -37,6 +37,7 @@
 
 #include "love.h"
 #include "tables.h"
+#include <kineircd/config.h>
 
 
 using AISutil::String;
@@ -71,7 +72,7 @@ const Module::moduleInfo_type Module::moduleInfo = {
  */
 const Module::commandTable_type Module::commandTable[] =
 {
-     { "commands",		Module::handleCOMMANDS },
+     { "commands",		&Module::handleCOMMANDS },
      { 0, 0 }
 };
 
@@ -120,27 +121,11 @@ void Module::parseLine(StringTokens& line, User& origin)
       // Does this match?
       if (command == commandTable[i].command) {
 #ifdef DEBUG
-	 // Oh "golly gosh", I hope the function really exists
+	 // I hope the function really exists
 	 assert(commandTable[i].handler != 0);
 #endif
 	 
-	 // Check if the minimum number of parameters is achieved
-	 if (line.countTokens() < commandTable[i].minParams) {
-	    // Complain! We should send help here, really..
-	    sendMessage(origin, "You need to use more parameters");
-	    return;
-	 }
-	 
-	 // Check if the maximum number of parameters is set, if we have to
-	 if ((commandTable[i].maxParams !=
-	      Module::commandTable_type::MAX_PARAMS_UNLIMITED) &&
-	     ((line.countTokens() - 1) > commandTable[i].maxParams)) {
-	    // Complain.. THIS IS CRAP.. like above..
-	    sendMessage(origin, "Too many parameters");
-	    return;
-	 }
-	 
-	 // Run the command and leave early
+	 // Run the command and leave
 	 (this->*(commandTable[i].handler))(origin, line);
 	 return;
       }
@@ -160,7 +145,7 @@ LOVE_FUNC(Module::handleCOMMANDS)
 {
    // Work out the line length, we subtract 20 to be safe :)
    String::size_type lineLength =
-     services->getDaemon().getConfig().getOptionsLimitsMaxMessageLength() - 20;
+     Kine::config().getOptionsLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
    sendMessage(origin, "Command list for " + getName() + ":");
