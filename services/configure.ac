@@ -201,11 +201,10 @@ dnl finish off the line
 echo
 
 
+AC_CONFIG_SUBDIRS(libltdl)
+
+
 AC_CONFIG_FILES([Makefile
 		 ])
 
 AC_OUTPUT
-
-dnl until libtool is useful on systems using autoconf versions > 2.13,
-dnl we unfortunately cannot do this. I hate GNU for this crap.
-dnl AC_CONFIG_SUBDIRS(libltdl)
