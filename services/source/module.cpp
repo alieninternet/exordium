@@ -10,7 +10,7 @@
 #include <exordium/sql.h>
 #include <exordium/conf.h>
 #include <exordium/services.h>
-#include <kineircd/module-service.h>
+#include <kineircd/module.h>
 
 
 using namespace Exordium;
@@ -101,5 +101,5 @@ KINE_MODULE_INIT
    config = new Config();
 
    // Make a new module for Kine
-   return new Kine::ModuleService(moduleInfo, config);
+   return new Kine::Module(moduleInfo, config);
 }
