@@ -40,6 +40,9 @@ class Love : public Exordium::Service {
       const int blahblahblahblahblah;	// For future use..
    } static const commandTable[];
    
+   // Who are we?!
+   const String myName;
+   
    // Our wonderful command handlers
    handler_type handleTEST;
 
@@ -50,13 +53,14 @@ class Love : public Exordium::Service {
 	// It isn't anymore! (ner :( ) - init_func can now take another
 	// parm, being a String containing your name. (as defined by
 	// loadModule)
-	Exordium::Services::serviceNotice(message, "Love", recipient);
+	Exordium::Services::serviceNotice(message, myName, recipient);
      };
 
    
  public:
    // Our constructor
-   Love(void) 
+   Love(const String &mn)
+     : myName(mn)
      {};
 
    // Our destructor

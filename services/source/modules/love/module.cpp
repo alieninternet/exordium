@@ -36,8 +36,11 @@ using namespace Exordium;
  * Original 13/07/2002 james
  * Note: Using C-style symbols for dlsym()
  */
-extern "C" Module *service_init(void) {
-   return new Module("love", new Love());
+EXORDIUM_SERVICE_INIT_FUNCTION {
+// This comes soon.   
+//   Services::registerService(name, name, "ircdome.org", "+dz", "Lurve");
+   Services::serviceJoin(name, "#Debug");
+   return new Module("love", new Love(name));
 }
 
 
