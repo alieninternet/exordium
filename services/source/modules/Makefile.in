@@ -23,25 +23,27 @@ SOURCES=\
 OBJECTS=$(SOURCES:.cpp=.so)
 
 
-SUB_DIRS=\
+SUBDIRS=\
 	game \
 	love
 
-.PHONY: all subdirs $(SUB_DIRS)
+.PHONY: all $(SUB_DIRS)
 
-all: subdirs $(OBJECTS)
-
-subdirs: $(SUB_DIRS)
-
-$(SUB_DIRS):
-	$(MAKE) -C $@
+all: all-recursive $(OBJECTS)
 
 %.so: %.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -I/usr/local/ssl/include -shared $< -o $@ -lservices -L../lib
 
-clean:
+clean: clean-recursive
 	$(RM) *.so modules
 
-distclean:
+distclean: distclean-recursive
 	$(RM) *.so modules Makefile
 
+all-recursive clean-recursive distclean-recursive:
+	@target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	      echo "Making $$target in $$subdir"; \
+	      (cd $$subdir && $(MAKE) $$target) \
+	      || exit 1; \
+	done;

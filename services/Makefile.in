@@ -3,7 +3,7 @@
 # $Date$
 # $Id$
 
-SUB_DIRS=source/lib source source/modules
+SUBDIRS=source
 AUTOGEN_SUB_DIRS=include src
 
 ########################################################################
@@ -12,23 +12,24 @@ AUTOGEN_SUB_DIRS=include src
 
 
 # Make the package
-all:
-	for d in $(SUB_DIRS); \
-		do $(MAKE) -C $$d; \
-	done
+all: all-recursive
+#	for d in $(SUB_DIRS); \
+#		do $(MAKE) -C $$d; \
+#	done
 
 
-clean:
-	for d in $(SUB_DIRS); \
-		do $(MAKE) -C $$d clean; \
-	done
+clean: clean-recursive
 	$(RM) *~ include/*~
+#	for d in $(SUB_DIRS); \
+#		do $(MAKE) -C $$d clean; \
+#	done
+#	$(RM) *~ include/*~
 
-distclean:
-	for d in $(SUB_DIRS); \
-		do $(MAKE) -C $$d distclean; \
-	done
+distclean: distclean-recursive
 	$(RM) -r *~ include/*~ autom* config* Makefile
+#	for d in $(SUB_DIRS); \
+#		do $(MAKE) -C $$d distclean; \
+#	done
 	
 dump:
 	mysqldump --all --complete-insert -e --add-locks --delayed-insert --lock-tables services >db-dump.sql
@@ -36,3 +37,10 @@ dump:
 	gzip -v9 db-dump.sql
 	gzip -v9 db-dump.xml
 	
+all-recursive clean-recursive distclean-recursive:
+	@target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	      echo "Making $$target in $$subdir"; \
+	      (cd $$subdir && $(MAKE) $$target) \
+	      || exit 1; \
+	done;

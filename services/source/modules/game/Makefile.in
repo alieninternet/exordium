@@ -19,32 +19,35 @@ ROBJECTS=cards/cards.o
 
 TARGET=game.so
 
-SUB_DIRS=\
+SUBDIRS=\
 	cards
 
-.PHONY: all subdirs $(SUB_DIRS)
+.PHONY: all $(SUB_DIRS)
 
-all: $(TARGET)
+all: all-recursive $(TARGET)
 
-subdirs: $(SUB_DIRS)
-
-$(SUB_DIRS):
-	$(MAKE) -C $@
-
-$(TARGET): subdirs $(OBJECTS)
+$(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJECTS) $(ROBJECTS) -o $@ \
 		-lservices -L../../lib
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -shared -c $<
 
-clean:
+clean: clean-recursive
 	$(RM) *.o *~ $(TARGET)
 
-distclean:
+distclean: distclean-recursive
 	$(RM) *.o *~ $(TARGET) Makefile
 
 pretty:
 	indent *.cpp
 	indent *.h
 	$(RM) *~
+
+all-recursive clean-recursive distclean-recursive:
+	@target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	      echo "Making $$target in $$subdir"; \
+	      (cd $$subdir && $(MAKE) $$target) \
+	      || exit 1; \
+	done;

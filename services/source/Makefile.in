@@ -12,20 +12,15 @@ OBJECTS=$(SOURCES:.cpp=.o)
 
 TARGET=mod_exordium.so
 
-SUB_DIRS=\
+SUBDIRS=\
 	lib \
 	modules
 
 .PHONY: all subdirs $(SUB_DIRS)
 
-all: $(TARGET)
+all: all-recursive $(TARGET)
 
-subdirs: $(SUB_DIRS)
-
-$(SUB_DIRS):
-	$(MAKE) -C $@
-
-$(TARGET): subdirs $(OBJECTS)
+$(TARGET): $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS) $(LIBS) -L/usr/local/mysql/lib/mysql \
 		$(LDFLAGS)  -L./lib/ -lservices -fPIC -shared
 
@@ -33,10 +28,10 @@ $(TARGET): subdirs $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(DEFINES) -I/usr/local/ssl/include -I$(INCLUDES) -I/usr/local/mysql/include/ -I../../kineircd/src/lib -I../../kineircd/include -I../include/  -c $< 
 
 
-clean:
+clean: clean-recursive
 	$(RM) *.o *~ services *.log
 
-distclean:
+distclean: distclean-recursive
 	$(RM) *.o *~ services *.log Makefile
 
 pretty:
@@ -44,4 +39,10 @@ pretty:
 	indent *.h
 	$(RM) *~
 
-
+all-recursive clean-recursive distclean-recursive:
+	@target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	      echo "Making $$target in $$subdir"; \
+	      (cd $$subdir && $(MAKE) $$target) \
+	      || exit 1; \
+	done;

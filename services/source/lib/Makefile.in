@@ -45,5 +45,3 @@ pretty:
 
 modules:
 	$(CXX) -I../include -I../../kineircd/include -I/usr/local/mysql/include -shared -o love.so love.cpp
-
-
