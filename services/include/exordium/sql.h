@@ -24,8 +24,12 @@ namespace Exordium {
       
     public:
       Sql(Log& l, const Config& c);
-      
+
+      // These should probably be templated :( In fact, MySql:: should be
+      // simply merged with this class altogether :(
+      MysqlRes query(const char* const);
       MysqlRes query(const String&);
+      
       String makeSafe(const String&);
    };
 };

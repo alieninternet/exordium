@@ -9,6 +9,7 @@
 # define MYSQL_H
 
 # include <mysql/mysql.h>
+# include <kineircd/str.h>
 
 typedef MYSQL_FIELD MysqlField;
 typedef MYSQL_ROW MysqlRow;
@@ -87,14 +88,14 @@ class Mysql
    char     *get_server_info () {return mysql_get_server_info(mysql);}
    char     *info () {return mysql_info(mysql);}
    int      insert_id () {return mysql_insert_id(mysql);}
-   int      query (const char *query) {return mysql_query (mysql, query);}
+   int      query (const char* const query) 
+     { return mysql_query (mysql, query); }
    int      query (const Kine::String& query) 
-     {
-	 return mysql_real_query(mysql,query.data(), query.length()); 
-     }
-   
-   int      real_query (const char *query, uint length)
-     {return mysql_real_query (mysql, query, length);}
+     { return mysql_real_query(mysql, query.data(), query.length()); }
+  
+   // ?
+//   int      real_query (const char *query, uint length)
+//     {return mysql_real_query (mysql, query, length);}
    int      reload() {return mysql_reload(mysql);}
    int      select_db (const char *db) {return mysql_select_db(mysql,db);}
    int      shutdown () {return mysql_shutdown(mysql);}

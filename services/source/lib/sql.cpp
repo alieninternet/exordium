@@ -51,17 +51,17 @@ logger(l)
    query("DELETE from onlinechan");
 }
 
-MysqlRes Sql::query(const String& query)
+MysqlRes Sql::query(const char* const query)
 {
    struct timeval start;
    logger.logLine(String("MySQL Query Debug: ") + query);
    gettimeofday(&start, NULL);
 
-   if (mysql.query(query.c_str()))
+   if (mysql.query(query))
      {
 	logger.logLine(String("MySQL Error: ") + mysql.error());
-	String toshout = (String("MySQL Error: ") + mysql.error());
-	//      services.helpme(toshout, "Serv");
+//	String toshout = (String("MySQL Error: ") + mysql.error());
+//	services.helpme(toshout, "Serv");
      }
 
    struct timeval finish;
@@ -71,7 +71,32 @@ MysqlRes Sql::query(const String& query)
      " microseconds";
    logger.logLine(tolog);
 
-   //MysqlRes togo = mysql.store_result();
+//   MysqlRes togo = mysql.store_result();
+
+   return mysql.store_result();
+}
+
+MysqlRes Sql::query(const String& query)
+{
+   struct timeval start;
+   logger.logLine(String("MySQL Query Debug: ") + query);
+   gettimeofday(&start, NULL);
+
+   if (mysql.query(query))
+     {
+	logger.logLine(String("MySQL Error: ") + mysql.error());
+//	String toshout = (String("MySQL Error: ") + mysql.error());
+//	services.helpme(toshout, "Serv");
+     }
+
+   struct timeval finish;
+   gettimeofday(&finish, NULL);
+   long long time = ((((long long)finish.tv_sec * 1000000) + finish.tv_usec) - (((long long)start.tv_sec * 1000000) + start.tv_usec));
+   String tolog = String("MySQL Query Took ") + String::convert(time) +
+     " microseconds";
+   logger.logLine(tolog);
+
+//   MysqlRes togo = mysql.store_result();
 
    return mysql.store_result();
 }
