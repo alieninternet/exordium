@@ -22,7 +22,7 @@ $(TARGET): $(OBJECTS)
 
 $(TARGET_MODULE): $(OBJECTS_MODULE)
 	$(CXX) -o $@ $(OBJECTS_MODULE) $(LIBS) -L/usr/local/mysql/lib/mysql \
-		$(LDFLAGS) lib/libservices.so \
+		$(LDFLAGS)  -L./lib/ -lservices \
 		-fPIC -shared
 
 %.o: %.cpp
