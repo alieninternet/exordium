@@ -1,2 +1,2 @@
 #!/bin/sh
-autoconf --output=configure --include=autoconf autoconf/configure.in
+autoconf --output=configure configure.in
