@@ -12,7 +12,6 @@
  *
  * eg.
  *   dot -Tpng -o linkmap.png linkmap.dat
- *   (one day neato may give better results than it currently does)
  *
  * Note: 
  *  This graph probably needs link-ranks and graph page size to be defined to
@@ -40,8 +39,11 @@ digraph intranet_map {
      "libais";
      "libdl";
      "libmysqlclient";
+     "libnetsnmp";
+     "libnetsnmpagent";
+     "libnetsnmphelpers";
+     "libnetsnmpmibs";
      "libpq"; // postgresql
-     "libsnmp";
      "libssl";
      "libxml2";
 //  };
@@ -84,7 +86,10 @@ digraph intranet_map {
   "mod_irc2user" -> "libais";
   "mod_irc2user" -> "libkineircd_irc2";
   "mod_snmp" -> "libais";
-  "mod_snmp" -> "libsnmp";
+  "mod_snmp" -> "libnetsnmp";
+  "mod_snmp" -> "libnetsnmpagent";
+  "mod_snmp" -> "libnetsnmphelpers";
+  "mod_snmp" -> "libnetsnmpmibs";
   "libkineircd_irc2" -> "libais";
   "libkineircd_irc2" -> "libkineircd";
 
