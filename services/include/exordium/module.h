@@ -38,8 +38,8 @@
    extern "C" EXORDIUM_MODULE_INIT_FUNCTION_NO_EXTERN(exordium_module_init)
 
 namespace Exordium {
-   class Service;
    class Services;
+   class Service;
    
    class Module {
     public:
@@ -95,37 +95,49 @@ namespace Exordium {
 	 const AISutil::String& getIdent(void) const
            { return defIdent; };
       };
+
+    private:
+      // Your service (we keep control over this variable to maintain integrity)
+      Service* service;
       
     protected:
       // Constructor
       Module(void)
+	: service(0)
 	{};
       
     public:
       // Destructor
-      virtual ~Module()
-	{};
+      virtual ~Module();
 
+      // Start the module (the one you provide; return your service from this)
+      virtual Service* const realStart(Exordium::Services& s) = 0;
+      
+      // Stop the module (the one you provide; the reason may be null = none)
+      virtual void realStop(const AISutil::String* const reason) {};
+      
+    public:
       // Start the module (return false if the module was unable to start)
-      virtual bool start(Exordium::Services& s) = 0;
+      const bool start(Exordium::Services& s);
       
       // Stop the module (called just before a module is unloaded)
-      virtual void stop(const AISutil::String* const reason = 0) {};
-
+      void stop(const AISutil::String* const reason = 0);
+      
       // Grab the information structure of a module
       virtual const Info& getModuleInfo(void) const = 0;
       
       // Return an appropriate instance of a configuration data class
       virtual const ConfigData& getConfigData(void) const = 0;
       virtual ConfigData& getConfigData(void) = 0;
-      
-      // Return the service this module has wrapped up inside it (0 = not init)
-      virtual Service* const getService(void) const = 0;
+
+      // Return the service (null = uninitialised)
+      Service* const getService(void) const
+	{ return service; };
    };
 };
 
-# include <exordium/service.h>
 # include <exordium/services.h>
+# include <exordium/service.h>
 
 #endif // _INCLUDE_EXORDIUM_MODULE_H_
 

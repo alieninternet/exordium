@@ -158,18 +158,10 @@ namespace Exordium {
 				  AISutil::String const &service, 
 				  AISutil::String const &target) = 0;
       
-      virtual void serviceQuit(const AISutil::String& name,
-			       const AISutil::String& reason) = 0;
-      
       // This does not modify a server mode, it should be renamed.
       virtual void serverMode(AISutil::String const &chan,
 			      AISutil::String const &mode,
 			      AISutil::String const &target) = 0;
-      
-      virtual void registerService(AISutil::String const &nick,
-				   AISutil::String const &user,
-				   AISutil::String const &host,
-				   AISutil::String const &realname) = 0;
       
       virtual void serviceJoin(AISutil::String const &service,
 			       AISutil::String const &target) = 0;

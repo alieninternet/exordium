@@ -44,37 +44,23 @@ namespace {
       
    class Module : public Exordium::Module {
     private:
-      // Pointer to the service this module contains
-      Exordium::GameModule::Service* service;
-
       // Configuration data
       Exordium::GameModule::ConfigData configData;
       
     public:
       // Constructor
       Module(void)
-	: service(0),
-          configData(moduleInfo.fullName, moduleInfo.shortName)
+	: configData(moduleInfo.fullName, moduleInfo.shortName)
 	{};
       
       // Destructor
-      ~Module(void) {
-	 // If the service was created, deregister it and delete it from memory
-	 if (service != 0) {
-	    delete service;
-	 }
-      }
+      ~Module(void) 
+	{};
 
       // Start the service
-      bool start(Exordium::Services& s) {
+      Exordium::Service* const realStart(Exordium::Services& s) {
 	 // Make a new service
-	 if ((service = new Exordium::GameModule::Service(configData, s)) ==
-	     0) {
-	    return false;
-	 }
-	 
-	 // All is well
-	 return true;
+	 return new Exordium::GameModule::Service(configData, s);
       }
       
       // Return the module info
@@ -86,10 +72,6 @@ namespace {
 	{ return configData; };
       ConfigData& getConfigData(void)
 	{ return configData; };
-      
-      // Return the service this module has
-      Exordium::Service* const getService(void) const
-	{ return service; };
    }; // struct Module
 }; // namespace {anonymous}
 

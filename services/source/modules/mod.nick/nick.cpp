@@ -803,8 +803,9 @@ NICK_FUNC (Service::parseGHOST)
     }
    if(Utils::generatePassword(toghost,password) == password)
     {
-       services.registerService(toghost,"ghost","ghosts.peoplechat.org",
-					"Ghosted by "+origin.getNickname());
+#warning "the ghost thing won't ghost as there is no fake user thing to make"
+//       services.registerService(toghost,"ghost","ghosts.peoplechat.org",
+//					"Ghosted by "+origin.getNickname());
        origin.sendMessage(GETLANG(nick_GHOST_SUCCESSFUL, toghost),
 			  getNickname());
        origin.log(getNickname(), "Successfully ghosted " + toghost);

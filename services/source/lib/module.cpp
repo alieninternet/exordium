@@ -28,11 +28,15 @@
 # include "autoconf.h"
 #endif
 
+#include <kineircd/registry.h>
+
 #include "exordium/module.h"
+
+using namespace Exordium;
 
 // Default configuration definition table (for uninherited ConfigData classes)
 const AISutil::ConfigParser::defTable_type
-  Exordium::Module::ConfigData::defaultDefinitions = {
+  Module::ConfigData::defaultDefinitions = {
        {
 	  "DESCRIPTION", 4,
 	    (void *)&ConfigData::defDescription, &varHandleString,
@@ -61,3 +65,49 @@ const AISutil::ConfigParser::defTable_type
      
        { 0, 0, 0, 0, 0, 0 }
   };
+
+
+/* ~Module - Destroy the module
+ * Original 30/05/2003 pickle
+ */
+Module::~Module(void)
+{
+   // If a service was created, destroy it on the module's behalf
+   if (service != 0) {
+      delete service;
+   }
+}
+
+  
+/* start - Start the module
+ * Original 30/05/2003 pickle
+ */
+const bool Module::start(Exordium::Services& s)
+{
+   // Try to start the module, and make sure a service was created
+   if ((service = realStart(s)) != 0) {
+      // Okay, the module started - register the service to kine here
+      return (Kine::registry().addService(*service) != Kine::Error::NO_ERROR);
+   }
+   
+   // If we got here, the module did not start.. ouch..
+   return false;
+}
+
+
+/* stop - Stop the module
+ * Original 30/05/2003 pickle
+ */
+void Module::stop(const AISutil::String* const reason)
+{
+   // Stop the module
+   realStop(reason);
+   
+   // Deregister the service from kine, if it existed
+   if (service != 0) {
+      (void)Kine::registry().removeService(*service);
+   }
+}
+
+
+

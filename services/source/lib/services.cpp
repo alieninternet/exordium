@@ -98,12 +98,11 @@ stopping(false)
    config.getModules().startAll(*this);
    
    // Is the console actually wanted?
-   if (config.getConsoleEnabled())
-     {
-	registerService(config.getConsoleName(), "peoplechat", /* Hack for now */
-			config.getConsoleHostname(),
-			config.getConsoleDescription());
-     }
+//   if (config.getConsoleEnabled()) {
+//	registerService(config.getConsoleName(), "peoplechat", /* Hack for now */
+//			config.getConsoleHostname(),
+//			config.getConsoleDescription());
+//   }
    Kine::langs().registerMap(Language::tagMap);
 }
 

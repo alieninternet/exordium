@@ -47,37 +47,23 @@ namespace {
       
    class Module : public Exordium::Module {
     private:
-      // Pointer to the service this module contains
-      Exordium::LoveModule::Service* service;
-
       // Configuration data
       ConfigData configData;
       
     public:
       // Constructor
       Module(void)
-	: service(0),
-          configData(moduleInfo.fullName,
+	: configData(moduleInfo.fullName,
 		     Kine::config().getOptionsServerName(),
 		     moduleInfo.shortName, moduleInfo.shortName)
 	{};
       
       // Destructor
-      ~Module(void) {
-	 // If the service was created, deregister it and delete it from memory
-	 if (service != 0) {
-	    delete service;
-	 }
-      }
+      ~Module(void)
+	{};
 
       // Start the service
-      bool start(Exordium::Services& s) {
-	 // Make a new service
-	 if ((service = new Exordium::LoveModule::Service(configData, s))
-	     == 0) {
-	    return false;
-	 }
-	 
+      Exordium::Service* const realStart(Exordium::Services& s) {
 	 // Attempt to affirm our database tables..
 	 unsigned int i = 0;
 	 while (Exordium::LoveModule::Tables::tables[i] != 0) {
@@ -89,15 +75,15 @@ namespace {
 			 Exordium::Log::Fatality);
 	       
 	       // Grumble
-	       return false;
+	       return 0;
 	    }
       
 	    // Next table..
 	    ++i;
 	 }
 	 
-	 // All is well
-	 return true;
+	 // Make a new service
+	 return new Exordium::LoveModule::Service(configData, s);
       }
       
       // Return the module info
@@ -109,10 +95,6 @@ namespace {
 	{ return configData; };
       ConfigData& getConfigData(void)
 	{ return configData; };
-      
-      // Return the service this module has
-      Exordium::Service* const getService(void) const
-	{ return service; };
    }; // struct Module
 }; // namespace {anonymous}
 
