@@ -42,6 +42,10 @@ namespace Exordium {
       // Variables (top class from the definition table above)
       String defLogfile;			// Log filename
       String defUplinkHost;        		// Uplink Host
+      String defServicesHostname;               // Services hostname
+      String defServicesDescription;            // Services description (aka realname)
+      String defServicesConsoleHostname;        // Console's hostname
+      String defServicesConsoleDescription;     // Console's description
       unsigned short defUplinkPort;             // Uplink Port
       
       // 'SQL' class and variables
@@ -63,6 +67,14 @@ namespace Exordium {
 	{ return defUplinkHost; };      
       const unsigned short getUplinkPort(void) const
         { return defUplinkPort; };
+      const String &getServicesHostname(void) const
+        { return defServicesHostname; };
+      const String &getServicesDescription(void) const
+        { return defServicesDescription; };
+      const String &getServicesConsoleHostname(void) const
+        { return defServicesConsoleHostname; };
+      const String &getServicesConsoleDescription(void) const
+        { return defServicesConsoleDescription; };
       // 'SQL' class
       const String &getSqlDatabase(void) const
 	{ return defSqlDatabase; };

@@ -38,10 +38,31 @@ const Kine::ConfigParser::defTable_type Config::definitionTable =
 	  0, 0
      },
      {
+        "HOSTNAME",
+          (void *)&Config::defServicesHostname, &varHandleString,
+          0, 0
+     },
+     {
 	"UPLINKHOST",
 	  (void *)&Config::defUplinkHost, &varHandleString,
 	  0, 0
      },
+     {
+        "DESCRIPTION",
+          (void *)&Config::defServicesDescription, &varHandleString,
+          0, 0
+     },
+     {
+        "CONSOLEHOSTNAME",
+          (void *)&Config::defServicesConsoleHostname, &varHandleString,
+          0, 0
+     },
+     {
+        "CONSOLEDESCRIPTION",
+          (void *)&Config::defServicesConsoleDescription, &varHandleString,
+          0, 0
+     },
+
      {
         "UPLINKPORT",
           (void *)&Config::defUplinkPort, &varHandleUnsignedShortNoZero,

@@ -66,7 +66,6 @@ using Kine::Signals;
 using namespace Exordium;
 
 #define CONFIG "services.conf"
-#define UPLINK "services-hub.ircdome.org"
 
 KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
@@ -327,11 +326,7 @@ namespace Exordium
 
         // Note: Maybe add an option for port?
 
-        cout << "Host: " << socky.getRemoteAddress() << endl;
-
 	socky.setRemotePort(config.getUplinkPort());
-
-        cout << "Port: " << socky.getRemotePort() << endl;
 
 	if(!socky.connect())
 	  {
@@ -347,14 +342,16 @@ namespace Exordium
 	connected = true;
 	logger.logLine ("Beginning handshake with uplink");
 	maxSock = socky.getFD() + 1;
+
+
 /* *Whistles* Config option */
 	queueAdd ("PASS pass :TS");
 	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
 /* Jesus, so many hard coded stuff :( */
-	queueAdd ("SERVER services.ircdome.org 1 :IRCDome Network Services");
-	queueAdd ("SERVER ircdome.org 2 :IRCDome Console");
+	queueAdd ("SERVER " + config.getServicesHostname() + " 1 :" + config.getServicesDescription());
+	queueAdd ("SERVER " + config.getServicesConsoleHostname() + " 2 :" + config.getServicesConsoleDescription());
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
-	queueAdd (":services.ircdome.org EOB");
+	queueAdd (":" + config.getServicesHostname()  + " EOB");
 	queueAdd ("BURST");
 //	queueFlush();
 	doBurst ();
