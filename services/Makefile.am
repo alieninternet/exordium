@@ -200,10 +200,10 @@ mod_nick_la_SOURCES=\
 		    source/modules/mod.nick/tables.h
 
 source/modules/mod.nick/language.cpp source/modules/mod.nick/language.h: source/modules/mod.nick/language.tpl $(top_builddir)/autogen/language.def
-		      $(AUTOGEN) \
-		      		 -b $(basename $@) \
-				 -T source/modules/mod.nick/language.tpl \
-				 $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T source/modules/mod.nick/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 # ***************** END of mod_nick *******************
 # ***************** START of mod_note *****************
