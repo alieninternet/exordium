@@ -60,6 +60,13 @@ language = {
    langMaintiner = "mail@hawkon.net";
 };
 
+
+language = {
+   langCode = "fr";
+   langName = "French";
+   langRevision = "200303220";
+};
+
 /*
  *
  * Tags for core Console 
@@ -72,6 +79,7 @@ langtag = {
   data_en = "You do not have enough access to use that console command";
   data_de = "As if i can convert this to german";
   data_no = "Du har ikke nok aksess til å bruke den kommandoen";
+  data_fr = "Vous n'avez pas un acces suffisant pour utiliser cette commande de la console";
 };
 
 langtag = {
@@ -96,6 +104,7 @@ langtag = {
   component = "core";
   data_en = "This nickname is registered, please identify by typing /ns id <password>";
   data_no = "Dette kallenavnet er registrert, vennligst logg inn ved å skrive /ns id <passord>";
+  data_fr = "Ce pseudonyme est enregistré, veuillez vous identifier en saisissant /ns id <mot de passe>";
 };
 
 /*
@@ -106,48 +115,56 @@ langtag = {
    data_en = "Unrecognised Command : %p0";
    data_de = "Unerkannter Befehl : %p0";
    data_no = "Ukjent kommando : %p0";
+   data_fr = "Commande non-existente : %p0";
 };
 
 langtag = {
    name = "COMMAND_LIST_START";
    data_en = "Command list for %p0 :";
    data_no = "Kommandoliste for %p0 :";
+   data_fr = "Liste des commandes pour %p0 :";
 };
 
 langtag = {
   name = "COMMAND_LIST_END";
   data_en = "End of command list";
   data_no = "Slutt på kommandoliste";
+  data_fr = "Fin de la liste des commandes";
 };
 
 langtag = {
   name = "ERROR_NICK_NOT_REGISTERED";
   data_en = "Error: This nickname is not registered";
   data_no = "Feil: Dette kallenavnet er ikke registrert";
+  data_fr = "Erreur: Ce pseudonyme n'est pas enregistré";
 };
 
 langtag = {
   name = "ERROR_NICK_NOT_IDENTIFIED";
   data_en = "Error: You are not identified to services";
   data_no = "Feil: Du har ikke logget inn i Tjenesten";
+  data_fr = "Erreur: Vous n'êtes pas identifié en tant que propriétaire de ce pseudonyme";
 };
 
 langtag = {
   name = "ERROR_COULDNT_FIND_USER";
   data_en = "Error: Could not find user";
   data_no = "Feil: Kunne ikke finne bruker";
+  data_fr = "Erreur: Impossible de trouver l'usagé";
 };
 
 langtag = {
    name = "ERROR_NOT_BOOLEAN";
    data_en = "Error: Value must be true or false";
    data_no = "Feil: Må være en negativ eller positiv verdi";
+   data_fr = "Erreur: La valeur doit être vrai ou faux";
 };
 
 langtag = {
    name = "ERROR_COMMAND_DISABLED";
    data_en = "Error: This command is disabled";
    data_no = "Feil: Denne kommandoen er avslått";
+   data_fr = "Erreur: Cette commande est désactivée";
 };
 
 /*
@@ -158,48 +175,56 @@ langtag = {
    name = "note_DEL_NOTES_ERASED";
    component = "mod_note";
    data_en = "Success! All notes have been erased";
+   data_fr = "Toutes vos notes ont été effacées avec succès!";
 };
 
 langtag = {
    name = "note_DEL_NOTE_ERASED";
    component = "mod_note";
    data_en = "Success! Note #%p0 has been deleted!";
+   data_fr = "La note #%p0 a été effacée avec succès!";
 };
 
 langtag = {
    name = "note_READ_NOTE_ONE";
    component = "mod_note";
    data_en = "Note \\b#%p0\\b From: \\b%p1\\b Sent: \\b%p2\\b";
+   data_fr = "Note \\b#%p0\\b De: \\b%p1\\b Envoyé: \\b%p2\\b";
 };
 
 langtag = {
    name = "note_READ_NOTE_TWO";
    component = "mod_note";
    data_en = "\\bMessage\\b: %p0";
+   data_fr = "\\bMessage\\b: %p0";
 };
 
 langtag = {
    name = "note_READ_NOTE_NO_SUCH_NOTE";
    component = "mod_note";
    data_en = "No such note!";
+   data_fr = "Cette note n'existe pas!";
 };
 
 langtag = {
    name = "note_LIST_NOTES_NO_NOTES";
    component = "mod_note";
    data_en = "You have no notes stored!";
+   data_fr = "Vous n'avez pas de notes enregistrées";
 };
 
 langtag = {
   name = "note_LIST_INSTRUCTIONS";
   component = "mod_note";
   data_en = "To read a note, type /msg note read number";
+  data_fr = "Pour lire une note, saisissez /msg note read numéro";
 };
 
 langtag = {
   name = "note_SEND_USAGE";
   component = "mod_note";
   data_en = "Usage: send nickname/#channel Message here";
+  data_fr = "Instructions: send pseudonyme/#canal Message";
 };
 
 /*
@@ -209,6 +234,7 @@ langtag = {
    name = "chan_COMMAND_INFO";
    component = "mod_chan";
    data_en = "info";
+   data_fr = "informations";
 };
 
 langtag = {
@@ -216,6 +242,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: set #channel option value";
    data_no = "Instruks: set #kanal opsjon verdi";
+   data_fr = "Instructions: set #canal option valeur";
 };
 
 langtag = {
@@ -223,6 +250,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Error: Could not locate that channel";
    data_no = "Feil: Kunne ikke finne den kanalen";
+   data_fr = "Erreur: Ce canal n'existe pas";
 };
 
 langtag = {
@@ -230,6 +258,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Error: That channel is not registered";
    data_no = "Feil: Den kanalen er ikke registrert";
+   data_fr = "Erreur: Ce canal n'est pas engistré";
 };
 
 langtag = {
@@ -237,6 +266,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Channel logs have now been enabled, the owner will receive an email from services every night";
    data_no = "Logg over kanalen er nå blitt slått på, eieren vil få en epost fra Tjenesten hver kveld";
+   data_fr = "L'écriture d'événements a été activé, le propriétaire du canal recevra un couriel de la part des services chaque nuit.";
 };
 
 langtag = {
@@ -251,6 +281,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: set #channel log true/false";
    data_no = "Instruks: set #kanal log på/av";
+   data_fr = "Instructions: set #canal log true/false ( true = vrai, false = faux )";
 };
 
 langtag = {
@@ -258,6 +289,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Channel security has been enabled";
    data_no = "Sikkerhet over kanalen er slått på";
+   data_fr = "Le mode sécuritaire a été activé pour le canal";
 };
 
 langtag = {
@@ -265,6 +297,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Channel security has been disabled";
    data_no = "Sikkerhet over kanalen er slått av";
+   data_fr = "Le mode sécuritaire a été désactivé pour le canal";
 };
 
 langtag = {
@@ -272,6 +305,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: set #channel secure true/false";
    data_no = "Instruks: set #kanal secure <true/false> (setter 'sikkerhet' til true (på) eller false (av))";
+   data_fr = "Instructions: set #canal secure true/false (true = vrai, false = faux)";
 };
 
 
@@ -280,6 +314,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Error: Unsupported channel option";
    data_no = "Feil: Kommandoen støttes ikke";
+   data_fr = "Erreur: cette option n'est pas supportée";
 };
 
 langtag = {
@@ -287,6 +322,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Error: You do not have enough access for that command";
    data_no = "Feil: Du har ikke nok aksess til den kommandoen";
+   data_fr = "Erreur: Vous ne disposez pas d'un accès suffisant pour accéder cette commande";
 };
 
 langtag = {
@@ -294,6 +330,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: listban #channel";
    data_no = "Instruks: listban #kanal";
+   data_fr = "Instructions: listban #canal";
 };
 
 langtag = {
@@ -301,6 +338,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: info #channel";
    data_no = "Instruks: info #kanal";
+   data_fr = "Instructions: info #canal";
 };
 
 langtag = {
@@ -308,6 +346,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Channel Information for %p0";
    data_no = "Informasjon over kanalen %p0";
+   data_fr = "Informations sur le canal %p0";
 };
 
 langtag = {
@@ -315,6 +354,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Owner : %p0";
    data_no = "Eier : %p0";
+   data_fr = "Propriétaire : %p0";
 };
 
 langtag = {
@@ -322,6 +362,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Unique IDS : %p0/%p1";
    data_no = "Unike IDS : %p0/%p1";
+   data_fr = "IDS Unique : %p0/%p1";
 };
 
 langtag = {
@@ -329,6 +370,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: adduser #Channel nickname level";
    data_no = "Instruks: adduser #kanal kallenavn nivå";
+   data_fr = "Instructions: adduser #canal pseudonyme level";
 };
 
 langtag = {
@@ -336,6 +378,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Error: You cannot add someone with higher, or equal access to your own";
    data_no = "Feil: Du kan ikke legge til noen med høyere eller samme aksessnivå som deg selv";
+   data_fr = "Erreur: Vous ne pouvez pas ajouter un usagé avec un level plus grand ou égal au vôtre";
 };
 
 langtag = {
@@ -343,6 +386,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Error: That person already has access";
    data_no = "Feil: Den personen har allerede aksess";
+   data_fr = "Erreur: Cet usagé possède déjà un accès";
 };
 
 langtag = {
@@ -350,6 +394,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Nickname has been successfully added";
    data_no = "Kallenavn er blitt lagt til";
+   data_fr = "L'usagé a été ajouté avec succès";
 };
 
 langtag = {
@@ -357,6 +402,7 @@ langtag = {
    component = "mod_chan";
    data_en = "Usage: ban #channel nickname [reason]";
    data_no = "Instruks: ban #kanal kallenavn [grunn]";
+   data_fr = "Instructions: ban #canal pseudonyme [raison]";
 };
 
 langtag = {
@@ -364,6 +410,7 @@ langtag = {
   component = "mod_chan";
   data_en = "No reason specified";
   data_no = "Ingen grunn definert";
+  data_fr = "Pas de raison spécifié";
 };
 
 langtag = {
@@ -371,6 +418,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Channel ban has been successfully added";
   data_no = "Utestengelse fra kanalen ble lagt til";
+  data_fr = "L'interdiction a été ajouté avec succès";
 };
 
 langtag = {
@@ -378,6 +426,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: register #channel";
   data_no = "Instruks: register #kanal";
+  data_fr = "Instructions: register #canal";
 };
 
 langtag = {
@@ -385,6 +434,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Error: Channel names must begin with the '#' symbol";
   data_no = "Feil: Kanalens navn må begynne med '#' symbolet";
+  data_fr = "Erreur: Le nom de canal doit commencer par un dièse '#'";
 };
 
 langtag = {
@@ -392,6 +442,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Error: You are only permitted to own one channel per nickname on %p0";
   data_no = "Feil: Du er bare tillat å eie en kanal per kallenavn på %p0";
+  data_fr = "Erreur: Vous ne pouvez pas être propriétaire de plus d'un canal par pseudonyme sur %p0";
 };
 
 langtag = {
@@ -399,6 +450,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Error: That channel is already registered";
   data_no = "Feil: Den kanalen er allerede registrert";
+  data_fr = "Erreur: Ce canal est déjà enregistré";
 };
 
 langtag = {
@@ -406,6 +458,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Registration Successful!";
   data_no = "Registrering fullført!";
+  data_fr = "Enregistrement effectué avec succès!";
 };
 
 langtag = {
@@ -413,6 +466,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: op #channel nick [nick2,nick3,...]";
   data_no = "Instruks: op #kanal kallenavn [kallenavn2,kallenavn3,...]";
+  data_fr = "Instructions: op #canal pseudonyme [pseudonyme2,pseudonyme3,...]";
 };
 
 langtag = {
@@ -420,6 +474,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: deop #channel nick [nick2,nick3,...]";
   data_no = "Instruks: deop #kanal kallenavn [kallenavn2,kallenavn3,...]";
+  data_fr = "Instructions: deop #canal pseudonyme [pseudonyme2,pseudonyme3,...]";
 };
 
 langtag = {
@@ -427,6 +482,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: voice #channel nick [nick2,nick3,...]";
   data_no = "Instruks: voice #kanal kallenavn [kallenavn2,kallenavn3,...]";
+  data_fr = "Instructions: voice #canal pseudonyme [pseudonyme2,pseudonyme3,...]";
 };
 
 langtag = {
@@ -434,6 +490,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: devoice #channel nick [nick2,nick3,...]";
   data_no = "Instruks: devoice #kanal kallenavn [kallenavn2,kallenavn3,...]";
+  data_fr = "Instructions: devoice #canal pseudonyme [pseudonyme2,pseudonyme3,...]";
 };
 
 langtag = {
@@ -441,6 +498,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: kick #channel nickname [reason]";
   data_no = "Instruks: kick #kanal kallenavn [grunn]";
+  data_fr = "Instructions: kick #canal pseudonyme [raison]";
 };
 
 langtag = {
@@ -448,6 +506,7 @@ langtag = {
   component = "mod_chan";
   data_en = "No reason specified";
   data_no = "Ingen grunn definert";
+  data_fr = "Aucune raison spécifié";
 };
 
 langtag = {
@@ -455,6 +514,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Usage: access #channel";
   data_no = "Instruks: access #kanal";
+  data_fr = "Instructions: access #canal";
 };
 
 langtag = {
@@ -462,6 +522,7 @@ langtag = {
   component = "mod_chan";
   data_en = "Channel access list for %p0";
   data_no = "Kanal aksessliste for %p0";
+  data_fr = "Liste d'accès pour le canal %p0";
 };
 
 langtag = {
@@ -469,6 +530,7 @@ langtag = {
   component = "mod_chan";
   data_en = "End of access list for %p0";
   data_no = "Slutt på aksessliste for %p0";
+  data_fr = "Fin de la liste d'accès pour le canal %p0";
 };
 
 /*
@@ -480,6 +542,7 @@ langtag = {
    data_en = "Access list for %p0";
    data_de = "Die access liste fur %p0";
    data_no = "Akessliste for %p0";
+   data_fr = "Liste d'accès pour %p0";
 };
 
 langtag = {
@@ -487,6 +550,7 @@ langtag = {
    component = "mod_nick";
    data_en = "AIM handle has been changed to :%p0";
    data_no = "AIM addresse skiftet til :%p0";
+   data_fr = "Adresse AIM changée pour :%p0";
 };
 
 langtag = {
@@ -494,6 +558,7 @@ langtag = {
    component = "mod_nick";
    data_en = "DeopOnAway is now disabled on this nickname";
    data_no = "DeopOnAway er nå slått av for dette kallenavnet";
+   data_fr = "L'option DeopOnAway est maintenant désactivée pour ce pseudonyme";
 };
 
 langtag = {
@@ -501,6 +566,7 @@ langtag = {
    component = "mod_nick";
    data_en = "DeopOnAway is now enabled for this nickname";
    data_no = "DeopOnAway er nå slått på for dette kallenavnet";
+   data_fr = "L'option DeopOnAway est maintenant activée pour ce pseudonyme";
 };
 
 langtag = {
@@ -508,6 +574,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Email address changed to :%p0";
    data_no = "Epost adresse skiftet til :%p0";
+   data_fr = "Adresse de couriel changée pour :%p0";
 };
 
 langtag = {
@@ -515,6 +582,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error - This nickname is already registered";
    data_no = "Feil: Dette kallenavnet er allerede registrert";
+   data_fr = "Erreur: Ce pseudonyme est déjà enregistré";
 };
 
 langtag = {
@@ -522,6 +590,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: The auth code you gave does not match our records";
    data_no = "Feil: Autoriseringskoden du gav passer ikke den i vår database";
+   data_fr = "Erreur: Le code d'authorisation que vous venez de transmettre ne correspond pas à nos enregistrements.";
 };
 
 langtag = {
@@ -529,6 +598,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Please re-check the email you received from services";
    data_no = "Vennligst dobbeltsjekk eposten du fikk";
+   data_fr = "Veuillez re-vérifier le couriel que nous vous avons envoyé";
 };
 
 langtag = {
@@ -536,6 +606,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: Incorrect password";
    data_no = "Feil: Ugyldig passord";
+   data_fr = "Erreur: Mot de passe incorrect";
 };
 
 langtag = {
@@ -543,6 +614,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: For security if you must use /ns id password";
    data_no = "Feil: For sikkerhet, bruk /ns id passord";
+   data_fr = "Erreur: Pour des raisons de sécurité, vous devez utiliser /ns id motdepasse";
 };
 
 langtag = {
@@ -550,6 +622,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: This nickname is not pending confirmation";
    data_no = "Feil: Dette kallenavnet mangler ikke på autorisering";
+   data_dr = "Erreur: Ce pseudonyme n'est pas en attende de confirmation";
 };
 
 
@@ -559,6 +632,7 @@ langtag = {
    data_en = "Error: This nickname is still pending confirmation - please "
              "check your email";
    data_no = "Feil: Dette kallenavnet mangler autorisering. Vennligst sjekk eposten din";
+   data_fr = "Ce pseudonyme est en attente de confirmation - veuillez vérifier votre couriel";
 };
 
 langtag = {
@@ -567,6 +641,7 @@ langtag = {
    data_en = "Error: That nickname is in a pending state and may not be "
              "killed";
    data_no = "Feil: Dette kallenavnet venter på klarering, og kan derfor ikke drepes";
+   data_fr = "Erreur: Ce pseudonyme est en attente de confirmation, il est donc impossible de le tuer";
 };
 
 langtag = {
@@ -574,6 +649,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: That user is not online";
    data_no = "Feil: Den brukeren er ikke tilkoblet";
+   data_fr = "Erreur: Cet usagé n'est pas en ligne";
 };
 
 langtag = {
@@ -581,6 +657,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: New password must be greater than %p0 letters";
    data_no = " Feil: Nytt passord må være lengre enn %p0 tegn";
+   data_fr = "Erreur: Votre nouveau mot de passe doit comporter plus de %p0 lettres";
 };
 
 langtag = {
@@ -588,6 +665,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Error: Unsupported Language!";
    data_no = "Feil: Språket støttes ikke!";
+   data_fr = "Erreur: Ce langage n'est pas supporté!";
 };
 
 langtag = {
@@ -595,6 +673,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Ghost successful for %p0";
    data_no = "Ghost av %p0 fullført";
+   data_fr = "Ghost effectué avec succès pour %p0";
 };
 
 langtag = {
@@ -602,6 +681,7 @@ langtag = {
    component = "mod_nick";
    data_en = "ICQ handle has been changed to :%p0";
    data_no = "ICQ addresse skiftet til:%p0";
+   data_fr = "Votre adresse ICQ a été changée pour :%p0";
 };
 
 langtag = {
@@ -610,6 +690,7 @@ langtag = {
    data_en = "You have been successfully identified to services";
    data_de = "(German) Jah Jah ";
    data_no = "Innloggin til tjenesten er godkjent!";
+   data_fr = "Vous vous êtes identifié avec succès!";
 };
 
 langtag = {
@@ -617,6 +698,7 @@ langtag = {
    component = "mod_nick";
    data_en = "AIM : \\b%p0\\b";
    data_no = "AIM : \\b%p0\\b";
+   data_fr = "AIM : \\b%p0\\b";
 };
 
 langtag = {
@@ -624,6 +706,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Email : \\b%p0\\b";
    data_no = "Epost : \\b%p0\\b";
+   data_fr = "Couriel : \\b%p0\\b";
 };
 
 langtag = {
@@ -631,6 +714,7 @@ langtag = {
    component = "mod_nick";
    data_en = "ICQ : \\b%p0\\b";
    data_no = "ICQ : \\b%p0\\b";
+   data_fr = "ICQ : \\b%p0\\b";
 };
 
 langtag = {
@@ -638,6 +722,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Last identified : \\b%p0\\b";
    data_no = "Siste innlogget:  \\b%p0\\b";
+   data_fr = "Dernière identification: \\b%p0\\b";
 };
 
 langtag = {
@@ -645,6 +730,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Last host : \\b%p0\\b";
    data_no = "Siste addresse :  \\b%p0\\b";
+   data_fr = "Dernière adresse : \\b%p0\\b";
 };
 
 langtag = {
@@ -652,6 +738,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Last Quit Message : \\b%p0\\b";
    data_no = "Siste Quit melding : \\b%p0\\b";
+   data_fr = "Dernier message de fermeture : \\b%p0\\b";
 };
 
 langtag = {
@@ -659,6 +746,7 @@ langtag = {
    component = "mod_nick";
    data_en = "MSN : \\b%p0\\b";
    data_no = "MSN : \\b%p0\\b";
+   data_fr = "MSN : \\b%p0\\b";
 };
 
 langtag = {
@@ -666,6 +754,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Deop on Away";
    data_no = "Fjern OP om borte";
+   data_fr = "Deop lorsque Away";
 };
 
 langtag = {
@@ -673,6 +762,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Nickname Enforcement";
    data_no = "Tvangskifte kallenavn";
+   data_fr = "Sécurité renforcée";
 };
 
 langtag = {
@@ -680,6 +770,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Options : %p0";
    data_no = "Opsjoner : %p0";
+   data_fr = "Options : %p0";
 };
 
 langtag = {
@@ -687,6 +778,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Registered : \\b%p0\\b";
    data_no = "Registrert : \\b%p0\\b";
+   data_fr = "Enregistré : \\b%p0\\b";
 };
 
 langtag = {
@@ -694,6 +786,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Extra Information for Staff";
    data_no = "Ekstra informasjon for personal";
+   data_fr = "Information supplémentaire pour le personel";
 };
 
 langtag = {
@@ -701,6 +794,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Nickname information for \\b%p0\\b";
    data_no = "Informasjon om kallenavnet \\b%p0\\b";
+   data_fr = "Informations sur le pseudonyme \\b%p0\\b";
 };
 
 langtag = {
@@ -708,6 +802,7 @@ langtag = {
    component = "mod_nick";
    data_en = "URL : \\b%p0\\b";
    data_no = "webside : \\b%p0\\b";
+   data_fr = "Adresse web : \\b%p0\\b";
 };
 
 langtag = {
@@ -715,6 +810,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Yahoo! : \\b%p0\\b";
    data_no = "Yahoo! : \\b%p0\\b";
+   data_fr = "Yahoo! : \\b%p0\\b";
 };
 
 langtag = {
@@ -722,6 +818,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Helpfiles interface has been changed to %p0";
    data_no = "Hjelpefilenes språk satt til %p0";
+   data_fr = "Le langage a été changé pour %p0";
 };
 
 langtag = {
@@ -729,6 +826,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Nickname enforcement is now disabled for this nickname";
    data_no = "Tvangskifte av kallenavn nå slått av for dette kallenavnet";
+   data_fr = "Le renforcement de sécurité pour ce pseudonyme a été désactivé";
 };
 
 langtag = {
@@ -736,6 +834,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Nickname enforcement is now enabled for this nickname";
    data_no = "Tvangskifte av kallenavn nå slått på for dette kallenavnet";
+   data_fr = "La sécurité à été renforcé pour ce pseudonyme";
 };
 
 langtag = {
@@ -743,6 +842,7 @@ langtag = {
    component = "mod_nick";
    data_en = "MSN handle has been changed to %p0";
    data_no = "MSN addresse skiftet til %p0";
+   data_fr = "Adresse MSN changée pour %p0";
 };
 
 langtag = {
@@ -752,6 +852,8 @@ langtag = {
              "use services freely";
    data_no = "Gratulerer! Du er nå en autorisert bruker av dette systemet!"
              "Du kan nå bruke alle tilgjengelige tjenester.";
+   data_fr = "Félicitations! Vous avez confirmé la possession de votre pseudonyme. "
+             "Vous pouvez utiliser les services comme bon vous semble.";
 };
 
 langtag = {
@@ -759,6 +861,7 @@ langtag = {
    component = "mod_nick";
    data_en = "You may now identify your nickname as normal";
    data_no = "Du kan nå logge inn som normalt";
+   data_fr = "Vous pouvez maintenant vous identifier de manière normale";
 };
 
 langtag = {
@@ -766,6 +869,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Password has been successfully changed to :%p0";
    data_no = "Passord er nå blitt skiftet til:%p0";
+   data_fr = "Votre mot de passe a été changé avec succès pour: :%p0";
 };
 
 langtag = {
@@ -773,6 +877,7 @@ langtag = {
    component = "mod_nick";
    data_en = "I will now use the notice message interface";
    data_no = "Jeg vil nå bruke notiser";
+   data_fr = "Dorénavant, nous utiliserons les notices afin de communiquer avec vous";
 };
 
 langtag = {
@@ -780,6 +885,7 @@ langtag = {
    component = "mod_nick";
    data_en = "I will now use the private message interface";
    data_no = "Jeg vil nå bruke meldinger";
+   data_fr = "Dorénavant, nous utiliserons les messages privés afin de communiquer avec vous.";
 };
 
 langtag = {
@@ -787,14 +893,16 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: register password email@address";
    data_no = "Instruks: register passord epost@addresse";
+   data_fr = "Instructions: register motdepasse couriel@adresse";
 };
 
 langtag = {
    name = "nick_REGISTRATION_EMAIL_NOTICE_1";
    component = "mod_nick";
-   data_en = "Here on %N we require we require email validation before "
+   data_en = "Here on %N we require email validation before "
              "allowing our users";
    data_no = "Her på %N må vi ha autorisering gjennom epost før våre brukere";
+   data_fr = "Ici sur %N nous obligeons la validation par couriel avant d'accepter les enregistrements";
 };
 
 langtag = {
@@ -803,6 +911,7 @@ langtag = {
    data_en = "to register nicknames, this is a simple process and only takes "
              "a few minutes to complete";
    data_no = "kan registrere kallenavn. Det er en enkel prosess, og tar bare noen få minutter å gjennomføre.";
+   data_fr = "les enregistrements de pseudonymes. C'est un processus simple et qui prend seulement quelques minutes.";
 
 };
 
@@ -811,6 +920,7 @@ langtag = {
    component = "mod_nick";
    data_en = "You will shortly receive an email with further instructions";
    data_no = "Du vil snart få en epost med flere instrukser";
+   data_fr = "Vous alez bientôt recevoir un couriel qui contient les instructions afin de poursuivre.";
 };
 
 langtag = {
@@ -818,6 +928,7 @@ langtag = {
    component = "mod_nick";
    data_en = "This will be delivered to the account :\\b%p0\\b";
    data_no = "Dette vil bli levert til :\\b%p0\\b";
+   data_fr = "Ce couriel va être envoyé à :\\b%p0\\b";
 };
 
 langtag = {
@@ -825,6 +936,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Thank you for using %N!";
    data_no = "Takk for at du bruker %N!";
+   data_fr = "Merci d'utiliser %N!";
 };
 
 langtag = {
@@ -832,6 +944,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Set options are: %p0";
    data_no = "Set opsjoner er: %p0";
+   data_fr = "Les options disponibles pour Set sont: %p0";
 };
 
 langtag = {
@@ -839,6 +952,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Website URL changed to :%p0";
    data_no = "Webside addresse skiftet til:%p0";
+   data_fr = "Adresse web changée pour :%p0";
 };
 
 langtag = {
@@ -846,6 +960,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: access nickname";
    data_no = "Instruks: access kallenavn";
+   data_fr = "Instructions: access pseudonyme";
 };
 
 langtag = {
@@ -853,6 +968,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: ghost nickname password";
    data_no = "Instruks: ghost kallenavn passord";
+   data_fr = "Instructions: ghost pseudonyme motdepasse";
 };
 
 langtag = {
@@ -860,6 +976,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: info nickname";
    data_no = "Instruks: info kallenavn";
+   data_fr = "Instructions: info pseudonyme";
 };
 
 langtag = {
@@ -867,6 +984,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: kill nickname password";
    data_no = "Instruks: kill kallenavn passord";
+   data_fr = "Instructions: kill pseudonyme motdepasse";
 };
 
 langtag = {
@@ -874,6 +992,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set aim handle";
    data_no = "Instruks: set aim addresse";
+   data_fr = "Instructions: set aim adresse";
 };
 
 langtag = {
@@ -881,6 +1000,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set deopaway true/false";
    data_no = "Instruks: set deopaway true/false (der true = ja, og false = nei)";
+   data_fr = "Instructions: set deopaway true/false (true = vrai, false = faux)";
 };
 
 langtag = {
@@ -888,6 +1008,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set email email@address";
    data_no = "Instruks: set email epost@addresse";
+   data_fr = "Instructions: set email couriel@adresse";
 };
 
 langtag = {
@@ -895,6 +1016,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set icq value";
    data_no = "Instruks: set icq addresse";
+   data_fr = "Instructions: set icq adresse";
 };
 
 langtag = {
@@ -902,6 +1024,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set language LANGUAGE";
    data_no = "Instruks: set language SPRÅK";
+   data_fr = "Instructions: set language LANGAGE";
 };
 
 langtag = {
@@ -909,6 +1032,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set modnick true/false";
    data_no = "Instruks: set modnick true/false (der true = ja, og false = nei)";
+   data_fr = "Instructions: set modnick true/false (true = vrai, false = faux)";
 };
 
 langtag = {
@@ -916,6 +1040,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set msn handle";
    data_no = "Instruks: set msn addresse";
+   data_fr = "Instructions: set msn adresse";
 };
 
 langtag = {
@@ -923,6 +1048,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set pass newpassword";
    data_no = "Instruks: set pass NYTTPASSORD";
+   data_fr = "Instructions: set pass monnouveaumotdepasse";
 };
 
 langtag = {
@@ -930,6 +1056,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set privmsg on/off";
    data_no = "Instruks: set privmsg on/off (der on = på, og off = av)";
+   data_fr = "Instructions: set privmsg on/off";
 };
 
 langtag = {
@@ -937,6 +1064,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set url www.someplace.org";
    data_no = "Instruks: set url www.dinwebside.no";
+   data_fr = "Instructions: set url www.votresiteweb.fr";
 };
 
 langtag = {
@@ -944,6 +1072,7 @@ langtag = {
    component = "mod_nick";
    data_en = "Usage: set yahoo handle";
    data_no = "Instruks: set yahoo addresse";
+   data_fr = "Instructions: set yahoo adresse";
 };
 
 langtag = {
@@ -951,5 +1080,6 @@ langtag = {
    component = "mod_nick";
    data_en = "Yahoo! handle has been changed to :%p0";
    data_no = "Yahoo! addresse skiftet til:%p0";
+   data_fr = "Votre addresse Yahoo! a été changé pour :%p0";
 };
 
