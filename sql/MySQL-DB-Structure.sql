@@ -118,6 +118,9 @@ CREATE TABLE chanopts (
   name varchar(250) NOT NULL default '',
   clog tinyint(1) NOT NULL default '0',
   secure tinyint(1) NOT NULL default '0',
+  enforcebans tinyint(1) NOT NULL default '0',
+  tracktopics tinyint(1) NOT NULL default '0',
+  modelock tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY chanopts_idx (name)
 ) TYPE=MyISAM;
@@ -134,9 +137,9 @@ CREATE TABLE chans (
   modes varchar(200) NOT NULL default '',
   cdesc varchar(250) default NULL,
   url varchar(200) default NULL,
+  entrymsg varchar(200) default NULL,
+  partmsg varchar(200) default NULL,
   clog int(20) default '0',
-  enforcebans tinyint(1) NOT NULL default '0',
-  tracktopics tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY chans_idx (name),
   KEY chans_owner_idx (owner)
