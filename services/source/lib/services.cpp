@@ -58,21 +58,11 @@ extern "C"
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>
 #endif
-#ifdef HAVE_NETDB_H
-# include <netdb.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-# include <arpa/inet.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-# include <netinet/in.h>
-#endif
 #ifdef HAVE_DLFCN_H
 # include <dlfcn.h>
 #endif
 };
 
-#include <aisutil/socket/sockets.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -102,14 +92,10 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
  * This begins the main 'loop' for services, initiates our connection
  * etc.
  */
-
+/*
 void
   ServicesInternal::run(void)
 {
-   fd_set inputSet, outputSet;
-   struct timeval timer;
-   disconnectTime = 0;
-   connected = false;
    lastExpireRun = 0;
    buildNumber = 1;
    srand(time(NULL));
@@ -218,27 +204,18 @@ void
 	  }
      }
 }
+ */
 
 ServicesInternal::ServicesInternal(ConfigInternal& c, CDatabase& db)
   : Services(db),
-parser(*this),
 console(*this),
 config(c),
-sock(-1),
-maxSock(-1),
-inputBufferPosition(0),
 //startTime(time(NULL)),
 lastPing(time(NULL)),
-disconnectTime(time(NULL)),
 stopTime(0),
-serverLastSpoke(time(NULL)),
 lastCheckPoint(time(NULL)),
 lastExpireRun(time(NULL)),
-connected(false),
-stopping(false),
-burstOk(false),
-countTx(0),
-countRx(0)
+stopping(false)
 {
    currentTime = time(NULL);
 
@@ -255,180 +232,7 @@ countRx(0)
 			      (void *)this);
 
    database.dbConnect();
-
-   struct hostent *host;
-   queueKill ();
-   if (!(inputBuffer = (char *) malloc (inputBufferSize)))
-     {
-	logLine ("Fatal Error: Could not allocate input buffer",
-		 Log::Fatality);
-	perror ("malloc");
-	exit (1);
-     }
-   memset (&addr, 0, sizeof (addr));
-   addr.sin_family = AF_INET;
-   if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
-     {
-	logLine ("Fatal Error: Error resolving uplinkhost",
-		 Log::Fatality);
-	exit (1);
-     }
-   memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
-   addr.sin_port = htons (config.getUplinkPort());
 }
-
-/** HandleInput().
- *
- * This handles the incoming data from our uplink, and hands it over
- * to our parser.
- *
- * Original: James Wilkins
- *
- */
-
-bool ServicesInternal::handleInput (void)
-{
-   std::stringstream bufferin;
-   char c;
-   if(!socky.read(bufferin))
-     {
-	std::cout << "Read failed!" << std::endl;
-	throw(1); /* Fatal error!*/
-	//	return false; /* Fatal error - should d/c */
-     }
-
-   if(!bufferin.str().empty())
-     {
-
-	for(;;)
-	  {
-	     if(bufferin.peek()==-1)
-	       {
-	          return false; /* Not fatal, just not ready */
-	       }
-
-	     if(bufferin.peek() == '\0')
-	       {
-		  (void)bufferin.ignore();
-	       }
-	     else if ((bufferin.peek()=='\r') || (bufferin.peek() =='\n'))
-	       {
-		  (void)bufferin.ignore();
-
-		  if((bufferin.peek() == '\r') || (bufferin.peek() == '\n'))
-		    {
-		       (void)bufferin.ignore();
-		    }
-		  if(!inputQueue.empty())
-		    {
-		       countRx += inputQueue.length();
-		       parser.parseLine(inputQueue);
-		       inputQueue.clear();
-		    }
-	       }
-	     c = bufferin.get();
-	     if((int)c!=-1)
-	       inputQueue += (char)c;
-	  }
-	return true;
-     }
-   
-   // eh ???
-   return false;
-}
-
-/* disconnect()
- *
- * (Uncleanly?) say bye bye to our uplink..
- *
- */
-
-void
-  ServicesInternal::disconnect (void)
-{
-#ifdef DEBUG
-   logLine("Closing socket.", Log::Debug);
-#endif
-   socky.close();
-   connected = false;
-}
-
-/* connect()
- *
- * Connect to our uplink! Yeah!
- *
- */
-
-bool ServicesInternal::connect (void)
-{
-   logLine ("Attempting Connection to Uplink");
-   if (sock >= 0)
-     {
-#ifdef DEBUG
-	logLine("Closing stale network socket", Log::Debug);
-#endif
-	socky.close();
-	sock = -1;
-     }
-
-   socky.setRemoteAddress(config.getUplinkHost());
-   socky.setRemotePort(config.getUplinkPort());
-
-   if(!socky.connect())
-     {
-#ifdef DEBUG
-	logLine(String("Socky.connect() returned an error: ") +
-		socky.getErrorMessage(),
-		Log::Debug);
-#endif
-
-     }
-/* I'm not particulary happy with how this is coded.
- * In all honesty, we should await some verification from the uplink
- * that it is ready to receive data, as opposed to just blinding throwing
- * everything at our uplink.. and possibly (at a later stage) filling
- * up our sendQ on the server
- */
-   connected = true;
-   logLine ("Beginning handshake with uplink");
-   maxSock = socky.getFD() + 1;
-   queueAdd ("PASS "+config.getUplinkPass()+" :TS");
-   queueAdd ("SVINFO 3 3 0 :"+String::convert(currentTime));
-   queueAdd ("CAPAB TS3 SSJOIN NICKIP NOQUIT");
-   queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
-	     Kine::config().getOptionsDescription());
-   if (!config.getUnderlingHostname().empty())
-     {
-	queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
-     }
-   queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
-   queueAdd ("BURST");
-
-   // Start all the modules
-   config.getModules().startAll(*this);
-
-   // Is the console actually wanted?
-   if (config.getConsoleEnabled())
-     {
-	registerService(config.getConsoleName(), "peoplechat", /* Hack for now */
-			config.getConsoleHostname(),
-			config.getConsoleDescription());
-     }
-   Kine::langs().registerMap(Language::tagMap);
-   int foofoo = 0;
-   for (;;)
-     {
-	if (Language::tagMap[++foofoo].tagName == 0)
-	  {
-	     break;
-	  }
-
-     }
-
-   connected = true;
-   queueAdd ("BURST 0");
-   return true;
-};
 
 /* shutdown(String)
  *
@@ -448,14 +252,14 @@ void ServicesInternal::shutdown(String const &reason)
    // I do not like this.. oh well..  - pickle
    if (config.getConsoleEnabled())
      {
-	queueAdd(config.getConsoleName()+" QUIT :"+reason);
+//	queueAdd(config.getConsoleName()+" QUIT :"+reason);
      }
 
    // Nasty hack for now.
    String tofo = "\002Services shutting down\002 : " + reason;
-   queueAdd(":" + Kine::config().getOptionsServerName() +
-	    " SQUIT " + Kine::config().getOptionsServerName() + " :" +
-	    reason);
+//   queueAdd(":" + Kine::config().getOptionsServerName() +
+//	    " SQUIT " + Kine::config().getOptionsServerName() + " :" +
+//	    reason);
 
    stopping = true;
    stopTime = currentTime + 15;
@@ -496,14 +300,13 @@ void ServicesInternal::SynchTime(void)
 void
   ServicesInternal::sendGOper(String const &from, String const &text)
 {
-   queueAdd(":"+from+" GLOBOPS :"+text);
-
+//   queueAdd(":"+from+" GLOBOPS :"+text);
 }
 
 void
   ServicesInternal::sendHelpme(String const &from, String const &text)
 {
-   queueAdd(":"+from+" HELPME :"+text);
+//   queueAdd(":"+from+" HELPME :"+text);
 }
 
 /* mode(String,String,String,String)
@@ -516,7 +319,7 @@ void
   ServicesInternal::mode (String const &who, String const &chan, String const &mode,
 			  String const &target)
 {
-   queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
+//   queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
 }
 /* doHelp(User,String,String,String)
  *
@@ -594,7 +397,7 @@ void
 void
   ServicesInternal::setMode(String const &who, String const &mode)
 {
-   queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
+//   queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
 
 }
 /* parseHelp(In)
@@ -635,17 +438,6 @@ String
    return retstr;
 }
 
-unsigned long
-  ServicesInternal::getCountTx(void)
-{
-   return countTx;
-}
-
-unsigned long
-  ServicesInternal::getCountRx(void)
-{
-   return countRx;
-}
 /* log(String,String,String)
  *
  * Logs the given information into the database
@@ -723,15 +515,15 @@ String String::trim(void) const
 void
   ServicesInternal::servicePart(String const &service, String const &target)
 {
-   queueAdd (String (":") + service + " PART " + target);
+//   queueAdd (String (":") + service + " PART " + target);
 }
 
 void ServicesInternal::serviceJoin(AISutil::String const &service,
 				   AISutil::String const &target)
 {
-   queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
-	    AISutil::String::convert(currentTime) + " " + target +
-	    " + :" + service);
+//   queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
+//	    AISutil::String::convert(currentTime) + " " + target +
+//	    " + :" + service);
 };
 
    /* usePrivmsg(nick)
@@ -760,7 +552,7 @@ bool
 void
   ServicesInternal::serviceKick(String const &chan, String const &nick, String const &reason)
 {
-   queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
+//   queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
 }
 
 bool
@@ -871,8 +663,8 @@ void ServicesInternal::checkpoint(void)
 
 	     String msg = "Non-Identification: Your nickname is now being changed";
 	     serviceNotice(msg,"Nick",tomod);
-	     queueAdd(":" + Kine::config().getOptionsServerName() +
-		      " SVSNICK " + tomod + " " + newnick + " :0");
+//	     queueAdd(":" + Kine::config().getOptionsServerName() +
+//		      " SVSNICK " + tomod + " " + newnick + " :0");
 	     //		    setNick(*ptr,newnick);
 	     //		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 	  }
@@ -887,55 +679,6 @@ void ServicesInternal::checkpoint(void)
      }
 
 }
-
-bool ServicesInternal::queueFlush(void)
-{
-   if(connected)
-     {
-	if (socky.isOkay())
-	  {
-	     if (socky.write (outputQueue.front ()))
-	       {
-#ifdef DEBUG
-		  logLine("DEBUG TX:" + outputQueue.front(),
-			  Log::Debug);
-#endif
-		  outputQueue.pop ();
-		  return true;
-	       }
-	     else
-	       {
-		  if(!stopping)
-		    {
-		       connected = false;
-		       return false;
-		    }
-		  else
-		    {
-		       exit(0);
-		    }
-	       }
-	  }
-	else
-	  {
-#ifdef DEBUG
-	     logLine("Socky is dead :(", Log::Debug);
-#endif
-	     connected = false;
-	     return false;
-	  }
-	return false;
-
-     }
-   else
-     {
-#ifdef DEBUG
-	logLine("Trying to queueflush when disconnected ?!",
-		Log::Debug);
-#endif
-	return false;
-     }
-};
 
 /* addServer(String,int,String)
  * 
@@ -1166,8 +909,8 @@ bool ServicesInternal::isNickRegistered(String const &nick)
 
 void ServicesInternal::modeIdentify(String const &nick)
 {
-   queueAdd(":" + Kine::config().getOptionsServerName() + " SVSMODE " + nick +
-	    " +r");
+//   queueAdd(":" + Kine::config().getOptionsServerName() + " SVSMODE " + nick +
+//	    " +r");
    return;
 }
 
@@ -1299,30 +1042,3 @@ void ServicesInternal::validateOper(Kine::ClientName &origin)
      }
 
 }
-
-time_t ServicesInternal::getStartTime()
-{
-   return startTime;
-}
-
-time_t ServicesInternal::getCurrentTime()
-{
-   return currentTime;
-}
-
-void ServicesInternal::queueAdd(const String& line)
-{
-   if(connected)
-     {
-	outputQueue.push(line+"\r\n");
-	countTx += line.length();
-
-     }
-   else
-     {
-
-	// logLine("Tried to TX " + line + " but not connected",
-	//         //            Log::Debug);
-     }
-
-};

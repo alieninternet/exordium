@@ -27,19 +27,16 @@
 #ifndef _SOURCE_LIB_SERVICES_H_
 # define _SOURCE_LIB_SERVICES_H_ 1
 
-# include <aisutil/socket/sockets.h>
 # include <kineircd/config.h>
 
 # include <exordium/services.h>
 # include <exordium/server.h>
-# include "parser.h"
 # include "console.h"
 # include "config.h"
 
 namespace Exordium {
    class ServicesInternal : public Services {
     private:
-      Parser parser;
       Console console;
 
       ConfigInternal& config;
@@ -52,47 +49,15 @@ namespace Exordium {
       chan_map chans;
       server_map servers;
       
-      const AISutil::String buffer;
-      int sock;
-      int maxSock;
-      char *inputBuffer;
-      static const unsigned int inputBufferSize = 512;
-      unsigned int inputBufferPosition;
-      struct sockaddr_in addr;
 //      time_t startTime;
       time_t lastPing;
-      time_t disconnectTime;
       time_t stopTime;
-      time_t serverLastSpoke;
       time_t lastCheckPoint;
       time_t lastExpireRun;
-      bool connected;
       bool stopping;
       bool sendPing;
-      bool burstOk;
-      unsigned long countTx;
-      unsigned long countRx;
-      unsigned long remoteAddress;
-      std::queue < AISutil::String > outputQueue;
-      std::string inputQueue;
-      AISutil::SocketIPv4TCP socky;
-      
-      bool handleInput(void);
-      
-      bool queueReady(void) const
-	{ return !outputQueue.empty(); };
-      
-      void queueKill (void)
-	{
-	   while(!outputQueue.empty()) {
-	      outputQueue.pop();
-	   }
-	};
       
       void SynchTime(void);
-      void disconnect(void);
-      bool connect(void);
-      bool queueFlush(void);
       AISutil::String parseHelp(AISutil::String const &);
       
       void checkpoint(void);
@@ -171,7 +136,7 @@ namespace Exordium {
 		     AISutil::String const &from,
 		     AISutil::String const &reason)
 	{
-	   queueAdd(":" + from + " KILL " + target + " :" + reason);
+//	   queueAdd(":" + from + " KILL " + target + " :" + reason);
 	};
       
       void serviceNotice(AISutil::String const &line,
@@ -179,9 +144,9 @@ namespace Exordium {
 			 AISutil::String const &target)
 	{
 	   if (usePrivmsg(target.toLower())) {
-	      queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
+//	      queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	   } else {
-	      queueAdd(":" + service + " NOTICE " + target + " :" + line);
+//	      queueAdd(":" + service + " NOTICE " + target + " :" + line);
 	   }
 	}
       
@@ -189,27 +154,27 @@ namespace Exordium {
 			      AISutil::String const &service,
 			      AISutil::String const &target)
 	{
-	   queueAdd(":" + service + " NOTICE " + target + " :" + line);
+//	   queueAdd(":" + service + " NOTICE " + target + " :" + line);
 	}
       
       void servicePrivmsg(AISutil::String const &line,
 			  AISutil::String const &service, 
 			  AISutil::String const &target)
 	{
-	   queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
+//	   queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	}
       
       void serviceQuit(const AISutil::String& name,
 		       const AISutil::String& reason)
 	{
-	   queueAdd(":" + name + " QUIT :" + reason);
+//	   queueAdd(":" + name + " QUIT :" + reason);
 	};
       
       // This does not modify a server mode, it should be renamed.
       void serverMode(AISutil::String const &chan, AISutil::String const &mode,
 		      AISutil::String const &target)
 	{
-	   queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
+//	   queueAdd(":Chan MODE " + chan + " " + mode + " " + target);
 	}
       
       void registerService(AISutil::String const &nick,
@@ -217,9 +182,9 @@ namespace Exordium {
 			   AISutil::String const &host,
 			   AISutil::String const &realname)
 	{                               
-	   queueAdd ("NICK " + nick + " 1 1 +o " + user + 
-		     " " + host + " " + Kine::config().getOptionsServerName() +
-		     " 0 0 :" + realname);
+//	   queueAdd ("NICK " + nick + " 1 1 +o " + user + 
+//		     " " + host + " " + Kine::config().getOptionsServerName() +
+//		     " 0 0 :" + realname);
         }; 
       
       void serviceJoin(AISutil::String const &service,
@@ -266,10 +231,6 @@ namespace Exordium {
       void sendGOper(AISutil::String const &, AISutil::String const &);
       void sendHelpme(AISutil::String const &, AISutil::String const &);
       void setMode(AISutil::String const &, AISutil::String const &);      
-      unsigned long getCountTx(void);
-//	{ return countTx; };
-      unsigned long getCountRx(void);
-//	{ return countRx; };
    }; // class ServicesInternal
 }; // namespace Exordium
 

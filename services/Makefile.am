@@ -109,7 +109,6 @@ libexordium_la_SOURCES = \
 			source/lib/logger.cpp \
 			source/lib/logger.h \
 			source/lib/modules.cpp \
-			source/lib/parser.cpp \
 			source/lib/server.cpp \
 			source/lib/service.cpp \
 			source/lib/services.cpp \

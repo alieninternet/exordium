@@ -45,9 +45,6 @@ namespace Exordium {
       // Variables (top class from the definition table above)
       Kine::Logger::Mask::lazy_type defLogMask;	// Database logging mask
       AISutil::String defUnderlingDescription;	// Underling server description
-      AISutil::String defUplinkHost;           	// Uplink Host (temporary)
-      unsigned short defUplinkPort;		// Uplink Port (temporary)
-      AISutil::String defUplinkPass;		// Uplink Pass (temporary)
 
       // 'CONSOLE' class and variables
       static const AISutil::ConfigParser::defTable_type defClassConsole;
@@ -82,12 +79,6 @@ namespace Exordium {
       // Top variables
       const AISutil::String& getUnderlingDescription(void) const
 	{ return defUnderlingDescription; };      
-      const AISutil::String& getUplinkHost(void) const
-	{ return defUplinkHost; };      
-      const unsigned short getUplinkPort(void) const
-        { return defUplinkPort; };
-      const AISutil::String& getUplinkPass(void) const
-	{ return defUplinkPass; };
       const Kine::Logger::Mask::lazy_type getLogMask(void) const
 	{ return defLogMask; };
       

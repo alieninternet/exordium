@@ -181,7 +181,7 @@ void const dChan::setTopic(String const &service, String const &topic)
 {
    time_t currentTime;
    currentTime = time(NULL);
-   services.queueAdd(":"+service+" TOPIC "+name+" Chan "+String::convert(currentTime)+" :"+topic);   
+//   services.queueAdd(":"+service+" TOPIC "+name+" Chan "+String::convert(currentTime)+" :"+topic);   
 }
 
 String const dChan::getTopic()
@@ -219,12 +219,12 @@ bool const dChan::isVoice(String const &nick)
 
 void const dChan::mode(String const &service,String const &mode,String const &target)
 {
-   services.queueAdd(":"+service+" MODE "+name+" "+mode+" "+target);
+//   services.queueAdd(":"+service+" MODE "+name+" "+mode+" "+target);
 }
 
 void const dChan::kick(String const &service,String const &nick,String const &reason)
 {
-   services.queueAdd(":"+service+" KICK "+name+" "+nick+" :"+reason);
+//   services.queueAdd(":"+service+" KICK "+name+" "+nick+" :"+reason);
    Kine::ClientName tempnick = String(nick);
    User *ptr = services.findUser(tempnick);
    if(ptr==0)
@@ -237,7 +237,7 @@ void const dChan::ban(User &user, String const &service, String const &reason, S
 {
 String host = "*!*@"+user.getHost();
 int expire = services.currentTime + 3600;
-services.queueAdd(":"+service+" MODE "+name+" +b "+host);
+//services.queueAdd(":"+service+" MODE "+name+" +b "+host);
 String query = "'','"+String::convert(getRegisteredID())+
                "','"+host+"','"+setby+"',NOW(),'"+
                String::convert(expire)+"','"+reason+"'";

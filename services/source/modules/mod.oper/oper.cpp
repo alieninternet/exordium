@@ -100,7 +100,7 @@ OPER_FUNC(Module::parseGLOBAL)
    CResult *myRes = services->getDatabase().dbGetResultSet();
    for(int i=0;i<nbRes;i++)
      {
-	services->queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
+//	services->queueAdd(":PeopleChat NOTICE $"+myRes->getValue(i,0)+" :\002[Global Announcement]\002 "+txt);
      }
 
    services->sendGOper(getNickname(),origin.getNickname()+" sent a \002global\002 message ("+txt+")");
@@ -158,7 +158,7 @@ OPER_FUNC(Module::parseQLINE)
 	     return;
 	  }
 	services->sendGOper(getNickname(),origin.getNickname() + " removed a net wide \002qline\002 on \002"+mask+"\002");
-	services->queueAdd("UNSQLINE 0 "+mask);
+//	services->queueAdd("UNSQLINE 0 "+mask);
 	origin.sendMessage(GETLANG(oper_QLINE_DEL_SUCCESS,mask),getNickname());
      }
 
@@ -172,7 +172,7 @@ OPER_FUNC(Module::parseQLINE)
 	     return;
 	  }
 	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002qline\002 on \002"+mask+"\002 (\002"+reason+"\002)");
-	services->queueAdd("SQLINE "+mask+" :"+reason);
+//	services->queueAdd("SQLINE "+mask+" :"+reason);
 	origin.sendMessage(GETLANG(oper_QLINE_ADD_SUCCESS,mask,reason),getNickname());
 	return;
      }
@@ -197,7 +197,7 @@ OPER_FUNC(Module::parseZLINE)
 	  }
 	String togo = origin.getNickname() + " removed a net wide \002zline\002 on \002"+ip;
 	services->sendGOper(getNickname(),togo);
-	services->queueAdd("UNSZLINE " + ip);
+//	services->queueAdd("UNSZLINE " + ip);
 	origin.sendMessage(GETLANG(oper_ZLINE_DEL_SUCCESS,ip),getNickname());
      }
 
@@ -214,7 +214,7 @@ OPER_FUNC(Module::parseZLINE)
 
 	String togo = origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002";
 	services->sendGOper(getNickname(),origin.getNickname() + " placed a net wide \002zline\002 on \002" + ip + "\002 for \002"+reason+"\002");
-	services->queueAdd("SZLINE " + ip +" :"+reason);
+//	services->queueAdd("SZLINE " + ip +" :"+reason);
 	origin.sendMessage(GETLANG(oper_ZLINE_ADD_SUCCESS,ip,reason),getNickname());
 	return;
      }
@@ -309,7 +309,7 @@ OPER_FUNC (Module::parseJUPE)
 	     origin.sendMessage(GETLANG(oper_JUPE_SERVER_ONLINE,tojupe),getNickname());
 	     return;
 	  }
-	services->queueAdd("SERVER "+tojupe+" 2 :"+reason);
+//	services->queueAdd("SERVER "+tojupe+" 2 :"+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_SERVER_SUCCESS,tojupe,reason),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
 	services->logLine("\002"+origin.getNickname()+"\002 juped the server \002"+tojupe+"\002 ("+reason+")");
@@ -327,8 +327,8 @@ OPER_FUNC (Module::parseJUPE)
 	services->registerService(tojupe,"jupe",
 				  "jupes."+services->getConfig().getUnderlingHostname(),
 				  "Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());*/
-	services->queueAdd("NICK "+tojupe+" 2 1 +id jupe jupes."+services->getConfig().getUnderlingHostname()+" "+services->getConfig().getUnderlingHostname()+" 0 0 :Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());
-	services->queueAdd(":"+tojupe+" AWAY : "+reason);
+//	services->queueAdd("NICK "+tojupe+" 2 1 +id jupe jupes."+services->getConfig().getUnderlingHostname()+" "+services->getConfig().getUnderlingHostname()+" 0 0 :Juped: "+origin.getNickname()+"!"+optr->getIdent()+"@"+optr->getHost());
+//	services->queueAdd(":"+tojupe+" AWAY : "+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_NICK_SUCCESS,tojupe,reason),getNickname());
 	services->sendGOper(getNickname(),"\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");
 	services->logLine("\002"+origin.getNickname()+"\002 juped the nickname \002"+tojupe+"\002 ("+reason+")");

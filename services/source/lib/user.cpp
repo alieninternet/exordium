@@ -1,4 +1,4 @@
-#/* $Id$
+/* $Id$
  * 
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -718,7 +718,7 @@ const void User::updateIdentified(void)
 {
    services.getDatabase().dbInsert("nicksidentified","'','"+String::convert(getOnlineID())+"','"+String::convert(getRegisteredNickID())+"'");
    services.getDatabase().dbDelete("kills","nick='"+nickname+"'");
-   services.queueAdd(":"+Kine::config().getOptionsServerName()+" SVSMODE " + nickname + " +r");
+//   services.queueAdd(":"+Kine::config().getOptionsServerName()+" SVSMODE " + nickname + " +r");
    updateHost(getIdent()+"@"+getHost());
 }
 

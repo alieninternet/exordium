@@ -186,8 +186,6 @@ namespace Exordium {
 			Kine::ChannelName const &) = 0;
       virtual bool isVoice(AISutil::String const &,
 			   AISutil::String const &) = 0;
-      // And this should be removed when the new channel classes are done.
-      virtual void queueAdd(const AISutil::String&) = 0;
       
       
       // This should be moved to the NOTE MODULE
@@ -223,8 +221,6 @@ namespace Exordium {
 			AISutil::String const &) = 0;
       virtual void setMode(AISutil::String const &,
 			AISutil::String const &) = 0;
-      virtual unsigned long getCountTx(void) = 0;
-      virtual unsigned long getCountRx(void) = 0;
       virtual time_t getStartTime(void) = 0;
       virtual time_t getCurrentTime(void) = 0;
    }; // class Services

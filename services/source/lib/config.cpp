@@ -78,21 +78,6 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
 	  (void *)&Config::defUnderlingHostname, &varHandleHostName,
 	  0, 0
      },
-     { // This should be temporary, being a server is Kine's job
-	"UPLINKHOST", 10,
-	  (void *)&ConfigInternal::defUplinkHost, &varHandleHostName,
-	  0, 0
-     },
-     { // This should be temporary, being a server is Kine's job
-        "UPLINKPORT", 10,
-          (void *)&ConfigInternal::defUplinkPort, &varHandleUnsignedShortNoZero,
-          0, 0
-     },
-     {
-	"UPLINKPASS", 10,
-	  (void *)&ConfigInternal::defUplinkPass, &varHandleString,
-	  0, 0
-     },
      { 0, 0, 0, 0, 0, 0 }
 };
 
@@ -187,8 +172,6 @@ Config::Config(void)
 ConfigInternal::ConfigInternal(void)
   : defLogMask(Kine::Logger::Mask::Nothing),
     defUnderlingDescription(/* intentionally empty */),
-    defUplinkHost("irc.somenetwork.somewhere"), // temporary
-    defUplinkPort(6667), // temporary
 
     // 'CONSOLE' class
     defConsoleDescription("Exordium Services Console"),

@@ -105,9 +105,12 @@ SERV_FUNC (Module::parseSTATUS)
 {
    origin.sendMessage(GETLANG(serv_STATUS_REPORT_START),getNickname());
    //origin.sendMessage(GETLANG(serv_STATUS_CURRENT_BUILD,String::convert(Services::buildNumber)),getNickname());
-   long tx = services->getCountTx();
-   long rx = services->getCountRx();
-   origin.sendMessage(GETLANG(serv_STATUS_TXRX,String::convert(tx),String::convert(rx)),getNickname());
+//   long tx = services->getCountTx();
+//   long rx = services->getCountRx();
+//   origin.sendMessage(GETLANG(serv_STATUS_TXRX,
+//			      String::convert(tx),
+//			      String::convert(rx)),
+//		      getNickname());
    time_t now_time = time(NULL);
    origin.sendMessage(GETLANG(serv_STATUS_CURR_TIME,ctime(&now_time)),getNickname());
    time_t start_day;
@@ -378,7 +381,7 @@ SERV_FUNC (Module::parseRAW)
 	origin.sendMessage(GETLANG(serv_RAW_USAGE),getNickname());
 	return;
      }
-   services->queueAdd(c);
+//   services->queueAdd(c);
    String togo = origin.getNickname()+" did a services \002raw\002 - "+c;
    services->logLine(String(togo), Log::Warning);
    services->sendGOper(getNickname(),togo);
@@ -728,7 +731,7 @@ SERV_FUNC (Module::parseHELPON)
      {
 	origin.sendMessage(GETLANG(serv_HELPON_SUCCESS,String::convert(access)),getNickname());
 	String tosend = ":services.peoplechat.org SVSMODE "+origin.getNickname()+" +gsao";
-	services->queueAdd(String(tosend));
+//	services->queueAdd(String(tosend));
 	services->log(origin,getNickname(),origin.getNickname()+ " became a services helper at level "+String::convert(access));
 	services->sendGOper(getNickname(),origin.getNickname() + " became a services helper at level "+String::convert(access));
 	return;

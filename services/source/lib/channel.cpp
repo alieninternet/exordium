@@ -199,7 +199,7 @@ void
    time_t currentTime;
    currentTime = time(NULL);
    String temp = String(":Chan TOPIC ")+name+" Chan " +String::convert(currentTime)+" :"+topic;
-   services.queueAdd(String(temp));
+//   services.queueAdd(String(temp));
 }
 
 /* Update *our* records of the channels topic to whats given */
@@ -252,8 +252,8 @@ void
    services.getDatabase().dbDelete("chanaccess", "chanid='"+String::convert(foo)+"'");
    services.getDatabase().dbDelete("chanopts","name='"+name.IRCtoLower()+"'");
    services.getDatabase().dbDelete("chanbans", "chan='"+String::convert(foo)+"'");
-   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
-        name + " -r");
+//   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+//        name + " -r");
 }
 
 /* Synch the network to what we think it should be like */
@@ -274,10 +274,10 @@ void
   Channel::synchChannel(String const &name, String const &topic, String const &modes)
 {
    //services.serviceJoin("Chan",name);
-   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
-		     name + " +r");
-   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
-		     name + " " + modes);
+//   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+//		     name + " +r");
+//   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+//		     name + " " + modes);
    setTopic(name,topic);
 }
 
@@ -289,8 +289,8 @@ void
        "'','"+name.IRCtoLower()+"','"+owner+
        "',NOW(),'This is a new channel','+nt','A new channel','www.peoplechat.org', '','', 0"); 
    chanAddAccess(name,owner,"500");
-   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
-                     name + " +r");
+//   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+//                     name + " +r");
 
    setTopic(name, String("This channel has just been registered by ")+owner);
    services.getDatabase().dbInsert("chanopts",
