@@ -35,36 +35,16 @@ digraph intranet_map {
   "libxml2";
 
   // KineIRCd module libraries
+  node [shape=diamond,color=lightblue];
   "libkineircd_irc2";
-
-  // Exordium module libraries
-  "libexordium_game";
 
   // KineIRCd modules
   node [shape=ellipse,color=lightgoldenrod];
-  "mod_exordium";
   "mod_http";
   "mod_iirc1";
   "mod_irc2server";
   "mod_irc2user";
   "mod_snmp";
-
-  // Exordium modules
-  node [shape=ellipse,color=palegreen];
-  "mod_bot.so";
-  "mod_chan.so";
-  "mod_game.so";
-  "mod_love.so";
-  "mod_nick.so";
-  "mod_note.so";
-  "mod_oper.so";
-  "mod_serv.so";
-  "mod_stats.so";
-  "mod_vote.so";
-
-  // Exordium game module modules
-  node [shape=ellipse,color=turquoise];
-  "game_exordi8.so";
 
   // Linkage map
   "KineIRCd" -> "libais";
@@ -89,11 +69,36 @@ digraph intranet_map {
   "mod_snmp" -> "libsnmp";
   "libkineircd_irc2" -> "libais";
   "libkineircd_irc2" -> "libkineircd";
-  
+
   subgraph exordium {
-     bgcolor=snow2;
      label="Exordium Network Services";
      
+     // The KineIRCd module (Exordium)
+     node [shape=ellipse,color=lightgoldenrod];
+     "mod_exordium";
+  
+     // Exordium modules
+     node [shape=ellipse,color=palegreen];
+     "mod_bot.so";
+     "mod_chan.so";
+     "mod_game.so";
+     "mod_love.so";
+     "mod_nick.so";
+     "mod_note.so";
+     "mod_oper.so";
+     "mod_serv.so";
+     "mod_stats.so";
+     "mod_vote.so";
+
+     // Exordium module libraries
+     node [shape=diamond,color=lightblue];
+     "libexordium_game";
+
+     // Exordium game module modules
+     node [shape=ellipse,color=turquoise];
+     "game_exordi8.so";
+
+     // Linkage map..
      "mod_exordium" -> "libais";
      "mod_exordium" -> "libdl";
      "mod_exordium" -> "libservices";
@@ -113,12 +118,10 @@ digraph intranet_map {
      "libexordium_game" -> "libais";
      "libexordium_game" -> "libdl";
      "libexordium_game" -> "libservices";
-     "libexordium_game" -> "mod_game";
      "mod_bot.so" -> "libais";
      "mod_chan.so" -> "libais";
-     "mod_game.so" -> "game_exordi8.so";
      "mod_game.so" -> "libais";
-     "mod_game.so" -> "libexordium_game";
+     "mod_game.so" -> "libexordium_game" [dir=both];
      "mod_love.so" -> "libais";
      "mod_nick.so" -> "libais";
      "mod_note.so" -> "libais";
@@ -127,6 +130,5 @@ digraph intranet_map {
      "mod_stats.so" -> "libais";
      "mod_vote.so" -> "libais";
      "game_exordi8.so" -> "libexordium_game" [dir=both];
-     "game_exordi8.so" -> "mod_game";
   };
 };
