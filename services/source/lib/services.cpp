@@ -900,12 +900,12 @@ namespace Exordium
      Services::sendNote(String const &from, String const &to, String const &text)
        {
 	  String thenick = to.IRCtoLower();
-	  User *ptr = findUser(thenick);
 	  String query = String("insert into notes values('','")+from+"','"+to+"',NOW(),'"+text+"')";
 	  database.query(query);
-	  int foo = ptr->getOnlineID();
+	  int foo = locateID(thenick);
 	  if(foo>0)
 	    {
+	       User *ptr = findUser(thenick);
 	       //Client is online.. But are they identified HUHUHUH?!!?
 	       if(ptr->isIdentified(to))
 		 {
@@ -961,7 +961,7 @@ namespace Exordium
 		    serviceNotice(msg,"Nick",tomod);
 		    String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
 		    queueAdd(String(togo));
-		    setNick(*ptr,newnick);
+//		    setNick(*ptr,newnick);
 //		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 		 }
 	       if((killt.toInt()-nowt)<60)
@@ -1085,6 +1085,7 @@ void
 
    // Update nickname in table onlineclients
    String queryupd="UPDATE onlineclients SET nickname='" + newnick + "' WHERE id=" + who.getOnlineIDString();
+   std::cout << "setNick() - " << queryupd << std::endl;
    getDatabase().query(queryupd);
 };
 
