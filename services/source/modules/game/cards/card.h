@@ -35,7 +35,7 @@ namespace Cards {
    class Card {
     public:
       struct Suit { // <=- should be namespace?
-	 enum suit_type {
+	 enum {
 	    Joker = 0,	// Rarely used within games, though
 	    Clubs = 1,
 	    Spades = 2,
@@ -46,17 +46,21 @@ namespace Cards {
       
       // Some handy names which can be used whilst checking the index
       struct Rank { // <=- Should be namespace too?
-	 static const unsigned char Ace = 1;
-	 static const unsigned char Jack = 11;
-	 static const unsigned char Queen = 12;
-	 static const unsigned char King = 13;
-	 static const unsigned char Joker = 14;
+	 enum {
+	    Ace = 1,
+	    Jack = 11,
+	    Queen = 12,
+	    King = 13,
+	    Joker = 14
+	 };
       };
       
       // Handy colour thingies (for getColour)
       struct Colour { // <=- Should be namespace also?
-	 static const unsigned char Black = 0;
-	 static const unsigned char Red = 1;
+	 enum {
+	    Black = 0,
+	    Red = 1
+	 };
       };
       
     private:

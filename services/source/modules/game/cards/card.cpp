@@ -24,6 +24,7 @@
 
 #include "card.h"
 
+
 /* This relates closely to the enumeration list in the card class. For
  * efficiency it was decided to use redundant data rather than constantly
  * regenerate this data (i.e. <name> + of + <suit>). The time wasted in
