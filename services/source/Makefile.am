@@ -9,7 +9,6 @@ libexordium_la_SOURCES = lib/conf.cpp \
 		       	 lib/channel.cpp \
 			 lib/dchan.cpp \
 			 lib/ircdome.cpp \
-			 lib/log.cpp \
 			 lib/modules.cpp \
 			 lib/parser.cpp \
 			 lib/service.cpp \

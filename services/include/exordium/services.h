@@ -56,7 +56,6 @@ extern "C" {
 # include "dmalloc.h"
 #endif
 
-#include <exordium/log.h>
 #include <exordium/service.h>
 #include <exordium/conf.h>
 #include <exordium/parser.h>
@@ -74,7 +73,6 @@ namespace Exordium {
       private:
 	const AISutil::String buffer;
 	Kine::Daemon& daemon;
-	Log logger;
 
         CDatabase& database;
         
@@ -135,10 +133,6 @@ namespace Exordium {
 	Kine::Daemon &getDaemon(void) const
 	  { return daemon; };
    
-	// Grab the logger reference
-	Log& getLogger(void)
-	  { return logger; };
-	
 	// Grab the database reference
 	CDatabase& getDatabase(void)
 	  { return database; };
@@ -159,6 +153,10 @@ namespace Exordium {
   	void run (void);
 	bool handleInput (void);
 	bool SecurePrivmsg;
+
+	// Log a line of text..
+	void logLine(const AISutil::String& line)
+	  { std::clog << "Logger: " << line << std::endl; };
 
 	// Function Declrations below here.
 	int getAccess(AISutil::String &, AISutil::String &);
@@ -319,25 +317,25 @@ namespace Exordium {
 	  {
 	     if(connected)
 	       {
-		  logger.logLine("TX: " + line);
+		  logLine("TX: " + line);
 		  outputQueue.push (line + "\r\n");
 		  countTx += line.length();
 	       }
 	     else
 	       {
-		  logger.logLine("Tried to TX " + line + " but not connected");
+		  logLine("Tried to TX " + line + " but not connected");
 	       }
 	  };
 
 	void ModequeueAdd(const AISutil::String & line)
 	  {
-	     logger.logLine("MQ: " + line);
+	     logLine("MQ: " + line);
 	     outputQueue.push(line+ "\r\n");
 	  };
 	
 //	void queueAdd(String line)
 //	  {
-//	     logger.logLine("TX: " + line);
+//	     logLine("TX: " + line);
 //	     outputQueue.push(line + "\r\n");
 //	  };
 	

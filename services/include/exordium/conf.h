@@ -40,7 +40,6 @@ namespace Exordium {
 
     private:
       // Variables (top class from the definition table above)
-      AISutil::String defLogfile;		// Log filename
       AISutil::String defServicesDescription;   // Services description (aka realname)
       AISutil::String defServicesHostname;      // Services hostname
       AISutil::String defUplinkHost;           	// Uplink Host (temporary)
@@ -82,8 +81,6 @@ namespace Exordium {
       bool checkConfig(void);
       
       // Top variables
-      const AISutil::String& getLogfile(void) const
-	{ return defLogfile; };
       const AISutil::String& getUplinkHost(void) const
 	{ return defUplinkHost; };      
       const unsigned short getUplinkPort(void) const

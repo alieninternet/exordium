@@ -48,11 +48,6 @@ const AISutil::ConfigParser::defTable_type Config::definitionTable =
 	  0, &classHandleDatabase
      },
      {
-	"LOGFILE", 3,
-	  (void *)&Config::defLogfile, &varHandleString,
-	  0, 0
-     },
-     {
 	"MODULE", 3,
 	  (void *)&Config::defModules, &varHandleModule,
 	  0, &classHandleModule
@@ -154,8 +149,7 @@ const AISutil::ConfigParser::defTable_type Config::defClassSql =
  * Original 25/07/2002 pickle
  */
 Config::Config(void)
-  : defLogfile("services.log"),
-    defServicesDescription("Exordium Network Services"), // temporary
+  : defServicesDescription("Exordium Network Services"), // temporary
     defServicesHostname("services.exordium.somewhere"), // temporary
     defUplinkHost("irc.somenetwork.somewhere"), // temporary
     defUplinkPort(6667), // temporary

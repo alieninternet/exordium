@@ -37,7 +37,6 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
-#include "exordium/log.h"
 #include "exordium/parser.h"
 #include "exordium/service.h"
 #include <kineircd/utils.h>
@@ -98,7 +97,7 @@ namespace Exordium
 	  disconnectTime = 0;
 	  connected = false;
 	  srand(time(NULL));
-	  logger.logLine ("Cleaning out (any) stale entries from the DB");
+	  logLine ("Cleaning out (any) stale entries from the DB");
 	  database.dbDelete("onlineclients");
 	  database.dbDelete("chanstatus");
 	  database.dbDelete("identified");
@@ -107,7 +106,7 @@ namespace Exordium
 	  database.dbDelete("onlinechan");
 	  database.dbDelete("onlineopers");
  
-	  logger.logLine ("Entering main loop...");
+	  logLine ("Entering main loop...");
 	  for (;;)
 	    {
 	       time (&currentTime);
@@ -146,7 +145,7 @@ namespace Exordium
 		      {
 			 if (!handleInput ())
 			   {
-			      logger.logLine ("Error handling server input. Reconnecting.");
+			      logLine ("Error handling server input. Reconnecting.");
 			      helpme("Error in handleInput() - Jumping server","Serv");
 			      connected = false;
 			      disconnectTime = currentTime;
@@ -161,7 +160,7 @@ namespace Exordium
 				//Ok, technically nasty, but if we're in a shutdown
 				//state, do we really care if the connection closes?
 				{
-				   logger.logLine("Disconnecting... (Queue flushing error)");
+				   logLine("Disconnecting... (Queue flushing error)");
 				   connected = false;
 				   disconnectTime = currentTime;
 				   disconnect ();
@@ -172,7 +171,7 @@ namespace Exordium
 			   {
 			      if(stopTime < currentTime)
 				{
-				   logger.logLine("Disconnecting, QueueFlushed and in stop state");
+				   logLine("Disconnecting, QueueFlushed and in stop state");
 				   connected = false;
 				   exit(0);
 				}
@@ -218,7 +217,6 @@ namespace Exordium
 
    Services::Services(Kine::Daemon& d, Config& c, CDatabase& db)
      : daemon(d),
-   logger(c),
    database(db),
    config(c),
    parser(*this),
@@ -235,7 +233,7 @@ namespace Exordium
 	SecurePrivmsg = false;
 	countTx = 0;
 	countRx = 0;
-	logger.logLine("Setting up signal handlers");
+	logLine("Setting up signal handlers");
 	getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
 	getDaemon().getSignals().addHandler(&Death,
 					    Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
@@ -249,7 +247,7 @@ namespace Exordium
 	startTime = currentTime = lastPing = lastExpireRun = lastCheckPoint = serverLastSpoke = time (NULL);
 	if (!(inputBuffer = (char *) malloc (inputBufferSize)))
 	  {
-	     logger.logLine ("Fatal Error: Could not allocate input buffer");
+	     logLine ("Fatal Error: Could not allocate input buffer");
 	     perror ("malloc");
 	     exit (1);
 	  }
@@ -261,7 +259,7 @@ namespace Exordium
 #endif
 	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
 	  {
-	     logger.logLine ("Fatal Error: Error resolving uplinkhost");
+	     logLine ("Fatal Error: Error resolving uplinkhost");
 	     exit (1);
 	  }
 	memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
@@ -290,7 +288,7 @@ Services::~Services()
 	while(bufferin.peek()!=-1)
 	  {
 	     std::getline(bufferin,line);
-	     logger.logLine("RX: "+line);
+	     logLine("RX: "+line);
 	     countRx += line.length();
 	     parser.parseLine(line);
 	  }
@@ -307,7 +305,7 @@ Services::~Services()
    void
      Services::disconnect (void)
        {
-	  logger.logLine ("Closing socket.");
+	  logLine ("Closing socket.");
 	  socky.close();
 	  connected = false;
        }
@@ -320,10 +318,10 @@ Services::~Services()
 
    bool Services::connect (void)
      {
-	logger.logLine ("Attempting Connection to Uplink");
+	logLine ("Attempting Connection to Uplink");
 	if (sock >= 0)
 	  {
-	     logger.logLine ("Closing stale network socket");
+	     logLine ("Closing stale network socket");
 	     socky.close();
 	     sock = -1;
 	  }
@@ -349,7 +347,7 @@ Services::~Services()
  * up our sendQ on the server
  */
 	connected = true;
-	logger.logLine ("Beginning handshake with uplink");
+	logLine ("Beginning handshake with uplink");
 	maxSock = socky.getFD() + 1;
 
 /* *Whistles* Config option */

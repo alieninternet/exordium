@@ -40,7 +40,6 @@
 #include "exordium/services.h"
 //#include "exordium/dchan.h"
 #include "exordium/channel.h"
-#include "exordium/log.h"
 #include <kineircd/str.h>
 #include "exordium/ircdome.h"
 
@@ -95,7 +94,7 @@ void Parser::parseLine(const String& line)
 	}
   // }
 
-   services.getLogger().logLine(String("Unparsed Input!: ")+line);
+   services.logLine("Unparsed Input!: " + line);
 };
 
 void PARSER_FUNC (Parser::parseAWAY)
