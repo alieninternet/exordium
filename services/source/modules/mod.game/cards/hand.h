@@ -61,7 +61,7 @@ namespace Cards {
       // Return the card based on position
       Cards::Card getCardAtIndex(unsigned int idx)
         {
-           int i = 0;
+           unsigned int i = 0;
            cards_type::iterator iter;
 
 	   for(iter = cards.begin(); iter != cards.end(); iter++)
