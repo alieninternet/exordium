@@ -82,18 +82,19 @@ namespace Exordium {
   
           if(initfunc == 0)
           {
-            std::cerr << "Could not load " << fileName.c_str() << 
+            std::cerr << "Could not load " << fileName << 
               ": Module does not contain an initialisation function\n";
             return false;
           }
   
           // Extract the name of the game from the filename
-          AISutil::String name = fileName.substr(fileName.find("game_",0) + 5, 
-              (fileName.length() - 3));
+          AISutil::String::size_type pos = fileName.find("game_",0) + 5;
+
+          AISutil::String name = fileName.substr(pos, 
+              (fileName.length() - pos - 3));
 
 #ifdef DEBUG
-          std::cerr << "Game to load is called " << name << " len = " << 
-            (fileName.length() - 3) << std::endl;
+          std::cerr << "Game to load is called " << name << std::endl;
 #endif
           return registerType(name, initfunc);
         }
