@@ -35,8 +35,8 @@
 #include "poker.h"
 #include "cards/pack.h"
 
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 
 CHANNEL_GAME_CREATOR_FUNCTION
 {

@@ -32,7 +32,7 @@
 # include <aisutil/string.h>
 
 # define NICK_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens, \
+     void x(Exordium::User& origin, AIS::Util::StringTokens& tokens, \
 	    const bool safe)
 
 
@@ -46,8 +46,8 @@ namespace Exordium {
 	 // Configuration data class
 	 Exordium::Service::ConfigData configData;
 	 
-	 void sendMessage(const AISutil::String& to,
-			  const AISutil::String& message)
+	 void sendMessage(const AIS::Util::String& to,
+			  const AIS::Util::String& message)
 	   { services->serviceNotice(message,getNickname(),to); };
 	 
        public:
@@ -62,16 +62,16 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
 	 
 	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String& reason);
+	 void stop(const AIS::Util::String& reason);
 	 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			Kine::Name const &)
 	   {};
 	 
-	 void nickLinkAdd(AISutil::String const &, AISutil::String const &);
-	 void nickLinkDel(AISutil::String const &, AISutil::String const &);
+	 void nickLinkAdd(AIS::Util::String const &, AIS::Util::String const &);
+	 void nickLinkDel(AIS::Util::String const &, AIS::Util::String const &);
 	 
 	 /* Our Event Handler(s) */
 	 void handleClientSignon(Exordium::User& origin);

@@ -38,11 +38,11 @@ class ChannelGame;
 namespace Exordium {
   namespace GameModule {
     typedef ChannelGame* (*GameCallback)(Exordium::GameModule::Module& module,
-        const AISutil::String& channel, Exordium::User& caller);
+        const AIS::Util::String& channel, Exordium::User& caller);
 
     class Factory {
       private:
-        typedef std::map<const AISutil::String, GameCallback> CallbackMap;
+        typedef std::map<const AIS::Util::String, GameCallback> CallbackMap;
         CallbackMap callbacks;
   
         Factory() { }
@@ -57,12 +57,12 @@ namespace Exordium {
         }
         ~Factory() { }
 
-        bool registerType(const AISutil::String& name, GameCallback createFn)
+        bool registerType(const AIS::Util::String& name, GameCallback createFn)
         {
           return callbacks.insert(CallbackMap::value_type(name, createFn)).second;
         };
 
-        bool registerModule(const AISutil::String& fileName) 
+        bool registerModule(const AIS::Util::String& fileName) 
         {
           // Try to load the module
           void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
@@ -88,9 +88,9 @@ namespace Exordium {
           }
   
           // Extract the name of the game from the filename
-          AISutil::String::size_type pos = fileName.find("game_",0) + 5;
+          AIS::Util::String::size_type pos = fileName.find("game_",0) + 5;
 
-          AISutil::String name = fileName.substr(pos, 
+          AIS::Util::String name = fileName.substr(pos, 
               (fileName.length() - pos - 3));
 
 #ifdef DEBUG
@@ -99,18 +99,18 @@ namespace Exordium {
           return registerType(name, initfunc);
         }
 
-        bool unregisterType(const AISutil::String& name)
+        bool unregisterType(const AIS::Util::String& name)
         {
           return callbacks.erase(name);
         };
   
-        bool unregisterModule(const AISutil::String& name)
+        bool unregisterModule(const AIS::Util::String& name)
         {
         };
 
-        const std::list<AISutil::String> listModules(void)
+        const std::list<AIS::Util::String> listModules(void)
         {
-          std::list<AISutil::String> retList;
+          std::list<AIS::Util::String> retList;
           for(CallbackMap::const_iterator iter = callbacks.begin(); 
               iter != callbacks.end(); iter++)
           {
@@ -120,9 +120,9 @@ namespace Exordium {
           return retList;
         };
 
-        ChannelGame* createGame(const AISutil::String& name, 
+        ChannelGame* createGame(const AIS::Util::String& name, 
             Exordium::GameModule::Module& module, 
-            const AISutil::String& channel, Exordium::User& caller)
+            const AIS::Util::String& channel, Exordium::User& caller)
         {
           CallbackMap::const_iterator iter = callbacks.find(name);
           if(iter == callbacks.end())

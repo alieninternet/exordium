@@ -36,8 +36,8 @@
 # include <libbank/bank.h>
 
 # define CREDITS_FUNC(x) \
-    void x(Exordium::User& origin, AISutil::StringTokens& line, \
-           const AISutil::String& channel)
+    void x(Exordium::User& origin, AIS::Util::StringTokens& line, \
+           const AIS::Util::String& channel)
 
 namespace Exordium {
    namespace CreditsModule {
@@ -84,11 +84,11 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
 	 
 	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String& reason);
+	 void stop(const AIS::Util::String& reason);
 	 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel)
 	   {};
 	 

@@ -39,8 +39,8 @@
 
 
 #define BOT_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens, \
-	    AISutil::String& chan)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& tokens, \
+	    AIS::Util::String& chan)
 
 
 namespace Exordium {
@@ -58,8 +58,8 @@ namespace Exordium {
 	    BOT_FUNC((Module::* const function));
 	 } static const functionTable[];
 	 
-	 void sendMessage(const AISutil::String& to,
-			  const AISutil::String& message)
+	 void sendMessage(const AIS::Util::String& to,
+			  const AIS::Util::String& message)
 	   { services->serviceNotice(message,getNickname(),to); };
 	 
        public:
@@ -73,9 +73,9 @@ namespace Exordium {
 	 // Start the module
 	 bool start(Exordium::Services& s);
    
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel);
 	 
 	 

@@ -38,9 +38,9 @@
 #include <sstream>
 #include <aisutil/utils.h>
 
-using AISutil::String;
-using AISutil::StringTokens;
-using AISutil::Utils;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
+using AIS::Util::Utils;
 using namespace Exordium::NickModule;
 
 /* Event Handlers */
@@ -283,7 +283,7 @@ NICK_FUNC (Module::parseAUTH)
 	     return;
 	  }
 
-	if(AISutil::Utils::toBool(value)==1)
+	if(AIS::Util::Utils::toBool(value)==1)
 	  {
 	     origin.setModNick(true);
 	     origin.sendMessage(GETLANG(nick_MODNICK_NOW_ON),
@@ -292,7 +292,7 @@ NICK_FUNC (Module::parseAUTH)
 	     return;
 	  }
 
-	if(AISutil::Utils::toBool(value)==0)
+	if(AIS::Util::Utils::toBool(value)==0)
 	  {
 	     origin.setModNick(false);
 	     origin.sendMessage(GETLANG(nick_MODNICK_NOW_OFF),
@@ -313,7 +313,7 @@ NICK_FUNC (Module::parseAUTH)
 				getNickname());
 	     return;
 	  }
-	if(AISutil::Utils::toBool(value)==1)
+	if(AIS::Util::Utils::toBool(value)==1)
 	  {
 	     origin.setDeopAway(true);
 	     origin.sendMessage(GETLANG(nick_DEOPAWAY_NOW_ON),
@@ -321,7 +321,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.log(getNickname(),"Changed deoponaway to enabled");
 	     return;
 	  }
-	if(AISutil::Utils::toBool(value)==0)
+	if(AIS::Util::Utils::toBool(value)==0)
 	  {
 	     origin.setDeopAway(false);
 	     origin.sendMessage(GETLANG(nick_DEOPAWAY_NOW_OFF),
@@ -558,7 +558,7 @@ NICK_FUNC (Module::parseAUTH)
 				getNickname());
 	     return;
 	  }
-	if(AISutil::Utils::toBool(value)==1)
+	if(AIS::Util::Utils::toBool(value)==1)
 	  {
 	     origin.setPrivmsg(true);
 	     origin.sendMessage(GETLANG(nick_PRIVMSG_NOW_ON),
@@ -566,7 +566,7 @@ NICK_FUNC (Module::parseAUTH)
 	     origin.log(getNickname(),"Changed privmsg interface to enabled");
 	     return;
 	  }
-	if(AISutil::Utils::toBool(value)==0)
+	if(AIS::Util::Utils::toBool(value)==0)
 	  {
 	     origin.setPrivmsg(false);
 	     origin.sendMessage(GETLANG(nick_PRIVMSG_NOW_OFF),

@@ -37,7 +37,7 @@
 # include "cards/card.h"
 
 # define EXORDI8_FUNC(x) \
-     bool x(Exordium::User& origin, AISutil::StringTokens& line)
+     bool x(Exordium::User& origin, AIS::Util::StringTokens& line)
 
 class Hangman : public ChannelGame {
  private:
@@ -75,7 +75,7 @@ class Hangman : public ChannelGame {
 					bool quiet = false);
    
    // Jump to the next player, telling the channel why
-   void nextPlayer(const AISutil::String& why, bool withMatchNotify = true);
+   void nextPlayer(const AIS::Util::String& why, bool withMatchNotify = true);
 
    // Read in a random word depending on the number of chars set
    bool getLevelData(unsigned int numChars);
@@ -85,7 +85,7 @@ class Hangman : public ChannelGame {
    void showHangman(const Exordium::User& player);
    
    // Temporary list of words selected from
-   typedef std::vector <AISutil::String> WordList;
+   typedef std::vector <AIS::Util::String> WordList;
 
    // Function handlers
    EXORDI8_FUNC(parsePLAY);
@@ -96,11 +96,11 @@ class Hangman : public ChannelGame {
 //   EXORDI8_FUNC(parseDIFFICULTY);
 
    // This is the word to be guessed
-   AISutil::String word;
+   AIS::Util::String word;
 
    // Letters already tried
-   AISutil::String wrongGuesses;
-   AISutil::String correctGuesses;
+   AIS::Util::String wrongGuesses;
+   AIS::Util::String correctGuesses;
 
    // Number of wrong guesses
    unsigned int numWrongGuesses;
@@ -115,8 +115,8 @@ class Hangman : public ChannelGame {
    //  { return new Hangman(module, channel, caller); }
    
    // Parse a line..
-   bool parseLine(Exordium::User& origin, AISutil::String& command,
-		  AISutil::StringTokens& tokens);
+   bool parseLine(Exordium::User& origin, AIS::Util::String& command,
+		  AIS::Util::StringTokens& tokens);
 };
    
 #endif // _SOURCE_MODULES_GAME_HANGMAN_H_

@@ -33,8 +33,8 @@
 
 #include "card.h"
 
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 
 
 /* This relates closely to the enumeration list in the card class. For

@@ -33,7 +33,7 @@
 
 
 # define LOVE_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& line)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& line)
 
 
 namespace Exordium {
@@ -60,7 +60,7 @@ namespace Exordium {
 
 	 // How to send private-messages (stepping-stone)
 	 void sendMessage(Exordium::User& recipient,
-			  const AISutil::String& message)
+			  const AIS::Util::String& message)
 	   { recipient.sendMessage(message, getNickname()); };
 	 
        public:
@@ -77,12 +77,12 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
 	 
 	 // Parser for incoming stuff sent on a channel
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel)
 	   { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaHAEhaE!!! */ };
 	 
 	 // Parser for incoming stuff sent directly to us
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 
 	 // Grab the information structure of a module

@@ -35,8 +35,8 @@
 #include <exordium/services.h>
 #include <exordium/server.h>
 
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 using namespace Exordium::OperModule;
 
 const Module::functionTableStruct Module::functionTable[] =

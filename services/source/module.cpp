@@ -124,7 +124,7 @@ namespace {
 	{ return moduleInfo; };
 
       // Return our configuration data class
-      AISutil::ConfigData* const getConfigData(void)
+      AIS::Util::ConfigData* const getConfigData(void)
 	{ return &config; };
       
       // this is called just before the module is actually going to be used

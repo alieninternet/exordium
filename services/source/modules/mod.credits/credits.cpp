@@ -37,8 +37,8 @@
 
 
 using namespace Exordium::CreditsModule;
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 using Exordium::User;
 
 

@@ -42,8 +42,8 @@
 #include <kineircd/config.h>
 
 
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 using namespace Exordium::LoveModule;
 
 

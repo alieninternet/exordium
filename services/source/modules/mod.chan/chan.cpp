@@ -40,9 +40,9 @@
 #include <exordium/database/database.h>
 #include <aisutil/utils.h>
 
-using AISutil::String;
-using AISutil::StringTokens;
-using AISutil::Utils;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
+using AIS::Util::Utils;
 using namespace Exordium::ChanModule;
 
 struct Module::functionTableStruct const
@@ -179,7 +179,7 @@ CHAN_FUNC (Module::parseSET)
 
 	     if(command=="log")
 	       {
-		  if(AISutil::Utils::toBool(value)==1)
+		  if(AIS::Util::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanLog(true);
 		       ptr->log(origin,getNickname(),"Enabled channel log email",channel);
@@ -201,7 +201,7 @@ CHAN_FUNC (Module::parseSET)
 	     if(command=="secureops" || command=="secure")
 	       {
 
-		  if(AISutil::Utils::toBool(value)==1)
+		  if(AIS::Util::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanSecure(true);
 		       ptr->log(origin,getNickname(),"Enabled secure ops",channel);
@@ -222,7 +222,7 @@ CHAN_FUNC (Module::parseSET)
 	     //
              if(command=="enforcebans")
                {
-                  if(AISutil::Utils::toBool(value)==1)
+                  if(AIS::Util::Utils::toBool(value)==1)
                     {
                        ptr->setEnforceBans(true);
 		       ptr->log(origin,getNickname(),"Enabled ban enforcement",channel);
@@ -244,7 +244,7 @@ CHAN_FUNC (Module::parseSET)
 	     //
              if(command=="tracktopics")
                {
-                  if(AISutil::Utils::toBool(value)==1)
+                  if(AIS::Util::Utils::toBool(value)==1)
                     {
                        ptr->setTrackTopics(true);
 		       ptr->log(origin,getNickname(),"Enabled topic tracking",channel);
@@ -265,7 +265,7 @@ CHAN_FUNC (Module::parseSET)
 
              if(command=="mlock")
                {
-                  if(AISutil::Utils::toBool(value)==1)
+                  if(AIS::Util::Utils::toBool(value)==1)
                     {
                        ptr->setModeLock(true);
 		       ptr->log(origin,getNickname(),"Enabled mode lock",channel);
@@ -359,7 +359,7 @@ CHAN_FUNC (Module::parseSET)
 
              if(command=="private")
                {
-                  if(AISutil::Utils::toBool(value)==1)
+                  if(AIS::Util::Utils::toBool(value)==1)
                     {
                        ptr->setPrivate(true);
 		       ptr->log(origin,getNickname(),"Enabled Private mode",channel);

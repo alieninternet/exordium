@@ -34,7 +34,7 @@
 #include <aisutil/string.h>
 
 # define VOTE_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& tokens)
 
 #include <exordium/service.h>
 
@@ -65,9 +65,9 @@ namespace Exordium {
 	 // Start the module
 	 bool start(Exordium::Services& s);
    
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel)
 	   {};
 

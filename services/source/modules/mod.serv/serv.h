@@ -30,7 +30,7 @@
 # include <aisutil/string.h>
 
 # define SERV_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& tokens)
 
 # include <exordium/service.h>
 # include <kineircd/config.h>
@@ -62,9 +62,9 @@ namespace Exordium {
 	 // Start the module
 	 bool start(Exordium::Services& s);
 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel)
 	   {};
 
@@ -78,8 +78,8 @@ namespace Exordium {
 	   { return configData; };
 	 
 	 // Public functions here please!.
-	 void addFreeze(Kine::Name const &,AISutil::String const &,
-			int const &,AISutil::String const &);
+	 void addFreeze(Kine::Name const &,AIS::Util::String const &,
+			int const &,AIS::Util::String const &);
 	 int timesFreezed(Kine::Name const &);
 	 bool isFreezed(Kine::Name const &);
 	 void delFreeze(Kine::Name const &);

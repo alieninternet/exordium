@@ -34,7 +34,7 @@
 # include <aisutil/string.h>
 
 # define NOTE_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& tokens)
 
 # include <exordium/service.h>
 
@@ -68,11 +68,11 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
 	 
 	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String& reason);
+	 void stop(const AIS::Util::String& reason);
 	 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util ::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel)
 	   { return; };
 	 

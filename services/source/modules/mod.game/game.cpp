@@ -38,8 +38,8 @@
 #include "factory.h"
 
 using namespace Exordium::GameModule;
-using AISutil::String;
-using AISutil::StringTokens;
+using AIS::Util::String;
+using AIS::Util::StringTokens;
 using Exordium::Channel;
 using Exordium::User;
 
@@ -268,7 +268,7 @@ std::endl;
  */
 GAME_FUNC(Module::handleLIST)
 {
-   typedef std::list<AISutil::String> StringList;
+   typedef std::list<AIS::Util::String> StringList;
    StringList::const_iterator iter;
 
    // Get module list

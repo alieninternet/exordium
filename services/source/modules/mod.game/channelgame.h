@@ -36,7 +36,7 @@ class ChannelGame;
 
 # define CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN(x) \
      ChannelGame* x(Exordium::GameModule::Module& module, \
-		    const AISutil::String& channel, Exordium::User& caller)
+		    const AIS::Util::String& channel, Exordium::User& caller)
 
 # define CHANNEL_GAME_CREATOR_FUNCTION \
      extern "C" CHANNEL_GAME_CREATOR_FUNC_NO_EXTERN(game_init)
@@ -48,7 +48,7 @@ class ChannelGame {
    Exordium::GameModule::Module& module;
    
    // The channel we are playing on
-   const AISutil::String channel;
+   const AIS::Util::String channel;
    
  public:
    // Our convenient type-definition of a creator function
@@ -61,7 +61,7 @@ class ChannelGame {
    } static const channelGameTable[];
 
    // Constructor
-   ChannelGame(Exordium::GameModule::Module& m, const AISutil::String& c)
+   ChannelGame(Exordium::GameModule::Module& m, const AIS::Util::String& c)
      : module(m),
        channel(c)
        {};
@@ -71,15 +71,15 @@ class ChannelGame {
      {};
    
    // Our line parser - where channel commands for us are sent
-   virtual bool parseLine(Exordium::User& origin, AISutil::String& command,
-			  AISutil::StringTokens& tokens) = 0;
+   virtual bool parseLine(Exordium::User& origin, AIS::Util::String& command,
+			  AIS::Util::StringTokens& tokens) = 0;
 
    // Grab the channel this channel game is on
-   const AISutil::String& getChannel(void) const
+   const AIS::Util::String& getChannel(void) const
      { return channel; };
    
    // Send a message to the channel
-   void sendMessage(const AISutil::String& message) const
+   void sendMessage(const AIS::Util::String& message) const
      {
 	module.getServices().servicePrivmsg(message, module.getNickname(), 
 					    channel);
@@ -87,7 +87,7 @@ class ChannelGame {
 
    // Send a message to someone (specified)
    void sendMessage(Exordium::User& nick,
-		    const AISutil::String& message) const
+		    const AIS::Util::String& message) const
      { nick.sendMessage(message, module.getNickname()); };
 };
    

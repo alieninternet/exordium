@@ -1,4 +1,4 @@
-/* $Id$
+T/* $Id$
  * 
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -36,8 +36,8 @@
 # include <aisutil/string.h>
 
 # define CHAN_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens, \
-	       AISutil::String &chan)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& tokens, \
+	       AIS::Util::String &chan)
 
 
 namespace Exordium {
@@ -67,23 +67,23 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
    
 	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String& reason);
+	 void stop(const AIS::Util::String& reason);
 	 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel);
 	 
 	 void handleAway(Exordium::User& origin, 
-			 const AISutil::String& reason);
+			 const AIS::Util::String& reason);
 
-         void handleTopic(const Kine::Name&, dChan& channel, const AISutil::String &);
+         void handleTopic(const Kine::Name&, dChan& channel, const AIS::Util::String &);
 
          void handleChannelJoin(User& origin, dChan &channel, const int &status);
          void handleChannelPart(User& origin, dChan &channel);
 
-         void handleChannelMode( dChan &channel, const AISutil::String &modes,
-                                 const AISutil::String &target, const AISutil::String &source );
+         void handleChannelMode( dChan &channel, const AIS::Util::String &modes,
+                                 const AIS::Util::String &target, const AIS::Util::String &source );
 	 
 	 // Grab the information structure of a module
 	 virtual const moduleInfo_type& getModuleInfo(void) const

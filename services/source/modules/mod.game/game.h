@@ -34,8 +34,8 @@
 # include "config.h"
 
 # define GAME_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& line, \
-	    const AISutil::String& channel)
+     void x(Exordium::User& origin, AIS::Util::StringTokens& line, \
+	    const AIS::Util::String& channel)
 
 
 // Forward declarations
@@ -69,7 +69,7 @@ namespace Exordium {
 	 static const commandTable_type channelCommandTable[];
 	 
 	 // A list of channel games currently in progress
-	 typedef std::map < AISutil::String, ChannelGame* > channelGames_type;
+	 typedef std::map < AIS::Util::String, ChannelGame* > channelGames_type;
 	 channelGames_type channelGames;
 	 
 	 // Command handlers
@@ -96,12 +96,12 @@ namespace Exordium {
 	 bool start(Exordium::Services& s);
 	 
 	 // Stop the module (called just before a module is unloaded)
-	 void stop(const AISutil::String& reason);
+	 void stop(const AIS::Util::String& reason);
 	 
 	 // Parser for incoming stuff
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const bool safe);
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+	 void parseLine(AIS::Util::StringTokens& line, Exordium::User& origin,
 			const Kine::Name& channel);
 	 
 	 // Grab the information structure of a module
