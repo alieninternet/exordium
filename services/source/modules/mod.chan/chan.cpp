@@ -845,7 +845,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 		      getName());
    
    int nbRes =
-     services->getDatabase().dbSelect("nickid", "chanaccess",
+     services->getDatabase().dbSelect("*", "chanaccess",
 				      "chanid=" + 
 				      String::convert(ptr->getRegisteredID()));
    
@@ -854,9 +854,10 @@ CHAN_FUNC (Module::parseCOMMANDS)
    String tnickid, taccess;
    
    for (int i = 0; i < nbRes; i++) {
-      String foo = myRes->getValue();
-      origin.sendMessage(foo, getName());
-      myRes->nextRow();
+      String foo = myRes->getValue(i,0);
+      String baa = myRes->getValue(i,1);
+      String maa = myRes->getValue(i,2);
+      origin.sendMessage(foo+" "+baa+" "+maa, getName());
    }
    
    ptr->log(origin,"Chan","Did a channel access",channel);

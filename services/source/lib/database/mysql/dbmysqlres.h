@@ -34,15 +34,18 @@
 
 #include <mysql/mysql.h>
 
+#include <vector>
+
 #include "dbmysql.h"
 
 namespace Exordium {
    class CMySQLRes : public CResult {
     private:
       MYSQL_RES mysqlres;
-      MYSQL_ROW mysqlrow;
+      MYSQL_ROW mysqlrow;      
       MYSQL *mysql;
-      
+      std::vector < std::vector < std::string > > rows;
+      int numrows,numfields;
       int results; // Size of our result set..
       int seekpos; // Position we are at..
     public:
@@ -52,10 +55,12 @@ namespace Exordium {
 	{};
       
       // Defintions
-      AISutil::String getValue(void);
-      void nextRow(void);
+      AISutil::String getValue(const int &,const int &);
       
       //functions.
+      int getRows(void) 
+	{ return numrows; };
+	   
    };
 };
 
