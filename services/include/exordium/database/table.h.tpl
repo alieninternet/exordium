@@ -52,10 +52,23 @@ namespace Exordium {
 	 // The name used to reference this field. Consider this case sensitive
 	 const char* const name;
 	 
-	 // The type of the field
+	 /* The type of the field. Many field types are given here, but not all
+	  * may be available using the user's specified database engine. Each
+	  * database engine will compensate in that event so you are still
+	  * guaranteed types as specified in the comments. For example, you
+	  * may have a table using a variety of integer sizes but the selected
+	  * engine may only have one form of integer. That single form will be
+	  * used.
+	  *
+	  * Note that the engine's table affirmation routines may also use the
+	  * width field to optimise the type.
+	  */
 	 struct Type { // <=- should be namespace :(
-	    enum type {[+FOR fieldtypes ','+]
-	       [+name+][+ENDFOR fieldtypes+]
+	    enum type {[+ FOR fieldtypes +]
+	       [+ (sprintf "%-27s // %s"
+	           (sprintf "%s," (get "name"))
+		   (get "comment"))
+		+][+ ENDFOR fieldtypes +]
 	    };
 	 };
 	 const Type::type type;
