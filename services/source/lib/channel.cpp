@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
@@ -62,32 +62,6 @@ namespace Exordium
           return String::convert(services.getDatabase().dbCount("chans"));
        }
 
-/* Update our tables as showing the given user as 'opped'
-   in the given chan */
-void
-  Channel::internalOp(String const &nickname, String const &channel)
-{
-   services.logLine("Depreciated Function: InternalOP()");
-   return;
-}
-
-/* Update our tables as showing the given user is 'voiced'
-   in the given chan */
-void
-  Channel::internalVoice(String const &nickname, String const &channel)
-{
-   services.logLine("Depreciated Function: InternalVoice()");
-   return;
-}
-
-/* Update our tables as showing the given user in the channel
-   N.B their status is 0 - ala non opped, non voiced */
-void
-  Channel::internalAdd(String const &nickname, String const &channel)
-{
-   services.logLine("Depreciated Functon: InternalAdd()");
-   return;
-}
 bool
   Channel::ChanLog(String const &channel)
 {
@@ -114,36 +88,6 @@ void
         services.getDatabase().dbDelete("chanopts", "'"+channel.toLower()+"' AND clog=1");
 	return;
      }
-}
-
-/* Update our tables as showing the given user is no longer
-   in the channel, removing all status flags */
-void
-  Channel::internalDel(String const &nickname, String const &channel)
-{
-   services.getDatabase().dbDelete("chanstatus", "chanid='" + String::convert(getOnlineChanID(channel))+"' AND nickid='"+String::convert(services.locateID(nickname))+"'");
-   return;
-}
-
-/* Update our tables to show the given user as being 'deopped' */
-void
-  Channel::internalDeOp(String const &nickname, String const &channel)
-{
-   int chanid = getOnlineChanID(channel);
-   int nickid = services.locateID(nickname);
-   services.getDatabase().dbDelete("chanstatus", "chanid="+String::convert(chanid)+" AND nickid="+String::convert(nickid));
-   services.getDatabase().dbInsert("chanstatus", "'','"+String::convert(chanid)+"','"+String::convert(nickid)+"'");
-}
-
-/* Update our tables to show the given user as being 'devoiced' */
-
-void
-  Channel::internalDeVoice(String const &nickname, String const &channel)
-{
-   int chanid = getOnlineChanID(channel);
-   int nickid = services.locateID(nickname);
-   services.getDatabase().dbDelete("chanstatus", 
-       "chanid='"+String::convert(chanid)+"' AND nickid='"+String::convert(nickid)+ "' AND status='1'");
 }
 
 /* Return the numercial (unique) id of a registered channel */
