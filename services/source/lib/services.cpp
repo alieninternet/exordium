@@ -1017,28 +1017,11 @@ bool
 	return false;
      }
 };
-/* Ok, yes I know this is a duplication of Nickname's getOnlineID, but
- * this is used to save us iterating over our entire client map
- * when using Userbase::findUser - It seemed more logical to me
- * to retain this function, which simply does a SQL query to obtain
- * the clients unique ID, which in turn is the correct key to us
- * in the users map to obtain the User pointer!
+/* addUser(String,Int)
+ * 
+ * Add the user to our users map
+ * 
  */
-
-int
-  Services::locateID(String const &nick)
-{
-   MysqlRes res = database.query("SELECT id from onlineclients where nickname='" + nick.IRCtoLower() + "'");
-   MysqlRow row;
-   while ((row = res.fetch_row()))
-     {
-	String id = row[0];
-	return id.toInt();
-     }
-   //Otherwise return 0 - no match.
-   return 0;
-};
-
 User*
   Services::addUser(Kine::String &name, int &oid)
 {
@@ -1046,6 +1029,11 @@ User*
    return users[name];
 };
 
+/* findUser(String)
+ * 
+ * Find and return a pointer to a user.
+ * 
+ */
 User*
   Services::findUser(Kine::String &name)
 {
@@ -1053,6 +1041,11 @@ User*
    return ptr;
 }
 
+/* delUser(String)
+ * 
+ * Find.. and delete the given user.
+ * 
+ */
 bool
   Services::delUser(Kine::String &name)
 {
@@ -1060,6 +1053,12 @@ bool
    return true;
 };
 
+/* setNick(User,String)
+ * 
+ * Find and update the given user record as having 
+ * a new nickname.
+ * 
+ */
 void
   Services::setNick(User &who, Kine::String &newnick)
 {
@@ -1070,3 +1069,34 @@ void
    
 };
    
+/* getRegNickCount()
+ * 
+ * Return the total number of registered nicknames (as a String)
+ * 
+ */
+
+String
+  Services::getRegNickCount(void)
+{
+   
+   MysqlRes res = database.query("SELECT count(*) from nicks");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return String("0");
+};
+
+/* generatePassword(String,String)
+ * 
+ * Generate a new password for the given user.
+ * 
+ */
+
+String
+  Services::generatePassword(String const &nickname, String const &password)
+{
+   String bob((char *)Kine::Password::makePassword(nickname,password).s_char,(String::size_type)20);
+   return bob;
+}

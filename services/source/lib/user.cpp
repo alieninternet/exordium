@@ -180,3 +180,41 @@ void
 };
 
 
+/* getQuitMessage()
+ * 
+ * Return the last known quit message for this user..
+ * 
+ */
+
+String
+  User::getQuitMessage(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT quitmsg from nicks where nickname='" + nickname + "'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+};
+
+/* getAccess(String)
+ * 
+ * Return the given access for a user with the given service.
+ * 
+ */
+
+int 
+  User::getAccess(String const &service)
+{
+   MysqlRes res = services.getDatabase().query("SELECT access from access where nickname='"+nickname+"' AND service='"+service+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return String(row[0]).toInt();
+     }
+   return 0;
+}
+
+  
+

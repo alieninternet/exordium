@@ -123,6 +123,7 @@ namespace Exordium {
 	bool delUser(Kine::String &);
 	User* findUser(Kine::String &);
 	void setNick(User &,Kine::String &);
+	Kine::String getRegNickCount(void);
 	// dunno where you want these fellow james
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c);
@@ -350,7 +351,10 @@ namespace Exordium {
 	  {
 	     return countTx;
 	  };
-	
+	Kine::String getOnlineCount(void)
+	  {
+	     return Kine::String::convert(users.size());
+	  };
 	bool usePrivmsg(String const &);
 	bool loadModule(const String &, const String &);
 	bool unloadModule(const String &);
@@ -362,6 +366,7 @@ namespace Exordium {
 	void checkpoint(void);
 	unsigned long random(unsigned long max);
 	int locateID(String const &nick);
+	Kine::String generatePassword(String const &,String const &);
      };
 }; // namespace Exordium
 
