@@ -39,6 +39,7 @@ using namespace Exordium;
 const struct Console::functionTableStruct Console::functionTable[] = {
      { "module",		&Console::parseMODULE },
      { "language",		&Console::parseLANGUAGE },
+     { "help",			&Console::parseHELP },
      { 0, 0 }
 };
 
@@ -154,4 +155,56 @@ void CONSOLE_FUNC(Console::parseLANGUAGE)
 				origin);
       }
    }
+}
+
+
+void CONSOLE_FUNC(Console::parseHELP)
+{
+   // The thingy that sends the data (the operator() bit does the work)
+   struct Caller : public Kine::Languages::callFunction_type {
+      // Remember stuff..
+      const Kine::Name& origin;
+      ServicesInternal& services;
+      
+      bool operator()(const std::string& data)
+	{
+	   // Send the line
+	   services.serviceNotice(data,
+				  services.getConfigInternal().getConsoleName(),
+				  origin);
+	   
+	   // We return true here, because we're willing to accept more data
+	   return true;
+	};
+
+      Caller(const Kine::Name& o, ServicesInternal& s)
+	: origin(o), services(s)
+	{};
+   };
+   
+   // Create one of those call functions..
+   Caller callout(origin, services);
+   
+   // This shold probably be passed to us..
+   User *ptr = services.findUser(origin); 
+   assert(ptr != 0);
+   
+   /* Send the right tag.. however, in normal use for exordium's help engine,
+    * there would be a heavy requirement for some autogen magic to set up
+    * the help topics vs. commands and link the tags to the tag map to the
+    * commands.. I'll leave this up to you to invent, since it's relatively
+    * straight forward. AutoGen should probably be employed, regardless, to
+    * maintain the command lists for the console (and indeed the modules).
+    * 
+    * Currently, mod_irc2user for kine uses this method - command lists have
+    * references to segments in the tag map arrays in order for appropriate
+    * help information to be obtained for the given command. (This has been in
+    * place for quite some time).
+    * 
+    * This will call the call-out function for each segment of the language
+    * data found at the given tag..
+    */
+   Kine::langs().get(ptr->getLanguage(),
+		     Language::tagMap[Language::core_CONSOLE_HELP_HELP].tagID,
+		     callout);
 }

@@ -50,7 +50,8 @@ namespace Exordium {
       
       void CONSOLE_FUNC(parseMODULE);
       void CONSOLE_FUNC(parseLANGUAGE);
-      
+      void CONSOLE_FUNC(parseHELP);
+
     public:
       Console(ServicesInternal& s)
 	: services(s)
