@@ -24,8 +24,8 @@ OBJECTS=$(SOURCES:.cpp=.so)
 
 
 SUB_DIRS=\
-#	game \
-#	love
+	game \
+	love
 
 .PHONY: all subdirs $(SUB_DIRS)
 
