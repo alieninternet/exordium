@@ -19,6 +19,21 @@ namespace Exordium
 {
 
    void
+     Nickname::setModNick(String const &nick, bool const &value)
+       {
+	  String query;
+	  if(value)
+	    {
+	       query = "UPDATE nicks set modnick=1 where nickname='" +nick+"'";
+	    }
+	  else
+	    {
+	       query = "UPDATE nicks set modnick=0 where nickname='" + nick + "'";
+	    }
+	  services.getDatabase().query(query);
+       }
+   
+   void
      Nickname::setDeopAway(String const &nick, bool const &value)
        {
 	  String query;
@@ -33,6 +48,27 @@ namespace Exordium
 	  services.getDatabase().query(query);
        }
 
+  bool
+     Nickname::modNick(String const &nick)
+       {
+	  String query = "SELECT modnick from nicks where nickname='"+nick+"'";
+	  MysqlRes res = services.getDatabase().query(String(query));
+	  MysqlRow row;
+	  while ((row = res.fetch_row()))
+	    {
+	       String foo = ((std::string) row[0]).c_str();
+	       if(foo=="1")
+		 {
+		    return true;
+		 }
+	       else
+		 {
+		    return false;
+		 }
+	    }
+	  return false;
+       }
+   
    bool
      Nickname::deopAway(String const &nick)
        {
@@ -448,7 +484,7 @@ namespace Exordium
      Nickname::registerNick(String const &nick, String const &password, String const &email)
        {
 	  String gpass = generatePassword(nick.toLower(),password);
-	  String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'english','0','No MSN Set','http://ircdome.org',0,'None Set','None Set','No Quit Message Recorded')";
+	  String query = "INSERT into nicks values('','" + nick + "','" + gpass + "','" + email + "',NOW(),NOW(),'',0,'english','0','No MSN Set','http://ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)";
 	  services.getDatabase().query(query);
        }
 

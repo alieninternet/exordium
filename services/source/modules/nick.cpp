@@ -199,6 +199,32 @@ void
 	services.log(origin,"Nick",String("Changed nickname password"));
 	return;
      }
+   if(command=="modnick")
+     {
+	if(value=="")
+	  {
+	     String togo = "Usage is set modnick true/false";
+	     services.serviceNotice(togo,"Nick",origin);
+	  }
+	
+	if(value=="true")
+	  {
+	     services.getNickname().setModNick(origin,true);
+	     String togo = "Nickname enforcement is now enabled";
+	     services.serviceNotice(togo,"Nick",origin);
+	     return;
+	  }
+	
+	if(value=="false")
+	  {
+	     services.getNickname().setModNick(origin,false);
+	     String togo = "Nickname enforcement is now disabled";
+	     services.serviceNotice(togo,"Nick",origin);
+	     return;
+	  }
+	
+     }
+   
    if(command=="deopaway")
      {
 	if(value=="")

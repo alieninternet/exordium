@@ -65,6 +65,8 @@ namespace Exordium {
       Kine::String getRegDate (const Kine::String &nick);
       void setDeopAway(Kine::String const &, bool const &);
       bool deopAway(Kine::String const &);
+      void setModNick(Kine::String const &, bool const &);
+      bool modNick(Kine::String const &);
    };
 };
 

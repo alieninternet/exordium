@@ -264,7 +264,13 @@ void
 		  if(!services.getNickname().isPending(newnick))
 		    {
 			/* Not identified as new nickname */
+		       /* Added this for raff. */
+		       if(services.getNickname().modNick(newnick))
+			 {
+			    
 		       services.getNickname().addCheckidentify(newnick);
+			 }
+		       
 		    }
 	       }
 	  }
@@ -274,7 +280,11 @@ void
    if(services.getNickname().isNickRegistered(nick))
      {
 	if(!services.getNickname().isPending(nick))
+	  {
+	     if(services.getNickname().modNick(nick))
 	  services.getNickname().addCheckidentify(nick);
+	  }
+	
      }
 
    String hops = tokens.nextToken();
