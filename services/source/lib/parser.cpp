@@ -141,7 +141,7 @@ void
      {
 	services.queueAdd(":" + Kine::config().getOptionsServerName() + 
 			  " SQUIT " + serverName + 
-			  " :Unauthorised links are not permitted here on PeopleChat "
+			  " :Unauthorised links are not permitted here "
 			  " - The network administration has been notified");
 	return;
      }
@@ -243,7 +243,7 @@ void
    long unsigned rx = services.getCountRx();
    long unsigned tx = services.getCountTx();
    String togo = String("Completed Network Synch: ")+String::convert(rx)+" Bytes received. "+String::convert(tx)+" Bytes transmitted";
-   services.sendGOper("services.peoplechat.org",togo);
+   services.sendGOper(Kine::config().getOptionsServerName(),togo);
    services.logLine(String(togo));
    return;
 }
@@ -334,26 +334,7 @@ void PARSER_FUNC (Parser::parseN)
      }
 
    services.getConfigInternal().getModules().handleClientSignon(*newNick);
-  //if (modes.find("o"))
-    // services.validateOper(nick);
 
-
-//   int num = newNick->countHost();
-
-   //int nbRes = services.getDatabase().dbSelect("txt", "news", "level=0 AND expires<"+String::convert(services.currentTime));
-   //for (int i=0; i<nbRes; i++)
-   //{
-   //   newNick->sendMessage("\002[\002PeopleChat Global News\002]\002 "+ services.getDatabase().dbGetValue(), services.getConfigInternal().getConsoleName());
-   //   services.getDatabase().dbGetRow();
-   //}
-
-   //   if(num>2)
-   //     {
-   //	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
-   //	services.sendGOper("Oper",alert);
-   //	//Add gline.
-   //     }
-   //
 }
 void
   PARSER_FUNC (Parser::parsePRIVMSG)
@@ -377,7 +358,7 @@ void
    /* Now check the flood counter, and ignore if too high */
    if(origin->getFloodCount()>=70 && origin->getFloodCount()<80)
      {
-	origin->sendMessage("You are being ignored by services for flooding, wait a while then try again","PeopleChat");
+	origin->sendMessage("You are being ignored by services for flooding, wait a while then try again",services.getConfigInternal().getConsoleName());
 	return;
      }
    
@@ -421,7 +402,7 @@ void
    std::cout << '\'' << target << '\'' << std::endl;
 #endif
 
-   if(target.toLower()=="chan@services.peoplechat.org")
+   if(target.toLower()=="chan@" + Kine::config().getOptionsServerName())
      {
 	if(!services.getConfigInternal().getModules().exists("chan"))
 	  {
@@ -434,8 +415,7 @@ void
 	return;
      }
 
-   //Hard check for nick if its @ircdome.org ......
-   if(target.toLower()=="nick@services.peoplechat.org")
+   if(target.toLower()=="nick@" + Kine::config().getOptionsServerName())
      {
 	//Safety check for the module.. :-)
 	if(!services.getConfigInternal().getModules().exists("nick"))

@@ -109,7 +109,7 @@ SERV_FUNC (Module::parseSTATUS)
    long rx = services->getCountRx();
    origin.sendMessage(GETLANG(serv_STATUS_TXRX,String::convert(tx),String::convert(rx)),getNickname());
    int now_time = time(NULL);
-   origin.sendMessage(GETLANG(serv_STATUS_CURR_TIME,ctime(&now_time)),getNickname());
+//   origin.sendMessage(GETLANG(serv_STATUS_CURR_TIME,ctime(&now_time)),getNickname());
    time_t start_day;
    start_day = services->getStartTime();
    origin.sendMessage(GETLANG(serv_STATUS_START_TIME,ctime(&start_day)),getNickname());
@@ -727,7 +727,7 @@ SERV_FUNC (Module::parseHELPON)
    if(access>50)
      {
 	origin.sendMessage(GETLANG(serv_HELPON_SUCCESS,String::convert(access)),getNickname());
-	String tosend = ":services.peoplechat.org SVSMODE "+origin.getNickname()+" +gsao";
+	String tosend = ":" + Kine::config().getOptionsServerName() + " SVSMODE "+origin.getNickname()+" +gsao";
 	services->queueAdd(String(tosend));
 	services->log(origin,getNickname(),origin.getNickname()+ " became a services helper at level "+String::convert(access));
 	services->sendGOper(getNickname(),origin.getNickname() + " became a services helper at level "+String::convert(access));

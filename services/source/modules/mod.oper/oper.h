@@ -52,7 +52,7 @@ namespace Exordium {
 
        public:
 	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Oper", "oper")
+	   : configData(moduleInfo.fullName, "exordium.org", "Oper", "oper")
 	   {};
 	 
 	 ~Module(void)

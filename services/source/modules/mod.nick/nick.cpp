@@ -348,7 +348,7 @@ NICK_FUNC (Module::parseAUTH)
 	  * normally known. See RFC 2277 for details.
 	  */
 	 if (Kine::langs().getDefaultLanguage() != 0) {
-	    output << '\037' << Kine::Languages::defaultLanguageCode << 
+	    output << '\037' << 
 	      "\037 (" <<
 	      Kine::langs().getDefaultLanguage()->getLanguageName() << ')';
 	 }
@@ -394,16 +394,16 @@ NICK_FUNC (Module::parseAUTH)
        * The current default code is "i-default", as per RFC 2277, but we use
        * this constant just in case that changes (so we don't have to change).
        */
-      if (value == Kine::Languages::defaultLanguageCode) {
-	 origin.setLanguage(Kine::Languages::defaultLanguageCode);
-	 return;
-      } else {
+ //     if (value == Kine::Languages::defaultLanguageCode) {
+//	 origin.setLanguage(Kine::Languages::defaultLanguageCode);
+//	 return;
+ //     } else {
 	 // Okay, let's try to look up the language, presuming it's a lang code
 	 if ((lang = Kine::langs().findByCode(value)) == 0) {
 	    // Okay, no other option but to whinge
 	    origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
 			       getNickname());
-	 }
+//	 }
 	 
 	 // Okay, so we found a language, set the language appropriately
 	 origin.setLanguage(lang->getLanguageCode());
@@ -803,7 +803,7 @@ NICK_FUNC (Module::parseGHOST)
     }
    if(Utils::generatePassword(toghost,password) == password)
     {
-       services->registerService(toghost,"ghost","ghosts.peoplechat.org",
+       services->registerService(toghost,"ghost",Kine::config().getOptionsServerName(),
 					"Ghosted by "+origin.getNickname());
        origin.sendMessage(GETLANG(nick_GHOST_SUCCESSFUL, toghost),
 			  getNickname());

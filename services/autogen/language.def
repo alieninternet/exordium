@@ -624,7 +624,7 @@ langtag = {
 langtag = {
    name = "serv_HELPON_SUCCESS";
    component = "mod_serv";
-   data_en = "Success! You are now a member of Peoplechat's services staff - level %p0";
+   data_en = "Success! You are now a member of services staff - level %p0";
 };
 
 langtag = {

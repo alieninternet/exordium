@@ -42,7 +42,7 @@ namespace Game {
     public:
       // Constructor
       ConfigData(const AISutil::String& d)
-	: Exordium::Service::ConfigData(d, "peoplechat.org", "Game", "game")
+	: Exordium::Service::ConfigData(d, "exordium.org", "Game", "game")
 	{};
       
       // Grab the configuration definition table (over-write the original)

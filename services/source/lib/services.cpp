@@ -407,7 +407,7 @@ bool ServicesInternal::connect (void)
    // Is the console actually wanted?
    if (config.getConsoleEnabled())
      {
-	registerService(config.getConsoleName(), "peoplechat", /* Hack for now */
+	registerService(config.getConsoleName(), config.getConsoleName(), /* Hack for now */
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
      }

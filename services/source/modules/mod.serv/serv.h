@@ -33,6 +33,7 @@
      void x(Exordium::User& origin, AISutil::StringTokens& tokens)
 
 # include <exordium/service.h>
+# include <kineircd/config.h>
 
 
 namespace Exordium {
@@ -52,7 +53,7 @@ namespace Exordium {
 	 
        public:
 	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Serv", "serv")
+	   : configData(moduleInfo.fullName, "exordium.org", "Serv", "serv")
 	   {};
 	 
 	 ~Module(void)

@@ -645,20 +645,15 @@ CHAN_FUNC (Module::parseHELP)
    // Try to find this mysterious tag in kine's tag dictionary
    Kine::Languages::tagID_type tagID;
 
-   // Yes, btw, the getTagID() routine is case-insensitive!
-   if ((tagID = Kine::langs().getTagID(tagName.str())) != 
-       Kine::Languages::unknownTagID) {
-      // Okay, kine knows the tag! Output the help appropriately..
-	 
       // this also should be elsewhere. or better yet, 'done smarter' :)
-      Callout callout(origin, getNickname());
+   Callout callout(origin, getNickname());
       
       // Wee, send the help data..
-      Kine::langs().get(origin.getLanguage(), tagID, callout);
+   Kine::langs().get(origin.getLanguage(), tagID, callout);
       
       // Bye bye.. all done..
-      return;
-   }
+   return;
+   
    
    /* Oh, no help data.. time to get upset and pout, just like james does when
     * he's coding..

@@ -39,7 +39,6 @@
 #include "dbmysql.h"
 #include "dbmysqlres.h"
 
-#include <exordium/services.h>
 
 using namespace Exordium;
 using AISutil::String;

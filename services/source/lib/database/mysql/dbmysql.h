@@ -31,8 +31,6 @@
 #include <exordium/database/base.h>
 #include <exordium/database/result.h>
 
-#include <aisutil/string/string.h>
-
 #include <mysql/mysql.h>
 
 #include "dbmysqlres.h"

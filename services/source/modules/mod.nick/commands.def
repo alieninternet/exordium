@@ -67,6 +67,9 @@ command = {
 };
 
 command = {
+   name = "register";
+};
+command = {
    name = "set";
 
    subcommand = {

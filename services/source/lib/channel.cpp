@@ -287,7 +287,7 @@ void
 {
    services.getDatabase().dbInsert("chans", 
        "'','"+name.IRCtoLower()+"','"+owner+
-       "',NOW(),'This is a new channel','+nt','A new channel','www.peoplechat.org', '','', 0"); 
+       "',NOW(),'This is a new channel','+nt','A new channel','http://sf.net/projects/exordium', '','', 0"); 
    chanAddAccess(name,owner,"500");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
                      name + " +r");

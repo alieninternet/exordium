@@ -66,7 +66,7 @@ namespace Exordium {
        public:
 	 // Our constructor
 	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Love", "love")
+	   : configData(moduleInfo.fullName, "exordium.org", "Love", "love")
 	   {};
 	 
 	 // Our destructor

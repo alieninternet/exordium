@@ -73,7 +73,7 @@ namespace Exordium {
    
        public:
 	 Module(void)
-	   : configData(moduleInfo.fullName, "peoplechat.org", "Credits","credits"),
+	   : configData(moduleInfo.fullName, "exordium.org", "Credits","credits"),
 	     bank(*services) 
 	   {};
 	 

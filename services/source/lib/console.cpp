@@ -31,6 +31,7 @@
 #include <aisutil/string.h>
 #include "console.h"
 #include "core_language.h"
+#include <assert.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -99,7 +100,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
       services.getConfigInternal().getModules().unloadModule(name,
 							     origin +
 							     " unloaded me :(");
-      services.sendGOper("PeopleChat",origin+ " \002unloaded\002 module " + name);
+      services.sendGOper(services.getConfigInternal().getConsoleName(),origin+ " \002unloaded\002 module " + name);
       return;
    }
    
@@ -129,7 +130,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
 			     services.getConfigInternal().getConsoleName(),
 			     origin);
       
-      services.sendGOper("PeopleChat",origin+" \002loaded\002 module " + filename);
+      services.sendGOper(services.getConfigInternal().getConsoleName(),origin+" \002loaded\002 module " + filename);
    }
 }
 
