@@ -246,7 +246,7 @@ namespace Exordium {
       User* addClient(Kine::Name const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
-		      AISutil::String const &, AISutil::String const &,
+		      AISutil::String const &,
 		      AISutil::String const &);
       int getRequiredAccess(AISutil::String const &, AISutil::String const &);
       bool isNickRegistered(AISutil::String const &);

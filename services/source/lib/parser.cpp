@@ -74,6 +74,7 @@ const struct Parser::functionTableStruct Parser::functionTable[] =
 
 void Parser::parseLine(const String& line)
 {
+   std::cout << "line() -> : " << line << std::endl;
    StringTokens st (line);
    Kine::Name origin = "";
 #ifdef DEBUG
@@ -157,6 +158,7 @@ void
    bool take = false;
    int i;
    Kine::Name dest = tokens.nextToken();
+   Kine::Name nick = OLDorigin;
    String currentmodes="";
    if(dest[0]=='#')
      {
@@ -213,7 +215,7 @@ void
 	  {
 	     if(add)
 	       {
-		  //services.validateOper(OLDorigin);
+		  services.validateOper(nick);
 	       }
 	     else if(take)
                {
@@ -294,30 +296,40 @@ void PARSER_FUNC (Parser::parseN)
 	  }
 	return;
      }
-   String nick = tokens.nextToken();
+   Kine::Name nick = tokens.nextToken();
    String hops = tokens.nextToken();
    String timestamp = tokens.nextToken();
    String modes = tokens.nextToken();
    String username = tokens.nextToken();
    String host = tokens.nextToken();
-   String vwhost = tokens.nextToken();
    String server = tokens.nextToken();
-   (void)tokens.nextToken();
-   (void)tokens.nextToken();
+   String blah1 = tokens.nextToken();
+   String blah2 = tokens.nextToken();
    String realname = tokens.nextColonToken();
+   std::cout << "\nNickname: " << nick 
+     << "\nHops: " << hops 
+     << "\nTimeStamp: " << timestamp
+     << "\nModes: " << modes
+     << "\nUserName: " << username
+     << "\nHost: " << host
+     << "\nServer: " << server
+     << "\nBlah1: " << blah1
+     << "\nBlah2: " << blah2
+     << "\nRealName: " << realname
+     << std::endl;
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
-				      vwhost, server, modes, realname);
+				      server, modes, realname);
    if (newNick == 0)
      {
 	services.logLine("Parser::ParseN couldn't create a new user record for ");
-	services.logLine("Parser::ParseN "+nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+vwhost+" "+server+" "+modes+" "+realname);
+	services.logLine("Parser::ParseN "+nick+" "+hops+" "+timestamp+" "+username+" "+host+" "+server+" "+modes+" "+realname);
 	return;
      }
 
    services.getConfigInternal().getModules().handleClientSignon(*newNick);
-/*   if (modes.find("o"))
-     services.validateOper(nick);
-*/
+  //if (modes.find("o"))
+    // services.validateOper(nick);
+
 
 //   int num = newNick->countHost();
 

@@ -352,7 +352,7 @@ OPER_FUNC (Module::parseWHOIS)
      {
 	origin.sendMessage(GETLANG(oper_WHOIS_START,ptr->getNickname(),String::convert(ptr->getOnlineID())),getNickname());
 	origin.sendMessage(GETLANG(oper_WHOIS_USERINFO,ptr->getNickname()+"!"+ptr->getIdent()+"@"+ptr->getHost(),ptr->getModes(),String::convert(ptr->countHost())),getNickname());
-	origin.sendMessage(GETLANG(oper_WHOIS_SERVERINFO,"server.peoplechat.org","1525"),getNickname());
+	origin.sendMessage(GETLANG(oper_WHOIS_SERVERINFO,ptr->getServer(),String::convert(ptr->getTimeStamp())),getNickname());
 	origin.sendMessage(GETLANG(oper_WHOIS_SERVICEINFO,String::convert(ptr->getFloodCount()),ptr->getIDList()),getNickname());
 	origin.sendMessage(GETLANG(oper_WHOIS_CHANNELS,"#this #would @#be +#a-chan-list"),getNickname());
      }

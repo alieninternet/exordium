@@ -28,9 +28,9 @@
 # include "autoconf.h"
 #endif
 
-#include "serv.h"
-#include "tables.h"
-#include "language.h"
+#include <mod.serv/serv.h>
+#include <mod.serv/tables.h>
+#include <mod.serv/language.h>
 
 #include <exordium/services.h>
 #include <exordium/channel.h>
@@ -988,6 +988,8 @@ const Module::moduleInfo_type Module::moduleInfo =
 // Start the service
 bool Module::start(Exordium::Services& s)
 {
+   std::cerr << "SERV LOADED." << std::endl;
+   
    // Set the services field appropriately
    services = &s;
 
@@ -1000,15 +1002,19 @@ bool Module::start(Exordium::Services& s)
 	return false;
      }
    // Register our language map.
-   // 
-   Kine::langs().registerMap(Language::tagMap);
+   //
+   std::cerr << "REGISTERING THE FUCKING MAP." << std::endl;
+   std::cerr << "ITS AT " << (void)Exordium::ServModule::Language::tagMap << std::endl;
+   Kine::langs().registerMap(Exordium::ServModule::Language::tagMap);
+   std::cerr << "REGISTERED THE CUNT." << std::endl;
+   
     int foofoo = 0;
       for (;;) 
      {
 	
-	std::cout << "TagMap " << foofoo << ": tag '" <<
-	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
-	  Language::tagMap[foofoo].tagID << std::endl;
+	std::cout << " Serv TagMap " << foofoo << ": tag '" <<
+	  Exordium::ServModule::Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
+	  Exordium::ServModule::Language::tagMap[foofoo].tagID << std::endl;
 	
 	if (Language::tagMap[++foofoo].tagName == 0) 
 	  {

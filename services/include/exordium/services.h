@@ -190,7 +190,7 @@ namespace Exordium {
       virtual User* addClient(Kine::Name const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
-			      AISutil::String const &, AISutil::String const &,
+			      AISutil::String const &,
 			      AISutil::String const &) = 0;
       virtual int getRequiredAccess(AISutil::String const &,
 				    AISutil::String const &) = 0;

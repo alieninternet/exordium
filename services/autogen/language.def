@@ -46,6 +46,7 @@ language = {
    langCode = "en";
    langName = "English";
    langRevision = "200303210";
+   langMaintainer = "james@plethoric.net";
 };
 
 language = {
@@ -857,7 +858,7 @@ langtag = {
 langtag = {
    name = "oper_WHOIS_USERINFO";
    component = "mod_oper";
-   data_en = "\\bUserhost:\\b %p0 \\bModes:\\b %p1 Clones:\\b %p2";
+   data_en = "\\bUserhost:\\b %p0 \\bModes:\\b %p1 Clones:\\b %p2 MaskHost[%p3]";
 };
 
 langtag = {

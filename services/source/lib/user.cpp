@@ -1,4 +1,4 @@
-/* $Id$
+#/* $Id$
  * 
  * Exordium Network Services
  * Copyright (C) 2002 IRCDome Development Team
@@ -148,6 +148,35 @@ String
    else
      return services.getDatabase().dbGetValue();
 }
+
+String
+  User::getVWHost(void)
+{
+   if( services.getDatabase().dbSelect("vwhost","onlineclients","id="+getOnlineIDString()) < 1)
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
+}
+
+String
+  User::getServer(void)
+{
+   if( services.getDatabase().dbSelect("server","onlineclients","id="+getOnlineIDString()) < 1)
+     return "";
+   else
+     return services.getDatabase().dbGetValue();
+}
+
+int
+  User::getTimeStamp(void)
+{
+   if (services.getDatabase().dbSelect("timestamp","onlineclients","id="+getOnlineIDString()) < 1)
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
+}
+
+
 
 
 /* deopAway(void)

@@ -130,6 +130,8 @@ namespace Exordium
        *
        */
 	AISutil::String getQuitMessage(void);
+	
+	int getTimeStamp(void);
 
       /* getAccess(String)
        *
@@ -188,6 +190,13 @@ namespace Exordium
        *
        */
 	bool isIdentified(Kine::Name const &);
+	
+      /* getServer()
+       * 
+       * Return the server this user is using..
+       * 
+       */
+	AISutil::String getServer(void);
 
       /* getModes()
        *

@@ -1,4 +1,4 @@
-INCLUDES=-Iinclude/ -I../kineircd/include -Isource/ \
+INCLUDES=-Iinclude/ -I../kineircd/include -Isource/ -Isource/modules \
 	$(LTDLINCL) \
 	@PGSQL_INCDIR@ \
 	@MYSQL_INCDIR@

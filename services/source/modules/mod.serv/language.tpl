@@ -43,7 +43,7 @@
  */
 [+ CASE (suffix) +][+ == cpp +]
 
-#include "language.h"
+#include "mod.serv/language.h"
 
 Kine::Languages::tagMap_type Exordium::ServModule::Language::tagMap = {[+ FOR langtag +][+ IF
    (useThisTag?) +]
@@ -96,7 +96,7 @@ namespace Exordium {
 // Macro (*shock horror*) to make the code neater (hopefully)
 # define GETLANG(n,...) \
    Kine::langs().get(origin.getLanguage(), \
-                     Language::tagMap[Language::n].tagID, \
+                     Exordium::ServModule::Language::tagMap[Language::n].tagID, \
                      ##__VA_ARGS__)
 
 

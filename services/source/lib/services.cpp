@@ -432,7 +432,9 @@ bool ServicesInternal::connect (void)
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
      }
+   std::cerr << "Registering The *core* language map" << std::endl;
    Kine::langs().registerMap(Language::tagMap);
+   std::cerr << "finished registering the core map" <<std::endl;
    int foofoo = 0;
    for (;;)
      {
@@ -891,7 +893,6 @@ void ServicesInternal::checkpoint(void)
    for (it = users.begin(); it != users.end(); it++)
      {
 	String tmp = (*it).first;
-	std::cout << "Decreasing " << tmp << "'s floodcounter" << std::endl;
 	if(((*it).second)!=0)
 	  (*it).second->decFloodCount();
      }
@@ -1154,12 +1155,12 @@ bool ServicesInternal::isAuthorised(String const &server)
 User* ServicesInternal::addClient(Kine::Name const &nick, String const &hops,
 				  String const &timestamp,
 				  String const &username, String const &host,
-				  String const &vwhost, String const &server,
+				  String const &server,
 				  String const &modes, String const &realname)
 {
    database.dbInsert("onlineclients", "'','"+nick.toLower()+"','"
 		     +hops + "','" + timestamp + "','" + username + "','"
-		     +host + "','" + vwhost + "','" + server + "','"
+		     +host + "','"+host+"','" + server + "','"
 		     +modes+ "','" + realname + "'");
    int foo = locateID(nick);
    String client = nick.IRCtoLower();
