@@ -318,7 +318,26 @@ void PARSER_FUNC (Parser::parseN)
      }
    String nick = tokens.nextToken();
    std::cout << "NEW CLIENT" << nick << std::endl;
-   User *newNick = services.addUser(nick);
+
+   String hops = tokens.nextToken();
+   String timestamp = tokens.nextToken();
+   String modes = tokens.nextToken();
+   String username = tokens.nextToken();
+   String host = tokens.nextToken();
+   String vwhost = tokens.nextToken();
+   String server = tokens.nextToken();
+
+  //Don't want the next two.
+   (void)tokens.nextToken();
+   (void)tokens.nextToken();
+   
+   String realname = tokens.rest();
+   
+//   services.getNickname().addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realname);
+   
+   User *newNick = services.addClient(nick, hops, timestamp, username, host,
+				      vwhost, server, modes, realname);
+
    if (newNick == 0) {
       std::cout << "That client wasn't such a nice fellow afterall :(" << 
 	std::endl;
@@ -339,20 +358,7 @@ void PARSER_FUNC (Parser::parseN)
 	
      }
 
-   String hops = tokens.nextToken();
-   String timestamp = tokens.nextToken();
-   String modes = tokens.nextToken();
-   String username = tokens.nextToken();
-   String host = tokens.nextToken();
-   String vwhost = tokens.nextToken();
-   String server = tokens.nextToken();
-
-  //Don't want the next two.
-   (void)tokens.nextToken();
-   (void)tokens.nextToken();
    
-   String realname = tokens.rest();
-   services.getNickname().addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realname);
    int num = services.getNickname().countHost(host);
    String query = "SELECT txt from news where level=0 AND expires<"+String::convert(services.currentTime);
    MysqlRes res = services.getDatabase().query(query);
