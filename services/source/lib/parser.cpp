@@ -184,12 +184,15 @@ void
 		  if(add)
 		    {
 		       String target = tokens.nextToken();
-		       return;
+		       std::cout << "New Channel ban set by : " << OLDorigin << " on " << target << std::endl;
+		       if(dptr==0)
+			 continue;
+		       
 		    }
 		  if(take)
 		    {
 		       String target = tokens.nextToken();
-		       return;
+		       std::cout << "New Channel ban removed by : " << OLDorigin << " on " << target << std::endl;
 		    }
 	       }
 	     if(modes[i] == 'o')
@@ -199,7 +202,20 @@ void
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
+
 		       User *ptr = services.findUser(target);
+		       if(dptr->isChanSecure())
+			 {
+			    /* Channel has SECURE enabled */
+			    if(dptr->getAccess(target)<100)
+			      {
+				 /* Hey not allowed to be opped!! */
+				 dptr->mode("Chan","-o",target);
+				 /* Tell origin off! */
+			
+			      }
+			 }
+
 		       dptr->addUser(*ptr,2);
 		    }
 		  if(take)
@@ -714,7 +730,6 @@ void
      }
 
    more = tokens.hasMoreTokens();
-
 
 }
 

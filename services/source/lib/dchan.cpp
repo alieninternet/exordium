@@ -55,6 +55,16 @@ int nbRes = services.getDatabase().dbSelect("nickid","chanstatus","chanid='"+get
 return nbRes;
 }
 
+bool const dChan::isChanSecure(void)
+{
+if (services.getDatabase().dbSelect("secure","chanopts","name='"+name.toLower()+"'") < 1)
+     return false;
+if (services.getDatabase().dbGetValue().toInt() > 0)
+     return true;
+   else
+     return false;
+}
+
 bool const dChan::isRegistered(void)
 {
 if (services.getDatabase().dbSelect("id","chans","name='"+name.toLower()+"'") < 1)
@@ -79,16 +89,28 @@ void const dChan::setChanLog(bool const &value)
 {
 if(value)
      {
-	services.getDatabase().dbDelete("chanopts", "'"+name.toLower()+"' AND clog=1");
-	services.getDatabase().dbInsert("chanopts", "'','" + name.toLower()+"',1");
+	//services.getDatabase().dbDelete("chanopts", "'"+name.toLower()+"' AND clog=1");
+	services.getDatabase().dbUpdate("chanopts", "clog=1","name='"+name.toLower()+"'");
 	return;
      }
    else
      {
-	services.getDatabase().dbDelete("chanopts", "'"+name.toLower()+"' AND clog=1");
+	services.getDatabase().dbUpdate("Chanopts"," clog=0","name='"+name.toLower()+"'");
 	return;
      }
 return;
+}
+
+void const dChan::setChanSecure(bool const &value)
+{
+if(value)
+     {
+	services.getDatabase().dbUpdate("chanopts","secure=1","name='"+name.toLower()+"'");
+     }
+   else
+     {
+	services.getDatabase().dbUpdate("chanopts","secure=0","name='"+name.toLower()+"'");
+     }
 }
 
 int const dChan::getRegisteredID(void)

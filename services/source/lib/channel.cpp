@@ -304,8 +304,9 @@ void
 {
    int foo = getChanID(name);
 
-   services.getDatabase().dbDelete("chans", "name='"+name+"'");
+   services.getDatabase().dbDelete("chans", "name='"+name.IRCtoLower()+"'");
    services.getDatabase().dbDelete("chanaccess", "chanid='"+String::convert(foo)+"'");
+   services.getDatabase().dbDelete("chanopts","name='"+name.IRCtoLower()+"'");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
         name + " -r");
    String togo = "This channel has been deregistered \002"+reason;
@@ -342,12 +343,14 @@ void
   Channel::registerChannel(String const &name, String const &owner)
 {
    services.getDatabase().dbInsert("chans", 
-       "'','"+name+"','"+owner+"','This is a new channel','+nt','A new channel','www.ircdome.irg', 0"); 
+       "'','"+name.IRCtoLower()+"','"+owner+"','This is a new channel','+nt','A new channel','www.peoplechat.org', 0"); 
    chanAddAccess(name,owner,"500");
    services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
                      name + " +r");
 
    setTopic(name, String("This channel has just been registered by ")+owner);
+   services.getDatabase().dbInsert("chanopts",
+				   "'','"+name.IRCtoLower()+"',1,1");
 }
 
 /* Return how many channels a nickname owns */

@@ -184,6 +184,8 @@ CHAN_FUNC (Module::parseSET)
 	String currnick  = st.nextToken();
 	if((ptr->getAccess(currnick)>400))
 	  {
+	     std::cout << command << std::endl;
+	     std::cout << value << std::endl;
 	     if(command=="log")
 	       {
 		  if(value=="true")
@@ -200,8 +202,25 @@ CHAN_FUNC (Module::parseSET)
 		    }
 		  origin.sendMessage("Usage: set #channel log true/false",getName());
 		  return;
-	       }
-	     // /LOG
+	       } // Log
+	     if(command=="secure")
+	       {
+
+		  if(value=="true")
+		    {
+		       ptr->setChanSecure(true);
+		       origin.sendMessage("Channel Security has been enabled",getName());
+		       return;
+		    }
+		  if(value=="false")
+		    {
+		       ptr->setChanSecure(false);
+		       origin.sendMessage("Channel Security has been disabled",getName());
+		       return;
+		    }
+		  origin.sendMessage("Usage: set #channel secure true/false",getName());
+		  return;
+	       } // Secure
 	     origin.sendMessage("Unsupported channel option",getName());
 	     return;
 	  }
@@ -422,7 +441,7 @@ CHAN_FUNC (Module::parseBAN)
      {
 	reason = "No reason specified";
      }
-   
+
    User *uptr = services->findUser(who);
    if(uptr==0)
      {
@@ -432,8 +451,6 @@ CHAN_FUNC (Module::parseBAN)
    ptr->ban(*uptr,getName(),reason,origin.getNickname());
    origin.sendMessage("Ban added",getName());
 }
-
-
 
 CHAN_FUNC (Module::parseREGISTER)
 {
@@ -485,8 +502,8 @@ CHAN_FUNC (Module::parseREGISTER)
 
 CHAN_FUNC (Module::parseOP)
 {
-    String channel = tokens.nextToken();
-    if(channel=="")
+   String channel = tokens.nextToken();
+   if(channel=="")
      {
 	origin.sendMessage("Usage: op #channel nick [nick2,nick3,..]",getName());
 	return;
@@ -522,7 +539,7 @@ CHAN_FUNC (Module::parseOP)
 	       }
              if(fptr==0)
 	       return;
-	     
+
 	     if(!ptr->isOp(foo))
 	       {
 		  ptr->mode("Chan","+o",foo);

@@ -1,5 +1,6 @@
+#!/usr/local/bin/php
 <?
-$link = mysql_connect("db","root","");
+$link = mysql_connect("mysql","services","");
 mysql_select_db("services");
 $now = time();
 $lastdone = $now - 86400;
@@ -47,10 +48,10 @@ for ($fcount = 1; $frow = mysql_fetch_row($fres); ++$fcount)
 	    $txt = "$txt $nicknames $ident $hostname $service $when $what\r\n";
 	    
 	}
-    $txt = "$txt\r\n\r\n\r\nIf you have any questions regarding this log, feel free to pop into #help or email services@ircdome.org\r\nKind Regards\r\nIRCDome Services Department";
+    $txt = "$txt\r\n\r\n\r\nIf you have any questions regarding this log, feel free to pop into #help or email services@peoplechat.org\r\nKind Regards\r\nPeopleChat Administration";
     $newtxt = mysql_escape_string($txt);
     $newchan = mysql_escape_string($chan);
-    $zquery = "INSERT into emails values ('','$email','[IRCDome/Channel Log] for $newchan','$newtxt')";
+    $zquery = "INSERT into emails values ('','$email','[PeopleChat/Channel Log] for $newchan','$newtxt')";
     mysql_query($zquery) or die("$zquery fucked up");
     echo "Completed email report for $chan - sent to $owner @ $email\r\n";
     $query = "UPDATE chans set clog='$now' where name='$chan'";
