@@ -28,7 +28,7 @@
 # include "autoconf.h"
 #endif
 
-#include "exordium/services.h"
+#include "services.h"
 #include "exordium/channel.h"
 #include "exordium/user.h"
 #include <queue>
@@ -40,7 +40,7 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
-#include "exordium/parser.h"
+#include <csignal>
 #include "exordium/service.h"
 #include <kineircd/utils.h>
 #include <kineircd/kineircdconf.h>
@@ -82,20 +82,20 @@ using namespace Exordium;
 
 KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
-   String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal";
-   ((Services *)foo)->helpme(reason,"Serv");
+   ((Services*)foo)->logLine("\002[\002Rehash\002]\002 Services has received "
+			     "the REHASH signal");
+   // something here? :)
 }
 
 KINE_SIGNAL_HANDLER_FUNC(Death)
 {
-   String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Initiating shutdown";
-   //((Services *)foo)->helpme(reason, "Serv");
+   String reason = 
+     "\002[\002Fatal Error\002]\002 Services received \002" + 
+     String(sys_siglist[signal]) + "\002 - Initiating shutdown";
+   ((Services *)foo)->logLine(reason, Log::Warning);
    ((Services *)foo)->shutdown(reason);
-   exit(1);
+   exit(1); // eek
 }
-
-namespace Exordium
-{
 
 /* Services run
  *
@@ -107,7 +107,7 @@ namespace Exordium
  */
 
    void
-     Services::run(void)
+     ServicesInternal::run(void)
        {
 	  fd_set inputSet, outputSet;
 	  struct timeval timer;
@@ -163,7 +163,6 @@ namespace Exordium
 			 if (!handleInput ())
 			   {
 			      logLine ("Error handling server input. Reconnecting.");
-			      helpme("Error in handleInput() - Jumping server","Serv");
 			      connected = false;
 			      disconnectTime = currentTime;
 			      disconnect();
@@ -188,8 +187,10 @@ namespace Exordium
 			   {
 			      if(stopTime < currentTime)
 				{
+#ifdef DEBUG
 				   logLine("Disconnecting, QueueFlushed and in stop state",
 					   Log::Debug);
+#endif
 				   connected = false;
 				   exit(0);
 				}
@@ -226,26 +227,33 @@ namespace Exordium
 	    }
        }
 
-   Services::Services(Kine::Daemon& d, Config& c, CDatabase& db)
-     : daemon(d),
-   database(db),
-   config(c),
-   parser(*this),
-   channel(*this),
-   console(*this)
+   ServicesInternal::ServicesInternal(Kine::Daemon& d, Config& c, CDatabase& db)
+     : Services(d, c, db),
+       parser(*this),
+       console(*this),
+       sock(-1),
+       maxSock(-1),
+       inputBufferPosition(0),
+       startTime(time(NULL)),
+       lastPing(time(NULL)),
+       disconnectTime(time(NULL)),
+       stopTime(0),
+       serverLastSpoke(time(NULL)),
+       lastCheckPoint(time(NULL)),
+       lastExpireRun(time(NULL)),
+       connected(false),
+       stopping(false),
+       burstOk(false),
+       countTx(0),
+       countRx(0)
      {
-	sock = -1;
-	maxSock = -1;
-	inputBufferPosition = 0;
-	stopTime = 0;
-	connected = false;
-	stopping = false;
-	burstOk = false;
+	currentTime = time(NULL);
 	SecurePrivmsg = false;
-	countTx = 0;
-	countRx = 0;
+	
+#ifdef DEBUG
 	logLine("Setting up signal handlers",
 		Log::Debug);
+#endif
 	getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
 	getDaemon().getSignals().addHandler(&Death,
 					    Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
@@ -256,7 +264,6 @@ namespace Exordium
 
 	struct hostent *host;
 	queueKill ();
-	startTime = currentTime = lastPing = lastExpireRun = lastCheckPoint = serverLastSpoke = time (NULL);
 	if (!(inputBuffer = (char *) malloc (inputBufferSize)))
 	  {
 	     logLine ("Fatal Error: Could not allocate input buffer",
@@ -282,11 +289,6 @@ namespace Exordium
 	addr.sin_port = htons (config.getUplinkPort());
      }
 
-Services::~Services()
-{
-  database.dbDisconnect();
-}
-
 /* HandleInput()
  *
  * This handles the incoming data from our uplink, and hands it over
@@ -296,22 +298,23 @@ Services::~Services()
  *
  */
 
-   bool Services::handleInput (void)
-     {
-	std::stringstream bufferin;
-	socky.read(bufferin);
-	String line;
-	while(bufferin.peek()!=-1)
-	  {
-	     std::getline(bufferin,line);
-	     logLine("RX: "+line,
-		     Log::Debug);
-	     countRx += line.length();
-	     parser.parseLine(line);
-	  }
-
-	return true;
-     };
+bool ServicesInternal::handleInput (void)
+{
+   std::stringstream bufferin;
+   socky.read(bufferin);
+   String line;
+   
+   while(bufferin.peek() != -1) {
+      std::getline(bufferin,line);
+#ifdef DEBUG
+      logLine("RX: " + line, Log::Debug);
+#endif
+      countRx += line.length();
+      parser.parseLine(line);
+   }
+   
+   return true;
+}
 
 /* disconnect()
  *
@@ -320,10 +323,11 @@ Services::~Services()
  */
 
    void
-     Services::disconnect (void)
+     ServicesInternal::disconnect (void)
        {
-	  logLine ("Closing socket.",
-		   Log::Debug);
+#ifdef DEBUG
+	  logLine("Closing socket.", Log::Debug);
+#endif
 	  socky.close();
 	  connected = false;
        }
@@ -334,13 +338,14 @@ Services::~Services()
  *
  */
 
-   bool Services::connect (void)
+   bool ServicesInternal::connect (void)
      {
 	logLine ("Attempting Connection to Uplink");
 	if (sock >= 0)
 	  {
-	     logLine ("Closing stale network socket",
-		      Log::Debug);
+#ifdef DEBUG
+	     logLine("Closing stale network socket", Log::Debug);
+#endif
 	     socky.close();
 	     sock = -1;
 	  }
@@ -396,7 +401,7 @@ Services::~Services()
  */
 
    void
-     Services::doBurst (void)
+     ServicesInternal::doBurst (void)
        {
 	  // Start all the modules
 	  config.getModules().startAll(*this);
@@ -437,7 +442,7 @@ Services::~Services()
  *
  */
 
-   String Services::getLogCount(void)
+   String ServicesInternal::getLogCount(void)
      {
         return String::convert(database.dbCount("log"));
      }
@@ -448,7 +453,7 @@ Services::~Services()
  *
  */
 
-   String Services::getNoteCount(void)
+   String ServicesInternal::getNoteCount(void)
      {
         return String::convert(database.dbCount("notes"));
      }
@@ -458,7 +463,7 @@ Services::~Services()
  *
  */
 
-   String Services::getGlineCount(void)
+   String ServicesInternal::getGlineCount(void)
      {
         return String::convert(database.dbCount("glines"));
      }
@@ -470,9 +475,10 @@ Services::~Services()
  *
  */
 
-   void Services::shutdown(String const &reason)
+   void ServicesInternal::shutdown(String const &reason)
      {
-	helpme("Services is shutting down " + reason, config.getConsoleName());
+	logLine("Services is shutting down " + reason,
+		Log::Warning);
 
 	// Stop and unload all the modules..
 	config.getModules().unloadAll(reason);
@@ -504,7 +510,7 @@ Services::~Services()
  *
  */
 
-   void Services::SynchTime(void)
+   void ServicesInternal::SynchTime(void)
      {
 	//Undo any expired glines
 
@@ -531,7 +537,7 @@ Services::~Services()
  *
  */
 
-   void Services::expireRun(void)
+   void ServicesInternal::expireRun(void)
      {
 	String nc = getRegNickCount();
 	String cc = channel.getChanCount();
@@ -577,7 +583,7 @@ Services::~Services()
  */
 
    void
-     Services::doPong (String const &line)
+     ServicesInternal::doPong (String const &line)
        {
 	  queueAdd (String (":services.ircdome.org PONG ") + line);
        }
@@ -600,8 +606,8 @@ Services::~Services()
  *
  */
    void
-     Services::doHelp(User& origin, String const &service,
-		      String const &topic, String const &parm)
+     ServicesInternal::doHelp(User& origin, String const &service,
+			      String const &topic, String const &parm)
        {
 	  if(topic == "")
 	    {
@@ -654,7 +660,6 @@ Services::~Services()
                return;
             }
 
-       }
 /* sendEmail(String,String,String)
  *
  * post an email into the database, which is polled later by a third party
@@ -676,7 +681,7 @@ Services::~Services()
  */
 
    String
-     Services::parseHelp (String const &instr)
+     ServicesInternal::parseHelp (String const &instr)
        {
 	  String retstr;
 	  for (unsigned int i = 0; i != instr.length(); i++)
@@ -852,12 +857,6 @@ Services::~Services()
             return false;
        }
 
-//   int
-//     Services::countNotes(String const &who)
-//       {
-//          return database.dbCount("notes", "nto='"+who+"'");
-//       }
-
    void
      Services::sendNote(String const &from, String const &to, String const &text)
        {
@@ -878,8 +877,7 @@ Services::~Services()
        }
 
 // TODO: check why the 2 lines are commented
-   void
-Services::checkpoint(void)
+void ServicesInternal::checkpoint(void)
 {
 	  //Any nick mods to be done? :-)
 
@@ -949,8 +947,7 @@ unsigned long Services::random(unsigned long max)
    return (unsigned long)(((max+1.0) * rand()) / RAND_MAX);
 }
 
-bool
-  Services::queueFlush(void)
+bool ServicesInternal::queueFlush(void)
 {
    if(connected)
      {
@@ -1003,7 +1000,7 @@ bool
  * Add a channel to our channel map
  * 
  */
-dChan* const Services::addChan(const String& name, const int oid)
+dChan* const ServicesInternal::addChan(const String& name, const int oid)
 {
    return chans[name] = new dChan(name,oid,*this);
 }
@@ -1013,7 +1010,7 @@ dChan* const Services::addChan(const String& name, const int oid)
  * Add the user to our users map
  *
  */
-User* const Services::addUser(const String& name, const int oid)
+User* const ServicesInternal::addUser(const String& name, const int oid)
 {
    return users[name] = new User(name,oid,*this);
 }
@@ -1023,8 +1020,7 @@ User* const Services::addUser(const String& name, const int oid)
  * Find and return a pointer to a user.
  *
  */
-User*
-  Services::findUser(String &name)
+User* ServicesInternal::findUser(String &name)
 {
 #ifdef DEBUG
    logLine("findUser() - Looking for " + name.IRCtoLower().trim(),
@@ -1048,8 +1044,7 @@ User*
  * Find and return a pointer to that channel.
  * 
  */
-dChan*
-  Services::findChan(String &name)
+dChan* ServicesInternal::findChan(String &name)
 {
 #ifdef DEBUG
    logLine("findChan() - Looking for " + name.IRCtoLower().trim(),
@@ -1072,8 +1067,7 @@ dChan*
  * Find.. and delete the given user.
  *
  */
-bool
-  Services::delUser(String &name)
+bool ServicesInternal::delUser(String &name)
 {
    users.erase(name.IRCtoLower());
 
@@ -1087,8 +1081,7 @@ bool
  * Delete the given channel.
  * 
  */
-bool
-  Services::delChan(String &name)
+bool ServicesInternal::delChan(String &name)
 {
    chans.erase(name.IRCtoLower());
    database.dbDelete("onlinechan","name='"+name.IRCtoLower()+"'");
@@ -1101,8 +1094,7 @@ bool
  * a new nickname.
  *
  */
-void
-  Services::setNick(User &who, String &newnick)
+void ServicesInternal::setNick(User &who, String &newnick)
 {
 #ifdef DEBUG
    logLine("setNick: " + newnick, Log::Debug);
@@ -1122,8 +1114,7 @@ void
  *
  */
 
-String
-  Services::getRegNickCount(void)
+String ServicesInternal::getRegNickCount(void)
 {
    return String::convert(database.dbCount("nicks"));
 };
@@ -1149,8 +1140,7 @@ String
  */
 
 // TEMP commenting!
-bool
-  Services::isAuthorised(String const &server)
+bool ServicesInternal::isAuthorised(String const &server)
 {
 /*
    if( database.dbSelect("id", "serverlist", "name='"+server+"'") < 1 )
@@ -1172,12 +1162,11 @@ return true;
  * ..
  */
 
-User*
-  Services::addClient(String const &nick, String const &hops,
-		      String const &timestamp, String const &username,
-		      String const &host, String const &vwhost,
-		      String const &server, String const &modes,
-		      String const &realname)
+User* ServicesInternal::addClient(String const &nick, String const &hops,
+				  String const &timestamp, 
+				  String const &username, String const &host,
+				  String const &vwhost, String const &server,
+				  String const &modes, String const &realname)
 {
    database.dbInsert("onlineclients", "'','"+nick.toLower()+"','"
                   +hops + "','" + timestamp + "','" + username + "','"
@@ -1194,8 +1183,7 @@ User*
  * shouldn't be here.. really .. just a stop gap for now
  *
  */
-int
-  Services::locateID(String const &nick)
+int ServicesInternal::locateID(String const &nick)
 {
 
    // Saftey Check - Remove any special chars.
@@ -1203,7 +1191,10 @@ int
 
    if( database.dbSelect("id", "onlineclients", "nickname='"+newnick+"'") < 1 )
    {
-     Debug("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID");
+#ifdef DEBUG
+     logLine("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID",
+	     Log::Debug);
+#endif
      return 0;
    }
    else
@@ -1217,8 +1208,8 @@ int
  *
  */
 
-int
-  Services::getRequiredAccess(String const &service, String const &command)
+int ServicesInternal::getRequiredAccess(String const &service,
+					String const &command)
 {
    if( database.dbSelect("access", "commands", "service='"+service+"' AND command='"+command+"'") < 1 )
 
@@ -1236,8 +1227,7 @@ int
  *
  */
 
-bool
-  Services::isNickRegistered(String const &nick)
+bool ServicesInternal::isNickRegistered(String const &nick)
 {
    if( database.dbSelect("id", "nicks", "nickname='"+nick+"'") < 1 )
      return false;
@@ -1257,8 +1247,7 @@ bool
  *
  */
 
-String
-  Services::getPass(String const &nick)
+String ServicesInternal::getPass(String const &nick)
 {
    if( database.dbSelect("password", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1275,40 +1264,6 @@ String
 //	String password((char *)row[0],(String::size_type)20);
 }
 
-/*
- * stripModes (String)
- *
- * Strip any mode based characters from a nickname @,+ etc.
- *
- */
-
-//String
-//  Services::stripModes(String const &nick)
-//{
-//   char *temp = new char[nick.length() + 1];
-//   for (register unsigned int i = (nick.length() + 1); i--;)
-//     {
-//
-//	char ch = nick.c_str()[i];
-//	switch(ch)
-//	  {
-//
-//	   case '@': /* Opped.. */
-//	     temp[i] = ' ';
-//	     continue;
-//	   case '+': /* Voiced */
-//	     temp[i] = ' ';
-//	     continue;
-//	   default:
-//	     temp[i] = ch;
-//	  }
-//
-//     }
-//   String result(temp);
-//   delete(temp);
-//   return result.trim();
-//
-//}
 
 /* getRegisteredNickID(String)
  *
@@ -1316,8 +1271,7 @@ String
  *
  */
 
-int
-  Services::getRegisteredNickID(String const &nick)
+int ServicesInternal::getRegisteredNickID(String const &nick)
 {
    if( database.dbSelect("id", "nicks", "nickname='"+nick+"'") < 1 )
      return 0;
@@ -1334,8 +1288,7 @@ int
  * as an after thought , maybe this should be an inline function? thoughts?
  */
 
-void
-  Services::modeIdentify(String const &nick)
+void ServicesInternal::modeIdentify(String const &nick)
 {
    queueAdd(":services.ircdome.org SVSMODE "+nick+" +r");
    return;
@@ -1349,8 +1302,7 @@ void
  *
  */
 
-void
-  Services::updateLastID(String const &nick)
+void ServicesInternal::updateLastID(String const &nick)
 {
    database.dbUpdate("nicks", "lastid=NOW()", "nickname='"+nick+"'");
 }
@@ -1361,8 +1313,7 @@ void
  * Return the nickname for the given registered nickname ID
  *
  */
-String
-  Services::getNick(int const &id)
+String ServicesInternal::getNick(int const &id)
 {
    if( database.dbSelect("nickname", "nicks", "id='"+String::convert(id)+"'") < 1 )
      return "";
@@ -1376,8 +1327,7 @@ String
  * Same as above except for Online ID's
  *
  */
-String
-  Services::getOnlineNick(int const &id)
+String ServicesInternal::getOnlineNick(int const &id)
 {
    if( database.dbSelect("nickname", "onlineclients", "id='"+String::convert(id)+"'") < 1 )
      return "";
@@ -1392,8 +1342,7 @@ String
  *
  */
 
-String
-  Services::getpendingCode(String const &nick)
+String ServicesInternal::getpendingCode(String const &nick)
 {
    if( database.dbSelect("auth", "pendingnicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1408,8 +1357,8 @@ String
  *
  */
 
-void
-  Services::registerNick(String const &nick, String const &password, String const &email)
+void ServicesInternal::registerNick(String const &nick, String const &password,
+				    String const &email)
 {
    String gpass = generatePassword(nick.IRCtoLower(),password);
    database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
@@ -1421,12 +1370,13 @@ void
  *
  */
 
-String
-  Services::genAuth(String const &nickname)
+String ServicesInternal::genAuth(String const &nickname)
 {
    String authcode = Kine::Utils::SHA1::digestToStr(Kine::Password::makePassword("VIVA LA FRANCE :)",nickname),PasswordStrBase,PasswordStrBaseLongPad);
    database.dbInsert("pendingnicks", "'','"+nickname+"','"+authcode+"'");
-   Debug("New registration: "+nickname);
+#ifdef DEBUG
+   logLine("New registration: "+nickname, Log::Debug);
+#endif
    return authcode;
 }
 
@@ -1436,8 +1386,7 @@ String
  *
  */
 
-String
-  Services::getURL(String const &nick)
+String ServicesInternal::getURL(String const &nick)
 {
    if( database.dbSelect("url", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1451,8 +1400,7 @@ String
  *
  */
 
-String
-  Services::getMSN(String const &nick)
+String ServicesInternal::getMSN(String const &nick)
 {
    if( database.dbSelect("msn", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1466,8 +1414,7 @@ String
  *
  */
 
-String
-  Services::getYAHOO(String const &nick)
+String ServicesInternal::getYAHOO(String const &nick)
 {
    if( database.dbSelect("yahoo", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1481,8 +1428,7 @@ String
  *
  */
 
-String
-  Services::getAIM(String const &nick)
+String ServicesInternal::getAIM(String const &nick)
 {
    if( database.dbSelect("aim", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1496,8 +1442,7 @@ String
  *
  */
 
-String
-  Services::getICQ(String const &nick)
+String ServicesInternal::getICQ(String const &nick)
 {
    if( database.dbSelect("icq", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1505,36 +1450,13 @@ String
      return database.dbGetValue();
 }
 
-/* getLanguage(String)
- *
- * return the language setting for a nick.
- *
- */
-
-/*
-String
-  Services::getLanguage(String const &nick)
-{
-   if(!isNickRegistered(nick))
-     {
-	return "english";
-     }
-
-   if( database.dbSelect("lang", "nicks", "nickname='"+nick+"'") < 1 )
-     return ""english;
-   else
-     return database.dbGetValue();
-}
-*/
-
 /* getEmail
  *
  * Retrieve the nicknames email
  *
  */
 
-String
-  Services::getEmail(String const &nick)
+String ServicesInternal::getEmail(String const &nick)
 {
    if( database.dbSelect("email", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1545,8 +1467,7 @@ String
 /* getRegDate - return the registration date for a client.
  */
 
-String
-  Services::getRegDate(String const &nick)
+String ServicesInternal::getRegDate(String const &nick)
 {
    if( database.dbSelect("registered", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1556,8 +1477,7 @@ String
 
 /* getLastID - return the date a client last identified */
 
-String
-  Services::getLastID(String const &nick)
+String ServicesInternal::getLastID(String const &nick)
 {
    if( database.dbSelect("lastid", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1566,8 +1486,7 @@ String
 }
 
 /* getLastHost - get last host */
-String
-  Services::getLastHost(String const &nick)
+String ServicesInternal::getLastHost(String const &nick)
 {
    if( database.dbSelect("lasthost", "nicks", "nickname='"+nick+"'") < 1 )
      return "";
@@ -1575,20 +1494,17 @@ String
      return database.dbGetValue();
 }
 
-void
-  Services::addOper(String const &nick, int access)
+void ServicesInternal::addOper(String const &nick, int access)
 {
    database.dbInsert("onlineopers", "''," + String::convert(getRegisteredNickID(nick)) + "," +String::convert(access));
 }
 
-void
-  Services::delOper(String const &nick)
+void ServicesInternal::delOper(String const &nick)
 {
    database.dbDelete("onlineopers", "nickid="+String::convert(getRegisteredNickID(nick)));
 }
 
-bool
-  Services::isOper(String const &nick)
+bool ServicesInternal::isOper(String const &nick)
 {
    if( database.dbSelect("id", "onlineopers", "nickid="+ String::convert(getRegisteredNickID(nick))) < 1 )
      return false;
@@ -1596,8 +1512,7 @@ bool
      return true;
 }
 
-void
-  Services::validateOper(String &origin)
+void ServicesInternal::validateOper(String &origin)
 {
    //Active Oper? (hah :-)
    User *ptr = findUser(origin);
@@ -1607,7 +1522,7 @@ void
      {
 	//Non-Authorised.
 	String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
-	globop(tosend,"Oper");
+	logLine(tosend, Log::Warning);
 	String reason = "You have no permission to become an IRC Operator";
 	/* We have a problem here - for some reason the parser is trying 
 	 * to validate every online user - this is what happened when I 
@@ -1626,7 +1541,7 @@ void
    if(axs==-1)
      {
 	String tosend = origin+" just tried to become an IRC Operator - \002Suspended\002";
-	globop(tosend,"Oper");
+	logLine(tosend, Log::Warning);
 	String reason = "You are suspended - Do not try to become an Operator";
 	killnick(origin, "Oper", reason);
 	return;
@@ -1634,7 +1549,7 @@ void
    if(axs>0)
      {
 	String tosend = origin+" just became an IRC Operator - level "+String::convert(axs);
-	globop(tosend,"Oper");
+	logLine(tosend);
 
 	if (!isOper(origin))
 	  addOper(origin, axs);
@@ -1649,20 +1564,6 @@ void
 
 	return;
      }
-
-}
-
-/* Debug
- *
- * Decide if/where to send our debug messages
- *
- */
-
-void
-  Services::Debug(AISutil::String const &line)
-{
-   String debugline = line;
-   queueAdd(":IRCDome PRIVMSG #Exordium :"+debugline);
 
 }
 

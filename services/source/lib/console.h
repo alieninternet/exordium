@@ -24,23 +24,23 @@
  *
  */
 
-#ifndef _INCLUDE_EXORDIUM_CONSOLE_H_
-# define _INCLUDE_EXORDIUM_CONSOLE_H_ 1
+#ifndef _SOURCE_LIB_CONSOLE_H_
+# define _SOURCE_LIB_CONSOLE_H_ 1
 
 
 /* This should be in source/lib/. - nothing outside of the core uses it.. */
 
-#include <kineircd/str.h>
+# include <kineircd/str.h>
 
 # define CONSOLE_FUNC(x) \
      x(AISutil::String &origin, AISutil::StringTokens &tokens)
 
 namespace Exordium {
-   class Services;
+   class ServicesInternal;
    
    class Console {
     private:
-      Services& services;
+      ServicesInternal& services;
       
       struct functionTableStruct {
 	 const char* command;
@@ -50,7 +50,7 @@ namespace Exordium {
       void CONSOLE_FUNC(parseMODULE);
       
     public:
-      Console(Services& s)
+      Console(ServicesInternal& s)
 	: services(s)
 	{};
 
@@ -62,6 +62,6 @@ namespace Exordium {
 };
 
 // Complete the forwarded definition
-# include <exordium/services.h>
+# include "services.h"
 
-#endif // _INCLUDE_EXORDIUM_CONSOLE_H_
+#endif // _SOURCE_LIB_CONSOLE_H_

@@ -111,8 +111,14 @@ void
 	return;
      }
    String authcode = services->getpendingCode(origin.getNickname());
-   services->Debug("\002[\002Auth System\002]\002 The pending code is ->" + authcode);
-   services->Debug("\002[\002Auth System\002]\002 The given code was  ->" + gauth);
+#ifdef DEBUG
+   services->logLine("\002[\002Auth System\002]\002 The pending code is ->" +
+		     authcode,
+		     Log::Debug);
+   services->logLine("\002[\002Auth System\002]\002 The given code was  ->" +
+		     gauth,
+		     Log::Debug);
+#endif
    if(authcode==gauth)
      {
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
@@ -562,7 +568,7 @@ void
 	     String temp2 = origin.getIdent();
 	     String thehost = String(temp2)+"@"+String(temp1);
 	     String togo = String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	     services->helpme(String(togo),"Serv");
+	     services->logLine(String(togo), Log::Warning);
 	  }
 
      }
@@ -657,7 +663,7 @@ void
 	       String temp2 = origin.getIdent();
 	       String thehost = String(temp2)+"@"+String(temp1);
 	       String togo = String("\002Failed\002 identify for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	       services->helpme(String(togo),"Serv");
+	       services->logLine(String(togo), Log::Warning);
 	    }
 	  return;
        }

@@ -39,12 +39,10 @@
 # include "autoconf.h"
 #endif
 
-#include "exordium/parser.h"
-#include "exordium/services.h"
+#include "parser.h"
 //#include "exordium/dchan.h"
 #include "exordium/channel.h"
 #include <kineircd/str.h>
-#include "exordium/console.h"
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -323,7 +321,7 @@ void
    long unsigned rx = services.getCountRx();
    long unsigned tx = services.getCountTx();
    String togo = String("Completed Network Synch: ")+String::convert(rx)+" Bytes received. "+String::convert(tx)+" Bytes transmitted";
-   services.helpme(String(togo),"Serv");
+   services.logLine(String(togo));
    return;
 }
 

@@ -28,10 +28,9 @@
 # include "autoconf.h"
 #endif
 
-#include "exordium/services.h"
 #include <kineircd/str.h>
 #include <kineircd/utils.h>
-#include "exordium/console.h"
+#include "console.h"
 
 using AISutil::String;
 using AISutil::StringTokens;

@@ -45,7 +45,10 @@ namespace Exordium
 	  String tid = chan;
 	  int cid = tid.toInt();
 	  String channel = getChanName(cid);
-	  services.Debug("\002[\002Unban\002]\002 " + mask + " / " + channel);
+#ifdef DEBUG
+	  services.logLine("\002[\002Unban\002]\002 " + mask + " / " + channel,
+			   Log::Debug);
+#endif
 	  services.serverMode(channel,"-b",mask);
 	  services.getDatabase().dbDelete("chanbans", "id='" + id + "'");
 	  return;
@@ -67,7 +70,10 @@ void
    int nid = services.locateID(nickname);
    services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid)); 
    services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','2'");
-   services.Debug("Have marked "+nickname+" as being opped in "+channel);
+#ifdef DEBUG
+   services.logLine("Have marked "+nickname+" as being opped in "+channel,
+		    Log::Debug);
+#endif
    return;
 }
 
@@ -80,7 +86,10 @@ void
    int nid = services.locateID(nickname);
    services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid));
    services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','1'");
-   services.Debug("Have marked "+nickname+" as being voiced in "+channel);
+#ifdef DEBUG
+   services.logLine("Have marked "+nickname+" as being voiced in "+channel,
+		    Log::Debug);
+#endif
    return;
 }
 
@@ -93,7 +102,10 @@ void
    int nid = services.locateID(nickname);
    services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid));
    services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','0'");
-   services.Debug("Have marked "+nickname+" as being NORMAL in "+channel);
+#ifdef DEBUG
+   services.logLine("Have marked "+nickname+" as being NORMAL in "+channel,
+		    Log::Debug);
+#endif
    return;
 }
 bool
@@ -429,7 +441,9 @@ void
 	     //Matched (despite being false?) :-)
 	     services.serviceKick(chan,tnick,reason);
 	     String togo = "\002[\002BanKick\002]\002 "+chan+" / "+tnick;
-	     services.Debug(togo);
+#ifdef DEBUG
+	     services.logLine(togo, Log::Debug);
+#endif
 	  }
 	if(hi==true)
 	  {

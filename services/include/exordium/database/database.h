@@ -56,10 +56,11 @@ namespace Exordium {
       CDatabase(Config &c);
 
 
-      ~CDatabase(void)
-      {
-        delete database;
-      }
+     ~CDatabase(void)
+       {
+	  dbDisconnect();
+	  delete database;
+       }
 
 
 

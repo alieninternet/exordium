@@ -24,23 +24,21 @@
  *
  */
 
-#ifndef _INCLUDE_EXORDIUM_PARSER_H_
-# define _INCLUDE_EXORDIUM_PARSER_H_ 1
+#ifndef _SOURCE_LIB_PARSER_H_
+# define _SOURCE_LIB_PARSER_H_ 1
 
-namespace Exordium {
-   class Services;
-   class User;
-};
-
-#include <kineircd/str.h>
+# include <kineircd/str.h>
 
 # define PARSER_FUNC(x) \
      x(AISutil::String& OLDorigin, AISutil::StringTokens& tokens)
 
 namespace Exordium {
+   class ServicesInternal;
+   class User;
+   
    class Parser {
     private:
-      Services &services;
+      ServicesInternal &services;
       
       struct functionTableStruct {
 	 const char* command;
@@ -48,14 +46,14 @@ namespace Exordium {
       } static const functionTable[];
       
     public:
-      Parser(Services &s)
+      Parser(ServicesInternal& s)
 	: services(s)
 	{};
 
       ~Parser(void)
 	{};
       
-      void parseLine(const AISutil::String &);
+      void parseLine(const AISutil::String&);
       
     private:
       void PARSER_FUNC(parsePASS);
@@ -76,6 +74,6 @@ namespace Exordium {
 }; // namespace Exordium
 
 // Complete the forwarded definition
-#include <exordium/services.h>
+# include "services.h"
 
-#endif // _INCLUDE_EXORDIUM_PARSER_H_
+#endif // _SOURCE_LIB_PARSER_H_

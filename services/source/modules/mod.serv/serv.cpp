@@ -78,7 +78,7 @@ void
 	       {
 		  origin.sendMessage("You do not have enough access for that command",getName());
 		  String togo = origin.getNickname()+" tried to use \002"+command+"\002";
-		  services->helpme(togo,getName());
+		  services->logLine(togo, Log::Warning);
 		  return;
 	       }
 
@@ -123,7 +123,7 @@ void
    String epass =  String::convert(services->generatePassword(who,newpass));
    services->getDatabase().dbUpdate("nicks", "password='"+epass+"'", "nickname='"+who+"'");
    String togo = "\002"+origin.getNickname()+"\002 changed password for nickname "+who+" to [HIDDEN]";
-   services->helpme(togo,getName());
+   services->logLine(togo);
 }
 
 void
@@ -132,7 +132,7 @@ void
    std::string c = tokens.rest();
    services->queueAdd(c);
    String togo = origin.getNickname()+" did \002RAW\002 - "+c;
-   services->helpme(String(togo),getName());
+   services->logLine(String(togo), Log::Warning);
 }
 void
   SERV_FUNC (Serv::parseNEWS)
@@ -222,7 +222,7 @@ void
 	int chanid = services->getChannel().getChanID(channel);
 	String oldowner = services->getChannel().getChanOwner(chanid);
 	String togo = origin.getNickname()+" changed \002ownership\002 of "+channel+" "+oldowner+"->"+newowner;
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo));
 	services->getChannel().chanDelAccess(channel,oldowner);
 	services->getChannel().chanAddAccess(channel,newowner,"500");
         services->getDatabase().dbUpdate("chans", "owner='"+newowner+"'", "name='"+channel+"'");
@@ -238,7 +238,7 @@ void
 	     return;
 	  }
 	String togo = origin.getNickname() + "\002 de-registered\002 "+channel+" for \002"+reason+"\002";
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo));
 	services->getChannel().deregisterChannel(channel,reason);
 	services->log(origin,getName(),String("Deregistered ")+channel+" for "+reason);
 	return;
@@ -262,7 +262,7 @@ void
 	     return;
 	  }
 	String togo = origin.getNickname() + "\002 registered\002 " + channel + " to "+thenick;
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo));
 	services->getChannel().registerChannel(channel,thenick);
 	services->log(origin,getName(),String("Registered ")+channel+" to "+thenick);
 	return;
@@ -313,7 +313,7 @@ void
 	  {
 	     origin.sendMessage("Error: That person has higher access than you",getName());
 	     String togo = origin.getNickname()+" tried to modify access for a higher user than themselves ("+toadd+")";
-	     services->helpme(String(togo),getName());
+	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
 	if(taccess==access)
@@ -322,7 +322,7 @@ void
 	     return;
 	  }
 	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+level;
-	services->helpme(togo,getName());
+	services->logLine(togo);
         services->getDatabase().dbUpdate("access", "access='"+level+"'", "nickname='"+toadd+"'");
 	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
 	return;
@@ -360,13 +360,13 @@ void
 	  {
 	     origin.sendMessage("You do not have enough access to perform that operation on a staff nickname",getName());
 	     String togo = origin.getNickname() + " tried to use \002userdel\002 on a \002staff\002 nickname";
-	     services->helpme(String(togo),getName());
+	     services->logLine(String(togo), Log::Warning);
 	     return;
 	  }
         services->getDatabase().dbDelete("access", "service='serv' AND nickname='" + toadd+"'");
 	origin.sendMessage("Command complete",getName());
 	String togo = origin.getNickname() + " deleted \002 " + toadd + "\002 from Serv";
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo), Log::Warning);
 	services->log(origin,getName(),"Deleted "+toadd+" from Serv");
 	return;
      }
@@ -407,7 +407,7 @@ void
         services->getDatabase().dbInsert("access", "'','" + toadd + "','serv','" + level + "'");
 	origin.sendMessage("Command completed",getName());
 	String togo = origin.getNickname()+" added \002"+toadd+"\002 to Serv with level \002"+level;
-	services->helpme(String(togo),getName());
+	services->logLine(String(togo), Log::Warning);
 	String tolog = "Added "+toadd+" to Serv with level "+toadd;
 	services->log(origin,getName(),String(tolog));
 	return;
@@ -429,7 +429,7 @@ void
      }
    services->log(origin,"Serv","Failed to become a helper (not enough access)");
    String tosend = origin.getNickname()+" failed to become a helper - Not enough access";
-   services->helpme(tosend,getName());
+   services->logLine(tosend, Log::Warning);
 }
 void
   SERV_FUNC (Serv::parseNLIST)
@@ -462,7 +462,7 @@ void
      }
    services->log(origin,"Serv","Did a nlist on "+tomatch+" "+String::convert(f)+" matches found");
    String togo = origin.getNickname()+" did a \002nlist\002 on "+tomatch+" "+String::convert(f)+" matches found";
-   services->helpme(togo,"Serv");
+   services->logLine(togo);
 }
 void
   SERV_FUNC (Serv::parseELIST)
@@ -489,7 +489,7 @@ void
 	  }
 	services->log(origin,"Serv","Did an elist on "+tomatch);
 	String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch;
-	services->helpme(togo,"Serv");
+	services->logLine(togo);
 	return;
      }
    //Else send to given client
@@ -507,7 +507,7 @@ void
      }
    services->log(origin,"Serv","Did an elist on "+tomatch+" and sent it to "+dest);
    String togo = origin.getNickname() + " did an \002elist\002 on "+tomatch+" and sent the results to "+dest;
-   services->helpme(togo,"Serv");
+   services->logLine(togo);
 
 }
 void
@@ -527,7 +527,7 @@ void
      }
 
    String togo = origin.getNickname()+" did \002delnick\002 on "+who+" for \002"+reason;
-   services->helpme(togo,"Serv");
+   services->logLine(togo, Log::Warning);
    services->getDatabase().dbDelete("nicks", "nickname='"+who+"'");
    services->log(origin,"Serv","Deleted nickname "+who+" : "+reason);
 }
@@ -554,7 +554,7 @@ void
 	int userc = services->getChannel().maxChannelsUser(who);
 	int totala = services->getChannel().maxChannelsAccess();
 	String togo = origin.getNickname() + " did a \002clist\002 on "+who+", "+String::convert(userc)+" matches found from "+String::convert(totalc)+" channels and "+String::convert(totala)+" access entries";
-	services->helpme(togo,"Serv");
+	services->logLine(togo);
 	int theid = services->getRegisteredNickID(who);
         int nbRes = services->getDatabase().dbSelect("chanid,access", "chanaccess", "nickid='"+String::convert(theid)+"'");
 

@@ -33,8 +33,8 @@
 # include <cassert>
 #endif
 #include <exordium/conf.h>
-#include <exordium/services.h>
 #include <exordium/database/database.h>
+#include "lib/services.h"
 #include <kineircd/module.h>
 #include "version.h"
 
@@ -83,7 +83,7 @@ namespace {
    class mod_exordium : public Kine::Module {
     private:
       Config config;
-      Services* services;
+      ServicesInternal* services;
 
       // this shouldn't be here.. the Config:: one should replace it
       CDatabase* db;
@@ -126,7 +126,7 @@ namespace {
 #endif
 	 
 	 // Create the new services instance - Passing sql YAY :|
-	 services = new Services(daemon, config, *db);
+	 services = new ServicesInternal(daemon, config, *db);
 #ifdef DEBUG
 	 assert(services != 0);
 #endif
