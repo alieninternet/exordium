@@ -23,7 +23,7 @@ OBJECTS=$(SOURCES:.cpp=.so)
 all: $(OBJECTS)
 
 %.so: %.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -shared $< -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(DEFS) $(INCDIRS) -I/usr/local/ssl/include -shared $< -o $@
 
 clean:
 	$(RM) *.so modules

@@ -26,7 +26,7 @@ $(TARGET_MODULE): $(OBJECTS_MODULE)
 		-fPIC -shared
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(DEFINES) -I$(INCLUDES) -I/usr/local/mysql/include/ -I../../kineircd/src/lib -I../../kineircd/include -I../include/  -c $< 
+	$(CXX) $(CXXFLAGS) $(DEFINES) -I/usr/local/ssl/include -I$(INCLUDES) -I/usr/local/mysql/include/ -I../../kineircd/src/lib -I../../kineircd/include -I../include/  -c $< 
 
 
 clean:
