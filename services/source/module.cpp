@@ -6,9 +6,10 @@
 */
 
 #include <iostream>
-#include <exordium/services.h>
 #include <exordium/log.h>
 #include <exordium/sql.h>
+#include <exordium/conf.h>
+#include <exordium/services.h>
 #include <kineircd/module-service.h>
 
 
@@ -16,7 +17,8 @@ using namespace Exordium;
 
 namespace mod_exordium {
 
-   // Ourself! We will want to delete this when stopping
+   // Our special little classes, we need these so we can delete them later
+   static Config *config;
    static Services *services;
    
    // called just before the module is actually going to be used
@@ -24,6 +26,14 @@ namespace mod_exordium {
      {
 	cout << "mod_exordium::moduleStart()" << endl;
 
+	cout << 
+	  "Via kine's configuration thingy, we should connect sql to:\n\t" <<
+	  config->getMySqlHost() << ':' << config->getMySqlPort() << 
+	  " user: " << config->getMySqlUser() << 
+	  "; pass: " << config->getMySqlPass() << 
+	  "\n\tdatabase: " << config->getMySqlDb() << endl;
+	  
+	
 	// My, it looks an awful lot like main.cpp from here on... :) This is
 	// temporary, naturally.
         Sql db;
@@ -53,6 +63,7 @@ namespace mod_exordium {
      {
 	cout << "mod_exordium::moduleStop()" << endl;
 	delete services;
+	delete config;
      }
    
    
@@ -93,9 +104,14 @@ namespace mod_exordium {
    };
 }; // namespace mod_exordium
 
+using namespace mod_exordium;
 
 // called when the module is initially loaded
 KINE_MODULE_INIT
 {
-   return new Kine::ModuleService(mod_exordium::moduleInfo);
+   // Make a new config class, where our configuration data will be stored
+   config = new Config();
+
+   // Make a new module for Kine
+   return new Kine::ModuleService(moduleInfo, config);
 }

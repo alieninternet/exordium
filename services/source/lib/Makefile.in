@@ -9,10 +9,12 @@ LIBS=@LIBS@
 SOURCES=sql.cpp \
 	nickname.cpp \
 	channel.cpp \
+	conf.cpp \
 	ircdome.cpp \
 	log.cpp \
 	parser.cpp \
-	services.cpp 
+	services.cpp
+	
 INCLUDES=../../include
 
 OBJECTS=$(SOURCES:.cpp=.o)
