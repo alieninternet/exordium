@@ -1500,6 +1500,9 @@ String
      {
 	return row[0];
      }
+   
+   // uhh?
+   return "";
 }
 
 /* getYAHOO(String)
