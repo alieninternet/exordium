@@ -1,5 +1,5 @@
 SUBDIRS=cards
-INCLUDES=-I../../../include -I../../../../kineircd/include
+INCLUDES=-I../../../include -I../../../../kineircd/include @PGSQL_INCDIR@
 lib_LTLIBRARIES= mod_game.la
 mod_game_la_SOURCES = channelgame.cpp \
 		      config.cpp \

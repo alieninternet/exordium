@@ -108,8 +108,6 @@ AM_CONDITIONAL(EXORDIUM_COMPILE_DB_MYSQL,
 
 AC_CHECK_LIB([pq], [main], [
 
-CPPFLAGS="$CPPFLAGS -I`pg_config --includedir`"
-
 AC_CHECK_HEADERS([`pg_config --includedir`/libpq-fe.h],
   [
 #    CPPFLAGS="$CPPFLAGS -DHAVE_LIBPQ_FE_H"
@@ -126,15 +124,16 @@ AC_CHECK_HEADERS([`pg_config --includedir`/libpq-fe.h],
     ])
   ])
 
-#CPPFLAGS="$CPPFLAGS -DHAVE_PGSQL"
 AC_DEFINE(HAVE_PGSQL, 1, [Define if you want PostgreSQL support compiled in])
 exordium_test_compile_db_pgsql=yes
-LDFLAGS="$LDFLAGS -L `pg_config --libdir`"
-LDFLAGS="$LDFLAGS  -lpq"
+PGSQL_INCDIR="-I`pg_config --includedir`"
+PGSQL_LDFLAGS="-L`pg_config --libdir` -lpq"
 AC_MSG_RESULT(Building with PostgreSQL support)], [AC_MSG_RESULT([Building without PosgreSQL support])
 ])
 AM_CONDITIONAL(EXORDIUM_COMPILE_DB_PGSQL,
                [test x$exordium_test_compile_db_pgsql = xyes])
+AC_SUBST(PGSQL_INCDIR)
+AC_SUBST(PGSQL_LDFLAGS)
 
 AC_CONFIG_FILES([source/Makefile
 		 source/modules/Makefile
