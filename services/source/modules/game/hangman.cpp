@@ -356,6 +356,7 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    std::ostringstream out;
    const Exordium::User* player;
    bool isCorrect = false;
+   bool isComplete = true;
 
    String guess = line.rest();
 
@@ -411,17 +412,29 @@ EXORDI8_FUNC(Hangman::parseGUESS)
       playing = false;
       return false; // End the game!
    }
+   
+   // Check to see if the word complete
+   for(int i = 0; i < word.length(); i++)
+   {
+      int idx = correctGuesses.find(word[i]);
+      if(idx < 0)
+      {
+         isComplete = false;
+         break;
+      }
+   }
+
+   // If the word is complete exit
+   if(isComplete)
+   {
+      sendMessage(origin.getNickname() + " has won!!");
+      playing = false;
+      return false;
+   }
 
    // If we got here, do a standard message..
    out << "has chosen '" << guess << "' which ";
-   if(isCorrect)
-   {
-      out << "exists";
-   }
-   else
-   {
-      out << "is wrong";
-   }
+   out << (isCorrect ? "exists" : "is wrong");
 
    nextPlayer(out.str());
 
