@@ -29,9 +29,10 @@
 # define _INCLUDE_EXORDIUM_DATABASE_DATABASE_H_ 1
 
 
-#include <aisutil/string/string.h>
-#include <exordium/database/base.h>
-#include <exordium/config.h>
+# include <aisutil/string/string.h>
+# include <exordium/database/base.h>
+# include <exordium/database/table.h>
+# include <exordium/config.h>
 
 
 namespace Exordium {
@@ -114,6 +115,17 @@ namespace Exordium {
       void dbGetRow(void) { database->dbGetRow(); }
 
 
+      /* Affirm a table's structure. Return true if the table exists. If the
+       * table does not exist, or has missing fields, then the database engine
+       * will create the table or add the missing fields respectively. If the
+       * specific engine cannot create/modify tables on the fly or there's any
+       * other reason it was unable to affirm the table structure is identical
+       * to that described in the given table structure, then false will be
+       * returned.
+       */
+      const bool affirmTable(const DatabaseTable& table)
+       { return true; /* <=- temporary; waiting for the new database code*/ };
+     
       
       enum
       {
