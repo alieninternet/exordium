@@ -66,12 +66,6 @@ extern "C" {
 #include "exordium/user.h"
 //#include "exordium/userbase.h"
 
-// Maybe this is in the wrong place
-#define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
-   Module* x(Exordium::Services& services, const Kine::String& name)
-#define EXORDIUM_SERVICE_INIT_FUNCTION \
-   extern "C" EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(service_init)
-
 
 namespace Exordium {
    class Services
