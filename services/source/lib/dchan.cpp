@@ -68,7 +68,7 @@ if (services.getDatabase().dbGetValue().toInt() > 0)
 int const dChan::getAccess(String const &who)
 {
      if(services.getDatabase().dbSelect("access","chanaccess",
-				      "chanid='"+String::convert(onlineID)+"' AND nickid='"
+				      "chanid='"+String::convert(getRegisteredID())+"' AND nickid='"
 				      +String::convert(services.getRegisteredNickID(who))+"'") < 1)
      return 0;
    else

@@ -70,6 +70,7 @@ namespace Exordium {
       unsigned long countRx;
       unsigned long remoteAddress;
       std::queue < AISutil::String > outputQueue;
+      std::string inputQueue;
       AISutil::SocketIPv4TCP socky;
       
       bool handleInput(void);

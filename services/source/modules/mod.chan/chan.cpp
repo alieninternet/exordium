@@ -72,6 +72,7 @@ struct Module::functionTableStruct const
      {"seen", &Module::parseSEEN},
      {".seen", &Module::parseSEEN},
      {"commands", &Module::parseCOMMANDS},
+     {".commands", &Module::parseCOMMANDS},
      {0, 0}
 };
 
@@ -845,7 +846,7 @@ CHAN_FUNC (Module::parseCOMMANDS)
 		      getName());
    
    int nbRes =
-     services->getDatabase().dbSelect("*", "chanaccess",
+     services->getDatabase().dbSelect("nickid,access", "chanaccess",
 				      "chanid=" + 
 				      String::convert(ptr->getRegisteredID()));
    
@@ -854,12 +855,11 @@ CHAN_FUNC (Module::parseCOMMANDS)
    String tnickid, taccess;
    
    for (int i = 0; i < nbRes; i++) {
-      String foo = myRes->getValue(i,0);
-      String baa = myRes->getValue(i,1);
-      String maa = myRes->getValue(i,2);
-      origin.sendMessage(foo+" "+baa+" "+maa, getName());
+      int foo = myRes->getValue(i,0).toInt();
+      origin.sendMessage(services->getNick(myRes->getValue(i,0).toInt()) + " has level "
+			 +myRes->getValue(i,1)+" access",getName());
    }
-   
+   origin.sendMessage("End of access list",getName());   
    ptr->log(origin,"Chan","Did a channel access",channel);
    //Finished with result set! Clean up
    delete myRes;

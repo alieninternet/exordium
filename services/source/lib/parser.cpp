@@ -73,7 +73,7 @@ void Parser::parseLine(const String& line)
 {
    StringTokens st (line);
    String origin = "";
-
+   std::cout << "DEBUG RX: " << line << std::endl;
    if (line[0] == ':')
      {
 	// Skip the first parameter, we do not care about it anyway

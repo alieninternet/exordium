@@ -90,8 +90,8 @@ KINE_SIGNAL_HANDLER_FUNC(Rehash)
 
 KINE_SIGNAL_HANDLER_FUNC(Death)
 {
-   String reason = 
-     "\002[\002Fatal Error\002]\002 Services received \002" + 
+   String reason =
+     "\002[\002Fatal Error\002]\002 Services received \002" +
      String(sys_siglist[signal]) + "\002 - Initiating shutdown";
    ((Services *)foo)->logLine(reason, Log::Warning);
    ((Services *)foo)->shutdown(reason);
@@ -107,185 +107,178 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
  *
  */
 
-   void
-     ServicesInternal::run(void)
-       {
-	  fd_set inputSet, outputSet;
-	  struct timeval timer;
-	  disconnectTime = 0;
-	  connected = false;
-	  lastExpireRun = 0;
-	  srand(time(NULL));
-	  logLine ("Cleaning out (any) stale entries from the DB");
-	  database.dbDelete("onlineclients");
-	  database.dbDelete("chanstatus");
-	  database.dbDelete("nicksidentified");
-	  database.dbDelete("kills");
-	  database.dbDelete("onlineservers");
-	  database.dbDelete("onlinechan");
-	  database.dbDelete("onlineopers");
- 
-	  logLine ("Entering main loop...");
-	  for (;;)
-	    {
-	       time (&currentTime);
-	       timer.tv_sec = 1;
-	       timer.tv_usec = 0;
-	       FD_ZERO (&inputSet);
-	       FD_ZERO (&outputSet);
+void
+  ServicesInternal::run(void)
+{
+   fd_set inputSet, outputSet;
+   struct timeval timer;
+   disconnectTime = 0;
+   connected = false;
+   lastExpireRun = 0;
+   srand(time(NULL));
+   logLine ("Cleaning out (any) stale entries from the DB");
+   database.dbDelete("onlineclients");
+   database.dbDelete("chanstatus");
+   database.dbDelete("nicksidentified");
+   database.dbDelete("kills");
+   database.dbDelete("onlineservers");
+   database.dbDelete("onlinechan");
+   database.dbDelete("onlineopers");
 
-	       if (connected)
-		 {
-		    if (!stopping)
-		      {
-			 FD_SET (socky.getFD(), &inputSet);
-		      }
-		    if (queueReady ())
-		      {
-			 FD_SET (socky.getFD(), &outputSet);
-		      }
-		 }
-#ifdef DEBUG		 
-	       else
-		 {
-		    logLine("not connected...", Log::Debug);
-		 }
-#endif
-
-	       switch (select (maxSock, &inputSet, &outputSet, NULL, &timer))
-		 {
-		  case 0:         // Select timed out
-		    break;
-		  case -1:                // Select broke
-		    break;
-		  default:                // Select says there is something to process
-		    // Something from the socket?
-		    if (FD_ISSET (socky.getFD(), &inputSet))
-		      {
-			 if (!handleInput ())
-			   {
-			      logLine ("Error handling server input. Reconnecting.");
-			      connected = false;
-			      disconnectTime = currentTime;
-			      disconnect();
-			   }
-		      }
-		    if (FD_ISSET (socky.getFD(), &outputSet))
-		      {
-			 if (!queueFlush ())
-			   {
-			      if(!stopping)
-				//Ok, technically nasty, but if we're in a shutdown
-				//state, do we really care if the connection closes?
-				{
-				   logLine("Disconnecting... (Queue flushing error)");
-				   connected = false;
-				   disconnectTime = currentTime;
-				   disconnect ();
-				}
-			   }
-
-			 if(stopping)
-			   {
-			      if(stopTime < currentTime)
-				{
-#ifdef DEBUG
-				   logLine("Disconnecting, QueueFlushed and in stop state",
-					   Log::Debug);
-#endif
-				   connected = false;
-				   exit(0);
-				}
-			   }
-
-		      }
-		 }
-	       if (currentTime > (time_t) (lastCheckPoint + 10))
-		 {
-		    lastCheckPoint = currentTime;
-		    checkpoint ();
-		 }
-	       if (currentTime > (time_t) (lastExpireRun + 3600))
-		 {
-		    lastExpireRun = currentTime;
-		    SynchTime ();
-
-		 }
-
-#ifdef DEBUG
-	       if(!connected)
-		 {
-		    logLine("Not connected", Log::Debug);
-		 }
-#endif
-	       if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
-		 {
-#ifdef DEBUG
-		    logLine("Beginning Connect Attempt", Log::Debug);
-#endif
-		    connect ();
-		 }
-	    }
-       }
-
-   ServicesInternal::ServicesInternal(ConfigInternal& c, CDatabase& db)
-     : Services(db),
-       parser(*this),
-       console(*this),
-       config(c),
-       sock(-1),
-       maxSock(-1),
-       inputBufferPosition(0),
-       startTime(time(NULL)),
-       lastPing(time(NULL)),
-       disconnectTime(time(NULL)),
-       stopTime(0),
-       serverLastSpoke(time(NULL)),
-       lastCheckPoint(time(NULL)),
-       lastExpireRun(time(NULL)),
-       connected(false),
-       stopping(false),
-       burstOk(false),
-       countTx(0),
-       countRx(0)
+   logLine ("Entering main loop...");
+   for (;;)
      {
-	currentTime = time(NULL);
-	
+	time (&currentTime);
+	timer.tv_sec = 1;
+	timer.tv_usec = 0;
+	FD_ZERO (&inputSet);
+	FD_ZERO (&outputSet);
+
+	if (connected)
+	  {
+	     if (!stopping)
+	       {
+		  FD_SET (socky.getFD(), &inputSet);
+	       }
+	     if (queueReady ())
+	       {
+		  FD_SET (socky.getFD(), &outputSet);
+	       }
+	  }
 #ifdef DEBUG
-	logLine("Setting up signal handlers",
-		Log::Debug);
+	else
+	  {
+	     logLine("not connected...", Log::Debug);
+	  }
 #endif
-	Kine::signals().addHandler(&Rehash,
-				   Signals::REHASH,
-				   (void *)this);
-	Kine::signals().addHandler(&Death,
-				   Signals::VIOLENT_DEATH |
-				   Signals::PEACEFUL_DEATH,
-				   (void *)this);
 
-
-        database.dbConnect();
-
-	struct hostent *host;
-	queueKill ();
-	if (!(inputBuffer = (char *) malloc (inputBufferSize)))
+	switch (select (maxSock, &inputSet, &outputSet, NULL, &timer))
 	  {
-	     logLine ("Fatal Error: Could not allocate input buffer",
-		      Log::Fatality);
-	     perror ("malloc");
-	     exit (1);
+	   case 0:         // Select timed out
+	     break;
+	   case -1:                // Select broke
+	     break;
+	   default:                // Select says there is something to process
+	     // Something from the socket?
+	     if (FD_ISSET (socky.getFD(), &inputSet))
+	       {
+		  handleInput();
+	       }
+	     if (FD_ISSET (socky.getFD(), &outputSet))
+	       {
+		  if (!queueFlush ())
+		    {
+		       if(!stopping)
+			 //Ok, technically nasty, but if we're in a shutdown
+			 //state, do we really care if the connection closes?
+			 {
+			    logLine("Disconnecting... (Queue flushing error)");
+			    connected = false;
+			    disconnectTime = currentTime;
+			    disconnect ();
+			 }
+		    }
+
+		  if(stopping)
+		    {
+		       if(stopTime < currentTime)
+			 {
+#ifdef DEBUG
+			    logLine("Disconnecting, QueueFlushed and in stop state",
+				    Log::Debug);
+#endif
+			    connected = false;
+			    exit(0);
+			 }
+		    }
+
+	       }
 	  }
-	memset (&addr, 0, sizeof (addr));
-	addr.sin_family = AF_INET;
-	if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
+	if (currentTime > (time_t) (lastCheckPoint + 10))
 	  {
-	     logLine ("Fatal Error: Error resolving uplinkhost",
-		      Log::Fatality);
-	     exit (1);
+	     lastCheckPoint = currentTime;
+	     checkpoint ();
 	  }
-	memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
-	addr.sin_port = htons (config.getUplinkPort());
+	if (currentTime > (time_t) (lastExpireRun + 3600))
+	  {
+	     lastExpireRun = currentTime;
+	     SynchTime ();
+
+	  }
+
+#ifdef DEBUG
+	if(!connected)
+	  {
+	     logLine("Not connected", Log::Debug);
+	  }
+#endif
+	if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
+	  {
+#ifdef DEBUG
+	     logLine("Beginning Connect Attempt", Log::Debug);
+#endif
+	     connect ();
+	  }
      }
+}
+
+ServicesInternal::ServicesInternal(ConfigInternal& c, CDatabase& db)
+  : Services(db),
+parser(*this),
+console(*this),
+config(c),
+sock(-1),
+maxSock(-1),
+inputBufferPosition(0),
+startTime(time(NULL)),
+lastPing(time(NULL)),
+disconnectTime(time(NULL)),
+stopTime(0),
+serverLastSpoke(time(NULL)),
+lastCheckPoint(time(NULL)),
+lastExpireRun(time(NULL)),
+connected(false),
+stopping(false),
+burstOk(false),
+countTx(0),
+countRx(0)
+{
+   currentTime = time(NULL);
+
+#ifdef DEBUG
+   logLine("Setting up signal handlers",
+	   Log::Debug);
+#endif
+   Kine::signals().addHandler(&Rehash,
+			      Signals::REHASH,
+			      (void *)this);
+   Kine::signals().addHandler(&Death,
+			      Signals::VIOLENT_DEATH |
+			      Signals::PEACEFUL_DEATH,
+			      (void *)this);
+
+   database.dbConnect();
+
+   struct hostent *host;
+   queueKill ();
+   if (!(inputBuffer = (char *) malloc (inputBufferSize)))
+     {
+	logLine ("Fatal Error: Could not allocate input buffer",
+		 Log::Fatality);
+	perror ("malloc");
+	exit (1);
+     }
+   memset (&addr, 0, sizeof (addr));
+   addr.sin_family = AF_INET;
+   if ((host = gethostbyname (config.getUplinkHost().c_str())) == NULL)
+     {
+	logLine ("Fatal Error: Error resolving uplinkhost",
+		 Log::Fatality);
+	exit (1);
+     }
+   memcpy (&addr.sin_addr, host->h_addr_list[0], host->h_length);
+   addr.sin_port = htons (config.getUplinkPort());
+}
 
 /* HandleInput()
  *
@@ -299,18 +292,58 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
 bool ServicesInternal::handleInput (void)
 {
    std::stringstream bufferin;
-   socky.read(bufferin);
+   //socky.read(bufferin);
    String line;
-   
-   while(bufferin.peek() != -1) {
-      std::getline(bufferin,line);
-#ifdef DEBUG
-      logLine("RX: " + line, Log::Debug);
-#endif
-      countRx += line.length();
-      parser.parseLine(line);
-   }
-   
+
+   if(!socky.read(bufferin))
+     {
+	std::cout << "Read failed!" << std::endl;
+	return false;
+     }
+
+   if(!bufferin.str().empty())
+     {
+
+	for(;;)
+	  {
+	     if(bufferin.peek()==-1)
+	       {
+	          return false;
+	       }
+
+	     if(bufferin.peek() == '\0')
+	       {
+		  (void)bufferin.ignore();
+	       }
+	     else if ((bufferin.peek()=='\r') || (bufferin.peek() =='\n'))
+	       {
+		  (void)bufferin.ignore();
+
+		  if((bufferin.peek() == '\r') || (bufferin.peek() == '\n'))
+		    {
+		       (void)bufferin.ignore();
+		    }
+		  if(!inputQueue.empty())
+		    {
+		       parser.parseLine(inputQueue);
+		       inputQueue.clear();
+		    }
+	       }
+	     inputQueue += (char)bufferin.get();
+	  }
+	return true;
+     }
+
+   //  OLD Socket reading method below for history only :(
+   //   while(bufferin.peek() != -1) {
+   //      std::getline(bufferin,line);
+   //#ifdef DEBUG
+   //      logLine("RX: " + line, Log::Debug);
+   //#endif
+   //      countRx += line.length();
+   //      parser.parseLine(line);
+   //   }
+   //
    return true;
 }
 
@@ -320,24 +353,24 @@ bool ServicesInternal::handleInput (void)
  *
  */
 
-   void
-     ServicesInternal::disconnect (void)
-       {
+void
+  ServicesInternal::disconnect (void)
+{
 #ifdef DEBUG
-	  logLine("Closing socket.", Log::Debug);
+   logLine("Closing socket.", Log::Debug);
 #endif
-	  socky.close();
-	  connected = false;
-       }
+   socky.close();
+   connected = false;
+}
 
 void
-	ServicesInternal::liveLog(const AISutil::String &line)
+  ServicesInternal::liveLog(const AISutil::String &line)
 {
-	if(connected)
-	{
-	 	if(line.length()>5)
-	servicePrivmsg(line,"PeopleChat","#Debug");
-	}
+   if(connected)
+     {
+	if(line.length()>5)
+	  servicePrivmsg(line,"PeopleChat","#Debug");
+     }
 
 }
 /* connect()
@@ -346,79 +379,80 @@ void
  *
  */
 
-   bool ServicesInternal::connect (void)
+bool ServicesInternal::connect (void)
+{
+   logLine ("Attempting Connection to Uplink");
+   if (sock >= 0)
      {
-	logLine ("Attempting Connection to Uplink");
-	if (sock >= 0)
-	  {
 #ifdef DEBUG
-	     logLine("Closing stale network socket", Log::Debug);
+	logLine("Closing stale network socket", Log::Debug);
 #endif
-	     socky.close();
-	     sock = -1;
-	  }
+	socky.close();
+	sock = -1;
+     }
 
-	socky.setRemoteAddress(config.getUplinkHost());
-	socky.setRemotePort(config.getUplinkPort());
+   socky.setRemoteAddress(config.getUplinkHost());
+   socky.setRemotePort(config.getUplinkPort());
 
-	if(!socky.connect())
-	  {
+   if(!socky.connect())
+     {
 #ifdef DEBUG
-	     logLine(String("Socky.connect() returned an error: ") +
-		     socky.getErrorMessage(), 
-		     Log::Debug);
+	logLine(String("Socky.connect() returned an error: ") +
+		socky.getErrorMessage(),
+		Log::Debug);
 #endif
 
-	  }
+     }
 /* I'm not particulary happy with how this is coded.
  * In all honesty, we should await some verification from the uplink
  * that it is ready to receive data, as opposed to just blinding throwing
  * everything at our uplink.. and possibly (at a later stage) filling
  * up our sendQ on the server
  */
-	connected = true;
-	logLine ("Beginning handshake with uplink");
-	maxSock = socky.getFD() + 1;
+   connected = true;
+   logLine ("Beginning handshake with uplink");
+   maxSock = socky.getFD() + 1;
 
 /* *Whistles* Config option */
 /* Whistle all you want, its done :c */
-	queueAdd ("PASS "+config.getUplinkPass()+" :TS");
-	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
+   queueAdd ("PASS "+config.getUplinkPass()+" :TS");
+   queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
 /* Jesus, so many hard coded stuff :( */
 /* It's okay, all the server connection stuff has a very very very limited
  * lifespan in anycase.. - pickle
  */
-	queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
-		  Kine::config().getOptionsDescription());
-	
-	// Do we have an underling?
-	if (!config.getUnderlingHostname().empty()) {
-	   queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
-	}
-	
-	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
-	queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
-	queueAdd ("BURST");
-	//	queueFlush();
+   queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
+	     Kine::config().getOptionsDescription());
 
-	// Start all the modules
-	config.getModules().startAll(*this);
-	
-	// Is the console actually wanted?
-	if (config.getConsoleEnabled()) {
-	   registerService(config.getConsoleName(), config.getConsoleName(),
-			   config.getConsoleHostname(),
-			   config.getConsoleDescription());
-	   // I smell a configuration variable.. *sniff sniff* can you?
-	   serviceJoin(config.getConsoleName(), config.getConsoleChan());
-	   mode(config.getConsoleName(),config.getConsoleChan(),"+o",config.getConsoleName());
-	   setMode(config.getConsoleName(),"+oz");
-	}
-	connected = true;
-	queueAdd ("BURST 0");
-	return true;
-     };
+   // Do we have an underling?
+   if (!config.getUnderlingHostname().empty())
+     {
+	queueAdd ("SERVER " + config.getUnderlingHostname() + " 2 :" + config.getUnderlingDescription());
+     }
 
+   queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
+   queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
+   queueAdd ("BURST");
+   //	queueFlush();
+
+   // Start all the modules
+   config.getModules().startAll(*this);
+
+   // Is the console actually wanted?
+   if (config.getConsoleEnabled())
+     {
+	registerService(config.getConsoleName(), config.getConsoleName(),
+			config.getConsoleHostname(),
+			config.getConsoleDescription());
+	// I smell a configuration variable.. *sniff sniff* can you?
+	serviceJoin(config.getConsoleName(), config.getConsoleChan());
+	mode(config.getConsoleName(),config.getConsoleChan(),"+o",config.getConsoleName());
+	setMode(config.getConsoleName(),"+oz");
+     }
+   connected = true;
+   queueAdd ("BURST 0");
+   return true;
+};
 
 /* shutdown(String)
  *
@@ -427,37 +461,38 @@ void
  *
  */
 
-   void ServicesInternal::shutdown(String const &reason)
+void ServicesInternal::shutdown(String const &reason)
+{
+   logLine("Services is shutting down " + reason,
+	   Log::Warning);
+
+   // Stop and unload all the modules..
+   config.getModules().unloadAll(reason);
+
+   // I do not like this.. oh well..  - pickle
+   if (config.getConsoleEnabled())
      {
-	logLine("Services is shutting down " + reason,
-		Log::Warning);
-
-	// Stop and unload all the modules..
-	config.getModules().unloadAll(reason);
-	
-	// I do not like this.. oh well..  - pickle
-	if (config.getConsoleEnabled()) {
-	   queueAdd(config.getConsoleName()+" QUIT :"+reason);
-	}
-
-	// Nasty hack for now.
-	String tofo = "\002Services shutting down\002 : " + reason;
-	queueAdd(":" + Kine::config().getOptionsServerName() +
-		 " SQUIT " + Kine::config().getOptionsServerName() + " :" +
-		 reason);
-
-	stopping = true;
-	stopTime = currentTime + 5;
-
-        // Clean up before we die
-        database.dbDelete("onlineclients");
-        database.dbDelete("chanstatus");
-        database.dbDelete("nicksidentified");
-        database.dbDelete("kills");
-        database.dbDelete("onlineservers");
-        database.dbDelete("onlinechan");
-        database.dbDelete("onlineopers");
+	queueAdd(config.getConsoleName()+" QUIT :"+reason);
      }
+
+   // Nasty hack for now.
+   String tofo = "\002Services shutting down\002 : " + reason;
+   queueAdd(":" + Kine::config().getOptionsServerName() +
+	    " SQUIT " + Kine::config().getOptionsServerName() + " :" +
+	    reason);
+
+   stopping = true;
+   stopTime = currentTime + 5;
+
+   // Clean up before we die
+   database.dbDelete("onlineclients");
+   database.dbDelete("chanstatus");
+   database.dbDelete("nicksidentified");
+   database.dbDelete("kills");
+   database.dbDelete("onlineservers");
+   database.dbDelete("onlinechan");
+   database.dbDelete("onlineopers");
+}
 
 /* SynchTime()
  *
@@ -467,22 +502,22 @@ void
  *	Update ServerWide Time.
  */
 
-   void ServicesInternal::SynchTime(void)
+void ServicesInternal::SynchTime(void)
+{
+   //Undo any expired glines
+
+   //Undo any expired channel bans
+   String ctime = String::convert(currentTime);
+   sendGOper("Oper","Performing net-wide time synch to "+ctime);
+   queueAdd(Kine::config().getOptionsServerName() + " SETTIME "+ctime+" *");
+   int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
+   for(int i=0; i<nbRes; i++)
      {
-	//Undo any expired glines
-
-	//Undo any expired channel bans
-	String ctime = String::convert(currentTime);
-	sendGOper("Oper","Performing net-wide time synch to "+ctime);
-	queueAdd(Kine::config().getOptionsServerName() + " SETTIME "+ctime+" *");
-        int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
-        for(int i=0; i<nbRes; i++)
-	  {
-	     channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
-             database.dbGetRow();
-	  }
-
+	channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
+	database.dbGetRow();
      }
+
+}
 
    /* AddOnlineServer(ServerName,Hops,Description)
     *
@@ -490,24 +525,23 @@ void
     *
     */
 
-   void
-     ServicesInternal::AddOnlineServer (String const &servername, String const &hops, String const &description)
-       {
-          database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
-       }
 void
-ServicesInternal::sendGOper(String const &from, String const &text)
+  ServicesInternal::AddOnlineServer (String const &servername, String const &hops, String const &description)
 {
-	queueAdd(":"+from+" GLOBOPS :"+text);
+   database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
+}
+void
+  ServicesInternal::sendGOper(String const &from, String const &text)
+{
+   queueAdd(":"+from+" GLOBOPS :"+text);
 
 }
 
 void
-ServicesInternal::sendHelpme(String const &from, String const &text)
+  ServicesInternal::sendHelpme(String const &from, String const &text)
 {
-	queueAdd(":"+from+" HELPME :"+text);
+   queueAdd(":"+from+" HELPME :"+text);
 }
-
 
    /* DelOnlineServer(ServerName)
     *
@@ -515,12 +549,12 @@ ServicesInternal::sendHelpme(String const &from, String const &text)
     *
     */
 
-   // NOTE: gotta recheck this up when more than 1 server is up, should compare ID instead.. maybe make a server map?
-   void
-     ServicesInternal::DelOnlineServer (String const &name)
-       {
-          database.dbDelete("onlineservers", "servername='" + name + "'");
-       }
+// NOTE: gotta recheck this up when more than 1 server is up, should compare ID instead.. maybe make a server map?
+void
+  ServicesInternal::DelOnlineServer (String const &name)
+{
+   database.dbDelete("onlineservers", "servername='" + name + "'");
+}
 
 /* mode(String,String,String,String)
  *
@@ -528,71 +562,71 @@ ServicesInternal::sendHelpme(String const &from, String const &text)
  *
  */
 
-   void
-     ServicesInternal::mode (String const &who, String const &chan, String const &mode,
-		     String const &target)
-       {
-	  queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
-       }
+void
+  ServicesInternal::mode (String const &who, String const &chan, String const &mode,
+			  String const &target)
+{
+   queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
+}
 /* doHelp(User,String,String,String)
  *
  * Generate a help page from our dynamic help system
  *
  */
-   void
-     ServicesInternal::doHelp(User& origin, String const &service,
-			      String const &topic, String const &parm)
-       {
-	  if(topic == "")
-	    {
-	       //No topic, no parm.
-               int nbRes = database.dbSelect("txt", "help", 
-                    "service='"+service+"' AND word='' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id");
+void
+  ServicesInternal::doHelp(User& origin, String const &service,
+			   String const &topic, String const &parm)
+{
+   if(topic == "")
+     {
+	//No topic, no parm.
+	int nbRes = database.dbSelect("txt", "help",
+				      "service='"+service+"' AND word='' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id");
 
-               String line="";
+	String line="";
 
-               for(int i=0; i<nbRes; i++)
-		 {    
-		    line = parseHelp(database.dbGetValue());
-		    serviceNotice(line,service,origin.getNickname());
-                    database.dbGetRow();
-		 }
-	       return;
-	    }
-	  // End
-	  if(parm == "")
-	    {
-	       //No topic, no parm.
-               
-               int nbRes = database.dbSelect("txt", "help",
-                    "service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id");
+	for(int i=0; i<nbRes; i++)
+	  {
+	     line = parseHelp(database.dbGetValue());
+	     serviceNotice(line,service,origin.getNickname());
+	     database.dbGetRow();
+	  }
+	return;
+     }
+   // End
+   if(parm == "")
+     {
+	//No topic, no parm.
 
-               String line="";
+	int nbRes = database.dbSelect("txt", "help",
+				      "service='"+service+"' AND word='"+topic+"' AND parm='' AND lang='"+origin.getLanguage()+"' ORDER by id");
 
-               for(int i=0; i<nbRes; i++)
-                 {
-                    line = parseHelp(database.dbGetValue());
-                    serviceNotice(line,service,origin.getNickname());
-                    database.dbGetRow();
-                 }
+	String line="";
 
-	       return;
-	    }
-	  // End
+	for(int i=0; i<nbRes; i++)
+	  {
+	     line = parseHelp(database.dbGetValue());
+	     serviceNotice(line,service,origin.getNickname());
+	     database.dbGetRow();
+	  }
 
-               int nbRes = database.dbSelect("txt", "help",
-                    "service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+origin.getLanguage()+"' ORDER by id");
+	return;
+     }
+   // End
+   //
+   int nbRes = database.dbSelect("txt", "help",
+				 "service='"+service+"' AND word='"+topic+"' AND parm='"+parm+"' AND lang='"+origin.getLanguage()+"' ORDER by id");
 
-               String line="";
+   String line="";
 
-               for(int i=0; i<nbRes; i++)
-                 {
-                    line = parseHelp(database.dbGetValue());
-                    serviceNotice(line,service,origin.getNickname());
-                    database.dbGetRow();
-                 }
-               return;
-            }
+   for(int i=0; i<nbRes; i++)
+     {
+	line = parseHelp(database.dbGetValue());
+	serviceNotice(line,service,origin.getNickname());
+	database.dbGetRow();
+     }
+   return;
+}
 
 /* sendEmail(String,String,String)
  *
@@ -601,16 +635,16 @@ ServicesInternal::sendHelpme(String const &from, String const &text)
  *
  */
 
-   void
-     ServicesInternal::sendEmail (String const &to, String const &subject, String const &text)
-       {
-          database.dbInsert("emails", "'','"+to+"','"+subject+"','"+text+"'");
-       }
+void
+  ServicesInternal::sendEmail (String const &to, String const &subject, String const &text)
+{
+   database.dbInsert("emails", "'','"+to+"','"+subject+"','"+text+"'");
+}
 
 void
-ServicesInternal::setMode(String const &who, String const &mode)
+  ServicesInternal::setMode(String const &who, String const &mode)
 {
-queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
+   queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
 
 }
 /* parseHelp(In)
@@ -620,47 +654,47 @@ queueAdd(":"+Kine::config().getOptionsServerName()+" MODE "+who+" "+mode);
  *
  */
 
-   String
-     ServicesInternal::parseHelp (String const &instr)
-       {
-	  String retstr;
-	  for (unsigned int i = 0; i != instr.length(); i++)
-	    {
-	       if (instr[i] == '%' && ((i != 0) && (instr[i - 1] != '\\')))
-		 {
-		    switch (instr[++i])
-		      {
-		       case 'u':
-			 retstr += '\037';
-			 break;
-		       case 'r':
-			 retstr += '\026';
-			 break;
-		       case 'b':
-			 retstr += '\002';
-			 break;
-		       default:
-			 retstr += instr[i];
-		      }
-		 }
-	       else
-		 {
-		    retstr += instr[i];
-		 }
-	    }
-	  return retstr;
-       }
+String
+  ServicesInternal::parseHelp (String const &instr)
+{
+   String retstr;
+   for (unsigned int i = 0; i != instr.length(); i++)
+     {
+	if (instr[i] == '%' && ((i != 0) && (instr[i - 1] != '\\')))
+	  {
+	     switch (instr[++i])
+	       {
+		case 'u':
+		  retstr += '\037';
+		  break;
+		case 'r':
+		  retstr += '\026';
+		  break;
+		case 'b':
+		  retstr += '\002';
+		  break;
+		default:
+		  retstr += instr[i];
+	       }
+	  }
+	else
+	  {
+	     retstr += instr[i];
+	  }
+     }
+   return retstr;
+}
 
 unsigned long
   ServicesInternal::getCountTx(void)
 {
-return countTx;
+   return countTx;
 }
 
 unsigned long
   ServicesInternal::getCountRx(void)
 {
-return countRx;
+   return countRx;
 }
 /* log(String,String,String)
  *
@@ -672,60 +706,60 @@ return countRx;
  * for channel based access.
  */
 
-   void
-     ServicesInternal::log (User& origin, String const &service, String const &text, String const &cname)
-       {
-	  //	  String thenick = origin.IRCtoLower();
-	  //	  User *ptr = findUser(thenick);
-	  String nicks = origin.getIDList();
-	  String ident = origin.getIdent();
-	  String host = origin.getHost();
-          database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"'");
-       }
+void
+  ServicesInternal::log (User& origin, String const &service, String const &text, String const &cname)
+{
+   //	  String thenick = origin.IRCtoLower();
+   //	  User *ptr = findUser(thenick);
+   String nicks = origin.getIDList();
+   String ident = origin.getIdent();
+   String host = origin.getHost();
+   database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"','"+cname+"'");
+}
 
-   void
-     ServicesInternal::log (User& origin, String const &service, String const &text)
-       {
-	  //	  String thenick = nick.IRCtoLower();
-	  //	  User *ptr = findUser(thenick);
-	  String nicks = origin.getIDList();
-	  String ident = origin.getIdent();
-	  String host = origin.getHost();
-          database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"',''");
-       }
+void
+  ServicesInternal::log (User& origin, String const &service, String const &text)
+{
+   //	  String thenick = nick.IRCtoLower();
+   //	  User *ptr = findUser(thenick);
+   String nicks = origin.getIDList();
+   String ident = origin.getIdent();
+   String host = origin.getHost();
+   database.dbInsert("log", "'','"+nicks+"','"+ident+"','"+host+"','"+service+"',NOW(),'"+text+"',''");
+}
 
 /* Overload kine's trim to add some stuff of our own! :-) */
-   String String::trim(void) const
+String String::trim(void) const
+{
+   size_type s = 0;
+   size_type e = length();
+
+   while ((s < e) &&
+	  ((c_str()[s] == ' ') ||
+	   (c_str()[s] == '\t') ||
+	   (c_str()[s] == '\r') ||
+	   (c_str()[s] == ':') ||
+	   (c_str()[s] == '@') ||
+	   (c_str()[s] == '+') ||
+	   (c_str()[s] == '\n')))
      {
-	size_type s = 0;
-	size_type e = length();
-
-	while ((s < e) &&
-	       ((c_str()[s] == ' ') ||
-		(c_str()[s] == '\t') ||
-		(c_str()[s] == '\r') ||
-		(c_str()[s] == ':') ||
-		(c_str()[s] == '@') ||
-		(c_str()[s] == '+') ||
-		(c_str()[s] == '\n')))
-	  {
-	     s++;
-	  }
-
-	while ((e > s) &&
-	       ((c_str()[e - 1] == ' ') ||
-		(c_str()[e - 1] == '\t') ||
-		(c_str()[e - 1] == '\r') ||
-		(c_str()[e - 1] == ':') ||
-		(c_str()[e - 1] == '@') ||
-		(c_str()[e - 1] == '+') ||
-		(c_str()[e - 1] == '\n')))
-	  {
-	     e--;
-	  }
-
-	return substr(s, e - s);
+	s++;
      }
+
+   while ((e > s) &&
+	  ((c_str()[e - 1] == ' ') ||
+	   (c_str()[e - 1] == '\t') ||
+	   (c_str()[e - 1] == '\r') ||
+	   (c_str()[e - 1] == ':') ||
+	   (c_str()[e - 1] == '@') ||
+	   (c_str()[e - 1] == '+') ||
+	   (c_str()[e - 1] == '\n')))
+     {
+	e--;
+     }
+
+   return substr(s, e - s);
+}
 
    /* servicePart(String,String)
     *
@@ -736,163 +770,160 @@ return countRx;
     *
     */
 
-   void
-     ServicesInternal::servicePart(String const &service, String const &target)
-       {
-	  queueAdd (String (":") + service + " PART " + target);
-       }
+void
+  ServicesInternal::servicePart(String const &service, String const &target)
+{
+   queueAdd (String (":") + service + " PART " + target);
+}
 
-   void ServicesInternal::serviceJoin(AISutil::String const &service,
-			      AISutil::String const &target)
-     {
-	queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
-		 AISutil::String::convert(currentTime) + " " + target +
-		 " + :" + service);
-     };
+void ServicesInternal::serviceJoin(AISutil::String const &service,
+				   AISutil::String const &target)
+{
+   queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
+	    AISutil::String::convert(currentTime) + " " + target +
+	    " + :" + service);
+};
 
    /* usePrivmsg(nick)
     *
     * Figure out whether we should use the privmsg or
     * the notice interface to talk to a client.
     */
-   
 
-   bool
-     ServicesInternal::usePrivmsg (String const &nick)
-       {
-	  if(!isNickRegistered(nick))
-	    {
-	       return false;
-	    }
+bool
+  ServicesInternal::usePrivmsg (String const &nick)
+{
+   if(!isNickRegistered(nick))
+     {
+	return false;
+     }
 
-          if( database.dbSelect("privmsg", "nicks", "nickname='"+nick+"'") < 1 )
-            return false;
+   if( database.dbSelect("privmsg", "nicks", "nickname='"+nick+"'") < 1 )
+     return false;
 
-          if( database.dbGetValue() == "1")
-            return true;
-          else
-            return false;
-       }
+   if( database.dbGetValue() == "1")
+     return true;
+   else
+     return false;
+}
 
+void
+  ServicesInternal::serviceKick(String const &chan, String const &nick, String const &reason)
+{
+   queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
+}
 
-   void
-     ServicesInternal::serviceKick(String const &chan, String const &nick, String const &reason)
-       {
-	  queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
-       }
+bool
+  ServicesInternal::isOp(String const &nick, String const &chan)
+{
+   int chanid = channel.getOnlineChanID(chan);
+   int nickid = locateID(nick);
+   if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1)
+     return false;
 
-   bool
-     ServicesInternal::isOp(String const &nick, String const &chan)
-       {
-	  int chanid = channel.getOnlineChanID(chan);
-	  int nickid = locateID(nick);
-          if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1)
-            return false;
+   if( database.dbGetValue().toInt() == 2 )
+     return true;
+   else
+     return false;
+}
 
-          if( database.dbGetValue().toInt() == 2 )
-            return true;
-          else
-            return false;
-       }
+bool
+  ServicesInternal::isVoice(String const &nick, String const &chan)
+{
+   int chanid = channel.getOnlineChanID(chan);
+   int nickid = locateID(nick);
+   if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1 )
+     return false;
 
-   bool
-     ServicesInternal::isVoice(String const &nick, String const &chan)
-       {
-          int chanid = channel.getOnlineChanID(chan);
-          int nickid = locateID(nick);
-          if( database.dbSelect("status", "chanstatus", "chanid='" + String::convert(chanid)+"' AND nickid='" + String::convert(nickid)+"'") < 1 )
-            return false;
+   if( database.dbGetValue().toInt() == 1 )
+     return true;
+   else
+     return false;
+}
 
-          if( database.dbGetValue().toInt() == 1 )
-            return true;
-          else
-            return false;
-       }
+void
+  ServicesInternal::sendNote(String const &from, String const &to, String const &text)
+{
+   String thenick = to.IRCtoLower();
+   database.dbInsert("notes", "'','"+from+"','"+to+"',NOW(),'"+text+"'");
+   int foo = locateID(thenick);
+   if(foo>0)
+     {
+	User *ptr = findUser(thenick);
+	//Client is online.. But are they identified HUHUHUH?!!?
+	if(ptr->isIdentified(to))
+	  {
+	     String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
+	     serviceNotice(togo,"Note",to);
+	  }
+     }
 
-   void
-     ServicesInternal::sendNote(String const &from, String const &to, String const &text)
-       {
-	  String thenick = to.IRCtoLower();
-          database.dbInsert("notes", "'','"+from+"','"+to+"',NOW(),'"+text+"'");
-	  int foo = locateID(thenick);
-	  if(foo>0)
-	    {
-	       User *ptr = findUser(thenick);
-	       //Client is online.. But are they identified HUHUHUH?!!?
-	       if(ptr->isIdentified(to))
-		 {
-		    String togo = String("\002[\002New Note\002]\002 From \002")+from+"\002";
-		    serviceNotice(togo,"Note",to);
-		 }
-	    }
-
-       }
+}
 
 // TODO: check why the 2 lines are commented
 void ServicesInternal::checkpoint(void)
 {
-	  //Any nick mods to be done? :-)
+   //Any nick mods to be done? :-)
 
-          int nbRes = database.dbSelect("kills");
+   int nbRes = database.dbSelect("kills");
 
-          for(int i=0; i<nbRes; i++)
-	    {
-	       String id = database.dbGetValue(0);
-	       String killt = database.dbGetValue(2);
-	       int nowt = currentTime;
-	       String tomod = database.dbGetValue(1);
-               database.dbGetRow();
+   for(int i=0; i<nbRes; i++)
+     {
+	String id = database.dbGetValue(0);
+	String killt = database.dbGetValue(2);
+	int nowt = currentTime;
+	String tomod = database.dbGetValue(1);
+	database.dbGetRow();
 
-	       if(killt.toInt() < nowt)
-		 {
-                    database.dbDelete("kills", "id='"+id+"'");
-		    int foo = 0;
-		    bool running = true;
-		    String newnick = "";
-		    while(running)
-		      {
-			 foo++;
-			 newnick = tomod+String::convert(foo);
-			 if(!isNickRegistered(newnick))
-			   {
-			      if(locateID(newnick)==0)
-				{
-				   //Oke we can use this one :)
-				   running = false;
-				}
-			   }
+	if(killt.toInt() < nowt)
+	  {
+	     database.dbDelete("kills", "id='"+id+"'");
+	     int foo = 0;
+	     bool running = true;
+	     String newnick = "";
+	     while(running)
+	       {
+		  foo++;
+		  newnick = tomod+String::convert(foo);
+		  if(!isNickRegistered(newnick))
+		    {
+		       if(locateID(newnick)==0)
+			 {
+			    //Oke we can use this one :)
+			    running = false;
+			 }
+		    }
 
-		      }
-		    User *ptr = findUser(tomod);
-		    if(ptr==0)
-		      {
+	       }
+	     User *ptr = findUser(tomod);
+	     if(ptr==0)
+	       {
 #ifdef DEBUG
-			 logLine("I could not find the users record.. hence i"
-				 " can't change their nick " + tomod,
-				 Log::Debug);
+		  logLine("I could not find the users record.. hence i"
+			  " can't change their nick " + tomod,
+			  Log::Debug);
 #endif
-			 return;
-		      }
+		  return;
+	       }
 
-		    String msg = "Non-Identification: Your nickname is now being changed";
-		    serviceNotice(msg,"Nick",tomod);
-		    queueAdd(":" + Kine::config().getOptionsServerName() +
-			     " MODNICK " + tomod + " " + newnick + " :0");
-//		    setNick(*ptr,newnick);
-//		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
-		 }
-	       if((killt.toInt()-nowt)<60)
-		 {
-		    if((killt.toInt()-nowt)>50)
-		      {
-			 String msg = "\002[\002Identification Warning\002]\002 Less than 60 seconds left to identify";
-			 serviceNotice(msg,"Nick",tomod);
-		      }
-		 }
-	    }
+	     String msg = "Non-Identification: Your nickname is now being changed";
+	     serviceNotice(msg,"Nick",tomod);
+	     queueAdd(":" + Kine::config().getOptionsServerName() +
+		      " MODNICK " + tomod + " " + newnick + " :0");
+	     //		    setNick(*ptr,newnick);
+	     //		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
+	  }
+	if((killt.toInt()-nowt)<60)
+	  {
+	     if((killt.toInt()-nowt)>50)
+	       {
+		  String msg = "\002[\002Identification Warning\002]\002 Less than 60 seconds left to identify";
+		  serviceNotice(msg,"Nick",tomod);
+	       }
+	  }
+     }
 
 }
-
 
 bool ServicesInternal::queueFlush(void)
 {
@@ -944,9 +975,9 @@ bool ServicesInternal::queueFlush(void)
 };
 
 /* addChan(String,Int)
- * 
+ *
  * Add a channel to our channel map
- * 
+ *
  */
 dChan* const ServicesInternal::addChan(const String& name, const int oid)
 {
@@ -988,9 +1019,9 @@ User* ServicesInternal::findUser(String &name)
 }
 
 /* findChan(String)
- * 
+ *
  * Find and return a pointer to that channel.
- * 
+ *
  */
 dChan* ServicesInternal::findChan(String &name)
 {
@@ -1025,9 +1056,9 @@ bool ServicesInternal::delUser(String &name)
 };
 
 /* delChan(String)
- * 
+ *
  * Delete the given channel.
- * 
+ *
  */
 bool ServicesInternal::delChan(String &name)
 {
@@ -1057,7 +1088,6 @@ void ServicesInternal::setNick(User &who, String &newnick)
    database.dbUpdate("onlineclients", "nickname='"+fixedNewNick+"'", "id="+who.getOnlineIDString());
 };
 
-
 /* isAuthorised(String)
  *
  * Return true if the specificed server is allowed to connect
@@ -1079,7 +1109,7 @@ bool ServicesInternal::isAuthorised(String const &server)
        return false;
    }
 */
-return true;
+   return true;
 };
 
 /* addClient(...)
@@ -1089,15 +1119,15 @@ return true;
  */
 
 User* ServicesInternal::addClient(String const &nick, String const &hops,
-				  String const &timestamp, 
+				  String const &timestamp,
 				  String const &username, String const &host,
 				  String const &vwhost, String const &server,
 				  String const &modes, String const &realname)
 {
    database.dbInsert("onlineclients", "'','"+nick.toLower()+"','"
-                  +hops + "','" + timestamp + "','" + username + "','"
-                  +host + "','" + vwhost + "','" + server + "','"
-                  +modes+ "','" + realname + "'");
+		     +hops + "','" + timestamp + "','" + username + "','"
+		     +host + "','" + vwhost + "','" + server + "','"
+		     +modes+ "','" + realname + "'");
    int foo = locateID(nick);
    String client = nick.IRCtoLower();
    User *ptr = addUser(client,foo);
@@ -1116,13 +1146,13 @@ int ServicesInternal::locateID(String const &nick)
    String newnick = nick.IRCtoLower();
 
    if( database.dbSelect("id", "onlineclients", "nickname='"+newnick+"'") < 1 )
-   {
+     {
 #ifdef DEBUG
-     logLine("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID",
-	     Log::Debug);
+	logLine("ERROR: Returning 0 (NOT KNOWN) from getOnlineNickID",
+		Log::Debug);
 #endif
-     return 0;
-   }
+	return 0;
+     }
    else
      return database.dbGetValue().toInt();
 }
@@ -1141,10 +1171,10 @@ int ServicesInternal::getRequiredAccess(String const &service,
 
      /* If no match return 999 - to ensure no-one can use the command
       * since its obvious a command entry hasn't been set up for it */
-      return 999;
+     return 999;
 
    else
-      return database.dbGetValue().toInt();
+     return database.dbGetValue().toInt();
 };
 
 /* isNickRegistered(String)
@@ -1158,14 +1188,13 @@ bool ServicesInternal::isNickRegistered(String const &nick)
    if( database.dbSelect("id", "nicks", "nickname='"+nick+"'") < 1 )
      return false;
    else
-   {
-     if( database.dbGetValue().toInt() > 0 )
-        return true;
-     else
-        return false;
-   }
+     {
+	if( database.dbGetValue().toInt() > 0 )
+	  return true;
+	else
+	  return false;
+     }
 }
-
 
 /* getRegisteredNickID(String)
  *
@@ -1192,7 +1221,7 @@ int ServicesInternal::getRegisteredNickID(String const &nick)
 
 void ServicesInternal::modeIdentify(String const &nick)
 {
-   queueAdd(":" + Kine::config().getOptionsServerName() + " SVSMODE " + nick + 
+   queueAdd(":" + Kine::config().getOptionsServerName() + " SVSMODE " + nick +
 	    " +r");
    return;
 }
@@ -1241,7 +1270,7 @@ String ServicesInternal::getOnlineNick(int const &id)
 /*
  * getOnlineChan(int)
  *
- * Return the unique ID for any given channel 
+ * Return the unique ID for any given channel
  *
  */
 int ServicesInternal::getOnlineChanID(String const &id)
@@ -1282,17 +1311,17 @@ void ServicesInternal::validateOper(String &origin)
 	String tosend = origin+" just tried to become an IRC Operator - \002No Access\002";
 	logLine(tosend, Log::Warning);
 	String reason = "You have no permission to become an IRC Operator";
-	/* We have a problem here - for some reason the parser is trying 
-	 * to validate every online user - this is what happened when I 
+	/* We have a problem here - for some reason the parser is trying
+	 * to validate every online user - this is what happened when I
 	 * brought Oper online today
-	 * 
+	 *
 	 * >09:32:41< *** Quits: Praetorian (Killed (Oper ()))
 	 * >09:32:41< *** Quits: Luster (Killed (Oper ()))
 	 * >09:32:41< *** Quits: allan1 (Killed (Oper ()))
-	 * 
+	 *
 	 * None of these users had usermode +o :-)
 	 */
-	  killnick(origin, "Oper", reason);
+	killnick(origin, "Oper", reason);
 	return;
      }
    if(axs==-1)
@@ -1330,12 +1359,12 @@ int
    if( database.dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
      return 0;
    else
-   {
+     {
 #ifdef DEBUG
-      logLine("AXS:" + database.dbGetValue(),
-	      Log::Debug);
+	logLine("AXS:" + database.dbGetValue(),
+		Log::Debug);
 #endif
-     return database.dbGetValue().toInt();
-   }
+	return database.dbGetValue().toInt();
+     }
 }
 
