@@ -133,7 +133,7 @@ Services::run(void)
         }
 	else
 	{
-		cout << "not connected..." << endl;
+		//cout << "not connected..." << endl;
 	}
 
       switch (select (maxSock, &inputSet, &outputSet, NULL, &timer))
@@ -152,7 +152,6 @@ Services::run(void)
 		  Services::helpme("Error in handleInput() - Jumping server","Serv");
 		  connected = false;
 		  disconnectTime = currentTime;
-		  cout << "Disconnected via handleInput - setting disconnected time to " << disconnectTime << endl;
 		  disconnect();
                 }
             }
@@ -163,7 +162,6 @@ Services::run(void)
                   Log::logLine("Disconnecting... (Queue flushing error)");
 	          connected = false;
 		  disconnectTime = currentTime;
-		  cout << "Disconnected via queueFlush - setting disconnected time to " << disconnectTime << endl;
                   disconnect ();
                 }
 
@@ -191,7 +189,6 @@ Services::run(void)
 	}
       if (!connected && (currentTime >= (time_t) (disconnectTime + 10)))
         {
-	  cout << "trying to connect " << endl;
           connect ();
         }
     }
@@ -335,20 +332,17 @@ bool Services::connect (void)
   if (sock >= 0)
     {
       Log::logLine ("Closing stale network socket");
-      cout << "Stale socket?" << endl;
       socky.close();
       sock = -1;
     }
     socky.setRemoteAddress("209.124.83.254");
     socky.setRemotePort(6667);
-    cout << "Entering sockey.connect()" << endl;
     if(!socky.connect())
 	{
-		cout << "Socky.connect() returned an error" << endl;
+		//cout << "Socky.connect() returned an error" << endl;
 		
 	}
     Exordium::Services::connected = true;
-    cout << socky.getFD() << " is getFD() " << endl;
   Log::logLine ("Beginning handshake with uplink");
   maxSock = socky.getFD() + 1;
   queueAdd ("PASS pass :TS");

@@ -522,10 +522,6 @@ return;
 extern "C" Module *service_init(void) {
    return new Module("nick", new Nick());
 }
-void _fini(void)
-{
-	std::cout << "Dead" << std::endl;
-}
 
 };
 

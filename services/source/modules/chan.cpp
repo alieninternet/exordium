@@ -232,10 +232,14 @@ CHAN_FUNC (Chan::parseBAN)
 
 	String who = tokens.nextToken();
 	String reason = tokens.rest();
-	if(channel=="" | who=="" | reason=="")
+	if(channel=="" | who=="")
 	{
 		Services::serviceNotice("Usage:  ban #channel nickname your optional reason goes here","Chan",origin);
 		return;
+	}
+	if(reason=="")
+	{
+		reason = "You are banned";
 	}
 	String la = Nickname::getIDList(origin);
 	StringTokens st (la);

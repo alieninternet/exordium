@@ -23,7 +23,10 @@ class Module {
    Module(const char *n, Service *s)
      : modName(n), modService(s)
      {};
-
+   ~Module()
+	{
+		cout << "Module terminating " << *modName << endl;
+	};
 
 };
 

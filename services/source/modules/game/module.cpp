@@ -113,7 +113,6 @@ GAME_FUNC (Game::parseQUOTE)
 		Services::Debug("I choose "+String::convert(j));
 	}
 	String thequote = Services::getQuote(j);
-	cout << thequote << endl;
 	StringTokens st (thequote);
 	bool more = false;
 	more = st.hasMoreTokens();

@@ -18,15 +18,17 @@ PRIVMSG Bot :<Numerical Query Code> <Arguments>
 
 The numercial question codes/responses are as follows:
 
-Code	Arguments		Information Requested				Response Codes
+Code	Arguments			Information Requested			Response Codes
 
-100	Single Nickname		Is this person identified as this nickname	0 = Not identified
-										1 = Identified as that nick
+100	Single/Multiple Nicknames	Is this person identified		0 = Not identified
+					as the given nicknames			1 = Identified as that nick
 										2 = Nickname not online
 										3 = Nickname not registered
 
-101	Single Nickname		Is this person online				0 = No
+101	Single/Multiple Nicknames	Is this person online			0 = No
 										1 = Yes
+
+
 
 
 
