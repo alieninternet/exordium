@@ -78,6 +78,12 @@ namespace Exordium {
 			 const AISutil::String& reason);
 
          void handleTopic(const AISutil::String&, dChan& channel, const AISutil::String &);
+
+         void handleChannelJoin(User& origin, dChan &channel, const int &status);
+         void handleChannelPart(User& origin, dChan &channel);
+
+         void handleChannelMode( dChan &channel, const AISutil::String &modes,
+                                 const AISutil::String &target, const AISutil::String &source );
 	 
 	 // Grab the information structure of a module
 	 virtual const moduleInfo_type& getModuleInfo(void) const

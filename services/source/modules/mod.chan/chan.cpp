@@ -187,37 +187,39 @@ CHAN_FUNC (Module::parseSET)
 	  {
 	     std::cout << command << std::endl;
 	     std::cout << value << std::endl;
+
 	     if(command=="log")
 	       {
 		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanLog(true);
 		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_TRUE),getName());
-		       return;
+                       return;
 		    }
-		  if(AISutil::Utils::toBool(value)==0)
+		  else
 		    {
 		       ptr->setChanLog(false);
 		       origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
-		       return;
+                       return;
 		    }
 		  origin.sendMessage(GETLANG(chan_SET_CHANLOG_FALSE),getName());
 		  return;
 	       } // Log
-	     if(command=="secure")
+
+	     if(command=="secureops" || command=="secure")
 	       {
 
 		  if(AISutil::Utils::toBool(value)==1)
 		    {
 		       ptr->setChanSecure(true);
 		       origin.sendMessage(GETLANG(chan_SET_SECURE_TRUE),getName());
-		       return;
+                       return;
 		    }
-		  if(AISutil::Utils::toBool(value)==0)
+		  else
 		    {
 		       ptr->setChanSecure(false);
 		       origin.sendMessage(GETLANG(chan_SET_SECURE_FALSE),getName());
-		       return;
+                       return;
 		    }
 		  origin.sendMessage(GETLANG(chan_SET_SECURE_USAGE),getName());
 		  return;
@@ -231,7 +233,7 @@ CHAN_FUNC (Module::parseSET)
                        origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_TRUE), getName());
                        return;
                     }
-                  if(AISutil::Utils::toBool(value)==0)
+                  else
                     {
                        ptr->setEnforceBans(false);
                        origin.sendMessage(GETLANG(chan_SET_ENFORCE_BANS_FALSE), getName());
@@ -250,7 +252,7 @@ CHAN_FUNC (Module::parseSET)
                        origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_TRUE), getName());
                        return;
                     }
-                  if(AISutil::Utils::toBool(value)==0)
+                  else
                     {
                        ptr->setTrackTopics(false);
                        origin.sendMessage(GETLANG(chan_SET_TRACK_TOPICS_FALSE), getName());
@@ -260,6 +262,88 @@ CHAN_FUNC (Module::parseSET)
                   return;
 
                }
+
+             if(command=="mlock")
+               {
+                  if(AISutil::Utils::toBool(value)==1)
+                    {
+                       ptr->setModeLock(true);
+                       origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_TRUE), getName());
+                       return;
+                    }
+                  else
+                    {
+                       ptr->setModeLock(false);
+                       origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_FALSE), getName());
+                       return;
+                    }
+                  origin.sendMessage(GETLANG(chan_SET_MODE_LOCK_USAGE),getName());
+                  return;
+
+               }
+
+
+             // Note: Right now there is no validation on the modes..
+             if(command=="mode")
+               {
+                  if( value.length() > 0 )
+                  {
+                      if ( value[0] == '+' || value[0] == '-' )
+                      {
+                           ptr->setChannelModes( value );
+                           origin.sendMessage(GETLANG(chan_SET_MODE, value), getName());
+                      }
+                      else
+                        origin.sendMessage(GETLANG(chan_SET_MODE_USAGE),getName());
+                  }
+                  else
+                  {
+                      ptr->setChannelModes( String("") );
+                      origin.sendMessage(GETLANG(chan_SET_MODE, ""), getName());
+                  }
+
+                  return;
+
+               }
+
+
+             if(command=="entrymsg")
+               {
+                  String line = value + " " +tokens.rest();
+
+                  if( line.length() > 200 )
+                     ptr->setEntryMsg(line.substr(0, 200));
+                  else
+                     ptr->setEntryMsg(line);
+
+                  if(value.length()>0)
+                      origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG), getName());
+                  else
+                      origin.sendMessage(GETLANG(chan_SET_ENTRY_MSG_OFF), getName());
+
+                  return;
+               }
+
+
+             if(command=="partmsg")
+               {
+                  String line = value + " " +tokens.rest();
+ 
+                  if( line.length() > 200 )
+                     ptr->setPartMsg(line.substr(0, 200));
+                  else
+                     ptr->setPartMsg(line);
+
+
+                  if(value.length()>0)
+                      origin.sendMessage(GETLANG(chan_SET_PART_MSG), getName());
+                  else
+                      origin.sendMessage(GETLANG(chan_SET_PART_MSG_OFF), getName());
+
+                  return;
+               }
+
+
 
 	     origin.sendMessage(GETLANG(chan_SET_UNSUPPORTED_OPTION),getName());
 	     return;
@@ -613,7 +697,7 @@ CHAN_FUNC (Module::parseOP)
      {
 	String currnick = st.nextToken();
 	bool foundmatch = false;
-	if(ptr->getAccess(currnick)>100)
+	if(ptr->getAccess(currnick)>99)
 	  {
 	     String foo = tokens.nextToken();
 	     User *fptr = services->findUser(foo);
@@ -700,7 +784,7 @@ CHAN_FUNC (Module::parseDEOP)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	if(ptr->getAccess(currnick)>100)
+	if(ptr->getAccess(currnick)>99)
 	  {
 	     String foo = tokens.nextToken();
 	     if(foo=="")
@@ -960,7 +1044,7 @@ CHAN_FUNC (Module::parseKICK)
    while(more==true)
      {
 	String currnick = st.nextToken();
-	if(ptr->getAccess(currnick)>100)
+	if(ptr->getAccess(currnick)>99)
 	  {
 	     if(who.toLower()==getName())
 	       {
@@ -1112,13 +1196,199 @@ void
 }
 
 
+void
+  Module::handleChannelJoin( User &origin, dChan &channel, const int &status )
+{
+   String msg = channel.getEntryMsg();
+
+   if( msg.length() > 0 )
+      origin.sendMessage( msg, getName() );
+
+
+   if( status < 2 )
+   {
+       if(origin.isIdentified(origin.getNickname()))
+       {
+           if(channel.getAccess(origin.getNickname())>99)
+           {
+                channel.mode(getName(),"+o",origin.getNickname());
+                channel.addUser(origin,2);
+                channel.log(origin,getName(),"Autoopped on join",channel.getName());
+           }
+
+       }
+   }
+   else
+   {
+       if(channel.isChanSecure())
+       {
+           if(channel.getAccess(origin.getNickname())<100)
+           {
+                channel.mode(getName(), "-o", origin.getNickname());
+                channel.addUser(origin, status-2);
+           }
+       }
+
+   }
+
+}
+
+
+void
+  Module::handleChannelPart( User &origin, dChan &channel )
+{
+   String msg = channel.getPartMsg();
+
+   if( msg.length() > 0 )
+      origin.sendMessage( msg, getName() );
+}
+
+
+void
+  Module::handleChannelMode( dChan &channel, const String &modes, const String &target, const String &source )
+{
+  bool add=false;
+  bool take=false;
+  int i;
+  int length = modes.length();
+  String targ=target;
+
+
+  for (i = 0; i!=length; i++)
+  {
+       if (modes[i] == '+')
+       {
+           add = true;
+           take = false;
+           continue;
+       }
+       if (modes[i] == '-')
+       {
+           add = false;
+           take = true;
+           continue;
+       }
+
+
+       if(modes[i]=='b')
+       {
+           if(add)
+           {
+                std::cout << "New Channel ban set by : " << source << " on " << target << std::endl;
+
+           }
+           if(take)
+           {
+                std::cout << "New Channel ban removed by : " << source << " on " << target << std::endl;
+           }
+       }
+  
+       if(modes[i] == 'o')
+       {
+           if(add)
+           {
+                if(target.toLower()==getName().toLower())
+                    return;
+  
+                std::cout << "Checking to see if " << target << " has access in " << channel.getName() << std::endl;
+ 
+                User *ptr = services->findUser( targ );
+
+                if(channel.isChanSecure())
+                {
+                    std::cout << "  ^- SecureOps is enabled" << std::endl;
+
+                    /* Channel has SECURE enabled */
+                    int axs = channel.getAccess(target);
+                    std::cout << "  ^- " << target << " has level " << axs << std::endl;
+
+                    if(axs<100)
+                    {
+                         std::cout << " ^- Deop the bitch" << std::endl;
+                         /* Hey not allowed to be opped!! */
+
+                         channel.mode(getName(), "-o",target);
+                         /* Tell origin off! */
+
+                    }
+                }
+
+                channel.addUser(*ptr,2);
+           }
+           
+           if(take)
+           {
+                if(target.toLower()==getName().toLower())
+                     return;
+
+                 User *ptr = services->findUser( targ );
+
+                 if(channel.isChanSecure())
+                 {
+                    std::cout << "  ^- SecureOps is enabled" << std::endl;
+
+                    /* Channel has SECURE enabled */
+                    int axs = channel.getAccess(source);
+                    std::cout << "  ^- " << source << " has level " << axs << std::endl;
+
+                    if(axs<100)
+                    {
+                         std::cout << " ^- Reop the user who was deopped by non-privileged user" << std::endl;
+
+                         channel.mode(getName(), "+o",target);
+
+                    }
+                    else
+                         channel.addUser(*ptr,0);
+
+                }
+                else
+                    channel.addUser(*ptr,0);
+
+           }
+       }
+       
+       if(modes[i] == 'v')
+       {
+           if(add)
+           {
+                 if(target.toLower()==getName().toLower())
+                     return;
+                 User *ptr = services->findUser( targ );
+                 channel.addUser(*ptr,1);
+           }
+           if(take)
+           {
+                 if(target.toLower()==getName().toLower())
+                     return;
+                 User *ptr = services->findUser( targ );
+                 channel.addUser(*ptr,0);
+           }
+       }
+  }
+
+
+
+}
+
+
+//void
+//  Module::handleBan
+
+
+
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo =
 {
    "Channel Service",
      0, 0,
-     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY |     /* AWAY's */
-     Exordium::Service::moduleInfo_type::Events::CHANNEL_TOPIC /* Topic being changed */
+     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY   |   /* AWAY's */
+     Exordium::Service::moduleInfo_type::Events::CHANNEL_TOPIC |   /* Topic being changed */
+     Exordium::Service::moduleInfo_type::Events::CHANNEL_JOIN  |   /* User joining the channel */
+     Exordium::Service::moduleInfo_type::Events::CHANNEL_PART  |   /* User leaving a channel */
+     Exordium::Service::moduleInfo_type::Events::CHANNEL_BAN   |   /* Channel ban activated */
+     Exordium::Service::moduleInfo_type::Events::CHANNEL_MODE      /* Channel mode applied */
+ 
 };
 
 // Start the service
