@@ -8,6 +8,8 @@ AM_INIT_AUTOMAKE([1.6.1 foreign no-installinfo no-installman subdir-objects])
 AC_LIBTOOL_DLOPEN
 AC_LIBLTDL_INSTALLABLE
 AC_PROG_LIBTOOL
+AC_SUBST(LTDLINCL)
+AC_SUBST(LIBLTDL)
 AC_PREREQ(2.54)
 AC_COPYRIGHT(Exordium Network Services)
 AC_COPYRIGHT(Please read the LICENSE file for more information)
