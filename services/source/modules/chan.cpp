@@ -161,14 +161,12 @@ void
      }
    String la = services.getNickname().getIDList(origin);
    StringTokens st (la);
-   bool more = false;
-   more = st.hasMoreTokens();
+   bool more = st.hasMoreTokens();
    while(more==true)
      {
 
 	String currnick  = st.nextToken();
-	int access = services.getChannel().getChanAccess(channel,currnick);
-	if(access>400)
+	if((services.getChannel().getChanAccess(channel,currnick)>400))
 	  {
 	     if(command=="log")
 	       {
