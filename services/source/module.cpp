@@ -97,8 +97,8 @@ namespace {
       
       // Destructor
       ~mod_exordium(void) {
-	 delete db;
 	 delete services;
+	 delete db;
       };
 
       // Return the information about ourselves
