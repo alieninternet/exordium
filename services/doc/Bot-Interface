@@ -1,3 +1,10 @@
+# This file is a part of Exordium Network Services - (c) 2002 IRCDome Development Team                             
+# $Author$        
+# $Date$                      
+# $Id$                                                                        
+
+
+
 This documents purpose is to describe the bot 'friendly' interface to services, designed
 to provide a simplier interface to services for those users that wish to run bots.
 
@@ -11,15 +18,17 @@ PRIVMSG Bot :<Numerical Query Code> <Arguments>
 
 The numercial question codes/responses are as follows:
 
-Code	Arguments		Information Requested				Response Codes
+Code	Arguments			Information Requested			Response Codes
 
-100	Single Nickname		Is this person identified as this nickname	0 = Not identified
-										1 = Identified as that nick
+100	Single/Multiple Nicknames	Is this person identified		0 = Not identified
+					as the given nicknames			1 = Identified as that nick
 										2 = Nickname not online
 										3 = Nickname not registered
 
-101	Single Nickname		Is this person online				0 = No
+101	Single/Multiple Nicknames	Is this person online			0 = No
 										1 = Yes
+
+
 
 
 
