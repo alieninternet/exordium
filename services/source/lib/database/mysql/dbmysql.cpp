@@ -185,7 +185,7 @@ void CMySQL::dbUnlock(void)
 
 CResult* CMySQL::dbGetResultSet(void)
 {
-   MYSQL_RES rres = *mysqlres;
-   return new CMySQLRes(rres);
+
+   return new CMySQLRes(*mysqlres);
 }
 

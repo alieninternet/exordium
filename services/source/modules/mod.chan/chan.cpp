@@ -840,14 +840,28 @@ CHAN_FUNC (Module::parseCOMMANDS)
 	origin.sendMessage("Error: That channel is not registered",getName());
 	return;
      }
-   origin.sendMessage("Channel access list for "+channel,getName());
-   int nbRes = services->getDatabase().dbSelect("nickid", "chanaccess", "chanid="+String::convert(ptr->getRegisteredID()));
-   String tnickid,taccess;
-   for(int i=0; i<nbRes; i++)
-    {
-//       CResult *myRes = services->getDatabase().dbGetResultSet(); 
-    }
+   
+   origin.sendMessage("Channel access list for " + channel,
+		      getName());
+   
+   int nbRes =
+     services->getDatabase().dbSelect("nickid", "chanaccess",
+				      "chanid=" + 
+				      String::convert(ptr->getRegisteredID()));
+   
+   CResult *myRes = services->getDatabase().dbGetResultSet();
+  
+   String tnickid, taccess;
+   
+   for (int i = 0; i < nbRes; i++) {
+      String foo = myRes->getValue();
+      origin.sendMessage(foo, getName());
+      myRes->nextRow();
+   }
+   
    ptr->log(origin,"Chan","Did a channel access",channel);
+   //Finished with result set! Clean up
+   delete myRes;
 }
 
 EXORDIUM_SERVICE_INIT_FUNCTION

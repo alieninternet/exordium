@@ -39,14 +39,21 @@
 namespace Exordium {
    class CMySQLRes : public CResult {
     private:
-      MYSQL_RES *mysqlres;
-      MYSQL_RES mysqlrow;
-
+      MYSQL_RES mysqlres;
+      MYSQL_ROW mysqlrow;
+      MYSQL *mysql;
+      
+      int results; // Size of our result set..
+      int seekpos; // Position we are at..
     public:
-      CMySQLRes(MYSQL_RES &result);
+      CMySQLRes(MYSQL_RES ptr);
       
       ~CMySQLRes()
 	{};
+      
+      // Defintions
+      AISutil::String getValue(void);
+      void nextRow(void);
       
       //functions.
    };

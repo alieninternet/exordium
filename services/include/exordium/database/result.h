@@ -38,6 +38,9 @@ namespace Exordium {
 
       virtual ~CResult(void)
 	{};
+      
+      virtual AISutil::String getValue(void)=0;
+      virtual void nextRow(void)=0;
    };
 };
 
