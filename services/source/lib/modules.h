@@ -38,6 +38,7 @@ namespace Exordium {
    class Services;
    class User;
    class Service;
+   class dChan;
    
    class Modules {
     public:
@@ -71,6 +72,8 @@ namespace Exordium {
       
       void handleAway(User&, const AISutil::String &);
       void handleClientSignon(User&);
+      void handleTopic(const AISutil::String &, dChan&);
+
       // Add a module to the list
       Service* const loadModule(const AISutil::String& fileName, 
 				AISutil::String& errString);

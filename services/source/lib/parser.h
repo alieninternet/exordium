@@ -70,6 +70,7 @@ namespace Exordium {
       void PARSER_FUNC(parseKICK);
       void PARSER_FUNC(parseKILL);
       void PARSER_FUNC(parseMOTD);
+      void PARSER_FUNC(parseTOPIC);
       void PARSER_FUNC(parseUSERAWAY);
    };
 }; // namespace Exordium

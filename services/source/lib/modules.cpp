@@ -278,6 +278,32 @@ void Modules::handleAway(User& origin, const AISutil::String &message) {
    
 }
 
+
+/* handleTopic - Handle a TOPIC message from the parser and throw it
+ * to the appropiate modules who are listening for this event type.
+ *
+ */
+void Modules::handleTopic(const AISutil::String &origin, dChan& channel) {
+
+   for (modules_type::const_iterator it = modules.begin();
+        it != modules.end(); it++) {
+      String tmp =  (*it).first;
+      if((*it).second->service->getModuleInfo().eventsMask &
+         Exordium::Service::moduleInfo_type::Events::CHANNEL_TOPIC) {
+         /* Ok this module wants to know about TOPIC */
+#ifdef DEBUG
+         std::cout << tmp << " would like to know when a TOPIC is received" << std::endl;
+#endif
+         (*it).second->service->handleTopic(origin,channel);
+      }
+
+   }
+
+}
+
+
+
+
 /* dumpModules - Dump a list of modules
  * Original 07/06/2002 pickle
  * 09/06/2002 james - Added the ability to return the line as a string

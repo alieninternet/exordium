@@ -67,6 +67,7 @@ const struct Parser::functionTableStruct Parser::functionTable[] =
      { "KILL", &Parser::parseKILL },
      { "MOTD", &Parser::parseMOTD },
      { "VERSION", &Parser::parseMOTD },
+     { "TOPIC", &Parser::parseTOPIC },
      { 0, 0 }
 };
 
@@ -84,10 +85,11 @@ void Parser::parseLine(const String& line)
 	origin = st.nextToken ().substr (1);
 	origin = origin.IRCtoLower();
      }
-   //Find the associated user for this origin...
-   //   User *ptr = services.findUser(origin);
+
    String command = st.nextToken ();
-   //   if (ptr != 0) {
+
+
+
    for (int i = 0; functionTable[i].command != 0; i++)
      {
 	// Does this match?
@@ -98,8 +100,8 @@ void Parser::parseLine(const String& line)
 	     return;
 	  }
      }
-   // }
-   //
+
+
    services.logLine("Unparsed Input!: " + line,
 		    Log::Debug);
 };
@@ -313,7 +315,7 @@ void
 	  {
 	     if(add)
 	       {
-		  services.validateOper(OLDorigin);
+		  //services.validateOper(OLDorigin);
 	       }
 	     else if(take)
                {
@@ -634,13 +636,6 @@ void
 	       username=username.substr(1, username.length()-1);
 	  }
 
-        /******* NOTE
-         Bug fixed: leading @ or + was causing user not found errors.
-         Solution: foo is only used to toggle the booleans, username
-                   contains the nick without leading @ or +.
-                   Thus when we need to pass the nick we use username.
-         -- PLV
-        *******/
 
         User *ptr = services.findUser(username);
 	if(ptr==0)
@@ -760,3 +755,26 @@ void
    origin->sendMessage("Please see http://sf.net/projects/exordium for details on the project",Kine::config().getOptionsServerName(),false);
 }
 
+
+
+void
+  PARSER_FUNC (Parser::parseTOPIC)
+{
+  // OLDorigin can be either a user or a server so we dont consider it,
+  // the user is given later
+
+  String channel = tokens.nextToken();
+  String source = tokens.nextToken();
+
+  dChan *chan = services.findChan( channel );
+
+  if( chan == 0 )
+  {
+     services.logLine("Error in Parser::parseTOPIC - Null pointer for channel " + channel);
+     return;
+  }
+
+  // We only care if the channel is registered
+  if( chan->isRegistered() )
+     services.getConfigInternal().getModules().handleTopic( source, *chan );
+}
