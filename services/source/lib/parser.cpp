@@ -74,6 +74,9 @@ void Parser::parseLine(const String& line)
    StringTokens st (line);
    String origin = "";
    std::cout << "DEBUG RX: " << line << std::endl;
+   char c;
+   c = line[0];
+   std::cout << "The Ascii Value of " << c << " is " << (int)c << std::endl;
    if (line[0] == ':')
      {
 	// Skip the first parameter, we do not care about it anyway
@@ -371,7 +374,7 @@ void PARSER_FUNC (Parser::parseN)
    String server = tokens.nextToken();
    (void)tokens.nextToken();
    (void)tokens.nextToken();
-   String realname = tokens.rest();
+   String realname = tokens.nextColonToken();
    User *newNick = services.addClient(nick, hops, timestamp, username, host,
 				      vwhost, server, modes, realname);
    if (newNick == 0) {

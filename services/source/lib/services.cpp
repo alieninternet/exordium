@@ -292,13 +292,11 @@ countRx(0)
 bool ServicesInternal::handleInput (void)
 {
    std::stringstream bufferin;
-   //socky.read(bufferin);
-   String line;
-
+   char c;
    if(!socky.read(bufferin))
      {
 	std::cout << "Read failed!" << std::endl;
-	return false;
+	return false; /* Fatal error - should d/c */
      }
 
    if(!bufferin.str().empty())
@@ -308,7 +306,7 @@ bool ServicesInternal::handleInput (void)
 	  {
 	     if(bufferin.peek()==-1)
 	       {
-	          return false;
+	          return false; /* Not fatal, just not ready */
 	       }
 
 	     if(bufferin.peek() == '\0')
@@ -329,22 +327,12 @@ bool ServicesInternal::handleInput (void)
 		       inputQueue.clear();
 		    }
 	       }
-	     inputQueue += (char)bufferin.get();
+	     c = bufferin.get();
+	     if((int)c!=-1)
+	     inputQueue += (char)c;
 	  }
 	return true;
      }
-
-   //  OLD Socket reading method below for history only :(
-   //   while(bufferin.peek() != -1) {
-   //      std::getline(bufferin,line);
-   //#ifdef DEBUG
-   //      logLine("RX: " + line, Log::Debug);
-   //#endif
-   //      countRx += line.length();
-   //      parser.parseLine(line);
-   //   }
-   //
-   return true;
 }
 
 /* disconnect()
