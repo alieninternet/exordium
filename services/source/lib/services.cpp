@@ -434,7 +434,7 @@ bool ServicesInternal::connect (void)
 	registerService(config.getConsoleName(), config.getConsoleName(),
 			config.getConsoleHostname(),
 			config.getConsoleDescription());
-	Kine::langs().registerMap(Language::tagMap);
+	Kine::langs().registerMap(Language::ConsoletagMap);
      }
    connected = true;
    queueAdd ("BURST 0");

@@ -45,7 +45,7 @@
 
 #include "console_language.h"
 
-Kine::Languages::tagMap_type Exordium::Language::tagMap = {[+ FOR langtag +][+ IF
+Kine::Languages::tagMap_type Exordium::Language::ConsoletagMap = {[+ FOR langtag +][+ IF
    (useThisTag?) +]
    { "[+
    (string-upcase
@@ -86,7 +86,7 @@ namespace Exordium {
 	 };
 	 
 	 // The language map
-	 static Kine::Languages::tagMap_type tagMap;
+	 static Kine::Languages::tagMap_type ConsoletagMap;
       }; // struct Language
 }; // namespace Exordium
 
@@ -94,7 +94,7 @@ namespace Exordium {
 // Macro (*shock horror*) to make the code neater (hopefully)
 # define GETLANG(n,...) \
    Kine::langs().get(ptr->getLanguage(), \
-                     Language::tagMap[Language::n].tagID, \
+                     Language::ConsoletagMap[Language::n].tagID, \
                      ##__VA_ARGS__)
 
 

@@ -21,6 +21,8 @@ endif
 
 libexordium_la_SOURCES = lib/console_language.cpp \
 		       	 lib/console_language.h \
+			 lib/core_language.cpp \
+			 lib/core_language.h \
 		       	 lib/config.cpp \
 			 lib/console.cpp \
 		       	 lib/channel.cpp \
@@ -43,10 +45,24 @@ lib/console_language.cpp: lib/console_language.tpl $(top_builddir)/autogen/langu
 
 lib/console_language.h: lib/console_language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
-		-b $(base_name $@) \
+		-b $(basename $@) \
 		-T lib/console_language.tpl \
 		$(top_builddir)/autogen/language.def
 
+lib/core_language.h: lib/core_language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T lib/core_language.tpl \
+		$(top_builddir)/autogen/language.def
 
+lib/core_language.cpp: lib/core_language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		 -b $(basename $@) \
+		 -T lib/core_language.tpl \
+		 $(top_builddir)/autogen/language.def
+		 
+
+			   
+	
 SUBDIRS=. libbank modules
 

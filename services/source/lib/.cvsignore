@@ -1,3 +1,5 @@
 console_language.h
 console_language.cpp
+core_language.cpp
+core_language.h
 .*~
