@@ -475,7 +475,7 @@ String
    MysqlRes res=services.getDatabase().query(query);
    MysqlRow row;
 
-   while(row = res.fetch_row())
+   while((row = res.fetch_row()))
    {
       return row[0];
    }
