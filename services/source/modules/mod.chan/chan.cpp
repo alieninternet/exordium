@@ -406,6 +406,8 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 
   CHAN_FUNC (Module::parseBAN)
 {
+   origin.sendMessage ("Sorry. The ban command is disabled until the next services build",getName());
+   return;
    String channel = "";
    if(chan!="")
      {
@@ -439,6 +441,7 @@ origin.sendMessage("Command list for " + getName() + ":",getName());
 	  {
 	     StringTokens st (who);
 	     String temp1 = st.nextToken('@');
+	     std::cout << temp1 << std::endl;
 	     String temp2 = st.rest();
 	     if(temp2.length()<2)
 	       {

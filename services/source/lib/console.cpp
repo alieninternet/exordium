@@ -85,12 +85,14 @@ void CONSOLE_FUNC(Console::parseMODULE)
       services.getConfigInternal().getModules().unloadModule(name,
 							     origin +
 							     " unloaded me :(");
+      services.sendGOper("PeopleChat",origin + " \002unloaded\002 the " + name + " module");
+
       return;
    }
    
    if(command == "load") {
-//    String name = tokens.nextToken();
-      (void)tokens.nextToken();
+    String name = tokens.nextToken();
+//      (void)tokens.nextToken();
       String filename = tokens.nextToken();
       services.serviceNotice("Attempting to load module",
 			     services.getConfigInternal().getConsoleName(),
@@ -113,5 +115,7 @@ void CONSOLE_FUNC(Console::parseMODULE)
       services.serviceNotice("Module loaded successfully",
 			     services.getConfigInternal().getConsoleName(),
 			     origin);
+      services.sendGOper("PeopleChat",origin + " \002loaded\002 the "+name+" module");
+
    }
 }

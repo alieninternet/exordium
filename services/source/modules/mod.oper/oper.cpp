@@ -42,7 +42,7 @@ using namespace Exordium::OperModule;
 const Module::functionTableStruct Module::functionTable[] =
 {
      { "help",		&Module::parseHELP },
-     { "jupe",		&Module::parseJUPE },
+     { "serverjupe",		&Module::parseSERVERJUPE },
      { "join",		&Module::parseJOIN },
      { "part",		&Module::parsePART },
      { "commands",	&Module::parseCOMMANDS },
@@ -58,6 +58,15 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	// Does this match?
 	if (command == functionTable[i].command)
 	  {
+	     int required = services->getRequiredAccess(getName(),command.toLower());
+	     int access = origin.getAccess(getName());
+	     if(required>access)
+		{
+		origin.sendMessage("You do not have enough access for that command",getName());
+		String togo = origin.getNickname()+" tried to use \002"+command+"\002";
+		services->sendGOper(getName(),togo);
+		return;
+		}
 	     // Run the command and leave
 	     (this->*(functionTable[i].function))(origin, st);
 	     return;
@@ -75,24 +84,20 @@ OPER_FUNC(Module::parseHELP)
 }
 
 
-OPER_FUNC(Module::parseJUPE)
+OPER_FUNC(Module::parseSERVERJUPE)
 {
-   String command = tokens.nextToken();
-   if(command=="")
-     {
-	origin.sendMessage("\002[\002Incorrect Usage\002]\002 jupe add/list/del",getName());
-	return;
-     }
-   if(command=="add")
-     {
-	String nickname = tokens.nextToken();
+	String serverName = tokens.nextToken();
 	String reason = tokens.rest();
-	if(nickname=="" | reason=="")
+	if(serverName=="" | reason=="")
 	  {
-	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: add nickname reason for jupe",getName());
+	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: serverjupe serverName reason for jupe",getName());
 	     return;
 	  }
-     }
+	services->queueAdd("SERVER "+serverName+" 2 :"+reason);
+	String togo = origin.getNickname()+" \002juped\002 the server \002"+
+		serverName+"\002 for \002"+reason+"\002";
+	services->sendGOper(getName(),togo);
+	services->log(origin,getName(),togo);
 }
 
 OPER_FUNC(Module::parseJOIN)
@@ -112,7 +117,9 @@ OPER_FUNC(Module::parseJOIN)
      {
        services->serviceJoin(getName(), chan);
        services->serverMode(chan, "+o", getName());
-       services->sendGOper(getName(),"\002"+origin.getNickname()+"\002 made "+getName()+" join \002"+chan+"\002");
+       String togo = "\002"+origin.getNickname()+"\002 made "+getName()+" join \002"+chan+"\002";
+       services->sendGOper(getName(),togo);
+       services->log(origin,getName(),togo);
      }
 }
 
