@@ -56,31 +56,74 @@ Modules::Module::~Module(void)
 };
 
 
-/* addModule - Shut down all existing modules in the list
+/* loadModule - Shut down all existing modules in the list
  * Original 17/09/2002 simonb
  * 17/09/2002 simonb - Added checking to confirm the module is not already open
+ * 18/09/2002 simonb - Merged with Services::loadModule()
+ * Note: Some of the variables passed here are temporary...
  */
-bool Modules::addModule(Service& s, void* const h) 
+bool Modules::loadModule(const String& name, const String& fileName,
+			 String& errString, Services& services)
 {
+   // Try to load the module
+   void* const handle = dlopen(fileName.c_str(), RTLD_NOW);
+   
+   // Check if that loaded okay
+   if (handle == 0) {
+      // Set the error string appropriately
+      errString = "Could not load " + fileName + ": " + dlerror();
+      return false;
+   }
+   
+   // Locate the initialisation function
+   EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((* const initfunc)) =
+     ((EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*)))
+      (dlsym(handle, "service_init")));
+   
+   // Check if we could find the init function
+   if (initfunc == 0) {
+      errString = "Could not load " + fileName + 
+	": Module does not contain an initialisation function";
+      return false;
+   }
+
+   // Pull out the service data, this class contains all the other info we need
+   Service* const service = (*initfunc)(services, name);
+   
+   // Make sure the service was returned appropriately...
+   if (service == 0) {
+      errString = "Could not load " + fileName +
+	": Module failed to initialise";
+      return false;
+   }
+	  
+   std::cout << "Loaded module '" << 
+     service->getModuleInfo().fullName << "' version " <<
+     service->getModuleInfo().versionMajor << '.' <<
+     service->getModuleInfo().versionMinor << std::endl;
+
+   // Temporary
+   service->start();
+
    // Fix up the name, since we use it twice (may as well convert it once)
-   String name = s.getName().IRCtoLower();
+   String moduleName = service->getName().IRCtoLower();
    
    // Make sure this does not exist..
-   if (!exists(name)) {
+   if (!exists(moduleName)) {
       // Add it, and return happy status
-      modules[name] = new Module(&s, h);
+      modules[moduleName] = new Module(service, handle);
       return true;
-   };
+   }
 
    // If the module exists already, we shouldn't load it..
    return false;
 }
 
 
-/* delModule - Remove a module from the list, and unload it
+/* unloadModule - Remove a module from the list, and unload it
  * Original 07/06/2002 simonb
  */
-void Modules::delModule(const String& name) {
+void Modules::unloadModule(const String& name) {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
    

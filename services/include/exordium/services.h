@@ -57,16 +57,16 @@ extern "C" {
 #include "exordium/log.h"
 #include "exordium/service.h"
 #include "exordium/conf.h"
-#include "exordium/sql.h"
 #include "exordium/parser.h"
 #include "exordium/channel.h"
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
 //#include "exordium/userbase.h"
-#include "exordium/modules.h"
 
 
 namespace Exordium {
+   class Sql;
+   
    class Services
      {
       private:
@@ -74,7 +74,7 @@ namespace Exordium {
 	Kine::Daemon& daemon;
 	Log& logger;
 	Sql& database;
-	const Config& config;
+	Config& config;
 
 	Parser parser;
 	Channel channel;
@@ -118,7 +118,7 @@ namespace Exordium {
 	LibAIS::String getRegNickCount(void);
 	// dunno where you want these fellow james
 	// Mr. Constructor
-	Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c);
+	Services(Kine::Daemon& d, Log& l, Sql& db, Config& c);
 	
 	// Grab the daemon reference
 	Kine::Daemon &getDaemon(void) const
@@ -133,7 +133,7 @@ namespace Exordium {
 	  { return database; };
 
 	// Grab the configuration reference
-	const Config& getConfig(void) const
+	Config& getConfig(void)
 	  { return config; };
 
 	// Return the channel thingy
@@ -148,7 +148,7 @@ namespace Exordium {
   	void run (void);
 	bool handleInput (void);
 	bool SecurePrivmsg;
-	Modules serviceM;
+
 	// Function Declrations below here.
 	void shutdown(const LibAIS::String &);
 	void SynchTime(void);
@@ -268,12 +268,7 @@ namespace Exordium {
         }; 
 	
 	void serviceJoin(LibAIS::String const &service,
-			 LibAIS::String const &target)
-	  {
-	     queueAdd(":" + config.getServicesHostname() + " SJOIN " +
-		      LibAIS::String::convert(currentTime) + " " + target +
-		      " + :" + service);
-	};
+			 LibAIS::String const &target);
 	
 	bool queueReady(void) const
 	  { 
@@ -360,8 +355,6 @@ namespace Exordium {
 	     return LibAIS::String::convert(users.size());
 	  };
 	bool usePrivmsg(LibAIS::String const &);
-	bool loadModule(const LibAIS::String &, const LibAIS::String &);
-	bool unloadModule(const LibAIS::String &);
 	void serviceKick(LibAIS::String const &, LibAIS::String const &,
 			 LibAIS::String const &);
 	bool isOp(LibAIS::String const &, LibAIS::String const &);
@@ -407,5 +400,7 @@ namespace Exordium {
 	
      };
 }; // namespace Exordium
+
+#include "exordium/sql.h"
 
 #endif

@@ -64,7 +64,6 @@ using LibAIS::StringMask;
 using Kine::Signals;
 using namespace Exordium;
 
-#define CONFIG "services.conf"
 
 KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
@@ -202,7 +201,7 @@ namespace Exordium
 	    }
        }
 
-   Services::Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c)
+   Services::Services(Kine::Daemon& d, Log& l, Sql& db, Config& c)
      : daemon(d),
    logger(l),
    database(db),
@@ -373,30 +372,23 @@ namespace Exordium
    void
      Services::doBurst (void)
        {
-	  loadModule("nick","./modules/nick.so");
-	  loadModule("chan","./modules/chan.so");
-	  loadModule("serv","./modules/serv.so");
-	  loadModule("note","./modules/note.so");
-	  loadModule("bot","./modules/bot.so");
-	  loadModule("game","./modules/game.so");
-	  loadModule("love","./modules/love.so");
-	  loadModule("oper","./modules/oper.so");
-	  loadModule("stats","./modules/stats.so");
-	  loadModule("vote","./modules/vote.so");
+	  String goingByeByesSoon;
+	  config.getModules().loadModule("nick","./modules/nick.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("chan","./modules/chan.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("serv","./modules/serv.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("note","./modules/note.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("bot","./modules/bot.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("game","./modules/game.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("love","./modules/love.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("oper","./modules/oper.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("stats","./modules/stats.so",goingByeByesSoon,*this);
+	  config.getModules().loadModule("vote","./modules/vote.so",goingByeByesSoon,*this);
 	  registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
 			  "The service James forgot :(");
-//	  registerService("bot","bot","ircdome.org", "+dz",
-//	                            "Bot Interface to Services");
-//	  registerService("game", "game", "ircdome.org", "+dz",
-//	                            "Network Games!");
-//	  registerService("love", "love", "ircdome.org", "+dz",
-//	                           "Your local love slave");
-	  
-//	  serviceJoin("bot","#Debug");
 	  serviceJoin ("IRCDome", "#debug");
 	  serviceJoin ("IRCDome", "#Exordium");
 	  connected = true;
-	  serviceM.dumpModules();
+	  config.getModules().dumpModules();
 	  return;
        }
 /* getQuote(int)
@@ -803,6 +795,14 @@ namespace Exordium
 	  queueAdd (String (":") + service + " PART " + target);
        }
 
+   void Services::serviceJoin(LibAIS::String const &service,
+			      LibAIS::String const &target)
+     {
+	queueAdd(":" + config.getServicesHostname() + " SJOIN " +
+		      LibAIS::String::convert(currentTime) + " " + target +
+		 " + :" + service);
+     };
+   
    /* usePrivmsg(nick)
     *
     * Figure out whether we should use the privmsg or
@@ -828,69 +828,6 @@ namespace Exordium
 		 return true;
 	    }
 	  return false;
-       }
-/* unloadModule(String)
- *
- * Unload the given module.
- *
- *
- */
-
-   bool
-     Services::unloadModule(String const &name)
-       {
-	  serviceM.delModule(name);
-	  serviceM.delModule(name);
-	  return true;
-       }
-
-/* loadModule(String,String)
- *
- * Load the given module and initialise it.
- *
- */
-
-   bool
-     Services::loadModule (String const &name, String const &fileName)
-       {
-	  void *handle;
-	  handle = dlopen(fileName.c_str(), RTLD_NOW);
-	  if(!handle)
-	    {
-	       String togo = "\002[\002Module Error\002]\002 Could not load "+fileName;
-	       Debug(String(togo));
-	       String foo = dlerror();
-	       Debug("\002[\002Module Error\002]\002 dlError() returned: "+foo);
-	       return false;
-	    }
-	  EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*initfunc)) =
-	    ((EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN((*)))
-	     (dlsym(handle, "service_init")));
-
-	  if (initfunc == 0)
-	    {
-	       Debug("\002[\002Module Error\002]\002 Module does not contain "
-		     "an init function");
-	       return false;
-	    }
-
-	  Service* const service = (*initfunc)(*this, name);
-	  
-	  if (service == 0) {
-	     Debug("\002[\002Module Error\002]\002 Module contains an invalid "
-		   "init function, or the init function returned null");
-	     return false;
-	  }
-	  
-	  std::cout << "Loaded module '" << 
-	    service->getModuleInfo().fullName << "' version " <<
-	    service->getModuleInfo().versionMajor << '.' <<
-	    service->getModuleInfo().versionMinor << std::endl;
-	  
-	  service->start();
-	  
-	  serviceM.addModule(*service, handle);
-	  return true;
        }
 
    void

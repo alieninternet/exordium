@@ -25,14 +25,15 @@
  */
 
 #ifndef LOG_H
-#define LOG_H
+# define LOG_H
 
-#include <iostream>
-#include <fstream>
-#include <kineircd/str.h>
-#include "exordium/conf.h"
+# include <iostream>
+# include <fstream>
+# include <kineircd/str.h>
 
 namespace Exordium {
+   class Config;
+   
    class Log {
     private:
       const Config& config;
@@ -46,5 +47,8 @@ namespace Exordium {
    };
 
 };
+
+# include <exordium/conf.h>
+
 #endif
 

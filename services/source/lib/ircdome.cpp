@@ -63,7 +63,7 @@ void
    String command = tokens.nextToken();
    if(command=="list")
      {
-	String foo = services.serviceM.dumpModules();
+	String foo = services.getConfig().getModules().dumpModules();
 	services.serviceNotice("The currently loaded service modules are","IRCDome",origin);
 	services.serviceNotice(foo,"IRCDome",origin);
 	return;
@@ -72,16 +72,19 @@ void
      {
 	String name = tokens.nextToken();
 	services.serviceNotice("Unloading module "+name,"IRCDome",origin);
-	services.unloadModule(name);
+	services.getConfig().getModules().unloadModule(name);
      }
    if(command=="load")
      {
 	String name = tokens.nextToken();
 	String filename = tokens.nextToken();
 	services.serviceNotice("Attempting to load module","IRCDome",origin);
-	if(!services.loadModule(name,filename))
+	String errString;
+	if(!services.getConfig().getModules().loadModule(name, filename,
+							 errString, services))
 	  {
-	     services.serviceNotice("Error loading module","IRCDome",origin);
+	     services.serviceNotice("Error loading module: " + errString,
+				    "IRCDome",origin);
 	     return;
 	  }
 	services.serviceNotice("Module loaded successfully","IRCDome",origin);

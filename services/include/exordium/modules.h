@@ -67,10 +67,12 @@ namespace Exordium {
       ~Modules(void);
       
       // Add a module to the list
-      bool addModule(Service& s, void* const h);
+      bool loadModule(const LibAIS::String& name, 
+		      const LibAIS::String& fileName,
+		      LibAIS::String& errString, Services& services);
       
       // Remove a module from the list, and unload it
-      void delModule(const LibAIS::String&name);
+      void unloadModule(const LibAIS::String& name);
 
       // Check if a module exists
       bool exists(const LibAIS::String& name) const;

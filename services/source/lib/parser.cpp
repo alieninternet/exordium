@@ -521,7 +521,7 @@ void
    if(target[0]=='#')
      {
 	//Oke channel msg :>
-	if(!services.serviceM.exists("chan"))
+	if(!services.getConfig().getModules().exists("chan"))
 	  {
 	     String togo = "Sorry - Channel services are currently disabled for maintenance";
 	     services.serviceNotice(String(togo),target,OLDoriginl);
@@ -529,13 +529,13 @@ void
 	  }
 	
 	// dodgey? YES.. YES IT IS.. :(
-//	services.serviceM.throwLine("chan",message,OLDoriginl,target);
-//	services.serviceM.throwLine("game",message,OLDoriginl,target);
+//	services.getConfig().getModules().throwLine("chan",message,OLDoriginl,target);
+//	services.getConfig().getModules().throwLine("game",message,OLDoriginl,target);
 	StringTokens dodgeydodgeydodgey(message);
-	services.serviceM.throwLine("chan", dodgeydodgeydodgey, *origin,
+	services.getConfig().getModules().throwLine("chan", dodgeydodgeydodgey, *origin,
 				    target);
 	StringTokens dodgeydodgeydodgeyAGAIN(message);
-	services.serviceM.throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
+	services.getConfig().getModules().throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
 				    target);
 	return;
      }
@@ -544,17 +544,17 @@ void
      {
 	services.SecurePrivmsg = true;
 	//Safety check for the module.. :-)
-	if(!services.serviceM.exists("nick"))
+	if(!services.getConfig().getModules().exists("nick"))
 	  {
 	     String togo = "Sorry - This part of services is currently undergoing construction";
 	     services.serviceNotice(String(togo),target,OLDoriginl);
 	  }
 	StringTokens bloodydodgeytoo(message);
-	services.serviceM.throwLine("nick", bloodydodgeytoo, *origin);
+	services.getConfig().getModules().throwLine("nick", bloodydodgeytoo, *origin);
 	return;
      }
    services.SecurePrivmsg = false;
-   if(!services.serviceM.exists(target))
+   if(!services.getConfig().getModules().exists(target))
      {
 	services.serviceNotice("Sorry - This part of Services is currently "
 			       "offline for maintenance - please try again "
@@ -564,7 +564,7 @@ void
 	return;
      }
    StringTokens dodgeybutnotanymoredodgeythanthelastonewas(message);
-   services.serviceM.throwLine(target.toLower(),
+   services.getConfig().getModules().throwLine(target.toLower(),
 			       dodgeybutnotanymoredodgeythanthelastonewas,
 			       *origin);
 

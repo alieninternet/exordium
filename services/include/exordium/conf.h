@@ -25,10 +25,11 @@
  */
 
 #ifndef _CONF_H_
-#define _CONF_H_
+# define _CONF_H_
 
-#include <libais/config/data.h>
-#include <libais/string/string.h>
+# include <libais/config/data.h>
+# include <libais/string/string.h>
+# include <exordium/modules.h>
 
 namespace Exordium {
    class Config : public LibAIS::ConfigData {
@@ -43,8 +44,11 @@ namespace Exordium {
       LibAIS::String defServicesConsoleHostname;// Console's hostname
       LibAIS::String defServicesDescription;    // Services description (aka realname)
       LibAIS::String defServicesHostname;       // Services hostname
-      LibAIS::String defUplinkHost;           	// Uplink Host
-      unsigned short defUplinkPort;		// Uplink Port
+      LibAIS::String defUplinkHost;           	// Uplink Host (temporary)
+      unsigned short defUplinkPort;		// Uplink Port (temporary)
+
+      // 'MODULE' class/variable stuff
+      Modules defModules;			// Loaded modules
       
       // 'SQL' class and variables
       static const LibAIS::ConfigParser::defTable_type defClassSql;
@@ -73,6 +77,10 @@ namespace Exordium {
         { return defServicesConsoleHostname; };
       const LibAIS::String& getServicesConsoleDescription(void) const
         { return defServicesConsoleDescription; };
+
+      // 'MODULE' class
+      Modules& getModules(void)
+	{ return defModules; };
       
       // 'SQL' class
       const LibAIS::String& getSqlDatabase(void) const
