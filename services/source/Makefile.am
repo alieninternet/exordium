@@ -1,11 +1,11 @@
 INCLUDES=-I../include -I../../kineircd/include -Imodules/include
-lib_LTLIBRARIES = mod_exordium.la libservices.la
+lib_LTLIBRARIES = mod_exordium.la libexordium.la
 mod_exordium_la_SOURCES = module.cpp
 mod_exordium_la_LDFLAGS = -module -avoid-version
-mod_exordium_la_LIBADD = libservices.la
-libservices_la_LIBADD = ../../kineircd/src/lib/libkineircd.la
+mod_exordium_la_LIBADD = libexordium.la
+libexordium_la_LIBADD = ../../kineircd/src/lib/libkineircd.la
 
-libservices_la_SOURCES = lib/channel.cpp \
+libexordium_la_SOURCES = lib/channel.cpp \
 		         lib/conf.cpp \
 			 lib/ircdome.cpp \
 			 lib/log.cpp \
