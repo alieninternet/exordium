@@ -39,8 +39,6 @@ namespace Exordium {
 
     private:
       // Variables (top class from the definition table above)
-      AISutil::String defServicesDescription;   // Services description (aka realname)
-      AISutil::String defServicesHostname;      // Services hostname
       AISutil::String defUnderlingDescription;	// Underling server description
       AISutil::String defUplinkHost;           	// Uplink Host (temporary)
       unsigned short defUplinkPort;		// Uplink Port (temporary)
@@ -75,10 +73,6 @@ namespace Exordium {
       const bool checkConfig(void) const;
       
       // Top variables
-      const AISutil::String& getServicesHostname(void) const
-        { return defServicesHostname; };
-      const AISutil::String& getServicesDescription(void) const
-        { return defServicesDescription; };
       const AISutil::String& getUnderlingDescription(void) const
 	{ return defUnderlingDescription; };      
       const AISutil::String& getUplinkHost(void) const

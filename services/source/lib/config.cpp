@@ -55,16 +55,6 @@ const AISutil::ConfigParser::defTable_type ConfigInternal::definitionTable =
 	  (void *)&ConfigInternal::defModules, &varHandleModule,
 	  0, &classHandleModule
      },
-     { // This should be temporary, being a server is Kine's job
-        "SERVICESDESCRIPTION", 12,
-          (void *)&ConfigInternal::defServicesDescription, &varHandleString,
-          0, 0
-     },
-     { // This should be temporary, being a server is Kine's job
-        "SERVICESHOSTNAME", 12,
-          (void *)&ConfigInternal::defServicesHostname, &varHandleHostName,
-          0, 0
-     },
      {
 	"SQL", 3,
 	  0, 0,
@@ -177,9 +167,7 @@ Config::Config(void)
  * Original 25/07/2002 pickle
  */
 ConfigInternal::ConfigInternal(void)
-  : defServicesDescription("Exordium Network Services"), // temporary
-    defServicesHostname("services.exordium.somewhere"), // temporary
-    defUnderlingDescription(/* intentionally empty */),
+  : defUnderlingDescription(/* intentionally empty */),
     defUplinkHost("irc.somenetwork.somewhere"), // temporary
     defUplinkPort(6667), // temporary
 

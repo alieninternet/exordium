@@ -28,9 +28,9 @@
 # define _SOURCE_LIB_SERVICES_H_ 1
 
 # include <aisutil/socket/sockets.h>
+# include <kineircd/config.h>
 
 # include "exordium/services.h"
-
 # include "parser.h"
 # include "console.h"
 # include "config.h"
@@ -238,9 +238,9 @@ namespace Exordium {
 	{                               
 	   queueAdd ("NICK " + nick + " 1 " + 
 		     AISutil::String::convert(currentTime) + " +dz " + user + 
-		     " " + host + 
-		     " services.ircdome.org services.ircdome.org 0 1 :" + 
-		     realname);
+		     " " + host + " " + Kine::config().getOptionsServerName() +
+		     " " + Kine::config().getOptionsServerName() + 
+		     " 0 1 :" + realname);
         }; 
       
       void serviceJoin(AISutil::String const &service,
@@ -304,8 +304,6 @@ namespace Exordium {
 	{ return countTx; };
       unsigned long getCountRx(void) const
 	{ return countRx; };
-      
-      void doPong(AISutil::String const &);
    }; // class ServicesInternal
 }; // namespace Exordium
 

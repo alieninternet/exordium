@@ -43,6 +43,7 @@
 //#include "exordium/dchan.h"
 #include "exordium/channel.h"
 #include <kineircd/str.h>
+#include <kineircd/config.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -118,18 +119,17 @@ void PARSER_FUNC (Parser::parseAWAY)
 void
   PARSER_FUNC (Parser::parseS)
 {
-   //Yay for hard-coded server line, honest :-)
+   // this should all be in the 'serv' module :(   - pickle
    String serverName = tokens.nextToken ();
    String hops = tokens.nextToken ();
    String description = tokens.rest();
-   if (!services.isAuthorised (serverName))
-     {
-	String tosend =
-	  String (":services.ircdome.org SQUIT ") + serverName +
-	  " :Unauthorised Links are not permitted on IRCDome - The network administration has been notified";
-	services.queueAdd (String (tosend));
-	return;
-     }
+   if (!services.isAuthorised (serverName)) {
+      services.queueAdd(":" + Kine::config().getOptionsServerName() + 
+			" SQUIT " + serverName + 
+			" :Unauthorised Links are not permitted on IRCDome "
+			"- The network administration has been notified");
+      return;
+   }
    services.AddOnlineServer (serverName, hops, description);
 }
 
@@ -546,7 +546,7 @@ void
 	services.serviceNotice("Sorry - This part of Services is currently "
 			       "offline for maintenance - please try again "
 			       "later",
-			       services.getConfigInternal().getServicesHostname(),
+			       Kine::config().getOptionsServerName(),
 			       OLDoriginl);
 	return;
      }
@@ -560,9 +560,10 @@ void
 void
   PARSER_FUNC (Parser::parsePING)
 {
-   String data = tokens.rest();
-   services.doPong(data);
+   services.queueAdd(":" + Kine::config().getOptionsServerName() + " PONG " +
+		     tokens.rest());
 }
+
 void
   PARSER_FUNC (Parser::parseSQUIT)
 {
@@ -726,7 +727,9 @@ void
 {
    User *origin = services.findUser(OLDorigin);
 
-   origin->sendMessage("AddANiceMessageHereWithVersionEtc", services.getConfigInternal().getServicesHostname(), false);
+   origin->sendMessage("AddANiceMessageHereWithVersionEtc",
+		       Kine::config().getOptionsServerName(),
+		       false);
 }
 
 

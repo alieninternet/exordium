@@ -30,6 +30,7 @@
 
 #include "exordium/channel.h"
 #include <kineircd/str.h>
+#include <kineircd/config.h>
 #include "exordium/services.h"
 
 using namespace Exordium;
@@ -358,10 +359,10 @@ void
 {
    services.serviceJoin("Chan",name);
    services.serverMode(name,"+o","Chan");
-   String togo = ":services.ircdome.org MODE "+name+" +r";
-   services.queueAdd(String(togo));
-   togo = ":services.ircdome.org MODE "+name+" "+modes;
-   services.queueAdd(String(togo));
+   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+		     name + " +r");
+   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+		     name + " " + modes);
    setTopic(name,topic);
 }
 

@@ -386,7 +386,8 @@ bool ServicesInternal::handleInput (void)
 /* It's okay, all the server connection stuff has a very very very limited
  * lifespan in anycase.. - pickle
  */
-	queueAdd ("SERVER " + config.getServicesHostname() + " 1 :" + config.getServicesDescription());
+	queueAdd ("SERVER " + Kine::config().getOptionsServerName() + " 1 :" +
+		  Kine::config().getOptionsDescription());
 	
 	// Do we have an underling?
 	if (!config.getUnderlingHostname().empty()) {
@@ -394,7 +395,7 @@ bool ServicesInternal::handleInput (void)
 	}
 	
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
-	queueAdd (":" + config.getServicesHostname()  + " EOB");
+	queueAdd (":" + Kine::config().getOptionsServerName() + " EOB");
 	queueAdd ("BURST");
 	//	queueFlush();
 	doBurst ();
@@ -497,7 +498,9 @@ bool ServicesInternal::handleInput (void)
 	   queueAdd(":IRCDome QUIT :"+reason);
 	}
 	
-	queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
+	queueAdd(":" + Kine::config().getOptionsServerName() +
+		 " SQUIT " + Kine::config().getOptionsServerName() + " :" +
+		 reason);
 	stopping = true;
 	stopTime = currentTime + 5;
 
@@ -583,18 +586,6 @@ bool ServicesInternal::handleInput (void)
      ServicesInternal::DelOnlineServer (String const &name)
        {
           database.dbDelete("onlineservers", "servername='" + name + "'");
-       }
-
-/* doPong(line)
- *
- * Ping... Pong!
- *
- */
-
-   void
-     ServicesInternal::doPong (String const &line)
-       {
-	  queueAdd (String (":services.ircdome.org PONG ") + line);
        }
 
 /* mode(String,String,String,String)
@@ -803,7 +794,7 @@ bool ServicesInternal::handleInput (void)
    void ServicesInternal::serviceJoin(AISutil::String const &service,
 			      AISutil::String const &target)
      {
-	queueAdd(":" + config.getServicesHostname() + " SJOIN " +
+	queueAdd(":" + Kine::config().getOptionsServerName() + " SJOIN " +
 		 AISutil::String::convert(currentTime) + " " + target +
 		 " + :" + service);
      };
@@ -933,10 +924,10 @@ void ServicesInternal::checkpoint(void)
 
 		    String msg = "Non-Identification: Your nickname is now being changed";
 		    serviceNotice(msg,"Nick",tomod);
-		    String togo = String(":services.ircdome.org MODNICK ")+tomod+" "+newnick+" :0";
-		    queueAdd(String(togo));
-		    //		    setNick(*ptr,newnick);
-		    //		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
+		    queueAdd(":" + Kine::config().getOptionsServerName() +
+			     " MODNICK " + tomod + " " + newnick + " :0");
+//		    setNick(*ptr,newnick);
+//		    database.query("UPDATE onlineclients set nickname='"+newnick+"' WHERE nickname='"+tomod+"'");
 		 }
 	       if((killt.toInt()-nowt)<60)
 		 {
@@ -1300,7 +1291,8 @@ int ServicesInternal::getRegisteredNickID(String const &nick)
 
 void ServicesInternal::modeIdentify(String const &nick)
 {
-   queueAdd(":services.ircdome.org SVSMODE "+nick+" +r");
+   queueAdd(":" + Kine::config().getOptionsServerName() + " SVSMODE " + nick + 
+	    " +r");
    return;
 }
 
@@ -1365,12 +1357,14 @@ String ServicesInternal::getpendingCode(String const &nick)
  *
  * register the given nickname :-)
  *
+ * This should be in the NICK module :(
  */
 
 void ServicesInternal::registerNick(String const &nick, String const &password,
 				    String const &email)
 {
    String gpass = generatePassword(nick.IRCtoLower(),password);
+   // oh, this is revoltingly hard-coded! :(
    database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
 }
 
