@@ -1080,6 +1080,40 @@ langtag = {
 
 
 langtag = {
+   name = "chan_SET_PRIVATE_TRUE";
+   component = "mod_chan";
+   data_en = "Channel privacy has been enabled";
+};
+
+
+langtag = {
+   name = "chan_SET_PRIVATE_FALSE";
+   component = "mod_chan";
+   data_en = "Channel privacy has been disabled";
+};
+
+
+langtag = {
+   name = "chan_SET_PRIVATE_USAGE";
+   component = "mod_chan";
+   data_en = "Usage: set #channel private on/off";
+};
+
+
+langtag = {
+   name = "chan_SET_DESCRIPTION";
+   component = "mod_chan";
+   data_en = "Channel description has been changed";
+};
+
+langtag = {
+   name = "chan_SET_URL";
+   component = "mod_chan";
+   data_en = "Channel url has been changed";
+};
+
+
+langtag = {
    name = "chan_SET_UNSUPPORTED_OPTION";
    component = "mod_chan";
    data_en = "Error: Set options are: secure/log/tracktopics/enforcebans";
@@ -1133,6 +1167,14 @@ langtag = {
    data_tr = "Sahibi : %p0";
 };
 
+
+langtag = {
+   name = "chan_INFO_REGDATE";
+   component = "mod_chan";
+   data_en = "Registration data : %p0";
+};
+
+
 langtag = {
    name = "chan_INFO_UNIQUEIDS";
    component = "mod_chan";
@@ -1141,6 +1183,84 @@ langtag = {
    data_fr = "IDS Unique : %p0/%p1";
    data_tr = "Tek IDS : %p0/%p1";
 };
+
+
+langtag = {
+   name = "chan_INFO_PRIVATE";
+   component = "mod_chan";
+   data_en = "Privacy : %p0";
+};
+
+
+langtag = {
+   name = "chan_INFO_CDESC";
+   component = "mod_chan";
+   data_en = "Description : %p0";
+};
+
+langtag = {
+   name = "chan_INFO_URL";
+   component = "mod_chan";
+   data_en = "URL : %p0";
+};
+
+
+langtag = {
+   name = "chan_INFO_TOPIC";
+   component = "mod_chan";
+   data_en = "Topic : %p0";
+};
+
+
+langtag = {
+   name = "chan_INFO_MODES";
+   component = "mod_chan";
+   data_en = "Mode : %p0";
+};
+
+
+langtag = {
+   name = "chan_INFO_SET_OPTIONS_START";
+   component = "mod_chan";
+   data_en = "Options:";
+};
+
+
+langtag = {
+   name = "chan_INFO_SET_OPTIONS_END";
+   component = "mod_chan";
+   data_en = "End of Options";
+};
+
+
+langtag = {
+   name = "chan_INFO_SET_SECURE";
+   component = "mod_chan";
+   data_en = "   Secure : \\b%p0\\b";
+};
+
+
+langtag = {
+   name = "chan_INFO_SET_TRACKTOPICS";
+   component = "mod_chan";
+   data_en = "   Topic tracking : \\b%p0\\b";
+};
+
+
+langtag = {
+   name = "chan_INFO_SET_ENFORCEBANS";
+   component = "mod_chan";
+   data_en = "   Ban enforcement : \\b%p0\\b";
+};
+
+
+langtag = {
+   name = "chan_INFO_SET_MLOCK";
+   component = "mod_chan";
+   data_en = "   Mode lock : \\b%p0\\b";
+};
+
+
 
 langtag = {
    name = "chan_ADDUSER_USAGE";
