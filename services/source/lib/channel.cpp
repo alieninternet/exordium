@@ -376,6 +376,9 @@ void
    chanAddAccess(name,owner,"500");
    services.serviceJoin("Chan",name);
    services.serverMode(name,"+o","Chan");
+   services.queueAdd(":" + Kine::config().getOptionsServerName() + " MODE " +
+                     name + " +r");
+
    setTopic(name, String("This channel has just been registered by ")+owner);
 }
 
