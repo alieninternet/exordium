@@ -53,7 +53,13 @@ class Game : public Exordium::Service {
    struct commandTable_type {
       const char* const command;		// The command name
       const handler_type Game::* const handler;	// The function (handler)
-   } static const commandTable[];
+   };
+   
+   // Commands which are sent directly to us
+   static const commandTable_type directCommandTable[];
+   
+   // Commands which are sent to a channel we are on
+   static const commandTable_type channelCommandTable[];
 
    // A list of channel games currently in progress
    typedef std::map < Kine::String, ChannelGame* > channelGames_type;

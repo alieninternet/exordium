@@ -51,13 +51,20 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 }
 
 
-// Our command table (all commands must be lower-case)
-const Game::commandTable_type Game::commandTable[] =
+// Our command table for directly sent commands (commands must be lower-case)
+const Game::commandTable_type Game::directCommandTable[] =
 {
      { "quote",		&Game::handleQUOTE },
-     { ".quote",	&Game::handleQUOTE },
      { "help",		&Game::handleHELP },
      { "start",		&Game::handleSTART },
+     { 0, 0 }
+};
+
+
+// Our command table for channel commands (commands must be lower-case)
+const Game::commandTable_type Game::channelCommandTable[] =
+{
+     { "quote",		&Game::handleQUOTE },
      { 0, 0 }
 };
 
@@ -77,17 +84,20 @@ Game::Game(Exordium::Services& s, const String& mn)
 /* parseLine - Parse an incoming message (which was sent to a channel)
  * Original 13/07/2002 james
  */
-void Game::parseLine(StringTokens& line, User& origin, const String& channel)
+void Game::parseLine(StringTokens& line__, User& origin, const String& channel)
 {
-   StringTokens st(line);
-   String command = st.nextToken().toLower();
+   // dirty kludge.. at least until the core strips the char properly??
+   StringTokens line(line__.rest().substr(1));
+
+   // Grab the command
+   String command = line.nextToken().toLower();
    
    // Run through the list of commands to find a match
-   for (int i = 0; commandTable[i].command != 0; i++) {
+   for (int i = 0; channelCommandTable[i].command != 0; i++) {
       // Does this match?
-      if (command == commandTable[i].command) {
+      if (command == channelCommandTable[i].command) {
 	 // Run the command and leave
-	 (this->*(commandTable[i].handler))(origin, st, channel);
+	 (this->*(channelCommandTable[i].handler))(origin, line, channel);
 	 return;
       }
    }
@@ -96,11 +106,8 @@ void Game::parseLine(StringTokens& line, User& origin, const String& channel)
    channelGames_type::iterator game = channelGames.find(channel.IRCtoLower());
    
    if (game != channelGames.end()) {
-      // Too lazy to work around the mess above
-      StringTokens tokens(line.rest().substr(1));
-      
       // If the parser returns false, it means we can leave the channel
-      if (!(*game).second->parseLine(origin, tokens)) {
+      if (!(*game).second->parseLine(origin, line)) {
 	 // Leave the channel and delete this game..
 	 services.servicePart(myName, channel);
 	 delete (*game).second;
@@ -119,11 +126,11 @@ void Game::parseLine(StringTokens& line, User& origin)
 {
    String command = line.nextToken().toLower();
    
-   for (int i = 0; commandTable[i].command != 0; i++) {
+   for (int i = 0; directCommandTable[i].command != 0; i++) {
       // Does this match?
-      if (command == commandTable[i].command) {
+      if (command == directCommandTable[i].command) {
 	 // Run the command and leave
-	 (this->*(commandTable[i].handler))(origin, line, "");
+	 (this->*(directCommandTable[i].handler))(origin, line, "");
 	 return;
       }
    }
