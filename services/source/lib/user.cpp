@@ -25,7 +25,6 @@
  *
 */
 
-
 #include "exordium/services.h"
 #include "exordium/user.h"
 #include <kineircd/str.h>
@@ -35,15 +34,15 @@ using Kine::StringTokens;
 using namespace Exordium;
 
 /* sendMessage(String,String,<bool>)
- * 
+ *
  * Two versions of sendMessage, the first which will use
  * the settings from the nickname to determine whether
  * they have choosen the privmsg or notice interface for services.
- * 
+ *
  * The latter version allowing you to dictate how you wish to send
- * the message to the user by setting the boolean value to TRUE 
+ * the message to the user by setting the boolean value to TRUE
  * for a privmsg, FALSE for a notice.
- * 
+ *
  */
 
 void
@@ -52,10 +51,10 @@ void
    services.serviceNotice(message,origin,nickname);
 }
 
-void 
+void
   User::sendMessage(String const &message, String const &origin, bool const &privmsg)
 {
-    if(privmsg)
+   if(privmsg)
      {
 	services.servicePrivmsg(message,origin,nickname);
      }
@@ -63,17 +62,17 @@ void
      {
 	services.serviceNoticeForce(message,origin,nickname);
      }
-   
+
 }
 
 /* setModNick(bool)
- * 
+ *
  * Updates the setting for modnick in the database
- * modnick controls whether services will force a user 
+ * modnick controls whether services will force a user
  * to identify as a nickname when it is in use (true)
  * or just require identification before any services
  * are used (false)
- * 
+ *
  */
 
 void
@@ -89,13 +88,13 @@ void
 	query = "UPDATE nicks set modnick=0 where nickname='"+nickname+"'";
      }
    services.getDatabase().query(query);
-   
+
 };
 
 /* setDeopAway(bool)
- * 
+ *
  * Updates the setting for Deop on Away in the database.
- * 
+ *
  * Deop On Away will deop (and voice) the user in any channels
  * they are opped in when the user goes away.
  *
@@ -117,9 +116,9 @@ void
 };
 
 /* modNick()
- * 
+ *
  * Return TRUE if the user has enabled modNick, otherwise FALSE
- * 
+ *
  */
 
 bool
@@ -142,10 +141,10 @@ bool
 };
 
 /* deopAway(void)
- * 
+ *
  * Return TRUE if the user wishing to use the Deop On Away functionality
  * otherwise FALSE.
- * 
+ *
  */
 
 bool
@@ -168,9 +167,9 @@ bool
 };
 
 /* updateHost(String)
- * 
+ *
  * Update the database to show the users new host.
- * 
+ *
  */
 
 void
@@ -179,11 +178,10 @@ void
    services.getDatabase().query("UPDATE nicks set lasthost='"+host+"' WHERE nickname='"+nickname+"'");
 };
 
-
 /* getQuitMessage()
- * 
+ *
  * Return the last known quit message for this user..
- * 
+ *
  */
 
 String
@@ -199,12 +197,12 @@ String
 };
 
 /* getAccess(String)
- * 
+ *
  * Return the given access for a user with the given service.
- * 
+ *
  */
 
-int 
+int
   User::getAccess(String const &service)
 {
    MysqlRes res = services.getDatabase().query("SELECT access from access where nickname='"+nickname+"' AND service='"+service+"'");
@@ -216,9 +214,9 @@ int
    return 0;
 }
 /* addCheckIdentify()
- * 
+ *
  * Force this client to identify for their nickname..
- * 
+ *
  */
 
 void
@@ -228,4 +226,34 @@ void
    services.getDatabase().query("INSERT into kills values('','"+nickname+"','"+String::convert(services.currentTime + 120 + (services.random(60)))+"')");
 };
 
+/* countHost()
+ *
+ * Return the number of online people from this users hostname.
+ *
+ */
 
+int
+  User::countHost(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT id from onlineclients where hostname='"+getHost()+"'");
+   int num = res.num_fields();
+   return num;
+};
+
+/* getHost(void)
+ *
+ * Return the hostname for this user.
+ *
+ */
+
+String
+  User::getHost(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT hostname from onlineclients where id='"+getOnlineIDString()+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return String("");
+};

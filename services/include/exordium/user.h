@@ -140,7 +140,19 @@ namespace Exordium
 	 * 
 	 */
 	void addCheckIdentify(void);
-	
+	/* countHost()
+	 * 
+	 * Return the number of online people from this
+	 * users hostname.
+	 * 
+	 */
+	int countHost(void);
+	/* getHost()
+	 * 
+	 * Return the users hostname.
+	 * 
+	 */
+	Kine::String getHost(void);
 	/* Our constructor definition */
 	User(String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh
