@@ -136,7 +136,9 @@ void Modules::unloadModule(const String& name) {
    }
    
    // output to stdout.. temporary??
+   #ifdef DEBUG
    std::cout << "Umm... i couldn't find " << name << std::endl;
+   #endif
 }
 
 

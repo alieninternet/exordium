@@ -1704,3 +1704,18 @@ void
   }
 
 }
+
+
+/* Debug
+ * 
+ * Decide if/where to send our debug messages
+ * 
+ */
+
+void
+  Services::Debug(LibAIS::String const &line)
+{
+   String debugline = line;
+   queueAdd(":IRCDome PRIVMSG #Exordium :"+debugline);
+   
+}

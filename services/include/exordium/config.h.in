@@ -25,14 +25,20 @@
  */
     
 
-/* You should not change this file, instead pass the appropiate options
-   to configure in the base directory 
-*/
 
-
-/* Do you want (very) verbose output from services? */
+/* Is debug mode enabled */
 #undef DEBUG
+
+/* Light debugging? */
+#undef DEBUG_LIGHT
+
+/* Medium? */
+#undef DEBUG_MEDIUM
+
+/* High!! */
+#undef DEBUG_HIGH
 
 /* Language for services to use (as default)*/
 #undef LANGUAGE
+
 

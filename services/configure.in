@@ -80,6 +80,10 @@ AC_SUBST(LANGUAGE)
 
 
 AC_CONFIG_FILES([source/Makefile
+		 source/modules/Makefile
+		 source/modules/game/Makefile
+		 source/modules/game/cards/Makefile
+		 source/modules/love/Makefile
 		 Makefile
 		 ])
 AC_OUTPUT

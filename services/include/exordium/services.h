@@ -222,10 +222,7 @@ namespace Exordium {
 	     queueAdd(":" + service + " PRIVMSG " + target + " :" + line);
 	  }
 	
-	void Debug(LibAIS::String const &line)
-	  {
-	     queueAdd(":IRCDome PRIVMSG #Exordium :" + line);
-	  }
+	void Debug(LibAIS::String const &line);
 	
 	void serverMode(LibAIS::String const &chan, LibAIS::String const &mode,
 			LibAIS::String const &target)
