@@ -31,6 +31,7 @@
 #include "exordium/sql.h"
 #include "exordium/utils.h"
 
+
 using namespace Exordium;
 using Kine::String;
 using Kine::StringMask;
@@ -257,7 +258,10 @@ namespace Exordium
 			  String realname)
        {
 	  services.getDatabase().query (String ("insert into onlineclients values('','") + nick.toLower() +String ("','") + hops + String ("','") + timestamp +String ("','") + username + String ("','") + host + String ("','") + vwhost + String ("','") + server + String ("','") + modes + String ("','") + services.getDatabase().makeSafe(realname) +String ("')"));
-
+	  //Now retrieve that id that has just been given.....
+	  int foo = getOnlineNickID(nick);
+	  User *ptr = services.clients.addUser(nick,foo);
+	  ptr->test();
        }
 
    int

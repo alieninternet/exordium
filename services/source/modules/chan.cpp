@@ -132,7 +132,8 @@ void
 	return;
      }
    //Finish Me. :=>
-   
+   String bob = "james";
+   services.clients.delUser(bob);
 }
 
 void

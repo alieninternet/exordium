@@ -64,6 +64,7 @@ extern "C" {
 #include "exordium/channel.h"
 #include "exordium/ircdome.h"
 #include "exordium/user.h"
+#include "exordium/userbase.h"
 
 // Maybe this is in the wrong place
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -86,6 +87,7 @@ namespace Exordium {
 	Nickname nickname;
 	Channel channel;
 	IRCDome ircdome;
+
 	
 	int sock;
 	int maxSock;
@@ -111,11 +113,11 @@ namespace Exordium {
 	std::queue < String > outputQueue;
 	std::queue < String > ModeoutputQueue;
 	Kine::SocketIPv4TCP socky;
-	
       public:
+	UserBase clients;
 	static const Kine::Utils::base_type PasswordStrBase = 85;
 	static const Kine::String::size_type PasswordStrBaseLongPad = 5;
-	
+
 	// dunno where you want these fellow james
 	// Mr. Constructor
 	Services(Kine::Daemon& d, Log& l, Sql& db, const Config& c);
@@ -153,8 +155,6 @@ namespace Exordium {
 	bool handleInput (void);
 	bool SecurePrivmsg;
 	Core serviceM;
-	User clients;
-	
 	// Function Declrations below here.
 	void shutdown(const String &);
 	void SynchTime(void);
@@ -351,6 +351,7 @@ namespace Exordium {
 	void sendNote(String const &,String const &,String const &); 
 	void checkpoint(void);
 	unsigned long random(unsigned long max);
+	int locateID(String const &nick);
      };
 }; // namespace Exordium
 

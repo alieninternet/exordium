@@ -72,13 +72,13 @@ using namespace Exordium;
 
 KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
-   String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal - commiting database";
+   String reason = "\002[\002Rehash\002]\002 Services has received the REHASH signal";
    ((Services *)foo)->helpme(reason,"Serv");
 }
 
 KINE_SIGNAL_HANDLER_FUNC(Death)
 {
-   String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Terminating";
+   String reason = "\002[\002Fatal Error\002]\002 Services received \002"+String(sys_siglist[signal]) + "\002 - Initiating shutdown";
    ((Services *)foo)->helpme(reason, "Serv");
    ((Services *)foo)->shutdown(reason);
 }
@@ -214,7 +214,9 @@ namespace Exordium
    parser(*this),
    nickname(*this),
    channel(*this),
-   ircdome(*this)
+   ircdome(*this),
+   clients(*this)
+    
      {
 	sock = -1;
 	maxSock = -1;
@@ -481,9 +483,11 @@ namespace Exordium
 	queueAdd(":Serv QUIT :"+reason);
 	queueAdd(":IRCDome QUIT :"+reason);
 	queueAdd(":Oper QUIT :"+reason);
+	queueAdd(":Game QUIT :"+reason);
+	queueAdd(":Stats QUIT :"+reason);
 	queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+reason);
 	stopping = true;
-	stopTime = currentTime + 10;
+	stopTime = currentTime + 5;
      }
 
 /* SynchTime()
@@ -505,9 +509,9 @@ namespace Exordium
 	MysqlRow row;
 	while (( row = res.fetch_row()))
 	  {
-	     String id = ((std::string) row[0]);
-	     String chan = ((std::string) row[1]);
-	     String mask = ((std::string) row[2]);
+	     String id = row[0];
+	     String chan = row[1];
+	     String mask = row[2];
 	     channel.RemoveBan(id,chan,mask);
 	  }
 
@@ -535,17 +539,6 @@ namespace Exordium
 	unsigned long tx = getCountTx();
 	String togo = String("NC [\002")+nc+"\002] CC [\002"+cc+"\002] OC [\002"+oc+"\002] LC [\002"+lc+"\002] GC [\002"+gc+"\002] NOC [\002"+noc+"\002] RX [\002"+String::convert(rx)+"\002] TX [\002"+String::convert(tx)+"\002]";
 	servicePrivmsg(String(togo),"Oper","#Debug");
-	if(clients.test())
-	  {
-	     std::cout << "HI IM ALIVE YOU KNOW!!!" << std::endl;
-	  }
-	else
-	  {
-	     std::cout << "OK IM A REALLY FUCKING DUMB CLASS" << std::endl;
-	  }
-	
-	clients.test();
-	clients.test();
      }
 
    /* AddOnlineServer(ServerName,Hops,Description)
@@ -1025,4 +1018,27 @@ bool
 	return false;
      }
 };
+/* Ok, yes I know this is a duplication of Nickname's getOnlineID, but
+ * this is used to save us iterating over our entire client map
+ * when using Userbase::findUser - It seemed more logical to me
+ * to retain this function, which simply does a SQL query to obtain 
+ * the clients unique ID, which in turn is the correct key to us
+ * in the users map to obtain the User pointer!
+ */
 
+int
+  Services::locateID(String const &nick)
+{    
+  MysqlRes res = database.query("SELECT id from onlineclients where nickname='" + nick.IRCtoLower() + "'");
+  MysqlRow row;
+  while ((row = res.fetch_row()))
+     {
+	String id = row[0];
+	return id.toInt();
+     }
+  //Otherwise return 0 - no match.
+  return 0;
+};
+
+   
+   

@@ -14,7 +14,9 @@ SOURCES=\
 	nickname.cpp \
 	parser.cpp \
 	services.cpp \
-	sql.cpp
+	sql.cpp \
+	user.cpp \
+	userbase.cpp 
 	
 INCLUDES=../../include
 

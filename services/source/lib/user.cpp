@@ -23,48 +23,22 @@
  * For contact details for the IRCDome Development Team please see the
  * enclosed README file.
  *
- */
+*/
 
-#ifndef __USER_H_
-# define __USER_H_
 
-# include <kineircd/str.h>
-# include <map>
-# include "exordium/services.h"
-# include "exordium/sql.h"
+#include "exordium/services.h"
+#include "exordium/user.h"
+#include <kineircd/str.h>
 
-namespace Exordium
+using Kine::String;
+using Kine::StringTokens;
+using namespace Exordium;
+
+//Simple test function to prove access to the User class
+void
+  User::test(void)
 {
-   class Services;
-   
-   class User
-     {
-      private:
-	Kine::String nickname;
-	int onlineID;
-	Services& services;
-
-      public:
-	Kine::String getNickname(void)
-	  {
-	     return nickname;
-	  };
-	int getOnlineID(void)
-	  {
-	     return onlineID;
-	  };
-	void test(void);
-	
-	User(String const &nick, int const &oid, Services &s)
-	  : nickname(nick), //their current nickname.. duh
-	    onlineID(oid), //as dictated by the sql server..
-	    services(s)// Gives us access to the full suite of services..
-	  {
-	     
-	  };
-
-     };
-
+   std::cout << "Hello World" << std::endl;
 };
 
-#endif
+
