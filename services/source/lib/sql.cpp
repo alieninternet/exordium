@@ -88,18 +88,18 @@ void
   Sql::init(const Config &config)
 {
    ostringstream tolog;
-   tolog << "MySQL Configuration: " << config.getMySqlHost() << ' ' <<
-     config.getMySqlUser() << ' ' << config.getMySqlPass() << ' ' <<
-     config.getMySqlDb();
+   tolog << "MySQL Configuration: " << config.getSqlHostname() << ' ' <<
+     config.getSqlUsername() << ' ' << config.getSqlPassword() << ' ' <<
+     config.getSqlDatabase();
     Log::logLine(tolog.str());
-    if (!mysql.connect(config.getMySqlHost().c_str(), 
-		       config.getMySqlUser().c_str(), 
-		       config.getMySqlPass().c_str())) {
+    if (!mysql.connect(config.getSqlHostname().c_str(), 
+		       config.getSqlUsername().c_str(), 
+		       config.getSqlPassword().c_str())) {
 	Log::logLine(String("MySQL Error: ") + mysql.error());
 	exit(1);
     }
     Log::logLine("--> Successfully connected to MySQL database");
-    if (mysql.select_db(config.getMySqlDb().c_str())) {
+    if (mysql.select_db(config.getSqlDatabase().c_str())) {
 	Log::logLine(String("MySQL Error: ") + mysql.error());
 	exit(1);
     }

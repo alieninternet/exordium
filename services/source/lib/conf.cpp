@@ -15,37 +15,43 @@ using namespace Exordium;
 const Kine::ConfigParser::defTable_type Config::definitionTable = {
      {
 	"LOGFILE",
-	  (void *)&Config::defLogFile, &varHandleString,
+	  (void *)&Config::defLogfile, &varHandleString,
 	  0, 0
      },
      {
-	"MYSQLDB",
-	  (void *)&Config::defMySqlDb, &varHandleString,
+	"SQL",
+	  0, 0,
+	  &defClassSql, 0
+     },
+     { 0, 0, 0, 0, 0 }
+};
+
+
+// 'SQL' class definition table
+const Kine::ConfigParser::defTable_type Config::defClassSql = {
+     {
+	"DATABASE",
+	  (void *)&Config::defSqlDatabase, &varHandleString,
 	  0, 0
      },
      {
-	"MYSQLHOST",
-	  (void *)&Config::defMySqlHost, &varHandleHostName,
+	"HOSTNAME",
+	  (void *)&Config::defSqlHostname, &varHandleHostName,
 	  0, 0
      },
      {
-	"MYSQLPASS",
-	  (void *)&Config::defMySqlPass, &varHandleString,
+	"PASSWORD",
+	  (void *)&Config::defSqlPassword, &varHandleString,
 	  0, 0
      },
      {
-	"MYSQLPORT",
-	  (void *)&Config::defMySqlPort, &varHandleUnsignedShortNoZero,
+	"PORT",
+	  (void *)&Config::defSqlPort, &varHandleUnsignedShortNoZero,
 	  0, 0
      },
      {
-	"MYSQLUSER",
-	  (void *)&Config::defMySqlUser, &varHandleString,
-	  0, 0
-     },
-     {
-	"UPLINKHOST",
-	  (void *)&Config::defUplinkHost, &varHandleString,
+	"USERNAME",
+	  (void *)&Config::defSqlUsername, &varHandleString,
 	  0, 0
      },
      { 0, 0, 0, 0, 0 }
@@ -54,13 +60,14 @@ const Kine::ConfigParser::defTable_type Config::definitionTable = {
 
 // Constructor to set up defaults, mainly. These defaults are dopey :(
 Config::Config(void)
-  : defLogFile("services.log"),
-    defMySqlDb("exordium"),
-    defMySqlHost("localhost"),
-    defMySqlPass("exordium"),
-    defMySqlPort(3306), // mysql port, as assigned by the iana
-    defMySqlUser("exordium"),
-    defUplinkHost("127.0.0.1") // this is obsolete.. well eventually it will be
+  : defLogfile("services.log"),
+
+    // 'SQL' class
+    defSqlDatabase("exordium"),
+    defSqlHostname("localhost"),
+    defSqlPassword("exordium"),
+    defSqlPort(3306), // mysql port, as assigned by the iana
+    defSqlUsername("exordium")
 {
    // nothing here!
 };

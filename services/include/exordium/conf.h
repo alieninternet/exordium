@@ -20,30 +20,36 @@ namespace Exordium {
       static const Kine::ConfigParser::defTable_type definitionTable;
 
     private:
-      // Variables
-      String defLogFile;			// Log filename
-      String defMySqlDb;			// MySql server database
-      String defMySqlHost;			// MySql server hostname
-      String defMySqlPass;			// MySql server password
-      unsigned short defMySqlPort;		// MySql server port
-      String defMySqlUser;			// MySql server username
-      String defUplinkHost;			// Server to connect to
+      // Variables (top class from the definition table above)
+      String defLogfile;			// Log filename
+      
+      // 'SQL' class and variables
+      static const Kine::ConfigParser::defTable_type defClassSql;
+      String defSqlDatabase;			// MySql server database name
+      String defSqlHostname;			// MySql server hostname
+      String defSqlPassword;			// MySql server password
+      unsigned short defSqlPort;		// MySql server port
+      String defSqlUsername;			// MySql server username
       
     public:
       // Constructor (sets up defaults mainly)
       Config(void);
       
-      // Variable grabbing thingies
-      const String &getMySqlDb(void) const 
-	{ return defMySqlDb; };
-      const String &getMySqlHost(void) const
-	{ return defMySqlHost; };
-      const String &getMySqlPass(void) const
-	{ return defMySqlPass; };
-      const unsigned short getMySqlPort(void) const
-	{ return defMySqlPort; };
-      const String &getMySqlUser(void) const
-	{ return defMySqlUser; };
+      // Top variables
+      const String &getLogfile(void) const
+	{ return defLogfile; };
+      
+      // 'SQL' class
+      const String &getSqlDatabase(void) const
+	{ return defSqlDatabase; };
+      const String &getSqlHostname(void) const
+	{ return defSqlHostname; };
+      const String &getSqlPassword(void) const
+	{ return defSqlPassword; };
+      const unsigned short getSqlPort(void) const
+	{ return defSqlPort; };
+      const String &getSqlUsername(void) const
+	{ return defSqlUsername; };
    };
 }; // namespace Exordium
 

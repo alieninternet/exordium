@@ -10,7 +10,8 @@
 
 #include <iostream>
 #include <fstream>
-#include "kineircd/str.h"
+#include <kineircd/str.h>
+#include "exordium/conf.h"
 
 using Kine::String;
 
@@ -23,7 +24,7 @@ private:
 	static std::ofstream logFile;
 
 public:
-	static void init();
+	static void init(const Config &);
 	static void logLine (String const &);
 
 };

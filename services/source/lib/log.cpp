@@ -35,9 +35,10 @@ namespace Exordium
 	};
 
 void
-Log::init()
+Log::init(const Config &config)
 {
-  logFile.open ("services.log", std::ios::out | std::ios::ate | std::ios::app);
+  logFile.open (config.getLogfile().c_str(),
+		std::ios::out | std::ios::ate | std::ios::app);
 
 }
 
