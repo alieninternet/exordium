@@ -29,6 +29,7 @@
 # define __CARD_H__
 
 # include <kineircd/str.h>
+# include <vector>
 
 namespace Cards {
    /* The card class. This is based on INTERNATIONAL/FRENCH class of cards,
@@ -37,6 +38,10 @@ namespace Cards {
     * all popular modern card games. Each instance of this class will
     * consume byte of memory.
     */
+      
+   class Card;
+   typedef std::vector<Card> cards_type;
+
    class Card {
     public:
       struct Suit { // <=- should be namespace?
@@ -91,7 +96,7 @@ namespace Cards {
 	 
 	 unsigned char conflux;
       };
-      
+
     public:
       // Constructor (makes an invalid card)
       Card(void)
@@ -166,7 +171,11 @@ namespace Cards {
       
       // Help people name a suit..
       static const char* nameSuit(const unsigned char suit);
+
+      // Populate the the pack with the appropriate cards
+      static void populate(cards_type& cards);
    };
+  
 }; // namespace Cards
    
 #endif // __CARD_H__

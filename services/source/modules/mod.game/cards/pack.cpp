@@ -33,6 +33,7 @@
 /* Populate - Populates a fresh pack of cards in 'mint' order
  * Original 29/08/2002 pickle - moved into own method by josullivan
  */
+/*
 void Cards::Pack::Populate(bool withJoker)
 {
    // Run through and populate the pack (yes, rank is sorted DOWNWARDS)
@@ -47,18 +48,21 @@ void Cards::Pack::Populate(bool withJoker)
       cards.push_back(Cards::Card(Card::Suit::Joker));
    }
 };
+*/
 
 /* shuffle - Shuffle the pack of cards
  * Original 30/08/2002 pickle
  */
-void Cards::Pack::shuffle(void)
+template < class T, class Allocator >
+void Cards::Pack<T, Allocator>::shuffle(void)
 {
+  /*
    cards_type newCardList;
    newCardList.reserve(cards.size());
    
    // Until the main list of cards is empty, dump the cards in the above vector
    while (!cards.empty()) {
-      cards_type::iterator cardLocation;
+//      typename cards_type::iterator cardLocation;
       int iterationCount = (int)((float)cards.size() * rand() /
 				 (RAND_MAX + 1.0));
 
@@ -76,4 +80,6 @@ void Cards::Pack::shuffle(void)
    
    // Swap the two lists..
    cards.swap(newCardList);
+   */
 }
+

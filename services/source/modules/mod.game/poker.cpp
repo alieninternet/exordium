@@ -301,10 +301,10 @@ EXORDI8_FUNC(Poker::parseDEAL)
      };
 
    // Obtain our packs, shuffling each deck.
-   std::vector <Cards::Pack> packs;
+   std::vector < Cards::Pack < Cards::Card > > packs;
    while (numPacks > 0)
      {
-	packs.push_back(Cards::Pack());
+	packs.push_back(Cards::Pack<Cards::Card>());
 	packs.back().shuffle();
 	numPacks--;
      }

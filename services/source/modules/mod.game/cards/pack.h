@@ -33,23 +33,37 @@
 # include "card.h"
 
 namespace Cards {
+   // The populator functor
+   template < class T > class _populator {
+    public:
+      typedef std::vector <T> cards_type;
+      void operator()(cards_type& cards) 
+        { 
+          std::cerr << "TEST9 " << &T::populate << std::endl; 
+          T::populate(cards); 
+        };
+   };
+
    // The pack class
+   template < class CardType, class Allocator = _populator<CardType> >
    class Pack {
     private:
-      typedef std::vector <Card> cards_type;
+      typedef std::vector <CardType> cards_type;
       
-    protected:
       // Our cards
       cards_type cards;
-      
+
     public:
       // Constructor (populates the pack, all cards are in 'mint' order)
-      Pack(bool withJoker = false) { Populate(withJoker); }
-      
-      virtual void Populate(bool withJoker);
+      Pack(bool withJoker = false) 
+        { std::cerr << "TEST7\n"; 
+          std::cerr << &CardType << std::endl;
+          std::cerr << &Allocator << std::endl;
+          Allocator(cards); 
+          std::cerr << "TEST10\n"; }
 
       // Return the number of cards left in the pack
-      cards_type::size_type getCardCount(void) const
+      typename cards_type::size_type getCardCount(void) const
 	{ return cards.size(); };
       
       // Is the pack empty?
@@ -57,13 +71,42 @@ namespace Cards {
 	{ return cards.empty(); };
       
       // Shuffle the pack
-      void shuffle(void);
+      void shuffle(void)
+        {
+          cards_type newCardList;
+          newCardList.reserve(cards.size());
+                
+          // Until the main list of cards is empty, dump the cards in the above vector
+          while (!cards.empty()) {
+             typename cards_type::iterator iter;
+
+             int iterationCount = (int)((float)cards.size() * rand() /
+                 (RAND_MAX + 1.0));
+
+             // Loop to that location
+             for (iter = cards.begin(); iterationCount > 1; iter++) {
+                iterationCount--;
+             }
+
+             // Copy the card..
+             newCardList.push_back(*iter);
+             
+             // Delete the card..
+             cards.erase(iter);
+          }
+          
+          // Swap the two lists..
+          cards.swap(newCardList);
+        };
       
       // Remove a card from the pack
-      Card removeCard(void)
+      CardType removeCard(void)
 	{
-	   Card card = cards.back();
+           std::cerr << "TEST4\n";
+	   CardType card = cards.back();
+           std::cerr << "TEST5\n";
 	   cards.pop_back();
+           std::cerr << "TEST6\n";
 	   return card;
 	};
    };

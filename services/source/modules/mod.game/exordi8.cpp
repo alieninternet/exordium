@@ -318,13 +318,14 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
      };
 
    // Obtain our packs, shuffling each deck.
-   std::vector <Cards::Pack> packs;
+   std::vector < Cards::Pack < Cards::Card > > packs;
    while (numPacks > 0)
      {
-	packs.push_back(Cards::Pack());
+	packs.push_back(Cards::Pack<Cards::Card>());
 	packs.back().shuffle();
 	numPacks--;
      }
+   std::cerr << "TEST1\n";
 
    // Deal five cards to each person, doing it like a real dealer (hehehe)
    for (int c = 0; c != 5; c++)
@@ -334,12 +335,14 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 	  {
 	     // Add a card to this player's hand direct from the pack
 	     (*p).second.addCard(packs.back().removeCard());
+             std::cerr << "TEST2\n";
 
 	     // If this pack is now empty, ditch it and move onto the next one
 	     if (packs.back().isEmpty())
 	       {
 		  packs.pop_back();
 	       }
+             std::cerr << "TEST3\n";
 	  }
      }
 

@@ -236,3 +236,18 @@ const char* Cards::Card::nameSuit(const unsigned char suit)
    
    return suitsList[suit - 1];
 }
+
+/* populate - Populate the pack
+ * Original 07/10/2002 josullivan
+ */
+void Cards::Card::populate(cards_type& cards)
+{
+   std::cerr << "TEST8\n";
+   // Run through and populate the pack (yes, rank is sorted DOWNWARDS)
+   for (register unsigned int suit = 1; suit != 5; suit++) {
+      for (register unsigned int index = 14; --index;) {
+         std::cerr << "Pushing (suit, index) ( " << suit << ", " << index << ")\n";
+         cards.push_back(Cards::Card(suit, index));
+      }
+   }
+}
