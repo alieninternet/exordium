@@ -35,7 +35,10 @@
  *    
  */
 
-#include "exordium/config.h"
+#ifdef HAVE_CONFIG_H
+# include "exordium/config.h"
+#endif
+
 #include "exordium/parser.h"
 #include "exordium/services.h"
 //#include "exordium/dchan.h"

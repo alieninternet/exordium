@@ -38,7 +38,15 @@ AC_CHECK_LIB([dl], [dlopen], [], [AC_MSG_ERROR([I cannot find a working dlopen! 
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h stdlib.h string.h sys/socket.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([\
+	dlfcn.h \
+	netdb.h \
+	unistd.h \
+	arpa/inet.h \
+	netinet/in.h \
+	sys/time.h \
+	sys/types.h \
+		])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

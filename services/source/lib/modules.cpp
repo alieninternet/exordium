@@ -24,7 +24,10 @@
  *
  */
 
-#include "exordium/config.h"
+#ifdef HAVE_CONFIG_H
+# include "exordium/config.h"
+#endif
+
 #include <sstream>
 #include <algorithm>
 #include <iomanip>

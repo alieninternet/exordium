@@ -24,7 +24,10 @@
  *
  */
 
-#include "exordium/config.h"
+#ifdef HAVE_CONFIG_H
+# include "exordium/config.h"
+#endif
+
 #include "exordium/services.h"
 #include "exordium/channel.h"
 #include "exordium/user.h"
@@ -45,13 +48,27 @@
 
 extern "C"
 {
-#include <unistd.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <dlfcn.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#ifdef HAVE_NETDB_H
+# include <netdb.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
+# include <arpa/inet.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+# include <netinet/in.h>
+#endif
+#ifdef HAVE_DLFCN_H
+# include <dlfcn.h>
+#endif
 };
 
 #include <aisutil/socket/sockets.h>

@@ -24,6 +24,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "exordium/config.h"
+#endif
+
 #include "exordium/service.h"
 
 // Default configuration definition table (for uninherited ConfigData classes)

@@ -24,13 +24,19 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include "stats.h"
 #include <exordium/services.h>
 #include <exordium/nickname.h>
 #include <exordium/channel.h>
 #include <kineircd/str.h>
 #include <exordium/sql.h> // <=- is this correct?
-#include <sys/time.h>
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
 
 using AISutil::String;
 using AISutil::StringTokens;

@@ -27,7 +27,10 @@
 #ifndef __VOTE_H_
 #define __VOTE_H_
 
-#include <exordium/config.h>
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include <kineircd/str.h>
 
 # define VOTE_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)

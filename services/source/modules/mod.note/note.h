@@ -27,7 +27,10 @@
 #ifndef __NOTE_H_
 #define __NOTE_H_
 
-#include <exordium/config.h>
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include <kineircd/str.h>
 #define NOTE_FUNC(x)           x(Exordium::User& origin, AISutil::StringTokens &tokens)
 

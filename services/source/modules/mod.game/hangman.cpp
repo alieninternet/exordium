@@ -25,7 +25,9 @@
  *
  */
 
-#include <exordium/config.h>
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
 
 #include <vector>
 #include <sstream>

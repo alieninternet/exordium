@@ -24,9 +24,12 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include <map>
 #include <sstream>
-#include <exordium/config.h>
 
 #ifdef DEBUG
 # include <cassert>
@@ -53,7 +56,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Love::moduleInfo_type Love::moduleInfo = {
    "Cupid Service",
-     0, 0
+     0, 0,
+     Exordium::Service::moduleInfo_type::Events::NONE
 };
 
 

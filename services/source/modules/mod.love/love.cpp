@@ -24,9 +24,12 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include <map>
 #include <sstream>
-#include <exordium/config.h>
 
 #ifdef DEBUG
 # include <cassert>

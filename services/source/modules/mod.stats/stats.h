@@ -27,7 +27,10 @@
 #ifndef __STATS_H_
 #define __STATS_H_
 
-#include <exordium/config.h>
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include <kineircd/str.h>
 
 # define STATS_FUNC(x)           x(AISutil::String &origin, AISutil::StringTokens &tokens)

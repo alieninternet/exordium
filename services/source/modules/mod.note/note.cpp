@@ -24,6 +24,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include "note.h"
 #include <exordium/service.h>
 #include <exordium/services.h>

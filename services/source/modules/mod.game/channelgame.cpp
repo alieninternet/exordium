@@ -25,6 +25,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include "channelgame.h"
 #include "exordi8.h"
 #include "poker.h"

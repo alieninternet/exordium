@@ -24,6 +24,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include "nick.h"
 #include <exordium/services.h>
 #include <kineircd/str.h>

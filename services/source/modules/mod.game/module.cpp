@@ -24,7 +24,10 @@
  *
  */
 
-#include <exordium/config.h>
+#ifdef HAVE_CONFIG_H
+# include <exordium/config.h>
+#endif
+
 #include <exordium/channel.h>
 #include <exordium/service.h>
 #include <exordium/services.h>

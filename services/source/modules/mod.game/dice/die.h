@@ -28,7 +28,10 @@
 #ifndef __DIE_H__
 # define __DIE_H__
 
-# include <exordium/config.h>
+# ifdef HAVE_CONFIG_H
+#  include <exordium/config.h>
+# endif
+
 # include <cstdlib>
 # ifdef DEBUG
 #  include <cassert>
