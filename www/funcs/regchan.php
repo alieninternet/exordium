@@ -4,14 +4,12 @@ page_start();
 if ($_POST[submit])
 {
   $c=0;
-  if (!$_POST[word])
-    $err[$c++] = "You need to put in a command.";
-  if (!$_POST[txt])
-    $err[$c++] = "You need to enter some sort of help information.";
+  if (!$_POST[name])
+    $err[$c++] = "You must specify a name for your room.";
   if ($err > 0)
   {
     echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
-    echo "<tr id=\"header\"><td colspan=\"2\">Error!! Adding User Help Files</td></tr>";
+    echo "<tr id=\"header\"><td colspan=\"2\">Error registering your room</td></tr>";
     echo "<tr><td id=\"field\"><br>";
  	  echo "<ul>";
 	  for ($i=0;$i < count($err); $i++)
@@ -24,18 +22,58 @@ if ($_POST[submit])
   }
   else
   {
-    $txt = addslashes($_POST[txt]);
-    if ($MYSQL->db_query("INSERT INTO help VALUES('', '$_POST[service]', '$_POST[word]', '$_POST[parm]', '$txt', '$_POST[lang]')"))
+// add check to see if channel is registered (add it in the channel class)
+
+    $name = strtolower($_POST[name]);
+    if (!strchr($name, "#"))
+      $name = "#".$name;
+    if ($CHAN->is_registered($name))
     {
-      $nick = $_SESSION[SESSION][nickname];
-      event_log("$nick added $_POST[service] help $_POST[word] $_POST[parm] to the help table.");
+      event_log("$nick registered the channel $_POST[name].");
       echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
       echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
-      echo "<tr id=\"header\"><td>Added Help File</td></tr>";
-      echo "<tr id=\"field\"><td>You have successfully entered the help data for $_POST[service].<br>";
-      echo "The command would look as such: /msg $_POST[service] help $_POST[word] $_POST[parm]<br>";
-      echo "Displaying the following help:<br>";
-      echo nl2br($_POST[txt]);
+      echo "<tr id=\"header\"><td>Error registering room.</td></tr>";
+      echo "<tr id=\"field\"><td>A channel named <b>$_POST[name]</b> is already registered with services.<br>";
+      echo "</td></tr></table>";
+      exit;
+    }
+    if ($CHAN->has_chans())
+    {
+      event_log("$nick registered the channel $_POST[name].");
+      echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
+      echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
+      echo "<tr id=\"header\"><td>Error registering room.</td></tr>";
+      echo "<tr id=\"field\"><td>You already own a channel, and cannot register more.<br>";
+      echo "</td></tr></table>";
+      exit;
+    }
+    $nick = $_SESSION[SESSION][nickname];
+    if (is_array($_POST[chanmode]))
+    {
+      $mode_str = "+";
+      foreach ($_POST[chanmode] as $k => $v)
+      {
+        $mode_str .= $k;
+      }
+      if ($_POST[chanmode][k])
+        $mode_str .= " $_POST[chankey]";
+      if ($_POST[chanmode][l])
+        $mode_str .= " $_POST[chanlimit]";
+    }
+    $_POST[topic] = addslashes($_POST[topic]);
+    $_POST[cdesc] = addslashes($_POST[cdesc]);
+    $_POST[url] = addslashes($_POST[url]);
+    $sql = "INSERT INTO chans VALUES('', '$name', '$nick', '$_POST[topic]', '$mode_str', '$_POST[cdesc]', '$_POST[url]', '$_POST[clog]')";
+    if ($debug)
+      echo $sql;
+    if ($MYSQL->db_query($sql))
+    {
+      
+      event_log("$nick registered the channel $_POST[name].");
+      echo "<meta http-equiv=\"Refresh\" content=\"5;  URL=$_SERVER[PHP_SELF]\">\n";
+      echo "<table cellspacing=\"2\" cellpadding=\"1\" border=\"0\" width=\"500\" id=\"normtable\">\n";
+      echo "<tr id=\"header\"><td>Successfully registered your room.</td></tr>";
+      echo "<tr id=\"field\"><td>You have successfully registered your room named <b>$_POST[name]</b><br>";
       echo "</td></tr></table>";
     }
   }
@@ -49,10 +87,18 @@ else
   echo "<tr><td id=\"label\">topic</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"topic\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">room description</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"cdesc\" size=\"25\" maxlength=\"255\" /></td></tr>";
   echo "<tr><td id=\"label\">room url</td><td id=\"field\"><input id=\"q\" type=\"text\" name=\"url\" size=\"25\" maxlength=\"255\" /></td></tr>";
-  echo "<tr><td id=\"label\">set your modes</td><td id=\"field\">";
+  echo "<tr><td id=\"label\" colspan=\"2\">set your channel modes</td></tr>";
+  echo "<td id=\"field\" colspan=\"2\">";
   $CHAN->chan_mode_checkboxes();
   echo "</td></tr>";
-
+  echo "<tr><td id=\"label\" colspan=\"2\">other channel settings</td></tr>";
+  echo "<td id=\"field\" colspan=\"2\">";
+  echo "<input id=\"q\" type=\"checkbox\" name=\"chanmode[k]\"> set a channel key?<br>";
+  echo "&nbsp;&nbsp;<input id=\"q\" type=\"text\" name=\"chankey\" size=\"10\" maxlength=\"25\"> <small>enter the key here</small><br><br>\n";
+  echo "<input id=\"q\" type=\"checkbox\" name=\"chanmode[l]\"> set a channel user limit?<br>";
+  echo "&nbsp;&nbsp;<input id=\"q\" type=\"text\" name=\"chanlimit\" size=\"3\" maxlength=\"4\"> <small>enter the limit here</small><br><br>\n";
+  echo "<input id=\"q\" type=\"checkbox\" name=\"clog\" value=\"1\"> enable services logging?<br>";
+  echo "</td></td>\n";
   echo "<tr><td colspan=\"2\"><input id=\"submit\" type=\"submit\" name=\"submit\" value=\"Register this room\"></form>";
   echo "</table>";
 }

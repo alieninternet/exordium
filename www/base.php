@@ -98,7 +98,20 @@ default_page()
   echo "        <td>\n";
   echo "          <table cellspacing=\"2\" cellpadding=\"2\" border=\"0\" width=\"200\" id=\"normtable\">\n";
   echo "            <tr id=\"header\"><td>Chat Room</td></tr>";
-  echo "            <form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><tr><td id=\"centerfield\"><input type=\"hidden\" name=\"action\" value=\"regchan\"><input id=\"submit\" type=\"submit\" name=\"sub\" value=\"Register a Room\"></td></tr></form>";
+  $CHAN = new Channel();
+  if ($CHAN->has_chans())
+  {
+    echo "<tr><td id=\"centerfield\">You currently own:<br>";
+    echo $CHAN->print_users_chans();
+    echo "</td></tr>";
+    echo "<tr><td id=\"centerfield\">";
+    
+    echo "</td></tr>";
+  }
+  else
+  {
+    echo "            <form action=\"$_SERVER[PHP_SELF]\" method=\"POST\"><tr><td id=\"centerfield\"><input type=\"hidden\" name=\"action\" value=\"regchan\"><input id=\"submit\" type=\"submit\" name=\"sub\" value=\"Register a Room\"></td></tr></form>";
+  }
   echo "          </table>";
   echo "        </td>";
   echo "      </tr>";
