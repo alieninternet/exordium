@@ -29,7 +29,7 @@
 #endif
 
 #include "oper.h"
-#include "language.h"
+#include "./language.h"
 
 #include <exordium/service.h>
 #include <exordium/services.h>
@@ -383,23 +383,10 @@ bool Module::start(Exordium::Services& s)
    services = &s;
 
    // Register and process our language tag name -> tag ID map
-   Kine::langs().registerMap(Language::tagMap);
-   int foofoo = 0;
-   for (;;)
-     {
+   Kine::langs().registerMap(Exordium::OperModule::Language::tagMap);
 
-	std::cout << "TagMap " << foofoo << ": tag '" <<
-	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
-	  Language::tagMap[foofoo].tagID << std::endl;
-
-	if (Language::tagMap[++foofoo].tagName == 0)
-	  {
-
-	     break;
-	  }
-
-     }
-
+   std::cout << "Hello! I'm OPER.. I'm STARTING.. HELLOOOO??? ANYONE THERE?? :( :(" << std::endl;
+   
    // Register ourself to the network
    services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
