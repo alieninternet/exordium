@@ -78,9 +78,11 @@ namespace Exordium {
 	 typedef unsigned int lazy_type;
       };
       
+      
     private:
       const std::string& description;
       const std::string& username;
+      
       
     protected:
       // Constructor
@@ -97,14 +99,33 @@ namespace Exordium {
       virtual ~Service() 
 	{};
 
-      // Parsers
-      virtual void parseLine(AISutil::StringTokens& line, User& origin,
-			     const bool safe) = 0;
+
+    private:
+      // Handle a message/query sent directly to us from a client
+      virtual void parseLine(Kine::Client& origin,
+			     const AISutil::StringTokens& line,
+			     const bool isSafe = false);
+
+      // Handle a message sent to a channel we're on
+      virtual void parseLine(Kine::Client& origin,
+			     Kine::Channel& destination,
+			     const AISutil::StringTokens& line);
+
+
+      // Handle the reception of a service query to this service
+      virtual const Kine::Error::error_type 
+	sendQuery(Kine::Client& from, const std::string& message,
+		  const Kine::Receiver::Directivity directivity =
+		  Kine::Receiver::Directivity());
       
-      virtual void parseLine(AISutil::StringTokens& line, User& origin,
-			     const Kine::ChannelName& channel) = 0;
+      // Handle the reception of a private message send to this service
+      virtual const Kine::Error::error_type
+	sendMessage(Kine::Sender& from, const std::string& message,
+		    const Kine::Receiver::Directivity directivity =
+		    Kine::Receiver::Directivity());
+
       
-      
+    public:
       // Return the events mask (the events we want to know about)
       virtual const Events::lazy_type getEventsMask(void) const
 	{ return Events::NONE; };

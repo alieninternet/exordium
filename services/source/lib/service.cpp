@@ -29,3 +29,66 @@
 #endif
 
 #include "exordium/service.h"
+
+
+using namespace Exordium;
+using AISutil::StringTokens;
+
+
+/* Handle a message/query sent directly to us from a user
+ * Original 08/06/2003 pickle
+ */
+void Service::parseLine(Kine::Client& origin,
+			const StringTokens& line,
+			const bool isSafe)
+{
+}
+
+
+/* Handle a message sent to a channel we're on
+ * Original 08/06/2003 pickle
+ */
+void Service::parseLine(Kine::Client& origin,
+			Kine::Channel& destination,
+			const StringTokens& line)
+{
+}
+
+
+/* Handle the reception of a service query to this service
+ * Original 08/06/2003 pickle
+ */
+const Kine::Error::error_type
+  Service::sendQuery(Kine::Client& from,
+		     const std::string& message,
+		     const Kine::Receiver::Directivity directivity)
+{
+   std::cout << getName() << " got: " << message << std::endl;
+   
+   // No problem :)
+   return Kine::Error::NO_ERROR;
+}
+
+
+/* Handle the reception of a private message send to this service
+ * Original 08/06/2003 pickle
+ */
+const Kine::Error::error_type
+  Service::sendMessage(Kine::Sender& from,
+		       const std::string& message,
+		       const Kine::Receiver::Directivity directivity)
+{
+   // Try to convert this over to a client..
+   Kine::Client* const client = dynamic_cast<Kine::Client* const>(&from);
+
+   // Make sure this *is* a client
+   if (client != 0) {
+      // Check if this is a CTCP..
+      
+      // It's not a CTCP message, throw it over to the SQUERY handler
+      return sendQuery(*client, message);
+   }
+   
+   // It's not a client, we don't want to deal with it..
+   return Kine::Error::UNSUPPORTED_BY_ENTITY;
+}
