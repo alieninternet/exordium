@@ -19,7 +19,9 @@ if EXORDIUM_COMPILE_DB_PGSQL
   EXORDIUM_TARGET_DB_PGSQL=lib/database/postgresql/dbpgsql.cpp
 endif
 
-libexordium_la_SOURCES = lib/config.cpp \
+libexordium_la_SOURCES = lib/language.cpp \
+		       	 lib/language.h \
+		       	 lib/config.cpp \
 			 lib/console.cpp \
 		       	 lib/channel.cpp \
 			 lib/dchan.cpp \
@@ -33,6 +35,18 @@ libexordium_la_SOURCES = lib/config.cpp \
 			 $(EXORDIUM_TARGET_DB_MYSQL) \
 			 $(EXORDIUM_TARGET_DB_PGSQL)
 
-			 
+lib/language.cpp: lib/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T lib/language.tpl \
+		$(top_builddir)/autogen/language.def
+
+lib/language.h: lib/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(base_name $@) \
+		-T lib/language.tpl \
+		$(top_builddir)/autogen/language.def
+
+
 SUBDIRS=. libbank modules
 

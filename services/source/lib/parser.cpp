@@ -440,8 +440,6 @@ void
 
    String OLDoriginl = OLDorigin.IRCtoLower();
    String target = tokens.nextToken ();
-
-   // fix me. urgh.
    String message(tokens.nextColonToken());
 
    if ((message[0] == '\001') && (message[message.length () - 1] == '\001'))
@@ -474,27 +472,7 @@ void
 #ifdef DEBUG
    std::cout << '\'' << target << '\'' << std::endl;
 #endif
-   if(target[0]=='#')
-     {
-	//Oke channel msg :>
-	if(!services.getConfigInternal().getModules().exists("chan"))
-	  {
-	     String togo = "Sorry - Channel services are currently disabled for maintenance";
-	     services.serviceNotice(String(togo),target,OLDoriginl);
-	     return;
-	  }
 
-	// dodgey? YES.. YES IT IS.. :(
-	//	services.getConfigInternal().getModules().throwLine("chan",message,OLDoriginl,target);
-	//	services.getConfigInternal().getModules().throwLine("game",message,OLDoriginl,target);
-	StringTokens dodgeydodgeydodgey(message);
-	services.getConfigInternal().getModules().throwLine("chan", dodgeydodgeydodgey, *origin,
-							    target);
-	StringTokens dodgeydodgeydodgeyAGAIN(message);
-	services.getConfigInternal().getModules().throwLine("game", dodgeydodgeydodgeyAGAIN, *origin,
-							    target);
-	return;
-     }
    if(target.toLower()=="chan@services.peoplechat.org")
      {
 	if(!services.getConfigInternal().getModules().exists("chan"))

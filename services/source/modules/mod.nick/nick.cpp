@@ -358,6 +358,14 @@ NICK_FUNC (Module::parseAUTH)
 				getName());
 	     return;
 	  }
+	if((value=="german") || (value=="deutsch") || (value=="de"))
+	   {
+	      std::cout << "Setting language to GERMAN!!" << std::endl;
+	      origin.setLanguage("de");
+	      origin.sendMessage(GETLANG(nick_LANGUAGE_CHANGED, "Deutsch"),
+				 getName());
+	   }
+	   
 	origin.sendMessage(GETLANG(nick_ERROR_UNSUPPORTED_LANGUAGE),
 			   getName());
 	return;

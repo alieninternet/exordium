@@ -47,6 +47,25 @@ language = {
    langRevision = "200303210";
 };
 
+language = {
+   langCode = "de";
+   langName = "German";
+   langRevision = "200303210";
+};
+
+/*
+ *
+ * Tags for core Console 
+ *
+ */
+ 
+langtag = {
+  name = "console_NOT_ENOUGH_ACCESS";
+  component = "lib_console";
+  data_en = "You do not have enough access to use that console command";
+  data_de = "As if i can convert this to german";
+};
+
 
 
 /*
@@ -66,6 +85,7 @@ langtag = {
    name = "nick_ACCESS_LIST_START";
    component = "mod_nick";
    data_en = "Access list for %p0";
+   data_de = "Die access liste fur %p0";
 };
 
 langtag = {
