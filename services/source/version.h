@@ -1,7 +1,7 @@
 /* $Id$
  * 
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 IRCDome Development Team
  *
  * This file is a part of Exordium.
  * 
@@ -34,7 +34,7 @@
 # define EXORDIUM_NAME_LONG	"Exordium IRC Network Services"
 
 // Breif copyright information (one line)
-# define EXORDIUM_COPYRIGHT	"Copyright (c) 2002 Exordium Development Team"
+# define EXORDIUM_COPYRIGHT	"Copyright (c) 2002,2003 Exordium Development Team"
 
 // Version numbers (major.minor.patch). Patchlevel is used if it is > 0
 # define EXORDIUM_VER_MAJOR	0
@@ -58,7 +58,7 @@
       /* Ruler: \
        *          1         2         3         4         5         6 \
        * 123456789012345678901234567890123456789012345678901234567890 */ \
-      "Exordium Network Services, Copyright (C) 2002 IRCDome ", \
+      "Exordium Network Services, Copyright (C) 2002,2003 IRCDome ", \
       "Development Team", \
       "", \
       "Exordium comes with ABSOLUTELY NO WARRANTY; for details see", \

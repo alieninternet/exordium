@@ -1,7 +1,7 @@
 /* $Id$
  *
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 IRCDome Development Team
  *
  * This file is a part of Exordium.
  *
