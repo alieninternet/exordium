@@ -46,7 +46,7 @@ const LibAIS::ConfigParser::defTable_type Game::ConfigData::defTable = {
      },
      {
 	"NAME",
-	  (void *)&ConfigData::defName, &varHandleString,
+	  (void *)&ConfigData::defName, &varHandleStringOneWord,
 	  0, 0
      },
      { 0, 0, 0, 0, 0 }

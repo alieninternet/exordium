@@ -99,7 +99,7 @@ const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
      },
      {
         "NAME",
-          (void *)&Config::defConsoleName, &varHandleString,
+          (void *)&Config::defConsoleName, &varHandleStringOneWord,
           0, 0
      },
      { 0, 0, 0, 0, 0 }
@@ -116,7 +116,7 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
      },
      {
         "DATABASE",
-          (void *)&Config::defSqlDatabase, &varHandleString,
+          (void *)&Config::defSqlDatabase, &varHandleStringOneWord,
           0, 0
      },
      {
@@ -136,7 +136,7 @@ const LibAIS::ConfigParser::defTable_type Config::defClassSql =
      },
      {
         "USERNAME",
-          (void *)&Config::defSqlUsername, &varHandleString,
+          (void *)&Config::defSqlUsername, &varHandleStringOneWord,
           0, 0
      },
      { 0, 0, 0, 0, 0 }
