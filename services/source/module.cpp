@@ -32,10 +32,11 @@
 #ifdef DEBUG
 # include <cassert>
 #endif
+#include <kineircd/module.h>
 #include <exordium/database/database.h>
+
 #include "lib/config.h"
 #include "lib/services.h"
-#include <kineircd/module.h>
 #include "version.h"
 
 using namespace Exordium;
