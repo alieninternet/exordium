@@ -60,9 +60,6 @@ namespace Exordium {
     public:
       time_t currentTime;
       
-      // this is dodgey and should be passed to modules, *not* set by Parser::
-      bool SecurePrivmsg;
-      
       // Destructor
       virtual ~Services(void)
 	{};

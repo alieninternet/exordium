@@ -90,7 +90,7 @@ namespace Exordium {
       
       // Throw a line at the appropriate service (sent directly)
       void throwLine(const AISutil::String& name, AISutil::StringTokens& line, 
-		     User &origin);
+		     User &origin, const bool safe);
       
       // Throw a line at the appropriate service (sent to a channel)
       void throwLine(const AISutil::String& name, AISutil::StringTokens& line,

@@ -32,7 +32,8 @@
 # include <kineircd/str.h>
 
 # define NICK_FUNC(x) \
-     void x(Exordium::User& origin, AISutil::StringTokens& tokens)
+     void x(Exordium::User& origin, AISutil::StringTokens& tokens, \
+	    const bool safe)
 
 
 namespace Exordium {
@@ -65,7 +66,8 @@ namespace Exordium {
 	 // Start the module
 	 bool start(Exordium::Services& s);
 	 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			AISutil::String const &)
 	   {};

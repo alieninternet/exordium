@@ -529,7 +529,6 @@ void
    //Hard check for nick if its @ircdome.org ......
    if(target.toLower()=="nick@ircdome.org")
      {
-	services.SecurePrivmsg = true;
 	//Safety check for the module.. :-)
 	if(!services.getConfigInternal().getModules().exists("nick"))
 	  {
@@ -537,10 +536,12 @@ void
 	     services.serviceNotice(String(togo),target,OLDoriginl);
 	  }
 	StringTokens bloodydodgeytoo(message);
-	services.getConfigInternal().getModules().throwLine("nick", bloodydodgeytoo, *origin);
+	services.getConfigInternal().getModules().throwLine("nick",
+							    bloodydodgeytoo,
+							    *origin,
+							    true);
 	return;
      }
-   services.SecurePrivmsg = false;
    if(!services.getConfigInternal().getModules().exists(target))
      {
 	services.serviceNotice("Sorry - This part of Services is currently "
@@ -552,8 +553,9 @@ void
      }
    StringTokens dodgeybutnotanymoredodgeythanthelastonewas(message);
    services.getConfigInternal().getModules().throwLine(target.toLower(),
-			       dodgeybutnotanymoredodgeythanthelastonewas,
-			       *origin);
+						       dodgeybutnotanymoredodgeythanthelastonewas,
+						       *origin,
+						       false);
 
 }
 

@@ -100,7 +100,8 @@ namespace Exordium {
 	 void stop(const AISutil::String& reason);
 	 
 	 // Parser for incoming stuff
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const AISutil::String& channel);
 	 

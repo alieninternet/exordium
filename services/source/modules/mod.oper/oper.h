@@ -61,9 +61,11 @@ namespace Exordium {
 	 // Start the module
 	 bool start(Exordium::Services& s);
 	 
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-			const AISutil::String& channel);
+			const bool safe);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const AISutil::String& channel)
+	   {};
 	 
 	 // Grab the information structure of a module
 	 virtual const moduleInfo_type& getModuleInfo(void) const

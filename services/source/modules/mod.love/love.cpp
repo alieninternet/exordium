@@ -114,7 +114,7 @@ bool Module::start(Exordium::Services& s)
 /* parseLine - Parse an incoming message (which was sent directly to us)
  * Original 13/07/2002 james
  */
-void Module::parseLine(StringTokens& line, User& origin)
+void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    // Start breaking up the line
    String command = line.nextToken().toLower();

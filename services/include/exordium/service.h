@@ -146,7 +146,8 @@ namespace Exordium {
       virtual void stop(const AISutil::String& reason) {};
 
       // Parsers
-      virtual void parseLine(AISutil::StringTokens& line, User& origin) = 0;
+      virtual void parseLine(AISutil::StringTokens& line, User& origin,
+			     const bool safe) = 0;
       
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
 			     const AISutil::String& channel) = 0;

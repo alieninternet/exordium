@@ -82,7 +82,8 @@ namespace Exordium {
 	   { /* Nothing! Bwa ha ha ha hahahahaHEHhEHahehaheAEhaHAEhaE!!! */ };
 	 
 	 // Parser for incoming stuff sent directly to us
-	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin);
+	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
+			const bool safe);
 
 	 // Grab the information structure of a module
 	 virtual const moduleInfo_type& getModuleInfo(void) const

@@ -57,8 +57,7 @@ const Module::functionTableStruct Module::functionTable[] = {
 };
 
 
-void
-  Module::parseLine (StringTokens& line, User& origin)
+void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();

@@ -68,7 +68,7 @@ void
 }
 
 void
-  Module::parseLine (StringTokens& line, User& origin)
+  Module::parseLine (StringTokens& line, User& origin, const bool safe)
 
 {
    StringTokens& st = line;

@@ -228,7 +228,7 @@ NOTE_FUNC(Module::parseSEND) {
 }
 
 
-void Module::parseLine(StringTokens& line, User& origin)
+void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    if (!origin.isIdentified(origin.getNickname())) {
       origin.sendMessage("Sorry - You must be identified to use this service",

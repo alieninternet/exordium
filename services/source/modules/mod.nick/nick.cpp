@@ -79,22 +79,20 @@ void
 }
 
 
-void
-  Module::parseLine (StringTokens& line, User& origin)
+void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
-   StringTokens& st = line;
-   String command = st.nextToken ().toLower ();
-   for (int i = 0; functionTable[i].command != 0; i++)
-     {
-	// Does this match?
-	if (command == functionTable[i].command)
-	  {
-	     // Run the command and leave
-	     (this->*(functionTable[i].function))(origin, st);
-	     return;
-	  }
-     }
-   origin.sendMessage ("Unrecognized Command",getName());
+   String command = line.nextToken().toLower();
+   
+   for (int i = 0; functionTable[i].command != 0; i++) {
+      // Does this match?
+      if (command == functionTable[i].command) {
+	 // Run the command and leave
+	 (this->*(functionTable[i].function))(origin, line, safe);
+	 return;
+      }
+   }
+   
+   origin.sendMessage("Unrecognised Command", getName());
    return;
 }
 
@@ -647,7 +645,7 @@ void
 	       origin.sendMessage (tosend, getName());
 	       return;
 	    }
-	  if(!services->SecurePrivmsg)
+	  if(!safe)
 	    {
 	       String tosend = String ("For security reasons you must use /msg nick@ircdome.org to identify");
 	       origin.sendMessage (tosend, getName());

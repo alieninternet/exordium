@@ -211,7 +211,8 @@ bool Modules::exists(const String& name) const
 /* throwLine - Throw a line at the appropriate service (sent directly)
  * Original 07/06/2002 pickle
  */
-void Modules::throwLine(const String& name, StringTokens& line, User& origin)
+void Modules::throwLine(const String& name, StringTokens& line, User& origin,
+			const bool safe)
 {
    // Locate the module..
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
@@ -219,7 +220,7 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin)
    // If the module exists, throw the line at it
    if (moduleLocation != modules.end())
      {
-	(*moduleLocation).second->service->parseLine(line, origin);
+	(*moduleLocation).second->service->parseLine(line, origin, safe);
      }
 }
 

@@ -249,7 +249,6 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
        countRx(0)
      {
 	currentTime = time(NULL);
-	SecurePrivmsg = false;
 	
 #ifdef DEBUG
 	logLine("Setting up signal handlers",
