@@ -54,7 +54,10 @@ public:
     	else
       		return is_connected = 0;
   	}
-  	void     close() {mysql_close(mysql);}
+  	void     close() {
+	if(is_connected)
+		mysql_close(mysql);
+	}
 
   	Mysql () {mysql = new MYSQL;}
   	Mysql (const char *host, const char *user, const char *passwd) {
