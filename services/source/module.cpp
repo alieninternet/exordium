@@ -29,7 +29,7 @@ namespace mod_exordium {
 	std::cout << "mod_exordium::moduleStart()" << std::endl;
 
 	// New Logger (the config file will have been created by now)
-	logger = new Logger(*config);
+	logger = new Log(*config);
 	
 	// Create new SQL Instance
 	db = new Sql(*logger, *config);
