@@ -108,9 +108,6 @@ if test "$MYSQL_CONFIG" != "no" ; then
          AC_MSG_RESULT(Building with MySQL support)], 
                        [AC_MSG_RESULT([Building without MySQL support])],
 	[$MYSQL_LDFLAGS])
-		      
-        dnl -- Do the right thing and restore LIBS..
-	LIBS=$LIBS_TMP
 fi
 AM_CONDITIONAL(EXORDIUM_COMPILE_DB_MYSQL,
                [test x$exordium_test_compile_db_mysql = xyes])
