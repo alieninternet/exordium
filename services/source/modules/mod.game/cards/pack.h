@@ -39,7 +39,6 @@ namespace Cards {
       typedef std::vector <T> cards_type;
       void operator()(cards_type& cards) 
         { 
-          std::cerr << "TEST9 " << &T::populate << std::endl; 
           T::populate(cards); 
         };
    };
@@ -56,9 +55,7 @@ namespace Cards {
     public:
       // Constructor (populates the pack, all cards are in 'mint' order)
       Pack(bool withJoker = false) 
-        { std::cerr << "TEST7\n"; 
-          Allocator allocator; allocator(cards); 
-          std::cerr << "TEST10\n"; }
+        { Allocator allocator; allocator(cards); }
 
       // Return the number of cards left in the pack
       typename cards_type::size_type getCardCount(void) const
@@ -100,11 +97,8 @@ namespace Cards {
       // Remove a card from the pack
       CardType removeCard(void)
 	{
-           std::cerr << "TEST4\n";
 	   CardType card = cards.back();
-           std::cerr << "TEST5\n";
 	   cards.pop_back();
-           std::cerr << "TEST6\n";
 	   return card;
 	};
    };
