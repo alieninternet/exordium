@@ -11,6 +11,7 @@ SOURCES=\
 	conf.cpp \
 	ircdome.cpp \
 	log.cpp \
+	modules.cpp \
 	parser.cpp \
 	services.cpp \
 	sql.cpp \

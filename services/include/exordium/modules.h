@@ -27,113 +27,71 @@
 #ifndef _MODULELIST_H_
 # define _MODULELIST_H_ 1
 
-# include <kineircd/str.h>
 # include <map>
-# include <cassert>
+# include <kineircd/str.h>
 
 extern "C" {
 # include <dlfcn.h>
 };
 
-# include <exordium/service.h>
-
 namespace Exordium {
+   class Services;
+   class User;
+   class Service;
+   
    class Modules {
     private:
-      struct ServiceModule {
-	 Service *service;
-	 void *handle;
+      // Handy class for module information
+      class ServiceModule {
+       public:
+	 Service* const service;			// Service class
+	 void* const handle;				// dlopen() handle
 	 
-	 ServiceModule(Service *s, void *h)
+	 ServiceModule(Service* const s, void* const h)
 	   : service(s), handle(h)
 	     {};
-	 ~ServiceModule(void)
-	   {
-	      std::cout << "Dead module??" << std::endl;
-	      dlclose(handle);
-	   }
-      };
-      typedef std::map <LibAIS::String, ServiceModule *> modules_type;
-      modules_type serviceModules;
-      
-    public:
-      Modules(void) {
-	 // I'm anal, so shoot me.
-	 serviceModules.clear();
-      };
-      
-      void addModule(Service &s, void *h) {
-	 // Just add it - this will overwrite anything already there
-	 serviceModules[s.getName().IRCtoLower()] = new ServiceModule(&s,h);
-      };
-      
-      void delModule(LibAIS::String const &name) {
-	 ServiceModule *sm = serviceModules[name.IRCtoLower()];
-	 if (sm != 0) {
-	    delete sm;
-	    serviceModules.erase(name.IRCtoLower());
-	    return;
-	 }
-	 std::cout << "Umm... i couldn't find " << name << std::endl;
-      };
-      
-      bool exists(LibAIS::String const &name)
-	{
-	   ServiceModule *sm = serviceModules[name.IRCtoLower()];
-	   if ( sm == 0 )
-	     {
-		serviceModules.erase(name.IRCtoLower());
-		return false;
-	     }
-	   return true;
-	}
-      
-      // Throw a line at the appropriate service
-      void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line, 
-		     User &origin) {
-	 ServiceModule *sm = serviceModules[name.IRCtoLower()];
-	 if (sm == 0) {
-	    // Give up.. delete what we just made and go bye byes
-	    serviceModules.erase(name.IRCtoLower());
-	    return;
-	 }
-	 Service *serv = sm->service;
-	 serv->parseLine(line, origin);
-	 return;
-      };
-      
-      void throwLine(LibAIS::String const &name, LibAIS::StringTokens& line,
-		     User& origin, LibAIS::String const &ch) {
-	 // Find it...
-	 ServiceModule *sm = serviceModules[name.IRCtoLower()];
 	 
-	 // It will be null if we did not find it..
-	 if (sm == 0) {
-	    // Give up.. delete what we just made and go bye byes
-	    serviceModules.erase(name.IRCtoLower());
-	    return;
-	 }
-	 Service *serv = sm->service;
-	 // Otherwise we must have it.. send something to the service
-	 serv->parseLine(line, origin, ch);
-	 return;
+	 ~ServiceModule(void) 
+	   { dlclose(handle); };
       };
+
+      // The list of modules
+      typedef std::map <LibAIS::String, ServiceModule *> modules_type;
+      modules_type modules;
+
+    public:
+      // Constructor
+      Modules(void) 
+	{};
+      
+      // Destructor (unload all modules)
+      ~Modules(void);
+      
+      // Add a module to the list
+      bool addModule(Service& s, void* const h);
+      
+      // Remove a module from the list, and unload it
+      void delModule(const LibAIS::String&name);
+
+      // Check if a module exists
+      bool exists(const LibAIS::String& name) const;
+      
+      // Throw a line at the appropriate service (sent directly)
+      void throwLine(const LibAIS::String& name, LibAIS::StringTokens& line, 
+		     User &origin);
+      
+      // Throw a line at the appropriate service (sent to a channel)
+      void throwLine(const LibAIS::String& name, LibAIS::StringTokens& line,
+		     User& origin, const LibAIS::String& channel);
       
       // Dump a list of modules
-      LibAIS::String dumpModules(void) {
-	 std::cout << "Modules loaded: ";
-	 LibAIS::String tmp = "";
-	 for (modules_type::iterator it = serviceModules.begin();
-	      it != serviceModules.end(); it++) {
-	    // Output the key..
-	    std::cout << (*it).first << ' ';
-	    tmp = LibAIS::String(tmp)+" "+(*it).first;
-	 }
-	 std::cout << std::endl;
-	 return tmp;
-      }
+      LibAIS::String dumpModules(void) const;
    };
 }; // namespace Exordium
+
+# include <exordium/service.h>
+# include <exordium/user.h>
+# include <exordium/service.h>
 
 #endif // _MODULELIST_H_
 
