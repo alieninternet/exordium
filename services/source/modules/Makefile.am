@@ -95,26 +95,15 @@ mod_nick_la_SOURCES=\
 	mod.nick/tables.cpp \
 	mod.nick/tables.h
 
-mod.nick/language.cpp: mod.nick/language.tpl $(top_builddir)/autogen/language.def
+mod.nick/language.cpp mod.nick/language.h: mod.nick/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
 		-b $(basename $@) \
 		-T mod.nick/language.tpl \
 		$(top_builddir)/autogen/language.def
 
-mod.nick/language.h: mod.nick/language.tpl $(top_builddir)/autogen/language.def
+mod.chan/language.cpp mod.chan/language.h: mod.chan/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
 		-b $(basename $@) \
-		-T mod.nick/language.tpl \
-		$(top_builddir)/autogen/language.def
-mod.chan/language.cpp: mod.chan/language.tpl $(top_builddir)/autogen/language.def
-	$(AUTOGEN) \
-		-b $(basename $@) \
-		-T mod.chan/language.tpl \
-		$(top_builddir)/autogen/language.def
-
-mod.chan/language.h : mod.chan/language.tpl $(top_builddir)/autogen/language.def
-	$(AUTOGEN) \
-		-b $(basename $@)
 		-T mod.chan/language.tpl \
 		$(top_builddir)/autogen/language.def
 		
@@ -131,13 +120,7 @@ mod_note_la_SOURCES=\
 	mod.note/tables.cpp \
 	mod.note/tables.h
 
-mod.note/language.cpp: mod.note/language.tpl $(top_builddir)/autogen/language.def
-	$(AUTOGEN) \
-		-b $(basename $@) \
-		-T mod.note/language.tpl \
-		$(top_builddir)/autogen/language.def
-		
-mod.note/language.h: mod.note/language.tpl $(top_builddir)/autogen/language.def
+mod.note/language.cpp mod.note/language.h: mod.note/language.tpl $(top_builddir)/autogen/language.def
 	$(AUTOGEN) \
 		-b $(basename $@) \
 		-T mod.note/language.tpl \
