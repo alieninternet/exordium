@@ -71,7 +71,7 @@ mod_love_la_LIBADD=\
 	../libexordium.la
 mod_love_la_LDFLAGS=\
 	-avoid-version -module
-mod_love_la_SOURCED=\
+mod_love_la_SOURCES=\
 	mod.love/love.cpp \
 	mod.love/love.h \
 	mod.love/tables.cpp \
