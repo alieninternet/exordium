@@ -60,8 +60,8 @@ static KINE_SIGNAL_HANDLER_FUNC(Rehash)
    Log::logLine(debugOut.str());
 }
 
-static Signals::handlerInfo_type rehashSignalHandler = 
-   {&Rehash, Signals::REHASH, 0};
+//static Signals::handlerInfo_type rehashSignalHandler = 
+//   {&Rehash, Signals::REHASH, 0};
 
 static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
@@ -69,8 +69,8 @@ static KINE_SIGNAL_HANDLER_FUNC(Death)
 	exit(0);
 }
 
-static Signals::handlerInfo_type deathSignalHandler = 
-   {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
+//static Signals::handlerInfo_type deathSignalHandler = 
+//   {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
 
 namespace Exordium {
 
@@ -89,6 +89,7 @@ namespace Services {
   time_t currentTime;
   time_t serverLastSpoke;
   time_t disconnectTime = 0;
+  time_t stopTime = 0;
   time_t lastCheckPoint;
   time_t lastExpireRun;
   time_t lastModeRun;
@@ -160,11 +161,25 @@ Services::run(void)
             {
               if (!queueFlush ())
                 {
-                  Log::logLine("Disconnecting... (Queue flushing error)");
-	          connected = false;
-		  disconnectTime = currentTime;
-                  disconnect ();
+			if(!stopping)
+			//Ok, technically nasty, but if we're in a shutdown
+			//state, do we really care if the connection closes?
+			{
+                  	Log::logLine("Disconnecting... (Queue flushing error)");
+	          	connected = false;
+		  	disconnectTime = currentTime;
+                  	disconnect ();
+			}
                 }
+		if(stopping)
+		{
+			if(stopTime < currentTime)
+			{
+			Log::logLine("Disconnecting, QueueFlushed and in stop state");
+			connected = false;
+			exit(0);
+			}
+		}
 
             }
         }
@@ -198,10 +213,10 @@ Services::run(void)
 int
 Services::init(void)
 {
-   rehashSignalHandler.foo = (void *)this;
-   getDaemon().getSignals().addHandler(rehashSignalHandler);
-   deathSignalHandler.foo = (void *)this;
-   getDaemon().getSignals().addHandler(deathSignalHandler);
+   //rehashSignalHandler.foo = (void *)this;
+   //getDaemon().getSignals().addHandler(rehashSignalHandler);
+   //deathSignalHandler.foo = (void *)this;
+   //getDaemon().getSignals().addHandler(deathSignalHandler);
    
 	struct hostent *host;
 	queueKill ();
@@ -381,7 +396,12 @@ res.free_result();
 return String("0");
 }
 
-
+void Services::shutdown(void)
+{
+Services::Debug("Entering shutdown state.");
+stopping = true;
+stopTime = currentTime + 10;
+}
 void Services::SynchTime(void)
 {
 //Undo any expired glines

@@ -22,10 +22,10 @@ void
 Channel::RemoveBan(String const &id, String const &chan, String const &mask)
 {
 
-String tid = id;
+String tid = chan;
 int cid = tid.toInt();
 String channel = Channel::getChanName(cid);
-String todebug = "I am supposed to be removing the ban " + mask + " from this channel :)";
+String todebug = "Removing " + mask + " from this channel";
 Services::Debug(todebug);
 Services::Debug(channel);
 Services::servicePrivmsg(todebug,"Chan",channel);

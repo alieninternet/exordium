@@ -65,6 +65,7 @@ private:
   static time_t startTime;
   static time_t lastPing;
   static time_t disconnectTime;
+  static time_t stopTime;
   static time_t serverLastSpoke;
   static time_t lastCheckPoint;
   static time_t lastExpireRun;
@@ -110,6 +111,7 @@ public:
   static Core serviceM;  
 
 //Function Declrations below here.
+	static void shutdown(void);
 	void SynchTime(void);
 	void expireRun(void);
 	static String getQuote(int const &number);

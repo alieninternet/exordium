@@ -74,7 +74,23 @@ Serv::parseLine (String const &line, String const &requestor)
 void
 SERV_FUNC (Serv::parseDIE)
 {
-exit(0);
+String reason = tokens.rest();
+if(reason=="")
+	{
+		Services::serviceNotice("\002[\002Incorrect Usage\002]\002 Usage: die reason for shutdown here","Serv",origin);
+		return;
+	}
+
+String togo = "Services is \002shutting down\002 by request of \002"+origin+"\002 - "+reason;
+Services::helpme(togo,"Serv");
+Services::queueAdd(":Chan QUIT :"+togo);
+Services::queueAdd(":Nick QUIT :"+togo);
+Services::queueAdd(":Love QUIT :"+togo);
+Services::queueAdd(":Note QUIT :"+togo);
+Services::queueAdd(":Serv QUIT :"+togo);
+Services::queueAdd(":IRCDome QUIT :"+togo);
+Services::queueAdd(":services.ircdome.org SQUIT chrome.tx.us.ircdome.org :"+togo);
+Services::shutdown();
 }
 void
 SERV_FUNC (Serv::parseSYNCH)
