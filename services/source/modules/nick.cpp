@@ -400,17 +400,16 @@ NICK_FUNC (Nick::parseREGISTER)
 	Services::log(origin,"Nick","Registered nickname with email "+email);
 	String authcode = Nickname::genAuth(origin);
 	String subject = "Your nickname registration";
-	String emailtext = "
-	This is a sample email - Needs replacing with something much better\n
-	\n
-	\n
-	In order to successfully register your nickname, you need to type\n
-	the following next time you are on IRCDome.\n
-	\n
-	\n
-	/msg nick AUTH "+authcode+"\n
-	\n
-	";
+	String emailtext = 
+        "This is a sample email - Needs replacing with something much better\n"
+	"\n"
+	"\n"
+	"In order to successfully register your nickname, you need to type\n"
+	"the following next time you are on IRCDome.\n"
+	"\n"
+	"\n"
+	"/msg nick AUTH "+authcode+"\n"
+	"\n";
 	Services::sendEmail(email,subject,emailtext);
 }
 
