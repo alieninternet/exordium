@@ -42,6 +42,7 @@ extern "C" {
 #include "lib/config.h"
 #include "lib/services.h"
 #include "version.h"
+#include <exordium/database/database.h>
 
 using namespace Exordium;
 
