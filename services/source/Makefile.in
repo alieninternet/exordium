@@ -6,16 +6,24 @@ LDFLAGS=
 LIBS=@LIBS@
 
 SOURCES=main.cpp 
+SOURCES_MODULE=module.cpp
 INCLUDES=../include
 
 OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTS_MODULE=$(SOURCES_MODULE:.cpp=.o)
 
 TARGET=services
+TARGET_MODULE=mod_exordium.so
 
-all: $(TARGET)
+all: $(TARGET) $(TARGET_MODULE)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS) $(LIBS) -L/usr/local/mysql/lib/mysql $(LDFLAGS) lib/libservices.so
+
+$(TARGET_MODULE): $(OBJECTS_MODULE)
+	$(CXX) -o $@ $(OBJECTS_MODULE) $(LIBS) -L/usr/local/mysql/lib/mysql \
+		$(LDFLAGS) lib/libservices.so \
+		-fPIC -shared
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(DEFINES) -I$(INCLUDES) -I/usr/local/mysql/include/ -I../../kineircd/src/lib -I../../kineircd/include -I../include/  -c $< 
