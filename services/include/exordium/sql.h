@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "exordium/conf.h"
+#include "exordium/services.h"
 #include "mysql.h"
 #include <kineircd/str.h>
 
@@ -21,8 +22,14 @@ class Sql
 {
 private: 
 	 int sock;
+	 Services &services;
+	 Config &config;
 public:
-	 void init(const Config &);
+	Sql(Services &s, Config &c)
+	  : services(s),
+	    config(c),
+	    {};
+	 void init();
 	 MysqlRes query(String const &);
 	 String makeSafe(String const &);
 };

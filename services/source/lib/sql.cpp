@@ -29,7 +29,7 @@ MysqlRes Sql::query(String const &query)
     if (mysql.query(query.c_str())) {
 	Log::logLine(String("MySQL Error: ") + mysql.error());
 	String toshout = (String("MySQL Error: ") + mysql.error());
-	Services::helpme(toshout, "Serv");
+	services->helpme(toshout, "Serv");
     }
     struct timeval finish;
     gettimeofday(&finish, NULL);

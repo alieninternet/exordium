@@ -12,6 +12,7 @@
 #include <fstream>
 #include <kineircd/str.h>
 #include "exordium/conf.h"
+#include "exordium/services.h"
 
 using Kine::String;
 
@@ -21,10 +22,15 @@ class Log
 {
 private:
 	String logFilename;
-	 std::ofstream logFile;
-
+	std::ofstream logFile;
+	Services &services;
+	Config &config;
 public:
-	 void init(const Config &);
+	Log(Services &s, Config &c)
+		: services(s),
+		  config(c),
+		 {};
+	 void init();
 	 void logLine (String const &);
 
 };

@@ -55,6 +55,8 @@ private:
   String buffer;
   Kine::Daemon &daemon;
   Config &config;
+  Services &self;
+  Logger &log;
    
   int sock;
   int maxSock;
@@ -85,9 +87,11 @@ private:
 public:
    // dunno where you want these fellow james
    // Mr. Constructor
-   Services(Kine::Daemon &d, Config &c)
+   Services(Kine::Daemon &d, Config &c, Exordium::Services &s, Exordium::Log &l)
      : daemon(d),
        config(c),
+       self(s),
+       log(l),
        PasswordStrBase(85), PasswordStrBaseLongPad(5)
        {};
    
@@ -95,6 +99,7 @@ public:
    Kine::Daemon &getDaemon(void) const
      { return daemon; };
    
+  //Return reference to self?! This is hurting my head :|
 //Public Variables here.
    time_t currentTime;
 //	bool load_config();
