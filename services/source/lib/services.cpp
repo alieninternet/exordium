@@ -60,17 +60,11 @@ static KINE_SIGNAL_HANDLER_FUNC(Rehash)
    Log::logLine(debugOut.str());
 }
 
-//static Signals::handlerInfo_type rehashSignalHandler = 
-//   {&Rehash, Signals::REHASH, 0};
-
 static KINE_SIGNAL_HANDLER_FUNC(Death)
 {
 	Services::helpme("Services received " + String(sys_siglist[signal]) + " Shutting down", "Serv");
 	exit(0);
 }
-
-//static Signals::handlerInfo_type deathSignalHandler = 
-//   {&Death, Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH, 0};
 
 namespace Exordium {
 
@@ -213,10 +207,10 @@ Services::run(void)
 int
 Services::init(void)
 {
-   //rehashSignalHandler.foo = (void *)this;
-   //getDaemon().getSignals().addHandler(rehashSignalHandler);
-   //deathSignalHandler.foo = (void *)this;
-   //getDaemon().getSignals().addHandler(deathSignalHandler);
+   getDaemon().getSignals().addHandler(&Rehash, Signals::REHASH, (void *)this);
+   getDaemon().getSignals().addHandler(&Death,
+				       Signals::VIOLENT_DEATH | Signals::PEACEFUL_DEATH,
+				       (void *)this);
    
 	struct hostent *host;
 	queueKill ();
