@@ -123,7 +123,7 @@ CHANNEL_GAME_CREATOR_FUNCTION
 /* Hangman - Constructor for a new Hangman game being played on a channel
  * Original 17/09/2002 josullivan
  */
-Hangman::Hangman(Exordium::GameModule::Module& module, const String& channel, 
+Hangman::Hangman(Exordium::GameModule::Module& module, const Kine::Name& channel, 
 		 Exordium::User& caller)
   : ChannelGame(module, channel.IRCtoLower()),
     playing(false)

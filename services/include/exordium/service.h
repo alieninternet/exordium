@@ -171,7 +171,7 @@ namespace Exordium {
 			     const bool safe) = 0;
       
       virtual void parseLine(AISutil::StringTokens& line, User& origin,
-			     const AISutil::String& channel) = 0;
+			     const Kine::Name& channel) = 0;
       
       virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
       virtual void handleClientSignon(User& origin) {};

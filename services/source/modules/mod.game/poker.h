@@ -108,7 +108,7 @@ class Poker : public ChannelGame {
 
  public:
    // Constructor
-   Poker(Exordium::GameModule::Module& module, const AISutil::String& channel,
+   Poker(Exordium::GameModule::Module& module, const Kine::Name& channel,
 	 Exordium::User& caller);
    
    // Parse a line..

@@ -69,7 +69,7 @@ struct Module::functionTableStruct const
 
 void
   Module::parseLine (StringTokens& line, User& origin
-		     , const String& chan)
+		     , const Kine::Name& chan)
 {
    StringTokens& st = line;
    String command = st.nextToken ().toLower ();

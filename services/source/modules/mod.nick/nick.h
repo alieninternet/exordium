@@ -72,7 +72,7 @@ namespace Exordium {
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
 			const bool safe);
 	 void parseLine(AISutil::StringTokens& line, Exordium::User& origin,
-			AISutil::String const &)
+			Kine::Name const &)
 	   {};
 
 	 /* Our Event Handler(s) */
