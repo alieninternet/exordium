@@ -37,6 +37,8 @@
 
 #include "love.h"
 #include "tables.h"
+#include "language.h"
+
 #include <kineircd/config.h>
 
 
@@ -134,7 +136,7 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    }
    
    // Bitch and moan.. bitch and moan..
-   sendMessage(origin, "Unrecognised Command");
+   sendMessage(origin, GETLANG(ERROR_UNKNOWN_COMMAND));
 }
 
 
@@ -150,7 +152,7 @@ LOVE_FUNC(Module::handleCOMMANDS)
      Kine::config().getLimitsMaxMessageLength() - 20;
 
    // Send the banner (this shouldn't be hard-coded)
-   sendMessage(origin, "Command list for " + getNickname() + ":");
+   sendMessage(origin, GETLANG(COMMAND_LIST_START,getNickname()));
 
    // Start formulating the data..
    std::ostringstream list(" -=>");
@@ -172,5 +174,5 @@ LOVE_FUNC(Module::handleCOMMANDS)
    }
    
    // Send the footer (this shouldn't be hard-coded)
-   sendMessage(origin, "End of command list");
+   sendMessage(origin, GETLANG(COMMAND_LIST_END));
 }

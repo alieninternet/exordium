@@ -7,10 +7,10 @@ mod_credits_la_SOURCES = \
 			 credits.cpp
 
 language.cpp language.h: language.tpl $(top_builddir)/autogen/language.def
-	$(AUTOGEN) \
-		-b $(basename $@) \
-		-T language.tpl \
-		$(top_builddir)/autogen/language.def
+	     $(AUTOGEN) \
+	     		-b $(basename $@) \
+			-T language.tpl \
+			$(top_builddir)/autogen/language.def
      
 mod_credits_la_LIBADD = ../../libbank/libexordium_bank.la \
                         ../../libexordium.la

@@ -140,7 +140,7 @@ CREDITS_FUNC(Module::handleBALANCE)
   int balance = bank.getBalance(origin);
   if(balance > 0)
   {
-    origin.sendMessage(GETLANG(credits_BALANCE_current,balance), getNickname());
+     origin.sendMessage(GETLANG(credits_BALANCE_current,String::convert(balance)), getNickname());
   }
   else
   {

@@ -78,10 +78,18 @@ mod_love_la_LIBADD=\
 mod_love_la_LDFLAGS=\
 	-avoid-version -module
 mod_love_la_SOURCES=\
+	mod.love/language.cpp \
+	mod.love/language.h \
 	mod.love/love.cpp \
 	mod.love/love.h \
 	mod.love/tables.cpp \
 	mod.love/tables.h
+
+mod.love/language.cpp mod.love/language.h: mod.love/language.tpl $(top_builddir)/autogen/language.def
+	$(AUTOGEN) \
+		-b $(basename $@) \
+		-T mod.love/language.tpl \
+		$(top_builddir)/autogen/language.def
 
 mod_nick_la_LIBADD=\
 	../libexordium.la

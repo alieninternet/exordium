@@ -1074,8 +1074,8 @@ void
 	     String cname = services->getChannel().getChanIDName(foo.toInt());
 	     String cstr = origin.getNickname()+" "+origin.getNickname();
 	     services->serverMode(cname,"-o+v",cstr);
-	     services->getChannel().internalVoice(origin.getNickname(),cname);
-	     services->getChannel().internalDeOp(origin.getNickname(),cname);
+//	     services->getChannel().internalVoice(origin.getNickname(),cname);
+//	     services->getChannel().internalDeOp(origin.getNickname(),cname);
 
 	  }
 
