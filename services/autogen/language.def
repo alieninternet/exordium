@@ -596,7 +596,7 @@ langtag = {
    component = "mod_nick";
    data_en = "You have been successfully identified to services";
    data_de = "(German) Jah Jah ";
-   data_no = "Innloggin til tjenesten er godkjent!";
+   data_no = "Innlogging til tjenesten er godkjent!";
 };
 
 langtag = {

@@ -425,12 +425,12 @@ void PARSER_FUNC (Parser::parseN)
    //   services.getDatabase().dbGetRow();
    //}
 
-   if(num>2)
-     {
-	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
-	services.sendGOper("Oper",alert);
-	//Add gline.
-     }
+//   if(num>2)
+//     {
+//	String alert = "\002Alert\002 excess connections from "+host+" - Latest client is "+nick+"!"+username+"@"+host+" - ("+String::convert(num)+")";
+//	services.sendGOper("Oper",alert);
+//	//Add gline.
+//     }
 
 }
 void
