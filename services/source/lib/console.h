@@ -48,6 +48,7 @@ namespace Exordium {
       } static const functionTable[];
       
       void CONSOLE_FUNC(parseMODULE);
+      void CONSOLE_FUNC(parseLANGUAGE);
       
     public:
       Console(ServicesInternal& s)

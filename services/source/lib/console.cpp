@@ -39,6 +39,7 @@ using namespace Exordium;
 
 const struct Console::functionTableStruct Console::functionTable[] = {
      { "module",		&Console::parseMODULE },
+     { "language",		&Console::parseLANGUAGE },
      { 0, 0 }
 };
 
@@ -129,5 +130,26 @@ void CONSOLE_FUNC(Console::parseMODULE)
 			     origin);
       
       services.sendGOper("PeopleChat",origin+" \002loaded\002 module " + filename);
+   }
+}
+
+
+void CONSOLE_FUNC(Console::parseLANGUAGE)
+{
+   String command = tokens.nextToken().toLower();
+   
+   if (command == "load") {
+      std::string file = tokens.nextToken();
+      std::string errString;
+      
+      if (Kine::langs().loadFile(file, errString)) {
+	 services.serviceNotice("Loaded",
+				services.getConfigInternal().getConsoleName(),
+				origin);
+      } else {
+	 services.serviceNotice("Could not load: " + errString,
+				services.getConfigInternal().getConsoleName(),
+				origin);
+      }
    }
 }
