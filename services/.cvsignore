@@ -1,1 +1,2 @@
 configure *.o Makefile services *.orig *~ config.* auto4* *.so *.a
+autom4te.cache
