@@ -48,7 +48,11 @@
 
 [+ FOR langtag +][+ IF 
    (exist? 
-      (makeDataVariable)) +][+tagPrefix+][+name+] = [+
+      (makeDataVariable)) +][+IF
+   (not
+      (exist?
+         "noprefix"))
+ +][+tagPrefix+][+ENDIF+][+name+] = [+
    (get
       (makeDataVariable))
 +]

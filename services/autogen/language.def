@@ -2382,3 +2382,45 @@ langtag = {
    data_fr = "Votre addresse Yahoo! a été changé pour :%p0";
    data_tr = "Yahoo adresiniz değiştirilmiştir :%p0";
 };
+
+
+
+/*
+ * Tags related to 'staff'.
+ *
+ * This data shows up in /whois through kine. The language data here is used
+ * to give a more descriptive explaination of a staff member's job.
+ *
+ * KineIRCd defines 'staff' as people who are not IRC operators, but are
+ * considered to be members of the network who assist in the operation of the
+ * network, such as people who maintain and/or support network services.
+ *
+ * Since exordium has functions which include the possibility for 'staff'
+ * roles, specific jobs can be created.
+ *
+ * Note to developers: Exordium needs to simply define a *one word* name for
+ * each job (the last word of each tag below) internally. Upon setting the one
+ * word job name to the user with Kine::User::changeStaffStatus(), this data
+ * below will become effective in the user's WHOIS information.
+ *
+ * Each tag name is easily derived from the name of the one-word job name.
+ * For example, the job name 'FOO' will require a tag with the name of
+ * 'irc2_RPL_WHOISSTAFF_FOO'
+ *
+ * When writing descriptions, remember the user's nickname will be prefixed
+ * when received by an IRC client.
+ *   eg. the phrase "can smell roses" will appear as something similar to:
+ *       * SomeAlias can smell roses
+ */
+langtag = {
+   name = "irc2_RPL_WHOISSTAFF_GETPASS";
+   noprefix;
+   data_en = "is able to retrieve passwords";
+};
+
+langtag = {
+   name = "irc2_RPL_WHOISSTAFF_MAINTAIN";
+   noprefix;
+   data_en = "maintains the %N services";
+};
+
