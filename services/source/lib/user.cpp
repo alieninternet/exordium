@@ -230,7 +230,7 @@ int
    MysqlRow row;
    while ((row = res.fetch_row()))
      {
-	return String(row[0]).toInt();
+	return (int)row[0];
      }
    return 0;
 }

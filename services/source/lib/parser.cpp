@@ -346,11 +346,12 @@ void
 
 void PARSER_FUNC (Parser::parseN)
 {
-   User *origin = services.findUser(OLDorigin);
    
    if(tokens.countTokens() < 11)
      {
 /* Client Nickname Change */
+
+        User *origin = services.findUser(OLDorigin);
 
         String newnick=tokens.nextToken();
 
@@ -434,7 +435,7 @@ void PARSER_FUNC (Parser::parseN)
 
    // Applicate specific mode validation
    if (modes.find("o"))
-     services.validateOper(OLDorigin);   
+     services.validateOper(nick);
 
 
    
