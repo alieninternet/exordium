@@ -840,7 +840,43 @@ langtag = {
    name = "oper_JUPE_NICK_INVALID";
    component = "mod_oper";
    data_en = "Error: Invalid Nickname. Please use only valid nicknames";
-};    
+};
+
+langtag = {
+   name = "oper_WHOIS_USAGE";
+   component = "mod_oper";
+   data_en = "Usage: whois <nickname|#channel>";
+};
+
+langtag = {
+   name = "oper_WHOIS_START";
+   component = "mod_oper";
+   data_en = "WHOIS for %p0 [%p1]";
+};
+
+langtag = {
+   name = "oper_WHOIS_USERINFO";
+   component = "mod_oper";
+   data_en = "\\bUserhost:\\b %p0 \\bModes:\\b %p1 Clones:\\b %p2";
+};
+
+langtag = {
+   name = "oper_WHOIS_SERVERINFO";
+   component = "mod_oper";
+   data_en = "\\bServer:\\b %p0 \\bConnected At:\\b %p1";
+};  
+
+langtag = {
+   name = "oper_WHOIS_SERVICEINFO";
+   component = "mod_oper";
+   data_en = "\\bFlood Level:\\b %p0 \\bIdentified As:\\b %p1";
+};
+
+langtag = {
+   name = "oper_WHOIS_CHANNELS";
+   component = "mod_oper";
+   data_en = "\\bChannels:\\b %p1";
+};
  
   
 /*
