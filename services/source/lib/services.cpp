@@ -377,8 +377,9 @@ Services::doBurst (void)
 				"Network Note Services");
 	registerService ("Serv", "serv", "ircdome.org", "+dz",
 				"Services Staff Interface");
-	registerService ("Love", "love", "ircdome.org", "+dz",
-				"Love Services");
+   // NO. I WANT TO DO IT. :( - Simon
+//	registerService ("Love", "love", "ircdome.org", "+dz",
+//				"Love Services");
 	// registerService ("Game", "game", "ircdome.org", "+dz",
 	//			"Network Games"); 
 	registerService ("Bot", "bot", "ircdome.org", "+dz",
