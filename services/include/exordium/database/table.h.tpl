@@ -91,7 +91,9 @@ namespace Exordium {
 	    };
 	 };
 	 const unsigned int flags;
-      } const fields[];
+      };
+      typedef Field (fields_type)[];
+      const Field* const& fields;
    }; // struct DatabaseTable
 }; // namespace Exordium
 
