@@ -40,6 +40,9 @@ namespace Exordium {
    class Service;
    
    class Modules {
+    public:
+      typedef std::map <LibAIS::String, Module *> modules_type;
+      
     private:
       // Handy class for module information
       class Module {
@@ -55,7 +58,6 @@ namespace Exordium {
       };
 
       // The list of modules
-      typedef std::map <LibAIS::String, Module *> modules_type;
       modules_type modules;
 
     public:
