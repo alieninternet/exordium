@@ -31,6 +31,12 @@ autogen definitions fieldtypes;
  *  Remember this is an addition to Kine's English language file. Any 'funny
  *  characters' must be in UTF-8 format, and as such you should use a proper 
  *  UTF-8 editor such as UniRed (http://sf.net/projects/unired).
+ *
+ *  Sorry? % and \ what? ohhh.. you're talking about substitutions! Have a
+ *  look at the following URL for info (which is hopefully up to date :)
+ *      http://cvs.sourceforge.net/
+ *        cgi-bin/viewcvs.cgi/kineircd/languages/README?rev=HEAD
+ * 
  */
 
 
