@@ -30,19 +30,33 @@
 # include <kineircd/str.h>
 # include <map>
 # include <exordium/services.h>
+# include <exordium/user.h>
 
 namespace Exordium {
    class Services;
-/* temp name ... Chan conflicts with the module 'Chan' .. suggestions for name? :-) */
+   class User;
    class dChan {
     private:
       AISutil::String name;
       int onlineID;
       Services& services;
-      
+      bool registered; /* Are we a registered channel? */
+
     public:
+
+     /* addUser - Add's a user to the channels member list */
+     void const addUser(Exordium::User &ptr, const int &status);
+     /* delUser - delete's a user from a channels member list */
+     void const delUser(Exordium::User &ptr);
+     /* getCount() - return the number of people in our channel */
+     const int getCount();
+
+     /* Inline functions here please! */
+     const bool isRegistered(void) const
+        { return registered; };
      const AISutil::String& getName(void) const
 	{ return name; };
+
       
       /* getOnlineID()
        * 

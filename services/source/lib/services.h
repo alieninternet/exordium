@@ -256,6 +256,7 @@ namespace Exordium {
       
       AISutil::String getNick(int const &);
       AISutil::String getOnlineNick(int const &);
+      int getOnlineChanID(AISutil::String const &);
       AISutil::String getpendingCode(AISutil::String const &);
       void registerNick(AISutil::String const &, AISutil::String const &,
 			AISutil::String const &);

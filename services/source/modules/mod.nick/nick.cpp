@@ -141,7 +141,8 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    return;
 }
 
-  NICK_FUNC (Module::parseAUTH)
+/* This handles the AUTH command */
+NICK_FUNC (Module::parseAUTH)
 {
    String gauth = tokens.nextToken();
    if(!origin.isPending())
@@ -149,20 +150,11 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 	origin.sendMessage("Error: This nickname is not pending confirmation",getName());
 	return;
      }
-   String authcode = services->getpendingCode(origin.getNickname());
-#ifdef DEBUG
-   services->logLine("\002[\002Auth System\002]\002 The pending code is ->" +
-		     authcode,
-		     Log::Debug);
-   services->logLine("\002[\002Auth System\002]\002 The given code was  ->" +
-		     gauth,
-		     Log::Debug);
-#endif
-   if(authcode==gauth)
+   if(origin.getPendingCode()==gauth)
      {
 	origin.sendMessage("Congratulations you have confirmed your nickname. You can now use services freely",getName());
 	origin.sendMessage("You may now identify your nickname as normal",getName());
-        services->getDatabase().dbDelete("nickspending", "nickname='"+origin.getNickname()+"'");
+	origin.clearPendingCode();
 	return;
      }
      else
@@ -180,62 +172,35 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    String who = tokens.nextToken().IRCtoLower();
    if(who=="")
 	{
-		origin.sendMessage("Syntax: info nickname",getName());
+		origin.sendMessage("Usage: info nickname",getName());
 		return;
 	}
-   User *ptr = services->findUser(who);
-   if(ptr==0)
-     {
-	origin.sendMessage("Error: Could not locate that user",getName());
-	return;
-     }
 
    if(who=="")
      {
 	origin.sendMessage("Usage: /msg nick info nickname",getName());
 	return;
      }
-
-   if(!services->isNickRegistered(origin.getNickname()))
+   User *ptr = services->findUser(who);
+   if(ptr==0)
+     {
+	origin.sendMessage("Error: Could not locate that user",getName());
+	return;
+     }
+   if(!origin.isRegistered())
      {
 	origin.sendMessage("Error: That nickname is not registered",getName());
 	return;
      }
 
-   
-   /* Get ready to projectile vomit ... 8-/
-    *    - pickle
-    */
-   
    int saccess = origin.getAccess("Serv");
    int oaccess = origin.getAccess("Oper");
    if(saccess>0 || oaccess>0)
      {
 	if(origin.isIdentified(origin.getNickname()))
 	  {
-	     String lhost = ptr->getLastHost();
-	     String lid = ptr->getLastID();
-	     String lreg = ptr->getRegDate();
-	     String lemail = ptr->getEmail();
-	     String licq = ptr->getICQ();
-	     String lmsn = ptr->getMSN();
-	     String laim = ptr->getAIM();
-	     String lurl = ptr->getURL();
-	     String lyah = ptr->getYAHOO();
-	     String lqui = ptr->getQuitMessage();
 	     bool deopAway = ptr->deopAway();
 	     bool modNick = ptr->modNick();
-	     String toa = "Nickname Information for \002"+who;
-	     String tob = "Last host : \002"+lhost;
-	     String toc = "Last identified : \002"+lid;
-	     String tod = "Registered : \002"+lreg;
-	     String toe = "Email : \002"+lemail;
-	     String tof = "ICQ : \002"+licq;
-	     String tog = "MSN : \002"+lmsn;
-	     String toi = "AIM : \002"+laim;
-	     String toh = "URL : \002"+lurl;
-	     String toj = "Yahoo! : \002"+lyah;
-	     String tok = "Last Quit Message : \002"+lqui;
 	     std::ostringstream tol;
 	     tol << "Options : ";
 	     if(deopAway)
@@ -247,48 +212,33 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 		  tol << ", Nickname Enforcement";
 	       }
 
-	     origin.sendMessage(toa,getName());
-	     origin.sendMessage(tob,getName());
-	     origin.sendMessage(toc,getName());
-	     origin.sendMessage(tod,getName());
-	     origin.sendMessage(toe,getName());
-	     origin.sendMessage(tof,getName());
-	     origin.sendMessage(tog,getName());
-	     origin.sendMessage(toi,getName());
-	     origin.sendMessage(toh,getName());
-	     origin.sendMessage(toj,getName());
-	     origin.sendMessage(tok,getName());
+	     origin.sendMessage("Nickname Information for \002"+who,getName());
+	     origin.sendMessage("Last host : \002"+ptr->getLastHost(),getName());
+	     origin.sendMessage("Last identified : \002"+ptr->getLastID(),getName());
+	     origin.sendMessage("Registered : \002"+ptr->getRegDate(),getName());
+	     origin.sendMessage("Email : \002"+ptr->getEmail(),getName());
+	     origin.sendMessage("ICQ : \002"+ptr->getICQ(),getName());
+	     origin.sendMessage("MSN : \002"+ptr->getMSN(),getName());
+	     origin.sendMessage("AIM : \002"+ptr->getAIM(),getName());
+	     origin.sendMessage("URL : \002"+ptr->getURL(),getName());
+	     origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
+	     origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
 	     origin.sendMessage(tol.str(),getName());
 	     return;
 	  }
      }
+	     origin.sendMessage("Nickname Information for \002"+who,getName());
+	     origin.sendMessage("Last host : \002"+ptr->getLastHost(),getName());
+	     origin.sendMessage("Last identified : \002"+ptr->getLastID(),getName());
+	     origin.sendMessage("Registered : \002"+ptr->getRegDate(),getName());
+	     origin.sendMessage("Email : \002"+ptr->getEmail(),getName());
+	     origin.sendMessage("ICQ : \002"+ptr->getICQ(),getName());
+	     origin.sendMessage("MSN : \002"+ptr->getMSN(),getName());
+	     origin.sendMessage("AIM : \002"+ptr->getAIM(),getName());
+	     origin.sendMessage("URL : \002"+ptr->getURL(),getName());
+	     origin.sendMessage("Yahoo! : \002"+ptr->getYAHOO(),getName());
+	     origin.sendMessage("Last Quit Message : \002"+ptr->getQuitMessage(),getName());
 
-   String lhost = ptr->getLastHost();
-   String lid = ptr->getLastID();
-   String lreg = ptr->getRegDate();
-   String licq = ptr->getICQ();
-   String lmsn = ptr->getMSN();
-   String laim = ptr->getAIM();
-   String lurl = ptr->getURL();
-   String lyah = ptr->getYAHOO();
-   String toa = "Nickname Information Report (NON-STAFF) for \002"+who;
-   String tob = "Last Host : \002<HIDDEN>";
-   String toc = "Last Identified : \002"+lid;
-   String tod = "Registered : \002"+lreg;
-   String toe = "ICQ Number : \002"+licq;
-   String tof = "MSN : \002"+lmsn;
-   String toh = "AIM : \002"+laim;
-   String tog = "URL : \002"+lurl;
-   String toi = "Yahoo! : \002"+lyah;
-   origin.sendMessage(toa,getName());
-   origin.sendMessage(tob,getName());
-   origin.sendMessage(toc,getName());
-   origin.sendMessage(tod,getName());
-   origin.sendMessage(toe,getName());
-   origin.sendMessage(tof,getName());
-   origin.sendMessage(tog,getName());
-   origin.sendMessage(toh,getName());
-   origin.sendMessage(toi,getName());
 
 }
 
@@ -547,22 +497,19 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
 {
    String password = tokens.nextToken();
    String email = tokens.nextToken();
-   if(services->isNickRegistered(origin.getNickname()))
+   if(origin.isRegistered())
      {
-	String tosend = "Error - This nickname is already registered";
-	origin.sendMessage (tosend, getName());
+	origin.sendMessage ("Error - This nickname is already registered", getName());
 	return;
      }
-   if(password=="")
+   if(password=="" | email=="")
      {
-	String tosend = "Error - No password: Usage is /msg nick register password email@Address";
-	origin.sendMessage (tosend, getName());
+	origin.sendMessage ("Usage: register password email@address", getName());
 	return;
      }
    if(password.length()<4)
      {
-	String tosend = "Error - Small Length: Your password needs to be greater than 4 letters";
-	origin.sendMessage (tosend, getName());
+	origin.sendMessage ("Error - Your password needs to be greater than four letters!", getName());
 	return;
      }
    origin.sendMessage("Here on "+Kine::config().getNetworkName()+" we require email validation before allowing our users", getName());
@@ -570,9 +517,9 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    origin.sendMessage("You will shortly receive an email with further instructions",getName());
    origin.sendMessage("This will be delivered to the account :\002"+email+"\002",getName());
    origin.sendMessage("Thank you for using "+Kine::config().getNetworkName()+"!",getName());
-   services->registerNick(origin.getNickname(),password,email);
-   services->log(origin,getName(),"Registered nickname with email "+email);
-   String authcode = services->genAuth(origin.getNickname());
+   origin.registerNick(password,email);
+   origin.log(getName(),"Registered nickname with email "+email);
+   String authcode = origin.genAuth();
    String subject = "Your nickname registration";
    String emailtext =
      "This is a sample email - Needs replacing with something much better\n"
@@ -601,41 +548,36 @@ void Module::parseLine(StringTokens& line, User& origin, const bool safe)
    User *ptr = services->findUser(tokill);
    if(ptr==0)
      {
-	origin.sendMessage("Error - Could not find a pointer for this user - Possible Bug?",getName());
+	origin.sendMessage("Error: That user is not online.",getName());
+	return; /* yoda says so yes yes yes */
      }
      else
      { 
 	if(ptr->isPending())
 	  {
-	     String tosend = "Error - You cannot kill a nickname which is pending verification";
-	     origin.sendMessage(tosend,getName());
+	     origin.sendMessage("Error: That nickname is in a pending state and may not be killed",getName());
 	     return;
 	  }
-	if(!services->isNickRegistered(tokill))
+	if(!ptr->isRegistered())
 	  {
-	     String tosend = "Error - "+tokill+" is not a registered nickname";
-	     origin.sendMessage(tosend,getName());
+	     origin.sendMessage("Error: That nickname is not registered!",getName());
 	     return;
 	  }
-	String nickpass = Utils::generatePassword(tokill, password);
-	String givepass = ptr->getPass();
-	if(nickpass == givepass)
+	String nickpass = ptr->getPass();
+	if(nickpass == password)
 	  {
-	     String reason = "Kill requested by "+origin.getNickname();
-	     services->killnick(tokill,getName(),reason);
-	     services->log(origin,getName(),"Requested a kill on "+tokill);
+	     services->killnick(tokill,getName(),"Kill requested by "+origin.getNickname());
+	     origin.log(getName(),"Requested a kill on "+tokill);
 	     return;
 	  }
-	String tosend = "Error - Incorrect password for nickname "+tokill;
-	origin.sendMessage(tosend,getName());
+	origin.sendMessage("Error: Incorrect password",getName());
 	int access = origin.getAccess("Serv");
 	if(access>0)
 	  {
 	     String temp1 = origin.getHost();
 	     String temp2 = origin.getIdent();
 	     String thehost = String(temp2)+"@"+String(temp1);
-	     String togo = String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	     services->logLine(String(togo), Log::Warning);
+	     services->sendHelpme(getName(),String("\002Failed\002 kill for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+origin.getIdent()+"@"+origin.getHost());
 	  }
      }
 }

@@ -145,17 +145,9 @@ void
    String currentmodes="";
    if(dest[0]=='#')
      {
-//	if(!services.getChannel().isChanRegistered(dest))
-//	  {
-//	     return;
-//	  }
-// I decided that chanstatus should have info on ALL channels....
-// 
-// 
-//        currentmodes = channel.getModes();
-
 	String modes = tokens.nextColonToken();
 	int length = modes.length();
+	dChan *dptr = services.findChan(dest);
 	for (i = 0; i!=length; i++)
 	  {
 	     if (modes[i] == '+')
@@ -211,14 +203,16 @@ void
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
-		       services.getChannel().internalOp(target.toLower(),dest);
+		       User *ptr = services.findUser(target);
+		       dptr->addUser(*ptr,2);
 		    }
 		  if(take)
 		    {
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
-		       services.getChannel().internalDeOp(target.toLower(),dest);
+			User *ptr = services.findUser(target);
+			dptr->addUser(*ptr,0);
 		    }
 	       }
 	     if(modes[i] == 'v')
@@ -228,14 +222,16 @@ void
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
-		       services.getChannel().internalVoice(target.toLower(),dest);
+		       User *ptr = services.findUser(target);
+		       dptr->addUser(*ptr,1);
 		    }
 		  if(take)
 		    {
 		       String target = tokens.nextToken();
 		       if(target.toLower()=="chan")
 			 return;
-		       services.getChannel().internalDeVoice(target.toLower(),dest);
+		       User *ptr = services.findUser(target);
+		       dptr->addUser(*ptr,0);
 		    }
 	       }
 	  }
@@ -330,9 +326,14 @@ void
   PARSER_FUNC (Parser::parsePART)
 {
    String channel = tokens.nextToken();
-   services.getChannel().internalDel(OLDorigin,channel);
-
-   services.getDatabase().dbDelete("onlinechan", "name='"+channel+"'");
+   dChan *ptr = services.findChan(channel);
+   User  *uptr = services.findUser(OLDorigin);
+   ptr->delUser(*uptr);
+   if(ptr->getCount()==0)
+   {
+	std::cout << channel << "has 0 members! Deleting :C" << std::endl;
+	services.delChan(channel);
+   }
 }
 
 void PARSER_FUNC (Parser::parseN)
@@ -608,25 +609,33 @@ void
    bool op = false;
    bool voice = false;
    bool normal = false;
+   int  status = 0;
    String ts1 = tokens.nextToken();
    String ts2 = tokens.nextToken();
    String chan = tokens.nextToken();
    String modes = tokens.nextToken();
    bool more;
    more = tokens.hasMoreTokens();
-	/* Hrmmm..... :-) */
-   if(!services.getChannel().ifChanExists(chan.toLower()))
+
+ if(!services.getChannel().ifChanExists(chan.toLower()))
      {
-		/* Doesn't exist.. add it to the table so it has an ID :-) */
         services.getDatabase().dbInsert("onlinechan", "'','"+chan+"'");
      }
+     dChan *dptr = services.findChan(chan);
+     if(dptr==0)
+	{
+	/* We have no record for this channel, make it. */
+	std::cout << "Channel record being made for " << chan << std::endl;
+	dptr = services.addChan(chan.IRCtoLower(),services.getOnlineChanID(chan));
+	}
+
    while(more)
      {
 	String user = tokens.nextToken();
 	StringTokens luser (user);
 	String foo = luser.nextColonToken();
 	String username = foo.trim();
-
+	status = 0;
 
         // First check if both @ and + are there
         if ((username[1]=='@') || (username[1]=='+'))
@@ -650,59 +659,60 @@ void
 
 
         User *ptr = services.findUser(username);
-
-	if(foo[0]=='@')
+	if(ptr==0)
+	{
+		std::cout << "User doesn't exist (" << username << ") aborting" << std::endl;
+		return;
+	}
+        if(foo[0]=='@' && foo[1]=='+')
+	  {
+	    op = true;
+	    voice = true;
+	    normal = false;
+	  }
+	if(foo[0]=='@' && foo[1]!='+')
 	  {
 	     op = true;
 	     voice = false;
 	     normal = false;
 	  }
-	if(foo[0]=='+')
+	if(foo[0]=='+' && foo[1]=='@')
 	  {
-	     op = false;
+	     op = true;
 	     voice = true;
 	     normal = false;
 	  }
+	if(foo[0]=='+' && foo[1]!='@')
+	  {
+	     op = false;
+	     voice = true;
+             normal = false;
+          }
 	if(foo[0]!='@' && foo[0]!='+')
 	  {
 	     op = false;
 	     voice = false;
 	     normal = true;
 	  }
+	/* Voice = 1 | Op = 2 */
 	if(op)
 	  {
-	     services.getChannel().internalOp(username,chan);
+		 status = status +2;
+                /* Safety Check......... */
+		dptr->addUser(*ptr,status);
+
 	  }
 	if(voice)
 	  {
-	     services.getChannel().internalVoice(username,chan);
+		 status++;
+                /* Safety Check......... */
+		dptr->addUser(*ptr,status);
+
 	  }
 	if(normal)
 	  {
-	     if(ptr == 0)
-	       {
-		  return;
-	       }
-	     
-	     if(ptr->isIdentified(username))
-	       {
-		  int access = services.getChannel().getChanAccess(chan,username);
-		  String togo = "Client: \002:"+username+":<\002 Target:002:"+chan+":\002 Access :\002"+String::convert(access)+":\002";
-		  if(access>99)
-		    {
-		       services.mode("Chan",chan,"+o",username);
-		       services.getChannel().internalOp(username,chan);
-		       return;
-		    }
-		  if(access>49)
-		    {
-		       services.mode("Chan",chan,"+v",username);
-		       services.getChannel().internalVoice(username,chan);
-		       return;
-		    }
-	       }
-	     services.getChannel().internalAdd(username,chan);
-
+                /* Safety Check......... */
+		dptr->addUser(*ptr,status);
 	  }
 	more = tokens.hasMoreTokens();
      }

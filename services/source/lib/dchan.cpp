@@ -35,3 +35,22 @@
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium;
+
+
+void const dChan::addUser(User &ptr, const int &status)
+{
+services.getDatabase().dbDelete("chanstatus","chanid=" + getOnlineIDString() + " AND nickid="+String::convert(ptr.getOnlineID()));
+services.getDatabase().dbInsert("chanstatus","'"+getOnlineIDString()+"','"+ptr.getOnlineIDString()+"','"+String::convert(status)+"'");
+}
+
+void const dChan::delUser(User &ptr)
+{
+services.getDatabase().dbDelete("chanstatus","chanid=" + getOnlineIDString() + " AND nickid="+ptr.getOnlineIDString());
+
+}
+
+int const dChan::getCount(void)
+{
+int nbRes = services.getDatabase().dbSelect("nickid","chanstatus","chanid='"+getOnlineIDString()+"'");
+return nbRes;
+}

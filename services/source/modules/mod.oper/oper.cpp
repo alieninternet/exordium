@@ -103,29 +103,13 @@ if(channel=="")
 	services->mode(getName(),channel,"+o",getName());
 	/* Iterate over members.. */
 
-	int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
+int nbRes = services->getDatabase().dbSelect("nickid","chanstatus","chanid="+String::convert(cid));
 	for (int i=0; i<nbRes; i++)
 	{
-		
-		int nid = services->getDatabase().dbGetValue().toInt();
-		std::cout << "GetValue gave me " << nid << std::endl;
-		if(nid==0)
-		{
-			std::cout << "Uhh, somethings fucked because dbGetValue gave me a 0 :(" << std::endl;
-			return;
-		}
-		String tnick = services->getOnlineNick(nid);
-		services->mode(getName(),channel,"-o",tnick);
-		services->getChannel().internalDeOp(tnick,channel);
+		String inick = services->getNick(services->getDatabase().dbGetValue().toInt());
+		std::cout << inick << std::endl;
 		services->getDatabase().dbGetRow();
-	}
-	String togo = origin.getNickname() + " did a \002massdeop\002 of \002"+channel+"\002 ("+String::convert(nbRes)+")";
-	services->sendGOper(getName(),togo);
-	origin.sendMessage("Massdeop complete",getName());
-	String topic = "\002Mass-Deop\002 performed by "+origin.getNickname();
-	services->getChannel().setTopic(channel,topic);
-	services->servicePart(getName(),channel);
-		
+	}		
 
 }
 OPER_FUNC(Module::parseQLINE)

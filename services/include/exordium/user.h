@@ -37,6 +37,7 @@ namespace Exordium {
       AISutil::String nickname;
       int onlineID;
       Services& services;
+      bool registered; /* Are we a registered nick or not? */
       
     public:
       /* Inline functions here */
@@ -212,12 +213,24 @@ namespace Exordium {
        */
       void setLanguage(AISutil::String const &);
 
+      const bool isRegistered(); /* ARE WE registered?!?! */
+
       /* getLanguage()
        *
        * Retrieve users language
        */
       AISutil::String getLanguage(void);
       
+      /* getPendingCode()
+       * 
+       * Get the pending code (if any) for this nick
+       */
+      const AISutil::String getPendingCode(void);
+      const void clearPendingCode(void);
+      const void registerNick(AISutil::String const &,
+			AISutil::String const &);
+      const void log(AISutil::String const &, AISutil::String const &);
+      const AISutil::String genAuth(void);
       // Grab a user's password
       const AISutil::String getPass(void);
 

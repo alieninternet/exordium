@@ -525,3 +525,52 @@ const String User::getLastHost(void)
    
    return services.getDatabase().dbGetValue();
 }
+// getPendingCode - get pending code (if any)
+const String User::getPendingCode(void)
+{
+   if 
+(services.getDatabase().dbSelect("auth","nickspending","nickname='"+nickname+"'") < 1)
+	return "";
+   else
+        return services.getDatabase().dbGetValue();
+}
+// clearPendingCode - clear (if any) our auth code.
+const void User::clearPendingCode(void)
+{
+services.getDatabase().dbDelete("nickspending","nickname='"+nickname+"'");
+}
+
+// registerNick(nick,password,email) .. Uhh DOH!
+const void User::registerNick(String const &password,String const &email)
+{
+services.getDatabase().dbInsert("nicks","'','"+nickname.IRCtoLower()+"','"+Utils::generatePassword(nickname.IRCtoLower(),password)+"','"+email+"',NOW(),NOW(),'',0,'english','0','None','None','0,'None Set','None Set','None recorded',1");
+}
+
+// isRegistered .. another mind numbing one!!
+const bool User::isRegistered(void)
+{
+if (services.getDatabase().dbSelect("id", "nicks", "nickname='"+nickname+"'") < 1)
+	return false;
+else
+{
+	if (services.getDatabase().dbGetValue().toInt() > 0)
+		return true;
+	else
+		return false;
+}
+}
+
+// log .. log some data :C
+const void User::log(String const &service,String const &log)
+{
+services.getDatabase().dbInsert("log","'','"+getIDList()+"','"+getIdent()+"','"+getHost()+"','"+service+"',NOW(),'"+log+"',''");
+}
+
+// the other log!!
+
+// Gen auth code type thing!
+const String User::genAuth(void)
+{
+services.getDatabase().dbInsert("nickspending","'','"+nickname+"','"+Utils::generateRegcode(nickname,"VIVA LA FRANCE :)"));
+return Utils::generateRegcode(nickname,"VIVA LA FRANCE :)");
+}

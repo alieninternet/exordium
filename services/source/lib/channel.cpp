@@ -67,14 +67,7 @@ namespace Exordium
 void
   Channel::internalOp(String const &nickname, String const &channel)
 {
-   int cid = getOnlineChanID(channel);
-   int nid = services.locateID(nickname);
-   services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid)); 
-   services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','2'");
-#ifdef DEBUG
-   services.logLine("Have marked "+nickname+" as being opped in "+channel,
-		    Log::Debug);
-#endif
+   std::cout << "InternalOP is depreciated" << std::endl;
    return;
 }
 
@@ -83,14 +76,7 @@ void
 void
   Channel::internalVoice(String const &nickname, String const &channel)
 {
-   int cid = getOnlineChanID(channel);
-   int nid = services.locateID(nickname);
-   services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid));
-   services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','1'");
-#ifdef DEBUG
-   services.logLine("Have marked "+nickname+" as being voiced in "+channel,
-		    Log::Debug);
-#endif
+   std::cout << "Internalvoice is depreciated" << std::endl;
    return;
 }
 
@@ -99,14 +85,7 @@ void
 void
   Channel::internalAdd(String const &nickname, String const &channel)
 {
-   int cid = getOnlineChanID(channel);
-   int nid = services.locateID(nickname);
-   services.getDatabase().dbDelete("chanstatus", "chanid=" + String::convert(cid) + " AND nickid="+String::convert(nid));
-   services.getDatabase().dbInsert("chanstatus", "'" + String::convert(cid)+"','"+String::convert(nid)+"','0'");
-#ifdef DEBUG
-   services.logLine("Have marked "+nickname+" as being NORMAL in "+channel,
-		    Log::Debug);
-#endif
+   std::cout << "internalAdd is depreciated" << std::endl;
    return;
 }
 bool

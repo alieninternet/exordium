@@ -80,11 +80,8 @@ namespace Exordium {
       void logLine(const std::string& line,
 		   const Log::mask_type mask = Log::Informative)
 	{ 
-Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
-//liveLog(line);
-//	queueAdd(":PeopleChat PRIVMSG #Debug : " + line);
-//	servicePrivmsg(line,"PeopleChat","#Debug");
-};
+          Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
+        };
       virtual void liveLog(const AISutil::String &) = 0;
       // Function Declrations below here.
       virtual int getAccess(AISutil::String &, AISutil::String &) = 0;
@@ -198,10 +195,7 @@ Kine::daemon().log(line, (Kine::Logger::Mask::type)mask);
 
       virtual AISutil::String getNick(int const &) = 0;
       virtual AISutil::String getOnlineNick(int const &) = 0;
-      virtual AISutil::String getpendingCode(AISutil::String const &) = 0;
-      virtual void registerNick(AISutil::String const &,
-				AISutil::String const &,
-				AISutil::String const &) = 0;
+      virtual int getOnlineChanID(AISutil::String const &) = 0;
       virtual AISutil::String genAuth(AISutil::String const &) = 0;
       
       virtual void addOper(AISutil::String const &, int access) = 0;

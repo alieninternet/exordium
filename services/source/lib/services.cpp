@@ -949,6 +949,7 @@ bool ServicesInternal::queueFlush(void)
 	return false;
      }
 };
+
 /* addChan(String,Int)
  * 
  * Add a channel to our channel map
@@ -956,7 +957,7 @@ bool ServicesInternal::queueFlush(void)
  */
 dChan* const ServicesInternal::addChan(const String& name, const int oid)
 {
-   return chans[name] = new dChan(name,oid,*this);
+   return chans[name] = new dChan(name.IRCtoLower(),oid,*this);
 }
 
 /* addUser(String,Int)
@@ -1245,39 +1246,18 @@ String ServicesInternal::getOnlineNick(int const &id)
 }
 
 /*
- * getpendingCode(String)
+ * getOnlineChan(int)
  *
- * return the pending authorisation code for a nickname.
+ * Return the unique ID for any given channel 
  *
  */
-
-String ServicesInternal::getpendingCode(String const &nick)
+int ServicesInternal::getOnlineChanID(String const &id)
 {
-   if( database.dbSelect("auth", "nickspending", "nickname='"+nick+"'") < 1 )
-     return "";
+   if( database.dbSelect("id", "onlinechan", "name='"+id+"'") < 1 )
+     return 0;
    else
-     return database.dbGetValue();
-};
-
-/*
- * registerNick(String,String,String)
- *
- * register the given nickname :-)
- *
- * This should be in the NICK module :(
- */
-
-void ServicesInternal::registerNick(String const &nick, String const &password,
-				    String const &email)
-{
-    String gpass = Utils::generatePassword(nick.IRCtoLower(),password);
-   //String gpass = "foo";
-   // oh, this is revoltingly hard-coded! :(
-   std::cout << "Registering nickname" << std::endl;
-   database.dbInsert("nicks", "'','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.peoplechat.org',0,'None Set','None Set','No Quit Message Recorded',1");
+     return database.dbGetValue().toInt();
 }
-
-
 /* genAuth(String)
  *
  * Generate a new auth code the given nickname (and return it!)
