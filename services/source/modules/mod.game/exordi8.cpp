@@ -322,14 +322,7 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 
    // Obtain our packs
    stock = Cards::Stock< Cards::Card >(numPacks);
-/*   std::vector < Cards::Pack < Cards::Card > > packs;
-   while (numPacks > 0)
-     {
-	packs.push_back(Cards::Pack<Cards::Card>());
-	packs.back().shuffle();
-	numPacks--;
-     }
-*/
+   stock.shuffle();
 
    // Deal five cards to each person, doing it like a real dealer (hehehe)
    for (int c = 0; c != 5; c++)
@@ -338,7 +331,6 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
 	     p != players.end(); p++)
 	  {
 	     // Add a card to this player's hand direct from the pack
-	     //(*p).second.addCard(packs.back().removeCard());
 	     (*p).second.addCard(stock.removeCard());
 	  }
      }
@@ -350,20 +342,6 @@ EXORDI8_FUNC(Exordi8::parseDEAL)
      {
 	showHand((*it));
      }
-
-   // The balance of the cards left in the shuffled pack(s) turn into the stock
-   /*
-   while (!packs.empty())
-     {
-	while (!packs.back().isEmpty())
-	  {
-	     stock.push(packs.back().removeCard());
-	  }
-
-	// Turf the empty pack
-	packs.pop_back();
-     }
-     */
 
    // Set the first player and note that we have begun play
    currentPlayer = players.begin();
@@ -557,18 +535,6 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
 		  // Make them pick up two cards
                   (*currentPlayer).second.addCard(stock.removeCard());
                   (*currentPlayer).second.addCard(stock.removeCard());
-		  //if (!stock.total())
-		  //  {
-		  //     (*currentPlayer).second.addCard(stock.top());
-		  //     stock.pop();
-		  //     if (!stock.total())
-		//	 {
-		//	    (*currentPlayer).second.addCard(stock.top());
-		//	    stock.pop();
-		//	 }
-		 //   }
-
-		  // Show them their hand..
 		  showHand(*currentPlayer);
 	       }
 	  }
