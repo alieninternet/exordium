@@ -9,7 +9,7 @@
  * utilities (found at http://www.research.att.com/sw/tools/graphviz/).
  *
  * eg.
- *   neato -Tpng -o linkmap.png linkmap.dat
+ *   dot -Tpng -o linkmap.png linkmap.dat
  *
  * Note: 
  *  This graph probably needs link-ranks and graph page size to be defined to
