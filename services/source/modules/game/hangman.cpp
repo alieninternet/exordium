@@ -27,11 +27,15 @@
 
 #include <vector>
 #include <sstream>
+#include <algorithm>
 
 #include "hangman.h"
 
 using LibAIS::String;
 using LibAIS::StringTokens;
+
+// This is needed for translate since it doesn't like tolower gcc 3.x
+inline char tolower_wrapper (char ch) { return tolower(ch); }
 
 /* Hangman - Constructor for a new Hangman game being played on a channel
  * Original 17/09/2002 josullivan
@@ -52,6 +56,7 @@ const Hangman::functionTable_type Hangman::functionTable[] =
 {
      { "play",			&Hangman::parsePLAY },
      { "start",			&Hangman::parseSTART },
+     { "level",			&Hangman::parseSTART },
      { "guess",			&Hangman::parseGUESS },
      { 0, 0 }
 };
@@ -240,9 +245,10 @@ bool Hangman::getLevelData(int level)
 
       // This will eventually be a random selection
       word = str;
+      break;
    }
 
-   std::transform(word.begin(), word.end(), word.begin(), tolower);
+   std::transform(word.begin(), word.end(), word.begin(), tolower_wrapper);
 
 //   for(int i = 0; i < tmpWord.length(); i++)
 //   {
@@ -323,7 +329,7 @@ EXORDI8_FUNC(Hangman::parseSTART)
    playing = true;
    currentPlayer = players.begin();
 
-   out << (*(*currentPlayer)).getNickname();
+   out << "It's " << (*(*currentPlayer)).getNickname();
 
    // ... get our grammar right.. :)
    if ((*currentPlayer)->getNickname()
@@ -347,7 +353,10 @@ EXORDI8_FUNC(Hangman::parseSTART)
  */
 EXORDI8_FUNC(Hangman::parseGUESS)
 {
+   std::ostringstream out;
    const Exordium::User* player;
+   bool isCorrect = false;
+
    String guess = line.rest();
 
    if ((player = checkPlayerStatus(origin)) == 0) {
@@ -379,18 +388,15 @@ EXORDI8_FUNC(Hangman::parseGUESS)
 
    if(idx < 0)
    {
-      sendMessage(origin, "The word doesn't contain the letter ");// + guess[0]);
+//      sendMessage(origin, "The word doesn't contain the letter ");// + guess[0]);
       wrongGuesses += guess[0];
    }
    else 
    {
-      if(wrongGuesses.find(guess[0]) < 0)
+      if(wrongGuesses.find(guess[0]) >= 0)
       {
-         sendMessage(origin, "That letter has already been guessed");
-      }              
-      else
-      {
-         sendMessage(origin, "Good guess");
+         isCorrect = true;
+//         sendMessage(origin, "Good guess");
          correctGuesses += guess[0];
       }
    }
@@ -407,7 +413,17 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    }
 
    // If we got here, do a standard message..
-   nextPlayer(String("has chosen '") + guess + String("'"));
+   out << "has chosen '" << guess << "' which ";
+   if(isCorrect)
+   {
+      out << "exists";
+   }
+   else
+   {
+      out << "is wrong";
+   }
+
+   nextPlayer(out.str());
 
    return true;
 }
@@ -419,13 +435,13 @@ void Hangman::showWord(const Exordium::User& player)
 {
    std::ostringstream out;
 
+   out << "Word = ";
+
    for(int i = 0; i < word.length(); i++)
    {
       int idx = correctGuesses.find(word[i]);
       std::cout << "Index = " << idx << " of letter " << word[i] << 
          " in correctGuesses " << correctGuesses << std::endl;
-
-      out << "Word = ";
 
       if(idx < 0)
       {
