@@ -31,7 +31,6 @@
 
 #include <exordium/database/base.h>
 #include <exordium/conf.h>
-#include <exordium/log.h>
 
 
 #include <aisutil/string/string.h>
@@ -53,8 +52,8 @@ namespace Exordium {
   class CPgSQL:public CBase
   { 
     public:
-      CPgSQL(Config &c, Log &l) 
-       : CBase(c, l),
+      CPgSQL(Config &c) 
+       : CBase(c),
          pgopts(0),
          pgtty(0),
          pgres(0),

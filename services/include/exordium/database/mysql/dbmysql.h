@@ -44,8 +44,8 @@ namespace Exordium {
   class CMySQL:public CBase
   { 
     public:
-      CMySQL(Config &c, Log &l) 
-       : CBase(c, l),
+      CMySQL(Config &c)
+       : CBase(c),
          mysql(new MYSQL),
          mysqlres(0)
        {};

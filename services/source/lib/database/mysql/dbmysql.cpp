@@ -87,8 +87,9 @@ int CMySQL::dbQuery(String const &query)
   }
 
 
-  std::cout << "DEBUG: Query=" << query << std::endl;
-  logger.logLine("DEBUG: Query=" + query);
+#ifdef DEBUG
+  std::clog << "DEBUG: Query=" << query << std::endl;
+#endif
 
   // If mysql_real_query returns 0 it means it succeeded
   if(mysql_real_query(mysql, query.data(), query.length()) == 0)

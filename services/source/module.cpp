@@ -122,7 +122,7 @@ namespace {
 	 assert(logger != 0);
 	 
 	 // Create new database Instance
-	 db = new CDatabase(config, *logger); 
+	 db = new CDatabase(config);
 	 assert(db != 0);
 	 
 	 // Create the new services instance - Passing sql + logger YAY :|

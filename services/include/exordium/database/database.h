@@ -32,7 +32,6 @@
 #include <aisutil/string/string.h>
 #include <exordium/database/base.h>
 #include <exordium/conf.h>
-#include <exordium/log.h>
 
 
 #ifdef HAVE_MYSQL
@@ -56,7 +55,6 @@ namespace Exordium {
 
 
   class Config;
-  class Log;
 
   /*
    * Public API for databases
@@ -66,7 +64,7 @@ namespace Exordium {
   class CDatabase
   { 
     public:
-      CDatabase(Config &c, Log &l);
+      CDatabase(Config &c);
 
 
       ~CDatabase(void)
@@ -137,7 +135,6 @@ namespace Exordium {
 
     private:
       Config &config;
-      Log &logger;
 
       CBase *database;
 

@@ -35,7 +35,6 @@
 namespace Exordium {
 
    class Config;
-   class Log;
    
   /*
    * Base class for all SQL servers
@@ -45,10 +44,9 @@ namespace Exordium {
   class CBase
   { 
     public:
-      CBase(Config& c, Log& l)
+      CBase(Config& c)
        : connected(false),
-         config(c), 
-         logger(l)
+         config(c)
        {};
 
       // Virtual destructor
@@ -84,14 +82,12 @@ namespace Exordium {
     protected:
       bool connected;
       Config &config;
-      Log &logger;
 
   }; // class CBase
 
 }; // namespace Exordium
 
 # include <exordium/conf.h>
-# include <exordium/log.h>
 
 
 #endif // _BASE_H

@@ -76,7 +76,10 @@ void CPgSQL::dbDisconnect()
 
 int CPgSQL::dbQuery(String const &query)
 {
-  logger.logLine("Before clear!!!");
+#ifdef DEBUG
+  std::clog << "Before clear!!!" << std::endl;
+#endif
+   
   // clear results of previous query
   if(clearres) 
    {
@@ -84,14 +87,16 @@ int CPgSQL::dbQuery(String const &query)
      PQclear(pgres);
    }
 
-  logger.logLine("After clear!!!!");
-
-  std::cout << "DEBUG: Query=" << query << std::endl;
-  logger.logLine("DEBUG: Query=" + query);
+#ifdef DEBUG
+   std::clog << "After clear!!!!" << std::endl;
+   std::clog << "DEBUG: Query=" << query << std::endl;
+#endif
 
   pgres = PQexec(pgconn, query.data());
 
-  logger.logLine("After EXEC!!!");
+#ifdef DEBUG
+   std::clog << "After EXEC!!!" << std::endl;
+#endif
 
   currow=0;
 

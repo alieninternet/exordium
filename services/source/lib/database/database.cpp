@@ -30,17 +30,19 @@
 using namespace Exordium;
 using AISutil::String;
 
-CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
+CDatabase::CDatabase(Config &c) : config(c)
 {
-  #ifdef HAVE_MYSQL
+#ifdef HAVE_MYSQL
    db_supported_engines.mysql = true;
-  #elif defined(HAVE_PGSQL)
+#elif defined(HAVE_PGSQL)
    db_supported_engines.pgsql = true;
-  #endif
+#endif
 
   String dbengine = config.getSqlEngine();
 
-  logger.logLine("dbengine:" + dbengine);
+#ifdef DEBUG
+   std::clog << "dbengine:" << dbengine << std::endl;
+#endif
 
   if (dbengine == "mysql")
    {
@@ -52,7 +54,7 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
       }      
 
      #ifdef HAVE_MYSQL
-      database =(CBase*) new CMySQL(config, logger);
+      database =(CBase*) new CMySQL(config);
      #endif
 
      db_engines = db_mysql;
@@ -69,7 +71,7 @@ CDatabase::CDatabase(Config &c, Log &l) : config(c), logger(l)
       }
 
      #ifdef HAVE_PGSQL
-       database =(CBase*) new CPgSQL(config,logger);
+       database =(CBase*) new CPgSQL(config);
      #endif
 
      db_engines = db_pgsql;
