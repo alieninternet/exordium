@@ -14,7 +14,8 @@ CREATE TABLE access (
   service varchar(32) NOT NULL default '',
   access int(3) NOT NULL default '0',
   PRIMARY KEY  (id),
-  KEY accessIDXA (nickname,service)
+  KEY service_idx (nickname(10),service(5)),
+  KEY service_srv_idx (service(5))
 ) TYPE=MyISAM;
 
 --
@@ -24,7 +25,8 @@ CREATE TABLE access (
 CREATE TABLE bank (
   nickid int(11) NOT NULL default '0',
   balance bigint(21) default NULL,
-  PRIMARY KEY  (nickid)
+  PRIMARY KEY  (nickid),
+  KEY bank_idx (nickid)
 ) TYPE=MyISAM;
 
 --
@@ -35,7 +37,8 @@ CREATE TABLE builds (
   id int(12) NOT NULL auto_increment,
   build int(12) NOT NULL default '0',
   notes mediumtext,
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY bulid_idx (build)
 ) TYPE=MyISAM;
 
 --
@@ -45,7 +48,8 @@ CREATE TABLE builds (
 CREATE TABLE chanaccess (
   chanid int(11) NOT NULL default '0',
   nickid int(11) NOT NULL default '0',
-  access int(3) NOT NULL default '0'
+  access int(3) NOT NULL default '0',
+  KEY chanaccess_idx (nickid,access)
 ) TYPE=MyISAM;
 
 --
@@ -60,7 +64,8 @@ CREATE TABLE chanbans (
   seton datetime default NULL,
   expireon int(20) NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY chanbans_idx (chan)
 ) TYPE=MyISAM;
 
 --
@@ -74,7 +79,9 @@ CREATE TABLE chanfreeze (
   seton datetime default NULL,
   expires int(12) NOT NULL default '0',
   reason varchar(250) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY chanfreeze_idx (name),
+  KEY chanfreeze_setby_idx (setby)
 ) TYPE=MyISAM;
 
 --
@@ -85,7 +92,8 @@ CREATE TABLE chanlogs (
   id int(11) NOT NULL auto_increment,
   name varchar(200) NOT NULL default '',
   llog int(20) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY chanlogs_idx (name)
 ) TYPE=MyISAM;
 
 --
@@ -97,7 +105,8 @@ CREATE TABLE chanmodes (
   mode char(2) NOT NULL default '',
   tdesc varchar(50) NOT NULL default '',
   html varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY chanmodes_idx (mode)
 ) TYPE=MyISAM;
 
 --
@@ -109,7 +118,8 @@ CREATE TABLE chanopts (
   name varchar(250) NOT NULL default '',
   clog tinyint(1) NOT NULL default '0',
   secure tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY chanopts_idx (name)
 ) TYPE=MyISAM;
 
 --
@@ -125,7 +135,9 @@ CREATE TABLE chans (
   cdesc varchar(250) default NULL,
   url varchar(200) default NULL,
   clog int(20) default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY chans_idx (name),
+  KEY chans_owner_idx (owner)
 ) TYPE=MyISAM;
 
 --
@@ -135,7 +147,8 @@ CREATE TABLE chans (
 CREATE TABLE chanstatus (
   chanid int(11) NOT NULL default '0',
   nickid int(11) NOT NULL default '0',
-  status int(11) NOT NULL default '0'
+  status int(11) NOT NULL default '0',
+  KEY chanstatus_idx (chanid,nickid)
 ) TYPE=MyISAM;
 
 --
@@ -147,7 +160,8 @@ CREATE TABLE commands (
   service varchar(32) NOT NULL default '',
   command varchar(32) NOT NULL default '',
   access int(3) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY commands_idx (service,command)
 ) TYPE=MyISAM;
 
 --
@@ -172,7 +186,8 @@ CREATE TABLE glines (
   expires int(14) NOT NULL default '0',
   setby varchar(32) NOT NULL default '',
   reason varchar(250) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY glines_idx (setby)
 ) TYPE=MyISAM;
 
 --
@@ -186,7 +201,8 @@ CREATE TABLE help (
   parm varchar(32) NOT NULL default '',
   txt varchar(250) NOT NULL default '',
   lang varchar(20) default NULL,
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY help_idx (service,word,parm,txt)
 ) TYPE=MyISAM;
 
 --
@@ -213,7 +229,8 @@ CREATE TABLE log (
   did timestamp(14) NOT NULL,
   ntext mediumtext,
   cname varchar(250) default NULL,
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY log_idx_1 (nicknames,ident,hostname,service)
 ) TYPE=MyISAM;
 
 --
@@ -225,7 +242,8 @@ CREATE TABLE news (
   level int(1) NOT NULL default '0',
   expires int(12) NOT NULL default '0',
   txt varchar(250) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY news_idx (level,expires)
 ) TYPE=MyISAM;
 
 --
@@ -250,7 +268,8 @@ CREATE TABLE nicks (
   aim varchar(32) NOT NULL default 'None Set',
   quitmsg varchar(250) NOT NULL default 'No record',
   modnick tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY nicks_idx (nickname,password)
 ) TYPE=MyISAM;
 
 --
