@@ -103,6 +103,9 @@ class Hangman : public ChannelGame {
    AISutil::String wrongGuesses;
    AISutil::String correctGuesses;
 
+   // Number of wrong guesses
+   unsigned int numWrongGuesses;
+
  public:
    // Constructor
    Hangman(Game::Module& module, const AISutil::String& channel,

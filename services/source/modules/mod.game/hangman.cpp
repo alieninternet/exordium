@@ -210,19 +210,6 @@ Exordium::User* const
       return 0;
    }
    
-   /*
-   // Make sure we are playing too
-   if (!playing) {
-      if (!quiet) {
-	 sendMessage(player,
-		     "The game isn't being played - " + 
-		     players.front().first->getNickname() +
-		     " must deal the pack out first.");
-      }
-      return 0;
-   }
-   */
-   
    return playerInfo;
 }
 
@@ -291,9 +278,7 @@ bool Hangman::getLevelData(unsigned int numChars)
 
    std::cerr << "ID = " << id << std::endl;
    std::cerr << "SIZE = " << wordList.size() << std::endl;
-   word = wordList[id];
-
-   word.toLower();
+   word = wordList[id].toLower();
 
    return true;
 }
@@ -371,6 +356,7 @@ EXORDI8_FUNC(Hangman::parseSTART)
       return false;
    }
 
+   numWrongGuesses = 0;
    wrongGuesses = "";
    correctGuesses = "";
    playing = true;
@@ -405,7 +391,7 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    bool isCorrect = false;
    bool isComplete = true;
 
-   String guess = line.rest();
+   String guess = line.rest().toLower();
 
    if ((player = checkPlayerStatus(origin)) == 0) {
       return true; // Keep the game alive
@@ -426,45 +412,49 @@ EXORDI8_FUNC(Hangman::parseGUESS)
 
    if(guess.length() > 1)
    {
-      sendMessage(origin, "Try again.. your guess be only one character");
-      return true;
-   }
-
-   int idx = word.find(guess[0]);
-   std::cout << "Index = " << idx << " of letter " << guess[0] << " in word " 
-      << word << std::endl;
-
-   if(idx < 0)
-   {
-      wrongGuesses += guess[0];
-   }
-   else 
-   {
-      idx = correctGuesses.find(guess); 
-      if(idx < 0)
-      {
-         isCorrect = true;
-         correctGuesses += guess[0];
-      }
-   }
-
-   showWord(*player);
-
-   if(wrongGuesses.length() >= maxWrongGuesses)
-   {
-      sendMessage(origin.getNickname() + " has been hung!");
-      playing = false;
-      return false; // End the game!
-   }
-   
-   // Check to see if the word complete
-   for(unsigned int i = 0; i < word.length(); i++)
-   {
-      int idx = correctGuesses.find(word[i]);
-      if(idx < 0)
+      sendMessage(origin.getNickname() + " is trying to solve with '" + guess + "'");
+      if(guess != word)
       {
          isComplete = false;
-         break;
+         numWrongGuesses++;
+      }
+   }
+   else
+   {
+      int idx = word.find(guess[0]);
+      std::cout << "Index = " << idx << " of letter " << guess[0] << 
+        " in word " << word << std::endl;
+
+      if(idx < 0)
+      {
+         wrongGuesses += guess[0];
+         isComplete = false;
+         numWrongGuesses++;
+      }
+      else 
+      {
+         idx = correctGuesses.find(guess); 
+         if(idx < 0)
+         {
+            isCorrect = true;
+            correctGuesses += guess[0];
+
+            // Check to see if the word complete
+            for(unsigned int i = 0; i < word.length(); i++)
+            {
+               int idx = correctGuesses.find(word[i]);
+               if(idx < 0)
+               {
+                  isComplete = false;
+                  break;
+               }
+            }
+         }
+         else
+         {
+            numWrongGuesses++;
+            isComplete = false;
+         }
       }
    }
 
@@ -472,10 +462,21 @@ EXORDI8_FUNC(Hangman::parseGUESS)
    if(isComplete)
    {
       sendMessage(origin.getNickname() + " has won!!");
+      sendMessage("The word was '" + word + "'!");
       playing = false;
       return false;
    }
 
+   showWord(*player);
+
+   if(numWrongGuesses >= maxWrongGuesses)
+   {
+      sendMessage(origin.getNickname() + " has been hung!");
+      sendMessage("The word was '" + word + "'!");
+      playing = false;
+      return false; // End the game!
+   }
+   
    // If we got here, do a standard message..
    out << "has chosen '" << guess << "'.";
 
@@ -515,7 +516,7 @@ void Hangman::showWord(const Exordium::User& player)
       }
    }
 
-   out << "\t\t\t\t\t" << "Letters Used: " << wrongGuesses << correctGuesses;
+   out << "          " << "Letters Used: " << wrongGuesses << correctGuesses;
 
    sendMessage(out.str());
    sendMessage(" ");
@@ -526,12 +527,12 @@ void Hangman::showWord(const Exordium::User& player)
  */
 void Hangman::showHangman(const Exordium::User& player)
 {
-   std::cout << "Wrong guesses" << wrongGuesses.length() << std::endl;
-   if(wrongGuesses.length() > 0)
+   std::cout << "Wrong guesses" << numWrongGuesses << std::endl;
+   if(numWrongGuesses > 0)
    {
       for(int i = 0; i < 7; i++)
       {
-         sendMessage(hangman[wrongGuesses.length() - 1][i]);
+         sendMessage(hangman[numWrongGuesses - 1][i]);
       }
    }
 }
