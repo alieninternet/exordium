@@ -35,7 +35,6 @@ extern "C" {
 };
 
 namespace Exordium {
-   class Services;
    class User;
    class Service;
    
@@ -80,7 +79,7 @@ namespace Exordium {
 			const AISutil::String& reason);
 
       // Start all modules in the list
-      void startAll(Exordium::Services& services);
+      void startAll(void);
       
       // Stop and unload all the modules in the list
       void unloadAll(const AISutil::String& reason);
@@ -90,7 +89,7 @@ namespace Exordium {
       
       // Throw a line at the appropriate service (sent directly)
       void throwLine(const AISutil::String& name, AISutil::StringTokens& line, 
-		     User &origin, const bool safe);
+		     User &origin);
       
       // Throw a line at the appropriate service (sent to a channel)
       void throwLine(const AISutil::String& name, AISutil::StringTokens& line,

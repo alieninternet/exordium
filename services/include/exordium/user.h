@@ -27,225 +27,108 @@
 #ifndef _INCLUDE_EXORDIUM_USER_H_
 # define _INCLUDE_EXORDIUM_USER_H_ 1
 
-# include <kineircd/str.h>
-# include <map>
-# include <exordium/services.h>
+#include <kineircd/str.h>
+#include <ctime>
+#include <map>
+#include <vector>
+#include <exordium/singleton.h>
+
+using AISutil::String;
+using namespace std;
 
 namespace Exordium {
-   class User {
+
+   #define userListFwd (*UserList::instance())
+
+   class User
+   {
+
     private:
-      AISutil::String nickname;
-      int onlineID;
-      Services& services;
-      
+      AISutil::String nick;
+      int hops;
+      AISutil::String timestamp;
+      AISutil::String username;
+      AISutil::String hostname;
+      AISutil::String vwhost;
+      AISutil::String server;
+      AISutil::String modes;
+      AISutil::String realname;
+
+      vector<AISutil::String> identified;
+      vector<AISutil::String> pendingnicks;
+
     public:
-      /* Inline functions here */
-      /* getNickname()
-       * 
-       * Return our nickname 
-       * 
-       */
-      
-      const AISutil::String& getNickname(void) const
-	{ return nickname; };
-      
-      /* getOnlineID()
-       * 
-       * Return our unique sql identifier
-       * 
-       */
-      const int getOnlineID(void) const
-	{ return onlineID; };
-      
-      /* getOnlineIDString()
-       * 
-       * Return our unique sql identifier 
-       * (as a String)
-       * 
-       * This is redundant imho. - simon
-       */
-      const AISutil::String getOnlineIDString(void) const
-	{ return AISutil::String::convert(onlineID); };
 
-      
-      /* setNick(String)
-       * 
-       * Update our records to show a new nickname.....
-       * 
-       */
-      void setNick(const AISutil::String& nick)
-	{ nickname = nick; };
-      
+      // Getters
+      AISutil::String  getNick(void)      { return nick; }
+      int              getHops(void)      { return hops; }
+      AISutil::String  getTimestamp(void) { return timestamp; }
+      AISutil::String  getUsername(void)  { return username; }
+      AISutil::String  getHostname(void)  { return hostname; }
+      AISutil::String  getVwhost(void)    { return vwhost; }
+      AISutil::String  getServer(void)    { return server; }
+      AISutil::String  getModes(void)     { return modes; }
+      AISutil::String  getRealname(void)  { return realname; }
+
+      // Setters
+      void setNick      (AISutil::String mynick)      { nick=mynick; }
+      void setHops      (int myhops)                  { hops=myhops; }
+      void setTimestamp (AISutil::String mystamp)     { timestamp=mystamp; }
+      void setUsername  (AISutil::String myusername)  { username=myusername; }
+      void setHostname  (AISutil::String myhostname)  { hostname=myhostname; }
+      void setVwhost    (AISutil::String myvwhost)    { vwhost=myvwhost; }
+      void setServer    (AISutil::String myserver)    { server=myserver; }
+      void setModes     (AISutil::String mymodes)     { modes=mymodes; }
+      void setRealname  (AISutil::String myrealname)  { realname=myrealname; }
 
 
-      /* Take note. Their are two sendMessages, the latter allowing
-       * you to override services default behaviour of using the 
-       * nicknames settings of notice/privmsg
-       */
-      void sendMessage(AISutil::String const &message,
-                       AISutil::String const &service);
-      void sendMessage(AISutil::String const &message,
-                       AISutil::String const &service,
-                       bool const &privmsg);
-      
-      /* setModNick(bool)
-       * 
-       * Modify the value of ModNick
-       * 
-       */
-      void setModNick(bool const &);
-      
-      /* modNick()
-       * 
-       * Return the current value of modNick
-       * 
-       */
-      bool modNick(void);
-      
-      /* setDeopAway(bool)
-       * 
-       * Modify the value of DeopAway
-       * 
-       */
-      void setDeopAway(bool const &);
-      
-      /* deopAway()
-       * 
-       * Return the value of DeopAway
-       * 
-       */
-      bool deopAway(void);
-      
-      /* updateHost(String)
-       * 
-       * Update the clients hostname.
-       * 
-       */
-      void updateHost(AISutil::String const &);
-      
-      /* getQuitMessage()
-       * 
-       * Return the last known quit message for this user
-       * 
-       */
-      AISutil::String getQuitMessage(void);
-      
-      /* getAccess(String)
-       * 
-       * Return the access for this user with the given
-       * service.
-       * 
-       */
-      int getAccess(AISutil::String const &);
-      
-      /* addCheckIdentify()
-       * 
-       * Force a client to identify for this nickname...
-       * 
-       */
-      void addCheckIdentify(void);
-      
-      /* countHost()
-       * 
-       * Return the number of online people from this
-       * users hostname.
-       * 
-       */
-      int countHost(void);
-      
-      /* getHost()
-       * 
-       * Return the users hostname.
-       * 
-       */
-      AISutil::String getHost(void);
-      
-      /* getIdent()
-       * 
-       * Return the users ident (username)
-       * 
-       */
-      AISutil::String getIdent(void);
-      
-      /* isIdentified()
-       * 
-       * Return true if we are identified as *ANY* nickname.
-       * 
-       */
+      void addIdentifiedNick(AISutil::String const &nick);
+      void delIdentifiedNick(AISutil::String const &nick);
+
+      bool isIdentified(AISutil::String const &nick);
       bool isIdentified(void);
-      
-      /* isIdentified(String)
-       * 
-       * Return true if we are identified as the given nickname.
-       * 
-       */
-      bool isIdentified(AISutil::String const &);
-      
-      /* getModes()
-       *
-       * Query the DB for current user's modes
-       *
-       */
-      AISutil::String getModes(void);
-             
-      /* getIDList(String)
-       * 
-       * Return a list of nicknames we are identified as...
-       * 
-       */
+ 
+      int nbIdentifiedNicks(void);
+
       AISutil::String getIDList(void);
-      
-      /* isPending()
-       * 
-       * Return TRUE if we are pending verification :-)
-       * 
-       */
-      bool isPending(void);
-      
-      /* setLanguage(String)
-       * 
-       * Update our clients language.......
-       * 
-       * This could possibly be broken.. but i'll look at it later
-       * its not a serious quirk (relating to the possibiltiy of someone
-       * changing the language for a nick not in use... )
-       */
-      void setLanguage(AISutil::String const &);
 
-      /* getLanguage()
-       *
-       * Retrieve users language
-       */
-      AISutil::String getLanguage(void);
-      
-      // Grab a user's password
-      const AISutil::String getPass(void);
+      void addPendingNick(AISutil::String const &nick);
+      void delPendingNick(AISutil::String const &nick);
+      bool isPending(AISutil::String const &nick);
 
-      const AISutil::String getURL(void);
-      const AISutil::String getMSN(void);
-      const AISutil::String getYAHOO(void);
-      const AISutil::String getAIM(void);
-      const AISutil::String getICQ(void);
-      const AISutil::String getEmail(void);
-      const AISutil::String getRegDate(void);
-      const AISutil::String getLastID(void);
-      const AISutil::String getLastHost(void);
-      
-      /* Our constructor definition */
-      User(AISutil::String const &nick, int const &oid, Services &s)
-	: nickname(nick), //their current nickname.. duh
-          onlineID(oid), //as dictated by the sql server..
-          services(s)// Gives us access to the full suite of services..
-	{};
+      int nbPengingNicks(void);
 
-      // Destructor
-      ~User(void)
-	{};
-      
-      // is equal to operator
-      bool operator==(const User &u) const
-	{ return (onlineID == u.onlineID); };
+      void sendMessage(String const &message, String const &service);
+      void sendMessage(String const &message, String const &service, bool const &privmsg);
    };
+
+
+   class UserList:public Singleton<UserList>
+   {
+      public:
+                friend class Singleton<UserList>;
+
+                ~UserList(void);
+
+                void  addUser(User *newuser);
+                void  addUser(AISutil::String const &nick, int hops,
+                              AISutil::String const &timestamp, AISutil::String const &username,
+                              AISutil::String const &host, AISutil::String const &vwhost,
+                              AISutil::String const &server, AISutil::String const &modes,
+                              AISutil::String const &realname);
+
+                void  delUser(AISutil::String const &nick);
+                void  delUserByServer(AISutil::String const &server);
+                User* getUser(AISutil::String const &nick);
+
+                bool  userExists(AISutil::String const &nick);
+                int   nbUsers(void);
+
+      private:
+                UserList() {}
+                map<AISutil::String, User*> users;
+   };
+
 }; // namespace Exordium
 
 #endif // _INCLUDE_EXORDIUM_USER_H_

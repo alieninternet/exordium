@@ -36,11 +36,9 @@
      x(AISutil::String &origin, AISutil::StringTokens &tokens)
 
 namespace Exordium {
-   class ServicesInternal;
    
    class Console {
     private:
-      ServicesInternal& services;
       
       struct functionTableStruct {
 	 const char* command;
@@ -50,8 +48,7 @@ namespace Exordium {
       void CONSOLE_FUNC(parseMODULE);
       
     public:
-      Console(ServicesInternal& s)
-	: services(s)
+      Console(void)
 	{};
 
       ~Console(void)
@@ -61,7 +58,5 @@ namespace Exordium {
    };
 };
 
-// Complete the forwarded definition
-# include "services.h"
 
 #endif // _SOURCE_LIB_CONSOLE_H_
