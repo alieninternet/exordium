@@ -648,7 +648,8 @@ void
    const Nick::moduleInfo_type Nick::moduleInfo =
      {
 	"Nickname Service",
-	  0, 0
+	  0, 0,
+	  Exordium::Service::moduleInfo_type::Events::NONE
      };
 
    // Start the service

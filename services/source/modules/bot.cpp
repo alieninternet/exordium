@@ -35,7 +35,6 @@
 using AISutil::String;
 using AISutil::StringTokens;
 using namespace Exordium;
-
 struct Bot::functionTableStruct const
   Bot::functionTable[] =
 {
@@ -99,7 +98,9 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Bot::moduleInfo_type Bot::moduleInfo = {
    "Bot Assistance Service",
-     0, 0
+     0, 0,
+     Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY |
+     Exordium::Service::moduleInfo_type::Events::SIGNON_CLIENT
 };
 
 
@@ -114,7 +115,4 @@ void Bot::start(Exordium::Services& s)
 			    getConfigData().getHostname(), "+dz",
 			    getConfigData().getDescription());
    services->serviceJoin(getName(),"#Debug");
-   
-   /* Register for a test event.. don't use yet im still testing */
-   services->RegisterEvent( EVENT_NICK, this);
 }

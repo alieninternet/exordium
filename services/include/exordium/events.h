@@ -36,23 +36,13 @@ namespace Exordium {
     * 
     * N.B not complete :-)
     */
-   enum event_types
+   struct event_types
      {
-	  EVENT_NONE = 0x00000000,
-	  EVENT_NICK = 0x00000001
+	bool EVENT_NICK:1;
+	bool EVENT_QUIT:1;
+	bool EVENT_SERVER:1;
+	bool EVENT_SQUIT:1;
      };
-   typedef enum event_types eventType;
-   /* Channel events... not complete */
-   enum chan_events 
-     {
-	  EVENT_CHAN_NONE    = 0x00000000,
-	  EVENT_CHAN_JOIN    = 0x00000001,
-	  EVENT_CHAN_PART    = 0x00000002,
-	  EVENT_CHAN_MODE    = 0x00000004,
-	  EVENT_CHAN_TOPIC   = 0x00000008,
-	  EVENT_CHAN_KICK    = 0x00000016
-     };
-   typedef unsigned char chanEventType;
 }//end namespace
 
 #endif

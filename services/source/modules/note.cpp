@@ -248,7 +248,8 @@ namespace Exordium
    // Module information structure
    const Note::moduleInfo_type Note::moduleInfo = {
       "Note Service",
-	0, 0
+	0, 0,
+	Exordium::Service::moduleInfo_type::Events::NONE
    };
 
 

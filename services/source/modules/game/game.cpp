@@ -51,7 +51,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 // Module information structure
 const Module::moduleInfo_type Module::moduleInfo = {
    "Game Service",
-     0, 0
+     0, 0 ,
+     Exordium::Service::moduleInfo_type::Events::NONE
 };
 
 

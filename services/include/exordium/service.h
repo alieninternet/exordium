@@ -29,6 +29,7 @@
 
 # include <kineircd/str.h>
 # include <aisutil/config/parser.h>
+# include "exordium/events.h"
 
 // Definitions for the module init functions..
 #define EXORDIUM_SERVICE_INIT_FUNCTION_NO_EXTERN(x) \
@@ -48,7 +49,23 @@ namespace Exordium {
 	 const char* const fullName;
 	 const unsigned short versionMajor;
 	 const unsigned short versionMinor;
+
+	 // Information about which events we want to receive
+	 struct Events { // Should be namespace, but g++ is dumb
+	    enum {
+	       NONE		= 0x00000000,
+	       SIGNON_CLIENT	= 0x00000001,
+	       SIGNOFF_CLIENT	= 0x00000002,
+	       SIGNON_SERVER	= 0x00000004,
+	       SIGNOFF_SERVER	= 0x00000008,
+	       CLIENT_AWAY      = 0x00000010,
+	       ALL		= 0xFFFFFFFF
+	    };
+	 };
+	 const unsigned int eventsMask; // values OR'd from above
       };
+      unsigned int getEventsMask(void);
+
       
       class ConfigData : public AISutil::ConfigData {
        private:

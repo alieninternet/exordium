@@ -92,11 +92,14 @@ void PARSER_FUNC (Parser::parseAWAY)
    if(origin == 0)
      {
 	std::cout << "Our pointer is null." << std::endl;
-//	exit(0);
 	return;
      }
  
-   if(origin->deopAway())
+   /* From here on i'm fiddling with away */
+   services.getConfig().getModules().handleAway(*origin,reason);
+
+   
+/*   if(origin->deopAway())
      {
 	if(reason=="")
 	  {
@@ -116,6 +119,7 @@ void PARSER_FUNC (Parser::parseAWAY)
              }
 	  }
      }
+ */
 }
 void
   PARSER_FUNC (Parser::parseS)

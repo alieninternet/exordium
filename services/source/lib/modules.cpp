@@ -26,7 +26,7 @@
 
 #include <sstream>
 #include <algorithm>
-
+#include <iomanip>
 #include "exordium/modules.h"
 
 using namespace Exordium;
@@ -229,6 +229,40 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
    if (moduleLocation != modules.end()) {
       (*moduleLocation).second->service->parseLine(line, origin, channel);
    }
+}
+
+/* handleAway - Handle an AWAY message from the parser and throw it 
+ * to the appropiate modules who are listening for this event type.
+ * 
+ */
+
+void
+  Modules::handleAway(const User& origin, AISutil::String &message)
+{
+    for (modules_type::const_iterator it = modules.begin();
+	it != modules.end(); it++)
+     {
+	String tmp =  (*it).first;
+	std::cout << "Module Name: " << tmp << std::endl;
+	std::cout << "Events Wanted: ";
+	std::cout << setbase(16) <<
+	  (*it).second->service->getModuleInfo().eventsMask << std::endl;
+	if((*it).second->service->getModuleInfo().eventsMask & 
+	   Exordium::Service::moduleInfo_type::Events::CLIENT_AWAY)
+	  {
+	     /* Ok this module wants to know about aways */
+	     std::cout << tmp << " would like to know when someone goes away" << std::endl;
+	  }
+	else
+	  {
+	     std::cout << tmp << " doesnt care about AWAY's :-(" << std::endl;
+	  }
+	
+						  
+	
+     }
+   
+   
 }
 
 
