@@ -1,6 +1,9 @@
 #! /bin/sh
 echo "Bootstrapping: "
 
+echo " -=> libtoolize"
+libtoolize --copy --force --ltdl
+
 echo " -=> aclocal"
 aclocal
 
