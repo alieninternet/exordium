@@ -1,6 +1,6 @@
 #!/usr/local/bin/php
 <?
-$link = mysql_connect("localhost","root","");
+$link = mysql_connect("localhost","root","be3tHov3n");
 mysql_select_db("services");
 $now = time();
 $lastdone = $now - 86400;
