@@ -38,6 +38,11 @@ extern "C" {
 #include "dmalloc.h"
 #endif
 
+// Maybe this is in the wrong place
+#define EXORDIUM_SERVICE_INIT_FUNCTION \
+	extern "C" Module *service_init(String const &name) 
+
+
 using Kine::String;
 using Kine::Utils;
 namespace Exordium {
