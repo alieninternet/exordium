@@ -463,6 +463,26 @@ void
    services.getDatabase().query(query);
 }
 
+
+// NOTE: Fix this after Channel is completed
+/* Get channel's mode */
+String
+  Channel::getModes(void)
+{
+   String query;
+   //query="SELECT modes FROM chans WHERE id=" + String::convert(getChanID());
+
+   MysqlRes res=services.getDatabase().query(query);
+   MysqlRow row;
+
+   while(row = res.fetch_row())
+   {
+      return row[0];
+   }
+
+   return "";
+}
+
 /* Ban the given mask from the channel */
 void
   Channel::banChan(String const &chan, String const &mask, String const &reason)

@@ -142,6 +142,25 @@ bool
    return false;
 };
 
+
+String
+  User::getModes(void)
+{
+   String query;
+   query="SELECT modes FROM onlineclients WHERE id=" + getOnlineIDString();
+
+   MysqlRes res=services.getDatabase().query(query);
+   MysqlRow row;
+
+   while(row = res.fetch_row())
+   {
+      return row[0];
+   }
+
+   return "";
+}
+
+
 /* deopAway(void)
  *
  * Return TRUE if the user wishing to use the Deop On Away functionality

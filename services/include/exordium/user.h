@@ -34,7 +34,7 @@
 
 namespace Exordium {
    class Services;
-   
+
    class User {
     private:
       LibAIS::String nickname;
@@ -69,6 +69,7 @@ namespace Exordium {
        */
       const LibAIS::String getOnlineIDString(void) const
 	{ return LibAIS::String::convert(onlineID); };
+
       
       /* setNick(String)
        * 
@@ -78,6 +79,8 @@ namespace Exordium {
       void setNick(const LibAIS::String& nick)
 	{ nickname = nick; };
       
+
+
       /* Take note. Their are two sendMessages, the latter allowing
        * you to override services default behaviour of using the 
        * nicknames settings of notice/privmsg
@@ -180,6 +183,13 @@ namespace Exordium {
        */
       bool isIdentified(LibAIS::String const &);
       
+      /* getModes()
+       *
+       * Query the DB for current user's modes
+       *
+       */
+      LibAIS::String getModes(void);
+             
       /* getIDList(String)
        * 
        * Return a list of nicknames we are identified as...

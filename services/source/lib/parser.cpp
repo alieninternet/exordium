@@ -136,6 +136,8 @@ void
    services.AddOnlineServer (serverName, hops, description);
 }
 
+/* NOTE: dont forget to uncomment after Channel is finished */
+
 void
   PARSER_FUNC (Parser::parseM)
 {
@@ -143,6 +145,7 @@ void
    bool take = false;
    int i;
    String dest = tokens.nextToken();
+   String currentmodes="";
    if(dest[0]=='#')
      {
 //	if(!services.getChannel().isChanRegistered(dest))
@@ -152,6 +155,8 @@ void
 // I decided that chanstatus should have info on ALL channels....
 // 
 // 
+//        currentmodes = channel.getModes();
+
 	String modes = tokens.nextColonToken();
 	int length = modes.length();
 	for (i = 0; i!=length; i++)
@@ -160,12 +165,35 @@ void
 	       {
 		  add = true;
 		  take = false;
+                  continue;
 	       }
 	     if (modes[i] == '-')
 	       {
 		  add = false;
 		  take = true;
+                  continue;
 	       }
+
+/*
+             if(add)
+             {
+                pos = currentmodes.find(modes[i]);
+
+                // If mode is not already set
+                if(pos == -1)
+                  currentmodes.push_back(modes[i]);
+             }
+             else
+              if(take)
+               {
+                 pos = currentmodes.find(modes[i]);
+
+                 // If mode is already set
+                 if(pos != -1)
+                   currentmodes.erase(pos, 1);
+               }
+*/
+
 	     if(modes[i]=='b')
 	       {
 		  if(add)
@@ -214,22 +242,59 @@ void
 		    }
 	       }
 	  }
+       
+        // Update modes in table chans
+        //String query;
+        //query="UPDATE chans SET modes='" + currentmodes + "' WHERE id=" + channel.getChanIDString(dest);
+        //services.getDatabase().query(query);
+
 	return;
      }
+
+   User *origin=services.findUser(OLDorigin);
+
+   currentmodes=origin->getModes();
+
    String modes = tokens.nextColonToken();
    int length = modes.length();
+   int pos;
+
    for (i = 0; i!=length; i++)
      {
 	if (modes[i] == '+')
 	  {
 	     add = true;
 	     take = false;
+             continue;
 	  }
 	if (modes[i] == '-')
 	  {
 	     add = false;
 	     take = true;
+             continue;
 	  }
+
+        if(add)
+        {
+           pos = currentmodes.find(modes[i]);
+
+           // If mode is not already set
+           if(pos == -1)
+             currentmodes.push_back(modes[i]);
+        }
+        else
+         if(take)
+         {            
+            pos = currentmodes.find(modes[i]);
+
+            // If mode is already set
+            if(pos != -1)
+             currentmodes.erase(pos, 1);
+         }       
+
+
+        
+
 	if(modes[i]=='o')
 	  {
 	     if(add)
@@ -265,6 +330,12 @@ void
 
 	  }
      }
+
+
+   // Update modes in table onlineusers
+   String query;
+   query="UPDATE onlineclients SET modes='" + currentmodes + "' WHERE id=" + origin->getOnlineIDString();
+   services.getDatabase().query(query);
 }
 /* Incoming Pass - Denotes we have traversed the ident check etc*/
 void
@@ -338,6 +409,11 @@ void PARSER_FUNC (Parser::parseN)
    (void)tokens.nextToken();
    
    String realname = tokens.rest();
+
+   // Strip the heading +
+   if(modes[0]=='+')
+     modes=modes.substr(1, modes.length()-1);
+
    
 //   services.getNickname().addClient(nick,hops,timestamp,username,host,vwhost,server,modes,realname);
    

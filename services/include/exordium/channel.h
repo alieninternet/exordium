@@ -73,6 +73,7 @@ namespace Exordium {
       void addChanBan(int const &,LibAIS::String const &,LibAIS::String const &,int const &,LibAIS::String const &);
       void banChan(LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
       void RemoveBan(LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
+      LibAIS::String getModes(void);
    };
 }; // namespace Exordium
 
