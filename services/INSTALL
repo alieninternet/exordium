@@ -5,7 +5,7 @@ You need to have the following:
 
 Autoconf 2.57
 Automake 1.73
-Autogen  5.5.2
+Autogen  5.5.3
 LibAISUtil (http://sf.net/projects/libaisutil)
 KineIRCD (http://sf.net/projects/kineircd)
 

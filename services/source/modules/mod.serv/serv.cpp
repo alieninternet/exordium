@@ -229,21 +229,24 @@ SERV_FUNC (Module::parseNEWS)
    if(command=="list")
      {
         int nbRes = services->getDatabase().dbSelect("news");
+	
 	if(nbRes==0)
 	  {
 	     origin.sendMessage("No News found",getName());
 	     return;
 	  }
+	CResult *myRes = services->getDatabase().dbGetResultSet();
+	
 	for(int i=0; i<nbRes; i++)
 	  {
-	     String id = services->getDatabase().dbGetValue(0);
-	     String level = services->getDatabase().dbGetValue(1);
-	     String expires = services->getDatabase().dbGetValue(2);
-	     String txt = services->getDatabase().dbGetValue(3);
+	     String id = myRes->getValue(i,0);
+	     String level = myRes->getValue(i,1);
+	     String expires = myRes->getValue(i,2);
+	     String txt = myRes->getValue(i,3);
 	     String togo = "ID \002[\002"+id+"\002]\002 Level \002[\002"+level+"\002]\002 Expires \002[\002"+expires+"\002]\002 Text \002[\002"+txt+"\002]\002";
 	     origin.sendMessage(togo,getName());
-             services->getDatabase().dbGetRow();
 	  }
+	delete myRes;
 
      }
    if(command=="del")
@@ -259,6 +262,7 @@ SERV_FUNC (Module::parseNEWS)
 	services->sendGOper(getName(),origin.getNickname()+" \002deleted\002 news item "+id);
 	return;
      }
+   
    if(command=="add")
      {
 	String type = tokens.nextToken();
@@ -269,6 +273,22 @@ SERV_FUNC (Module::parseNEWS)
 	     origin.sendMessage("\002[\002Incorrect Usage\002]\002 Usage: news add type expires news text here",getName());
 	     return;
 	  }
+	if(type.toInt()!=0 || type.toInt()!=1)
+	  {
+	     origin.sendMessage("Error: Type must be either 0 (all users) or 1 (staff)",getName());
+	     return;
+	  }
+	if(expires.toInt()<services->currentTime)
+	  {
+	     origin.sendMessage("Error: The expire time cannot be before now",getName());
+	     return;
+	  }
+	if(expires.toInt()>services->currentTime+ 36000)
+	  {
+	     origin.sendMessage("Error: Expire time is to far in the future",getName());
+	     return;
+	  }
+	
 	int nexpires = expires.toInt();
 	nexpires = services->currentTime + (nexpires * 3600);
 	if(services->currentTime>nexpires)
@@ -278,7 +298,7 @@ SERV_FUNC (Module::parseNEWS)
 	  }
         services->getDatabase().dbInsert("news", "'','"+type+"','"+String::convert(nexpires)+"','"+text+"'");
 	origin.sendMessage("New news item added successfully",getName());
-	services->sendGOper(getName(),"\002Added\002 a new news item");
+	services->sendGOper(getName(),origin.getNickname() + "\002Added\002 a new news item");
      }
 
 }
@@ -400,6 +420,12 @@ SERV_FUNC (Module::parseUSER)
 	     return;
 	  }
 	int ilevel = level.toInt();
+	if(ilevel<1 || ilevel>499)
+	  {
+	     origin.sendMessage("Error: Level must be between 1 and 499",getName());
+	     return;
+	  }
+	
 	if(ilevel>access || ilevel==access)
 	  {
 	     origin.sendMessage("Error: You cannot set someones access higher than, or equal to your own",getName());
@@ -418,11 +444,11 @@ SERV_FUNC (Module::parseUSER)
 	     origin.sendMessage("Error: That person has the same access as you",getName());
 	     return;
 	  }
-	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+level;
+	String togo = origin.getNickname() + " modified access for \002"+toadd+"\002 "+String::convert(taccess)+"->"+String::convert(ilevel);
 	services->logLine(togo);
 	services->sendGOper(getName(),togo);
-        services->getDatabase().dbUpdate("access", "access='"+level+"'", "nickname='"+toadd+"'");
-	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+level);
+        services->getDatabase().dbUpdate("access", "access='"+String::convert(level)+"'", "nickname='"+toadd+"'");
+	services->log(origin,getName(),String("Modified access for ")+toadd+" from "+String::convert(taccess)+"->"+String::convert(level));
 	return;
      }
    if(command=="list")
@@ -547,6 +573,17 @@ SERV_FUNC (Module::parseNLIST)
    int nbRes = services->getDatabase().dbSelect("nickname,lasthost,email", "nicks", "lasthost like '"+tomatch+"'");
    CResult *myRes = services->getDatabase().dbGetResultSet();
    int f=0;
+   if(dest!="")
+     {
+	User *tmp = services->findUser(dest);
+	if(tmp==0)
+	  {
+	     origin.sendMessage("Error: That user (%p0) is not online",getName());
+	     return;
+	  }
+	delete tmp;
+     }
+   
    for(int i=0; i<nbRes; i++)
      {
 	f++;
@@ -597,7 +634,17 @@ SERV_FUNC (Module::parseELIST)
      }
    int nbRes = services->getDatabase().dbSelect("nickname, lasthost, email", "nicks", "email like '"+tomatch+"'");
    CResult *myRes = services->getDatabase().dbGetResultSet();
-
+   if(dest!="")
+     {
+	User *tmp = services->findUser(dest);
+	if(tmp==0)
+	  {
+	     origin.sendMessage("Error: That user (%p0) is not online",getName());
+	     return;
+	  }
+	delete tmp;
+     }
+   
    for(int i=0; i<nbRes; i++)
      {
 	String nickname = myRes->getValue(i,0);
