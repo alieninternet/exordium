@@ -672,3 +672,33 @@ if(value)
    else
      services.getDatabase().dbUpdate("nicks","privmsg=0","nickname='"+nickname+"'");
 }
+
+/*
+ * updateIdentified()
+ * 
+ * Update the user as being identified for this nickname
+ * 
+ */
+
+const void User::updateIdentified(void)
+{
+   services.getDatabase().dbInsert("nicksidentified","'','"+String::convert(getOnlineID())+"','"+String::convert(getRegisteredNickID())+"'");
+   services.getDatabase().dbDelete("kills","nick='"+nickname+"'");
+}
+
+/*
+ * getRegisteredNickID
+ * 
+ * Return the unique identifier for us (if registered!)
+ * 
+ */
+
+const int User::getRegisteredNickID()
+{
+if (services.getDatabase().dbSelect("id","nicks","nickname='"+nickname+"'") < 1)
+     return 0;
+   else
+     return services.getDatabase().dbGetValue().toInt();
+}
+
+				 

@@ -230,7 +230,8 @@ namespace Exordium {
 			AISutil::String const &);
       const void log(AISutil::String const &, AISutil::String const &);
       const AISutil::String genAuth(void);
-
+      // update* Functions.
+      const void updateIdentified(void);
       // set* Functions.
       const void setPassword(AISutil::String const &);
       const void setEmail(AISutil::String const &);
@@ -238,7 +239,6 @@ namespace Exordium {
       const void setPrivmsg(bool const &);
       // get* Functions.
       const AISutil::String getPendingCode(void);
-      
       const AISutil::String getPass(void);
       const AISutil::String getURL(void);
       const AISutil::String getMSN(void);
@@ -249,7 +249,7 @@ namespace Exordium {
       const AISutil::String getRegDate(void);
       const AISutil::String getLastID(void);
       const AISutil::String getLastHost(void);
-      
+      const int getRegisteredNickID(void);
       /* Our constructor definition */
       User(AISutil::String const &nick, int const &oid, Services &s)
 	: nickname(nick), //their current nickname.. duh

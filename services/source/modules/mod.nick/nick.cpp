@@ -570,62 +570,49 @@ NICK_FUNC (Module::parseGHOST)
 
 
 /* Parse an identification request */
-     NICK_FUNC (Module::parseIDENTIFY)
-       {
-	  String password = tokens.nextToken();
-	  if (origin.isPending())
-	    {
-	       String tosend = "Error - You cannot identify a nickname which is pending verification";
-	       origin.sendMessage (tosend, getName());
-	       return;
-	    }
-	  if (!services->isNickRegistered (origin.getNickname()))
-	    {
-	       String tosend = String ("Error: That nickname is not registered");
-	       origin.sendMessage (tosend, getName());
-	       return;
-	    }
-	  if(!safe)
-	    {
-	       String tosend = String ("For security reasons you must use /ns id <password> to identify");
-	       origin.sendMessage (tosend, getName());
-	       return;
-	    }
-	  String nickpass = Utils::generatePassword(origin.getNickname(),
-						    password);
-	  String givepass = origin.getPass();
-	  std::cout << ":" << nickpass << ":" << std::endl;
-	  std::cout << ":" << givepass << ":" << std::endl;
-	  if(nickpass == givepass)
-	    {
-	       int oid = origin.getOnlineID();
-	       int nid = services->getRegisteredNickID(origin.getNickname());
-
-               services->getDatabase().dbInsert("nicksidentified", "'','"+String::convert(oid) + "','" + String::convert(nid) + "'");
-               services->getDatabase().dbDelete("kills", "nick='"+origin.getNickname()+"'");
-
-	       services->modeIdentify(origin.getNickname());
-	       services->updateLastID(origin.getNickname());
-	       String temp1 = origin.getHost();
-	       String temp2 = origin.getIdent();
-	       String togo = String(temp2)+"@"+String(temp1);
-	       origin.updateHost(togo);
-	       String tosend = "You have been successfully identified to services as the nickname \002"+origin.getNickname()+"\002(\002"+togo+"\002)";
-	       origin.sendMessage(tosend,getName());
-	       return;
-	    }
-	  origin.sendMessage(String("\002Incorrect\002 Password"),getName());
-	  int access = origin.getAccess("Serv");
-	  if(access>0)
-	    {
-	       String temp1 = origin.getHost();
-	       String temp2 = origin.getIdent();
-	       String thehost = String(temp2)+"@"+String(temp1);
-	       String togo = String("\002Failed\002 identify for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
-	       services->logLine(String(togo), Log::Warning);
-	    }
-	  return;
-       }
+NICK_FUNC (Module::parseIDENTIFY)
+{
+  String password = tokens.nextToken();
+  if (origin.isPending())
+    {
+       origin.sendMessage ("Error: This nickname is still pending confirmation - please check your email", getName());
+       return;
+    }
+  if (!origin.isRegistered())
+    {
+       origin.sendMessage ("Error: That nickname is not registered", getName());
+       return;
+    }
+  if(!safe)
+    {
+       origin.sendMessage ("Error: For security if you must use /ns id password", getName());
+       return;
+     }
+   if(Utils::generatePassword(origin.getNickname(),password) == origin.getPass())
+    {
+       origin.updateIdentified();
+       services->modeIdentify(origin.getNickname());
+       services->updateLastID(origin.getNickname());
+       String temp1 = origin.getHost();
+       String temp2 = origin.getIdent();
+       String togo = String(temp2)+"@"+String(temp1);
+       origin.updateHost(togo);
+       String tosend = "You have been successfully identified to services as the nickname \002"+origin.getNickname()+"\002(\002"+togo+"\002)";
+       origin.sendMessage(tosend,getName());
+       return;
+    }
+  origin.sendMessage(String("\002Incorrect\002 Password"),getName());
+  int access = origin.getAccess("Serv");
+  if(access>0)
+    {
+       String temp1 = origin.getHost();
+       String temp2 = origin.getIdent();
+       String thehost = String(temp2)+"@"+String(temp1);
+       String togo = String("\002Failed\002 identify for nickname ")+origin.getNickname()+" by \002"+origin.getNickname()+"!"+thehost;
+       services->logLine(String(togo), Log::Warning);
+     }
+  return;
+}
 
 EXORDIUM_SERVICE_INIT_FUNCTION
 { return new Module(); }
