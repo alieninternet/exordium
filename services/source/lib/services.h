@@ -85,10 +85,6 @@ namespace Exordium {
       Console& getConsole(void)
 	{ return console; };
 
-      time_t getStartTime(void);
-      time_t getCurrentTime(void);
-	   
-   
       // These will disappear upon full integration with kine..
       void run(void);
       
@@ -129,7 +125,6 @@ namespace Exordium {
 		     AISutil::String const &);
 
       void servicePart (AISutil::String const &, AISutil::String const &);
-      void queueAdd (const AISutil::String& line);
 
 
       void killnick (AISutil::String const &target,
