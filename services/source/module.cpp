@@ -17,8 +17,13 @@ using namespace Exordium;
 // called just before the module is actually going to be used
 KINE_MODULE_START(moduleStart)
 {
-   cout << "moduleStart().. btw the daemon is located at " << &daemon
-     << endl;
+   cout << "moduleStart().. btw the daemon is located at " << &daemon <<
+     "\nFrom kine config:"
+     "\n\tMy network is " << daemon.getConfig().getNetworkName() <<
+     "\n\tWe are " << daemon.getConfig().getOptionsServername() <<
+     " (" << daemon.getConfig().getOptionsDescription() << ")" <<
+     endl;
+     
 
    // My, it looks an awful lot like main.cpp from here on... :) This is
    // temporary, naturally.
