@@ -54,9 +54,9 @@ namespace Exordium {
     public:
       CPgSQL(Config &c) 
        : CBase(c),
+         pgres(0),
          pgopts(0),
          pgtty(0),
-         pgres(0),
          clearres(false)
        {};
 
