@@ -519,18 +519,7 @@ void ServicesInternal::SynchTime(void)
    //
 }
 
-   /* AddOnlineServer(ServerName,Hops,Description)
-    *
-    * Add a server into our database thingie oo :((((
-    *
-    */
-
-void
-  ServicesInternal::AddOnlineServer (String const &servername, String const &hops, String const &description)
-{
-   database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
-}
-
+  
 void
   ServicesInternal::nickLinkAdd(String const &first, String const &second)
 {
@@ -555,19 +544,6 @@ void
   ServicesInternal::sendHelpme(String const &from, String const &text)
 {
    queueAdd(":"+from+" HELPME :"+text);
-}
-
-   /* DelOnlineServer(ServerName)
-    *
-    * Del a server from our database
-    *
-    */
-
-// NOTE: gotta recheck this up when more than 1 server is up, should compare ID instead.. maybe make a server map?
-void
-  ServicesInternal::DelOnlineServer (String const &name)
-{
-   database.dbDelete("onlineservers", "servername='" + name + "'");
 }
 
 /* mode(String,String,String,String)
@@ -797,15 +773,6 @@ void ServicesInternal::serviceJoin(AISutil::String const &service,
 	    AISutil::String::convert(currentTime) + " " + target +
 	    " + :" + service);
 };
-
-bool
-  ServicesInternal::isServerConnected(String const &server)
-{
-   if(database.dbSelect("id","onlineservers","servername='"+server+"'") < 1 )
-     return false;
-   else
-     return true;
-}
 
    /* usePrivmsg(nick)
     *
@@ -1120,30 +1087,6 @@ void ServicesInternal::setNick(User &who, Kine::Name &newnick)
 
    // Update nickname in table onlineclients
    database.dbUpdate("onlineclients", "nickname='"+fixedNewNick+"'", "id="+who.getOnlineIDString());
-};
-
-/* isAuthorised(String)
- *
- * Return true if the specificed server is allowed to connect
- * to the network ... otherwise false
- *
- */
-
-// TEMP commenting!
-bool ServicesInternal::isAuthorised(String const &server)
-{
-/*
-   if( database.dbSelect("id", "serverlist", "name='"+server+"'") < 1 )
-      return false;
-   else
-   {
-     if( database.dbGetValue().toInt() > 0 )
-       return true;
-     else
-       return false;
-   }
-*/
-   return true;
 };
 
 /* addClient(...)

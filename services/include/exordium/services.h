@@ -95,11 +95,6 @@ namespace Exordium {
       // Function Declrations below here.
       virtual void shutdown(const AISutil::String &) = 0;
       
-      virtual void AddOnlineServer(AISutil::String const &,
-				   AISutil::String const &, 
-				   AISutil::String const &) = 0;
-      virtual void DelOnlineServer(AISutil::String const &) = 0;
-      
       virtual User* const addUser(const AISutil::String& name,
 				  const int oid) = 0;
       virtual bool delUser(Kine::Name &) = 0;
@@ -136,7 +131,6 @@ namespace Exordium {
       
       virtual void nickLinkAdd(AISutil::String const &, AISutil::String const &) = 0;
       virtual void nickLinkDel(AISutil::String const &, AISutil::String const &) = 0;
-      virtual bool isServerConnected(AISutil::String const &) = 0;
       
       // This is in the wrong place, surely
       virtual void sendEmail(AISutil::String const &, AISutil::String const &,
@@ -197,7 +191,6 @@ namespace Exordium {
 			    AISutil::String const &) = 0;
       
       virtual int locateID(Kine::Name const &nick) = 0;
-      virtual bool isAuthorised(AISutil::String const &) = 0;
       virtual User* addClient(Kine::Name const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,
 			      AISutil::String const &, AISutil::String const &,

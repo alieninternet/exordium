@@ -28,11 +28,12 @@
 # include "autoconf.h"
 #endif
 
-#include "oper.h"
-#include "./language.h"
+#include "mod.oper/oper.h"
+#include "mod.oper/language.h"
 
 #include <exordium/service.h>
 #include <exordium/services.h>
+#include <exordium/server.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -302,9 +303,11 @@ OPER_FUNC (Module::parseJUPE)
    int isserver = tojupe.find('.');
    if (isserver > 0)
      {
-	if (services->isServerConnected(tojupe))
+	Server *sptr = services->findServer(tojupe);
+	if (sptr==0)
 	  {
 	     origin.sendMessage(GETLANG(oper_JUPE_SERVER_ONLINE,tojupe),getNickname());
+	     return;
 	  }
 	services->queueAdd("SERVER "+tojupe+" 2 :"+reason);
 	origin.sendMessage(GETLANG(oper_JUPE_SERVER_SUCCESS,tojupe,reason),getNickname());

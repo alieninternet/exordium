@@ -130,10 +130,6 @@ namespace Exordium {
       // Function Declrations below here.
       void shutdown(const AISutil::String &);
       
-      void AddOnlineServer(AISutil::String const &, AISutil::String const &, 
-			   AISutil::String const &);
-      void DelOnlineServer(AISutil::String const &);
-      
       void nickLinkAdd(AISutil::String const &, AISutil::String const &);
       void nickLinkDel(AISutil::String const &, AISutil::String const &);
       
@@ -248,7 +244,6 @@ namespace Exordium {
 		    AISutil::String const &);
       
       int locateID(Kine::Name const &nick);
-      bool isAuthorised(AISutil::String const &);
       User* addClient(Kine::Name const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
 		      AISutil::String const &, AISutil::String const &,
@@ -256,7 +251,6 @@ namespace Exordium {
 		      AISutil::String const &);
       int getRequiredAccess(AISutil::String const &, AISutil::String const &);
       bool isNickRegistered(AISutil::String const &);
-      bool isServerConnected(AISutil::String const &);
       // This should be in the NICK MODULE
       void modeIdentify(AISutil::String const &);
       void updateLastID(AISutil::String const &);

@@ -39,3 +39,28 @@ using AISutil::StringTokens;
 using namespace Exordium;
 
 
+bool Server::isAuthorised(void)
+{
+if (services.getDatabase().dbSelect("id","serverlist","name='"+name+"'") < 1)
+     return false;
+   else
+     if (services.getDatabase().dbGetValue().toInt() > 0)
+       return true;
+   else
+     return false;
+}
+
+
+void
+  Server::addOnlineServer(void)
+{
+   services.getDatabase().dbInsert("onlineservers","'','"+name+"','"+String::convert(hops)
+				   +"','"+desc+"'");
+}
+
+void
+  Server::delOnlineServer(void)
+{
+   services.getDatabase().dbDelete("onlineservers", "servername='" + name + "'");
+}
+

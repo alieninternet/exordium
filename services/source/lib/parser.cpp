@@ -40,8 +40,8 @@
 #endif
 
 #include "parser.h"
-//#include "exordium/dchan.h"
-#include "exordium/channel.h"
+#include <exordium/channel.h>
+#include <exordium/server.h>
 #include <aisutil/string.h>
 #include <kineircd/config.h>
 
@@ -131,15 +131,22 @@ void
    String serverName = tokens.nextToken ();
    String hops = tokens.nextToken ();
    String description = tokens.rest();
-   if (!services.isAuthorised (serverName))
+   Server *ptr = services.addServer(serverName,hops.toInt(),description);
+   if(ptr==0)
      {
-	services.queueAdd(":" + Kine::config().getOptionsServerName() +
-			  " SQUIT " + serverName +
-			  " :Unauthorised Links are not permitted on PeopleChat "
-			  "- The network administration has been notified");
+	services.logLine("Error: Could not allocate record for new server : "+serverName);
 	return;
      }
-   services.AddOnlineServer (serverName, hops, description);
+   if(!ptr->isAuthorised())
+     {
+	services.queueAdd(":" + Kine::config().getOptionsServerName() + 
+			  " SQUIT " + serverName + 
+			  " :Unauthorised links are not permitted here on PeopleChat "
+			  " - The network administration has been notified");
+	return;
+     }
+   ptr->addOnlineServer();
+   
 }
 
 void
@@ -473,7 +480,7 @@ void
    String server = tokens.nextToken();
    services.getDatabase().dbDelete("nicksidentified", "USING nicksidentified,onlineclients nicksidentified.nick=onlineclients.id AND onlineclients.server='"+server+"'");
    services.getDatabase().dbDelete("onlineclients", "server='"+server+"'");
-   services.DelOnlineServer(server);
+   services.delServer(server);
 }
 void
   PARSER_FUNC (Parser::parseQUIT)

@@ -63,6 +63,12 @@ namespace Exordium
 	// Destructor
 	~Server(void)
 	  {};
+	
+	//functions.
+	bool isAuthorised(void);
+	
+	void addOnlineServer(void);
+	void delOnlineServer(void);
 
 	// is equal to operator
 	bool operator==(const Server &s) const
