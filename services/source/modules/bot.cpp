@@ -99,3 +99,11 @@ EXORDIUM_SERVICE_INIT_FUNCTION
    return new Bot(services, name);
 }
 
+
+// Module information structure
+const Bot::moduleInfo_type Bot::moduleInfo = {
+   "Bot Assistance Service",
+     0, 0
+};
+
+

@@ -41,6 +41,13 @@ namespace Exordium {
    class User;
    
    class Service {
+    public:
+      struct moduleInfo_type {
+	 const char* const fullName;			// Full module name
+	 const unsigned short versionMajor;		// Version major number
+	 const unsigned short versionMinor;		// Version minor number
+      };
+      
     protected:
       // Where is services?
       Exordium::Services& services;
@@ -68,6 +75,9 @@ namespace Exordium {
       // Return the nickname of the module
       const LibAIS::String& getName(void) const
 	{ return myName; };
+
+      // Grab the information structure of a module
+      virtual const moduleInfo_type& getModuleInfo(void) const = 0;
    };
 };
 

@@ -87,5 +87,10 @@ namespace Exordium
 	return new Stats(services);
      }
 
+   // Module information structure
+   const Stats::moduleInfo_type Stats::moduleInfo = {
+      "Statistics Service",
+	0, 0
+   };
 };
 

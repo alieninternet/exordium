@@ -87,7 +87,7 @@ void Modules::delModule(const String& name) {
 bool Modules::exists(const LibAIS::String& name) const
 {
    // Locate the module..
-   modules_type::const_iterator moduleLocation = 
+   modules_type::const_iterator moduleLocation =
      modules.find(name.IRCtoLower());
    
    // If the module exists, be happy
@@ -109,7 +109,7 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin)
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
    
    // If the module exists, throw the line at it
-   if (moduleLocation == modules.end()) {
+   if (moduleLocation != modules.end()) {
       (*moduleLocation).second->service->parseLine(line, origin);
    }
 }
@@ -125,7 +125,7 @@ void Modules::throwLine(const String& name, StringTokens& line, User& origin,
    modules_type::iterator moduleLocation = modules.find(name.IRCtoLower());
    
    // If the module exists, throw the line at it
-   if (moduleLocation == modules.end()) {
+   if (moduleLocation != modules.end()) {
       (*moduleLocation).second->service->parseLine(line, origin, channel);
    }
 }

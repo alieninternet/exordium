@@ -50,6 +50,13 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 }
 
 
+// Module information structure
+const Love::moduleInfo_type Love::moduleInfo = {
+   "Cupid Service",
+     0, 0
+};
+
+
 /* Our lovely list of commands in all their glorious ascii beauty. The names
  * should be in lower-case as it's the most common way people type stuff, and
  * our case-insensitive searchy thingy looks on the premise that the incoming

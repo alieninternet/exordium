@@ -42,6 +42,9 @@ class Love : public Exordium::Service {
    // Our convenient type-definition of our handler functions
    typedef LOVE_FUNC(handler_type);
    
+   // Module information structure
+   static const Exordium::Service::moduleInfo_type moduleInfo;
+   
    /* Each command gets a little descriptor with the following parameters.
     * Note that in the future the padding field will be used, but for now
     * it is there to make the structure even (4x4 bytes) as processors like
@@ -81,6 +84,10 @@ class Love : public Exordium::Service {
    
    // Parser for incoming stuff sent directly to us
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
+
+   // Grab the information structure of a module
+   virtual const moduleInfo_type& getModuleInfo(void) const
+     { return moduleInfo; };
 };
 
 #endif // __LOVE_H_

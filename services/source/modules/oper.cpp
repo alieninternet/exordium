@@ -123,3 +123,8 @@ EXORDIUM_SERVICE_INIT_FUNCTION
    return new Oper(services, name);
 }
 
+// Module information structure
+const Oper::moduleInfo_type Oper::moduleInfo = {
+   "Operator Service",
+     0, 0
+};

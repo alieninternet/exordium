@@ -833,3 +833,11 @@ EXORDIUM_SERVICE_INIT_FUNCTION
    return new Chan(services, name);
 }
 
+
+// Module information structure
+const Chan::moduleInfo_type Chan::moduleInfo = {
+   "Channel Service",
+     0, 0
+};
+
+

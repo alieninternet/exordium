@@ -260,5 +260,12 @@ namespace Exordium
 	return new Note(services);
      }
 
+   // Module information structure
+   const Note::moduleInfo_type Note::moduleInfo = {
+      "Note Service",
+	0, 0
+   };
+
+
 }
 

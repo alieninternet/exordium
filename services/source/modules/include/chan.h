@@ -39,6 +39,9 @@
 class Chan : public Exordium::Service
 {
 private:
+   // Module information structure
+   static const Exordium::Service::moduleInfo_type moduleInfo;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -60,6 +63,11 @@ public:
 	};
    void parseLine (LibAIS::StringTokens& line, Exordium::User& origin);
    void parseLine (LibAIS::StringTokens& line, Exordium::User& origin,LibAIS::String const &);
+   
+   // Grab the information structure of a module
+   virtual const moduleInfo_type& getModuleInfo(void) const
+     { return moduleInfo; };
+   
 private:
    void CHAN_FUNC (parseHELP);
    void CHAN_FUNC (parseACCESS);

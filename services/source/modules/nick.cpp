@@ -657,3 +657,12 @@ void
 	return new Nick(services, name);
      }
 
+
+// Module information structure
+const Nick::moduleInfo_type Nick::moduleInfo = {
+   "Nickname Service",
+     0, 0
+};
+
+
+	  

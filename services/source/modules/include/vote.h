@@ -39,6 +39,9 @@ namespace Exordium {
 class Vote : public Service
 {
 private:
+   // Module information structure
+   static const Exordium::Service::moduleInfo_type moduleInfo;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -58,6 +61,11 @@ public:
 	};
    void parseLine (LibAIS::String const &, LibAIS::String const &);
    void parseLine (LibAIS::String const &, LibAIS::String const &, LibAIS::String const &);
+   
+   // Grab the information structure of a module
+   virtual const moduleInfo_type& getModuleInfo(void) const
+     { return moduleInfo; };
+   
 private:
 void VOTE_FUNC (parseHELP);
 

@@ -47,6 +47,13 @@ EXORDIUM_SERVICE_INIT_FUNCTION
 }
 
 
+// Module information structure
+const Game::moduleInfo_type Game::moduleInfo = {
+   "Game Service",
+     0, 0
+};
+
+
 // Our command table for directly sent commands (commands must be lower-case)
 const Game::commandTable_type Game::directCommandTable[] =
 {

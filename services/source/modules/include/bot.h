@@ -41,6 +41,9 @@ class Bot : public Exordium::Service
 {
    class Exordium::User;
  private:
+   // Module information structure
+   static const Exordium::Service::moduleInfo_type moduleInfo;
+   
   struct functionTableStruct
   {
     char const *command;
@@ -65,6 +68,11 @@ public:
    
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
 		  const LibAIS::String& channel);
+
+   // Grab the information structure of a module
+   virtual const moduleInfo_type& getModuleInfo(void) const
+     { return moduleInfo; };
+   
 private:
   void BOT_FUNC (parseHELP);
   void BOT_FUNC (parseQUOTE);

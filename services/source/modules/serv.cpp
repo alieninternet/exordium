@@ -609,5 +609,10 @@ namespace Exordium
 	return new Serv(services);
      }
 
+   // Module information structure
+   const Serv::moduleInfo_type Serv::moduleInfo = {
+      "Service Service",
+	0, 0
+   };
 };
 

@@ -48,6 +48,9 @@ class Game : public Exordium::Service {
    // Our convenient type-definition of our handler functions
    typedef GAME_FUNC(handler_type);
    
+   // Module information structure
+   static const Exordium::Service::moduleInfo_type moduleInfo;
+   
    // Our command table structure
    struct commandTable_type {
       const char* const command;		// The command name
@@ -90,6 +93,10 @@ public:
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin);
    void parseLine(LibAIS::StringTokens& line, Exordium::User& origin,
 		  const LibAIS::String& channel);
+
+   // Grab the information structure of a module
+   virtual const moduleInfo_type& getModuleInfo(void) const
+     { return moduleInfo; };
 };
 
 // Complete the forwarded declaration

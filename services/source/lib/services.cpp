@@ -349,6 +349,9 @@ namespace Exordium
 	queueAdd ("PASS pass :TS");
 	queueAdd ("CAPAB TS3 BURST UNCONNECT NICKIP");
 /* Jesus, so many hard coded stuff :( */
+/* It's okay, all the server connection stuff has a very very very limited
+ * lifespan in anycase.. - pickle
+ */
 	queueAdd ("SERVER " + config.getServicesHostname() + " 1 :" + config.getServicesDescription());
 	queueAdd ("SERVER " + config.getServicesConsoleHostname() + " 2 :" + config.getServicesConsoleDescription());
 	queueAdd ("SVINFO 3 1 0 :"+String::convert(currentTime));
@@ -879,6 +882,11 @@ namespace Exordium
 		   "init function, or the init function returned null");
 	     return false;
 	  }
+	  
+	  std::cout << "Loaded module '" << 
+	    service->getModuleInfo().fullName << "' version " <<
+	    service->getModuleInfo().versionMajor << '.' <<
+	    service->getModuleInfo().versionMinor << std::endl;
 	  
 	  serviceM.addModule(*service, handle);
 	  return true;

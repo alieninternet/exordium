@@ -87,5 +87,10 @@ namespace Exordium
 	return new Vote(services);
      }
 
+   // Module information structure
+   const Vote::moduleInfo_type Vote::moduleInfo = {
+      "Voting Service",
+	0, 0
+   };
 };
 
