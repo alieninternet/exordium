@@ -23,6 +23,17 @@
  * enclosed README file.
  *
  */
+/*
+ *                   THIS  FILE  IS  TEMPORARY !!
+ * 
+ *   The ultimate goal of linking with KineIRCd is to eliminate the 
+ *   focus on protocols. In fact, not even KineIRCd alone will know
+ *   how to talk to other IRC servers - that is handled by protocol
+ *   modules. Anything within this file should be considered a 'hack'
+ *   until such time as KineIRCd has a suitable core and protocol
+ *   module to carry on the work done here.
+ *    
+ */
 
 #include "exordium/parser.h"
 #include "exordium/services.h"
