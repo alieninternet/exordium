@@ -124,10 +124,10 @@ class MysqlRes
 	private:
   		MYSQL_RES *mysql_res;
 	public:
-  		void         free_result() {mysql_free_result(mysql_res);}
+  		void         free_result() {/*mysql_free_result(mysql_res);*/}
 
   		MysqlRes () {mysql_res = new MYSQL_RES;}
-  		~MysqlRes () {delete mysql_res;}
+  		~MysqlRes () {/*delete mysql_res;*/ mysql_free_result(mysql_res);}
 
   		int          eof () {return mysql_eof(mysql_res);}
   		void         data_seek (uint offset) {mysql_data_seek(mysql_res, offset);}
