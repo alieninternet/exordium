@@ -256,7 +256,7 @@ def main():
         usage(1, msg)
 
     # parse the options
-    contextlines = 2
+    contextlines = 0
     verbose = 1
     fromhost = None
     for opt, arg in opts:
