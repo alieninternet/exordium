@@ -1,11 +1,17 @@
 This is the beginnings of an install document, mainly aimed at people
 developing/assisting with exordium.
 
-You need to have the following:
+To compile exordium using the sources found on the CVS repository, you will
+be required to have the following installed (in the following order):
 
-Autoconf 2.57
-Automake 1.73
-Autogen  5.5.3
-LibAISUtil (http://sf.net/projects/libaisutil)
-KineIRCD (http://sf.net/projects/kineircd)
-
+  Software          | Version         | URL
+ -------------------+-----------------+---------------------------------------
+  GNU GCC           | 3.x series      | http://www.gnu.org/software/gcc/
+  GNU m4            | 1.4 or later    | http://www.gnu.org/software/m4/
+  GNU Autoconf      | 2.57 or later   | http://www.gnu.org/software/autoconf/
+  Perl              | 5.6 or later    | http://www.perl.com/
+  GNU Automake      | 1.7.3 or later  | http://www.gnu.org/software/automake/
+  GNU Guile Library | 1.6 or later    | http://www.gnu.org/software/guile/
+  GNU Autogen       | 5.5.3 or later  | http://www.gnu.org/software/autogen/
+  LibAISutil        | 1.0 or later    | http://www.sf.net/projects/libais/
+  KineIRCd          | Latest snapshot | http://www.sf.net/projects/kineircd/
