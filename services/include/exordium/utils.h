@@ -35,11 +35,11 @@ namespace Exordium {
       extern unsigned long random(unsigned long max);
       
       // Generate a password (uniform password types)
-      extern AISutil::String generatePassword(AISutil::String const &nickname,
-					      AISutil::String const &password);
+      extern AIS::Util::String generatePassword(AIS::Util::String const &nickname,
+					      AIS::Util::String const &password);
 
-      extern AISutil::String generateRegcode(AISutil::String const &nickname,
-					      AISutil::String const &password);
+      extern AIS::Util::String generateRegcode(AIS::Util::String const &nickname,
+					      AIS::Util::String const &password);
    }; // namespace Utils
 }; // namespace Exordium
 

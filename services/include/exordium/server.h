@@ -37,23 +37,23 @@ namespace Exordium
    class Server
      {
       private:
-	AISutil::String name;
+	AIS::Util::String name;
 	int hops;
-	AISutil::String desc;	
+	AIS::Util::String desc;	
 	Services& services;
       public:
       /* Inline functions here */
-	const AISutil::String& getName(void) const
+	const AIS::Util::String& getName(void) const
 	  { return name; };
 	
 	const int getHops(void) const
 	  { return hops; };
 	
-	const AISutil::String& getDesc(void) const
+	const AIS::Util::String& getDesc(void) const
 	  { return desc; };
 
       /* Our constructor definition */
-	Server(AISutil::String const &sname, int const &shops, AISutil::String const &sdesc, Services &s)
+	Server(AIS::Util::String const &sname, int const &shops, AIS::Util::String const &sdesc, Services &s)
 	  : name(sname),
 	hops(shops),
 	desc(sdesc),

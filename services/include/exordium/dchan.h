@@ -37,7 +37,7 @@ namespace Exordium {
    class User;
    class dChan {
     private:
-      AISutil::String name;
+      AIS::Util::String name;
       int onlineID;
       Services& services;
       bool registered; /* Are we a registered channel? */
@@ -49,7 +49,7 @@ namespace Exordium {
      /* delUser - delete's a user from a channels member list */
      void const delUser(Exordium::User &ptr);
      int const getChanCount(void);
-     const AISutil::String& getName(void) const
+     const AIS::Util::String& getName(void) const
 	{ return name; };
 
       
@@ -68,27 +68,27 @@ namespace Exordium {
        * 
        * This is redundant imho. - simon
        */
-      const AISutil::String getOnlineIDString(void) const
-	{ return AISutil::String::convert(onlineID); };
+      const AIS::Util::String getOnlineIDString(void) const
+	{ return AIS::Util::String::convert(onlineID); };
       const int getRegisteredID(void);
       const bool isRegistered(void);
-      const int getAccess(AISutil::String const &);
+      const int getAccess(AIS::Util::String const &);
       const void setChanLog(bool const &);
       const void setChanSecure(bool const &);
       const bool isChanSecure(void);
-      const void sendBans(Kine::Name &,AISutil::String const &);
-      const AISutil::String getOwner(void);
+      const void sendBans(Kine::Name &,AIS::Util::String const &);
+      const AIS::Util::String getOwner(void);
       const int getCount(void);
-      const void addAccess(AISutil::String &,AISutil::String const &);
-      const void log(User& origin, AISutil::String const &, AISutil::String const &, AISutil::String const &);
-      const void updateTopic(AISutil::String const &);
-      const void setTopic(AISutil::String const &, AISutil::String const &);
-      const AISutil::String getTopic(void);
-      const bool isOp(AISutil::String const &);
-      const void mode(AISutil::String const &, AISutil::String const &,AISutil::String const &);
-      const bool isVoice(AISutil::String const &);
-      const void kick(AISutil::String const &,AISutil::String const &,AISutil::String const &);
-      const void ban(User& origin,AISutil::String const &,AISutil::String const &,AISutil::String const &);
+      const void addAccess(AIS::Util::String &,AIS::Util::String const &);
+      const void log(User& origin, AIS::Util::String const &, AIS::Util::String const &, AIS::Util::String const &);
+      const void updateTopic(AIS::Util::String const &);
+      const void setTopic(AIS::Util::String const &, AIS::Util::String const &);
+      const AIS::Util::String getTopic(void);
+      const bool isOp(AIS::Util::String const &);
+      const void mode(AIS::Util::String const &, AIS::Util::String const &,AIS::Util::String const &);
+      const bool isVoice(AIS::Util::String const &);
+      const void kick(AIS::Util::String const &,AIS::Util::String const &,AIS::Util::String const &);
+      const void ban(User& origin,AIS::Util::String const &,AIS::Util::String const &,AIS::Util::String const &);
 
       const bool getTrackTopics( void );
       const void setTrackTopics( bool Value );
@@ -99,27 +99,27 @@ namespace Exordium {
       const bool getModeLock( void );
       const void setModeLock( bool Value );
 
-      const AISutil::String getChannelModes( void );
-      const void setChannelModes( const AISutil::String& modes );
+      const AIS::Util::String getChannelModes( void );
+      const void setChannelModes( const AIS::Util::String& modes );
 
-      const AISutil::String getEntryMsg( void );
-      const void setEntryMsg( const AISutil::String& entrymsg );
+      const AIS::Util::String getEntryMsg( void );
+      const void setEntryMsg( const AIS::Util::String& entrymsg );
 
-      const AISutil::String getPartMsg( void );
-      const void setPartMsg( const AISutil::String& partmsg );
+      const AIS::Util::String getPartMsg( void );
+      const void setPartMsg( const AIS::Util::String& partmsg );
 
       const bool getPrivate( void );
       const void setPrivate( bool Value );
 
-      const AISutil::String getChanDescription( void );
-      const void setChanDescription( const AISutil::String& chandesc );
+      const AIS::Util::String getChanDescription( void );
+      const void setChanDescription( const AIS::Util::String& chandesc );
 
-      const AISutil::String getUrl( void );
-      const void setUrl( const AISutil::String& url );
+      const AIS::Util::String getUrl( void );
+      const void setUrl( const AIS::Util::String& url );
 
-      const AISutil::String dChan::getRegistrationDate();
+      const AIS::Util::String dChan::getRegistrationDate();
 
-      dChan(AISutil::String const &n, int const &oid, Services &s)
+      dChan(AIS::Util::String const &n, int const &oid, Services &s)
 	: name(n), //their current nickname.. duh
           onlineID(oid), //as dictated by the sql server..
           services(s)// Gives us access to the full suite of services..

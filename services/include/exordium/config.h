@@ -32,20 +32,20 @@
 # include <exordium/database/database.h>
 
 namespace Exordium {
-   class Config : public AISutil::ConfigData {
+   class Config : public AIS::Util::ConfigData {
     protected:
       // Variables (top class from the definition table above)
-      AISutil::String defUnderlingHostname;	// Underling server hostname
-      AISutil::String defUplinkPass;
+      AIS::Util::String defUnderlingHostname;	// Underling server hostname
+      AIS::Util::String defUplinkPass;
 
       // 'SQL' variables
-      AISutil::String defSqlDatabase;		// MySql server database name
-      AISutil::String defSqlHostname;		// MySql server hostname
-      AISutil::String defSqlPassword;		// MySql server password
+      AIS::Util::String defSqlDatabase;		// MySql server database name
+      AIS::Util::String defSqlHostname;		// MySql server hostname
+      AIS::Util::String defSqlPassword;		// MySql server password
       unsigned short defSqlPort;		// MySql server port
       bool defSqlSSLEnabled;			// Mysql SSL Boolean
-      AISutil::String defSqlUsername;		// MySql server username
-      AISutil::String defSqlEngine;             // Database engine
+      AIS::Util::String defSqlUsername;		// MySql server username
+      AIS::Util::String defSqlEngine;             // Database engine
       
       // Constructor (sets up defaults mainly)
       Config(void);
@@ -56,20 +56,20 @@ namespace Exordium {
 	{};
       
       // Top variables
-      const AISutil::String& getUnderlingHostname(void) const
+      const AIS::Util::String& getUnderlingHostname(void) const
 	{ return defUnderlingHostname; };      
       // 'SQL' class
-      const AISutil::String& getSqlDatabase(void) const
+      const AIS::Util::String& getSqlDatabase(void) const
 	{ return defSqlDatabase; };
-      const AISutil::String& getSqlHostname(void) const
+      const AIS::Util::String& getSqlHostname(void) const
 	{ return defSqlHostname; };
-      const AISutil::String& getSqlPassword(void) const
+      const AIS::Util::String& getSqlPassword(void) const
 	{ return defSqlPassword; };
       const unsigned short getSqlPort(void) const
 	{ return defSqlPort; };
-      const AISutil::String& getSqlUsername(void) const
+      const AIS::Util::String& getSqlUsername(void) const
 	{ return defSqlUsername; };
-      const AISutil::String& getSqlEngine(void) const
+      const AIS::Util::String& getSqlEngine(void) const
         { return defSqlEngine; };
       const bool getSqlSSLEnabled(void) const
 	{ return defSqlSSLEnabled; };

@@ -68,25 +68,25 @@ namespace Exordium
        *
        * This is redundant imho. - simon
        */
-	const AISutil::String getOnlineIDString(void) const
-	  { return AISutil::String::convert(onlineID); };
+	const AIS::Util::String getOnlineIDString(void) const
+	  { return AIS::Util::String::convert(onlineID); };
 
       /* setNick(String)
        *
        * Update our records to show a new nickname.....
        *
        */
-	void setNick(const AISutil::String& nick)
+	void setNick(const AIS::Util::String& nick)
 	  { nickname = nick; };
 
       /* Take note. Their are two sendMessages, the latter allowing
        * you to override services default behaviour of using the
        * nicknames settings of notice/privmsg
        */
-	void sendMessage(AISutil::String const &message,
-			 AISutil::String const &service);
-	void sendMessage(AISutil::String const &message,
-			 AISutil::String const &service,
+	void sendMessage(AIS::Util::String const &message,
+			 AIS::Util::String const &service);
+	void sendMessage(AIS::Util::String const &message,
+			 AIS::Util::String const &service,
 			 bool const &privmsg);
 
       /* setModNick(bool)
@@ -122,14 +122,14 @@ namespace Exordium
        * Update the clients hostname.
        *
        */
-	void updateHost(AISutil::String const &);
+	void updateHost(AIS::Util::String const &);
 
       /* getQuitMessage()
        *
        * Return the last known quit message for this user
        *
        */
-	AISutil::String getQuitMessage(void);
+	AIS::Util::String getQuitMessage(void);
 	
 	int getTimeStamp(void);
 
@@ -139,7 +139,7 @@ namespace Exordium
        * service.
        *
        */
-	int getAccess(AISutil::String const &);
+	int getAccess(AIS::Util::String const &);
 
       /* addCheckIdentify()
        *
@@ -161,21 +161,21 @@ namespace Exordium
        * Return the users hostname.
        *
        */
-	AISutil::String getHost(void);
+	AIS::Util::String getHost(void);
 
       /* getIdent()
        *
        * Return the users ident (username)
        *
        */
-	AISutil::String getIdent(void);
+	AIS::Util::String getIdent(void);
 
       /* getVWHost()
        *
        * Return the users vw host
        *
        */
-	AISutil::String getVWHost(void);
+	AIS::Util::String getVWHost(void);
 
       /* isIdentified()
        *
@@ -196,21 +196,21 @@ namespace Exordium
        * Return the server this user is using..
        * 
        */
-	AISutil::String getServer(void);
+	AIS::Util::String getServer(void);
 
       /* getModes()
        *
        * Query the DB for current user's modes
        *
        */
-	AISutil::String getModes(void);
+	AIS::Util::String getModes(void);
 
       /* getIDList(String)
        *
        * Return a list of nicknames we are identified as...
        *
        */
-	AISutil::String getIDList(void);
+	AIS::Util::String getIDList(void);
 
       /* isPending()
        *
@@ -227,7 +227,7 @@ namespace Exordium
        * its not a serious quirk (relating to the possibiltiy of someone
        * changing the language for a nick not in use... )
        */
-	void setLanguage(AISutil::String const &);
+	void setLanguage(AIS::Util::String const &);
 
 	const bool isRegistered(); /* ARE WE registered?!?! */
 
@@ -235,36 +235,36 @@ namespace Exordium
        *
        * Retrieve users language
        */
-	AISutil::String getLanguage(void);
+	AIS::Util::String getLanguage(void);
 
       /* getPendingCode()
        *
        * Get the pending code (if any) for this nick
        */
 	const void clearPendingCode(void);
-	const void registerNick(AISutil::String const &,
-				AISutil::String const &);
-	const void log(AISutil::String const &, AISutil::String const &);
-	const AISutil::String genAuth(void);
+	const void registerNick(AIS::Util::String const &,
+				AIS::Util::String const &);
+	const void log(AIS::Util::String const &, AIS::Util::String const &);
+	const AIS::Util::String genAuth(void);
 	// update* Functions.
 	const void updateIdentified(void);
 	// set* Functions.
-	const void setPassword(AISutil::String const &);
-	const void setEmail(AISutil::String const &);
-	const void setInfo(AISutil::String const &,AISutil::String const &);
+	const void setPassword(AIS::Util::String const &);
+	const void setEmail(AIS::Util::String const &);
+	const void setInfo(AIS::Util::String const &,AIS::Util::String const &);
 	const void setPrivmsg(bool const &);
 	// get* Functions.
-	const AISutil::String getPendingCode(void);
-	const AISutil::String getPass(void);
-	const AISutil::String getURL(void);
-	const AISutil::String getMSN(void);
-	const AISutil::String getYAHOO(void);
-	const AISutil::String getAIM(void);
-	const AISutil::String getICQ(void);
-	const AISutil::String getEmail(void);
-	const AISutil::String getRegDate(void);
-	const AISutil::String getLastID(void);
-	const AISutil::String getLastHost(void);
+	const AIS::Util::String getPendingCode(void);
+	const AIS::Util::String getPass(void);
+	const AIS::Util::String getURL(void);
+	const AIS::Util::String getMSN(void);
+	const AIS::Util::String getYAHOO(void);
+	const AIS::Util::String getAIM(void);
+	const AIS::Util::String getICQ(void);
+	const AIS::Util::String getEmail(void);
+	const AIS::Util::String getRegDate(void);
+	const AIS::Util::String getLastID(void);
+	const AIS::Util::String getLastHost(void);
 	const int getRegisteredNickID(void);
 
       /* Flood control */
@@ -285,7 +285,7 @@ namespace Exordium
 	  }
 
       /* Our constructor definition */
-	User(AISutil::String const &nick, int const &oid, Services &s)
+	User(AIS::Util::String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh
 	onlineID(oid), //as dictated by the sql server..
 	services(s)// Gives us access to the full suite of services..

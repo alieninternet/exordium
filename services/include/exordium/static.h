@@ -45,8 +45,8 @@ namespace Exordium {
       ~Static(void)
 	{};
       
-      int getServiceAccess(AISutil::String const &service,AISutil::String const &nickname);
-      int getRegisteredNickID(AISutil::String const &nick);
+      int getServiceAccess(AIS::Util::String const &service,AIS::Util::String const &nickname);
+      int getRegisteredNickID(AIS::Util::String const &nick);
    };
 }; // namespace Exordium
 

@@ -45,34 +45,34 @@ namespace Exordium {
       ~Channel(void)
 	{};
       
-      AISutil::String getChanCount(void);
-      void setChanLog(AISutil::String const &,bool const &);
-      bool ChanLog(AISutil::String const &);
-      int getChanID(AISutil::String const &);   
-      int getOnlineChanID(AISutil::String const &);  
-      bool isChanRegistered(AISutil::String const &);
-      int getChanAccess(AISutil::String const &, AISutil::String const &);
-      bool ifChanExists(AISutil::String const &);
+      AIS::Util::String getChanCount(void);
+      void setChanLog(AIS::Util::String const &,bool const &);
+      bool ChanLog(AIS::Util::String const &);
+      int getChanID(AIS::Util::String const &);   
+      int getOnlineChanID(AIS::Util::String const &);  
+      bool isChanRegistered(AIS::Util::String const &);
+      int getChanAccess(AIS::Util::String const &, AIS::Util::String const &);
+      bool ifChanExists(AIS::Util::String const &);
       int maxChannels(void);
-      int maxChannelsUser(AISutil::String const &);
+      int maxChannelsUser(AIS::Util::String const &);
       int maxChannelsAccess(void);
       Kine::Name getChanName(int const &);
-      AISutil::String getChanIDName(int const &);
-      void setTopic(AISutil::String const &,AISutil::String const &);
-      void updateTopic(AISutil::String const &, AISutil::String const &);
-      AISutil::String getChanOwner(int const &);
-      void chanAddAccess(AISutil::String const &,AISutil::String const &,AISutil::String const &);
-      void chanDelAccess(AISutil::String const &, AISutil::String const &);
+      AIS::Util::String getChanIDName(int const &);
+      void setTopic(AIS::Util::String const &,AIS::Util::String const &);
+      void updateTopic(AIS::Util::String const &, AIS::Util::String const &);
+      AIS::Util::String getChanOwner(int const &);
+      void chanAddAccess(AIS::Util::String const &,AIS::Util::String const &,AIS::Util::String const &);
+      void chanDelAccess(AIS::Util::String const &, AIS::Util::String const &);
       void deregisterChannel(const Kine::Name&);
       void synchChannels(void);
-      void synchChannel(AISutil::String const &, AISutil::String const &, AISutil::String const &);
-      void registerChannel(const Kine::Name&, AISutil::String const &);
-      int ownedChannels(AISutil::String const &); 
-      void addChanBan(int const &,AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &);
-      void banChan(AISutil::String const &, AISutil::String const &, AISutil::String const &);
-      void RemoveBan(AISutil::String const &, AISutil::String const &, AISutil::String const &);
-      AISutil::String getModes(void);
-      int getNbUsers(AISutil::String const &);
+      void synchChannel(AIS::Util::String const &, AIS::Util::String const &, AIS::Util::String const &);
+      void registerChannel(const Kine::Name&, AIS::Util::String const &);
+      int ownedChannels(AIS::Util::String const &); 
+      void addChanBan(int const &,AIS::Util::String const &,AIS::Util::String const &,int const &,AIS::Util::String const &);
+      void banChan(AIS::Util::String const &, AIS::Util::String const &, AIS::Util::String const &);
+      void RemoveBan(AIS::Util::String const &, AIS::Util::String const &, AIS::Util::String const &);
+      AIS::Util::String getModes(void);
+      int getNbUsers(AIS::Util::String const &);
    };
 }; // namespace Exordium
 

@@ -94,10 +94,10 @@ namespace Exordium {
           Kine::daemon().log(line, (Kine::Logger::Mask::type)mask); 
         };
       // Function Declrations below here.
-      virtual void shutdown(const AISutil::String &) = 0;
+      virtual void shutdown(const AIS::Util::String &) = 0;
       
       // 'User' operability functions
-      virtual User* const addUser(const AISutil::String& name,
+      virtual User* const addUser(const AIS::Util::String& name,
 				  const int oid) = 0;
       virtual bool delUser(Kine::Name &) = 0;
       virtual User* findUser(Kine::Name &) = 0;
@@ -109,119 +109,119 @@ namespace Exordium {
       virtual dChan* findChan(Kine::Name &) = 0;
       
       // 'Server' operability functions
-      virtual Server* const addServer(const AISutil::String&,
+      virtual Server* const addServer(const AIS::Util::String&,
 				      const int &,
-				      const AISutil::String &) = 0;
+				      const AIS::Util::String &) = 0;
       
-      virtual bool delServer(AISutil::String &) = 0;
+      virtual bool delServer(AIS::Util::String &) = 0;
       
-      virtual Server* findServer(AISutil::String &)= 0;
+      virtual Server* findServer(AIS::Util::String &)= 0;
 				      
       
       // Allows Services:: to change a User's nick.
       virtual void setNick(User &, Kine::Name &) = 0;
       
       // Send modes.
-      virtual void mode(AISutil::String const &, AISutil::String const &,
-			AISutil::String const &, AISutil::String const &) = 0;
+      virtual void mode(AIS::Util::String const &, AIS::Util::String const &,
+			AIS::Util::String const &, AIS::Util::String const &) = 0;
       
       // This shold be in the Service:: class
-      virtual void doHelp(User&, AISutil::String const &,
-			  AISutil::String const &,
-			  AISutil::String const &) = 0;
+      virtual void doHelp(User&, AIS::Util::String const &,
+			  AIS::Util::String const &,
+			  AIS::Util::String const &) = 0;
       
-      virtual void log(User&, AISutil::String const &, 
-		       AISutil::String const &, AISutil::String const &) = 0;
-      virtual void log(User&, AISutil::String const &,
-		       AISutil::String const &) = 0;
+      virtual void log(User&, AIS::Util::String const &, 
+		       AIS::Util::String const &, AIS::Util::String const &) = 0;
+      virtual void log(User&, AIS::Util::String const &,
+		       AIS::Util::String const &) = 0;
       
       // This is in the wrong place, surely
-      virtual void sendEmail(AISutil::String const &, AISutil::String const &,
-			     AISutil::String const &) = 0;
+      virtual void sendEmail(AIS::Util::String const &, AIS::Util::String const &,
+			     AIS::Util::String const &) = 0;
       
-      virtual void servicePart (AISutil::String const &,
-				AISutil::String const &) = 0;
+      virtual void servicePart (AIS::Util::String const &,
+				AIS::Util::String const &) = 0;
       
       //Inline Functions Below here.
-      virtual void killnick (AISutil::String const &target,
-			     AISutil::String const &from,
-			     AISutil::String const &reason) = 0;
+      virtual void killnick (AIS::Util::String const &target,
+			     AIS::Util::String const &from,
+			     AIS::Util::String const &reason) = 0;
       
-      virtual void serviceNotice(AISutil::String const &line,
-				 AISutil::String const &service, 
-				 AISutil::String const &target) = 0;
+      virtual void serviceNotice(AIS::Util::String const &line,
+				 AIS::Util::String const &service, 
+				 AIS::Util::String const &target) = 0;
       
-      virtual void serviceNoticeForce(AISutil::String const &line, 
-				      AISutil::String const &service,
-				      AISutil::String const &target) = 0;
+      virtual void serviceNoticeForce(AIS::Util::String const &line, 
+				      AIS::Util::String const &service,
+				      AIS::Util::String const &target) = 0;
       
-      virtual void servicePrivmsg(AISutil::String const &line,
-				  AISutil::String const &service, 
-				  AISutil::String const &target) = 0;
+      virtual void servicePrivmsg(AIS::Util::String const &line,
+				  AIS::Util::String const &service, 
+				  AIS::Util::String const &target) = 0;
       
-      virtual void serviceQuit(const AISutil::String& name,
-			       const AISutil::String& reason) = 0;
+      virtual void serviceQuit(const AIS::Util::String& name,
+			       const AIS::Util::String& reason) = 0;
       
       // This does not modify a server mode, it should be renamed.
-      virtual void serverMode(AISutil::String const &chan,
-			      AISutil::String const &mode,
-			      AISutil::String const &target) = 0;
+      virtual void serverMode(AIS::Util::String const &chan,
+			      AIS::Util::String const &mode,
+			      AIS::Util::String const &target) = 0;
       
-      virtual void registerService(AISutil::String const &nick,
-				   AISutil::String const &user,
-				   AISutil::String const &host,
-				   AISutil::String const &realname) = 0;
+      virtual void registerService(AIS::Util::String const &nick,
+				   AIS::Util::String const &user,
+				   AIS::Util::String const &host,
+				   AIS::Util::String const &realname) = 0;
       
-      virtual void serviceJoin(AISutil::String const &service,
-			       AISutil::String const &target) = 0;
+      virtual void serviceJoin(AIS::Util::String const &service,
+			       AIS::Util::String const &target) = 0;
       
-      virtual bool usePrivmsg(AISutil::String const &) = 0;
+      virtual bool usePrivmsg(AIS::Util::String const &) = 0;
       
       // These should be moved to the new channel classes
-      virtual void serviceKick(AISutil::String const &,
-			       AISutil::String const &,
-			       AISutil::String const &) = 0;
-      virtual bool isOp(AISutil::String const &,
-			AISutil::String const &) = 0;
-      virtual bool isVoice(AISutil::String const &,
-			   AISutil::String const &) = 0;
+      virtual void serviceKick(AIS::Util::String const &,
+			       AIS::Util::String const &,
+			       AIS::Util::String const &) = 0;
+      virtual bool isOp(AIS::Util::String const &,
+			AIS::Util::String const &) = 0;
+      virtual bool isVoice(AIS::Util::String const &,
+			   AIS::Util::String const &) = 0;
       // And this should be removed when the new channel classes are done.
-      virtual void queueAdd(const AISutil::String&) = 0;
+      virtual void queueAdd(const AIS::Util::String&) = 0;
       
       
       // This should be moved to the NOTE MODULE
       virtual void sendNote(Kine::Name const &, Kine::Name const &,
-			    AISutil::String const &) = 0;
+			    AIS::Util::String const &) = 0;
       
       virtual int locateID(Kine::Name const &nick) = 0;
-      virtual User* addClient(Kine::Name const &, AISutil::String const &,
-			      AISutil::String const &, AISutil::String const &,
-			      AISutil::String const &, AISutil::String const &,
-			      AISutil::String const &,
-			      AISutil::String const &) = 0;
-      virtual int getRequiredAccess(AISutil::String const &,
-				    AISutil::String const &) = 0;
-      virtual bool isNickRegistered(AISutil::String const &) = 0;
+      virtual User* addClient(Kine::Name const &, AIS::Util::String const &,
+			      AIS::Util::String const &, AIS::Util::String const &,
+			      AIS::Util::String const &, AIS::Util::String const &,
+			      AIS::Util::String const &,
+			      AIS::Util::String const &) = 0;
+      virtual int getRequiredAccess(AIS::Util::String const &,
+				    AIS::Util::String const &) = 0;
+      virtual bool isNickRegistered(AIS::Util::String const &) = 0;
       
       // This should be in the NICK MODULE
-      virtual void modeIdentify(AISutil::String const &) = 0;
-      virtual void updateLastID(AISutil::String const &) = 0;
+      virtual void modeIdentify(AIS::Util::String const &) = 0;
+      virtual void updateLastID(AIS::Util::String const &) = 0;
       
       
 
-      virtual AISutil::String getNick(int const &) = 0;
-      virtual AISutil::String getOnlineNick(int const &) = 0;
-      virtual int getOnlineChanID(AISutil::String const &) = 0;
-      virtual void addOper(AISutil::String const &, int access) = 0;
-      virtual void delOper(AISutil::String const &) = 0;
-      virtual bool isOper(AISutil::String const &) = 0;
+      virtual AIS::Util::String getNick(int const &) = 0;
+      virtual AIS::Util::String getOnlineNick(int const &) = 0;
+      virtual int getOnlineChanID(AIS::Util::String const &) = 0;
+      virtual void addOper(AIS::Util::String const &, int access) = 0;
+      virtual void delOper(AIS::Util::String const &) = 0;
+      virtual bool isOper(AIS::Util::String const &) = 0;
       virtual void validateOper(Kine::Name &) = 0;
-      virtual void sendGOper(AISutil::String const &,
-			AISutil::String const &) = 0;
-      virtual void sendHelpme(AISutil::String const &,
-			AISutil::String const &) = 0;
-      virtual void setMode(AISutil::String const &,
-			AISutil::String const &) = 0;
+      virtual void sendGOper(AIS::Util::String const &,
+			AIS::Util::String const &) = 0;
+      virtual void sendHelpme(AIS::Util::String const &,
+			AIS::Util::String const &) = 0;
+      virtual void setMode(AIS::Util::String const &,
+			AIS::Util::String const &) = 0;
       virtual unsigned long getCountTx(void) = 0;
       virtual unsigned long getCountRx(void) = 0;
       virtual time_t getStartTime(void) = 0;

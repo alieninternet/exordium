@@ -101,23 +101,23 @@ namespace Exordium {
 
 
       // Delete * from <table> using <usingargs> WHERE <whereargs>
-     void dbDelete(AISutil::String const &table, AISutil::String const &usingargs, AISutil::String const &whereargs);
+     void dbDelete(AIS::Util::String const &table, AIS::Util::String const &usingargs, AIS::Util::String const &whereargs);
      
       // Delete * from <table> where <whereargs>
-      void dbDelete(AISutil::String const &table, AISutil::String const &whereargs);
+      void dbDelete(AIS::Util::String const &table, AIS::Util::String const &whereargs);
 
       // Delete * from <table>
-      void dbDelete(AISutil::String const &table);
+      void dbDelete(AIS::Util::String const &table);
 
       // Return a result set
       CResult* dbGetResultSet(void);
 
 
 
-      int dbQuery(AISutil::String const &query) { return(database->dbQuery(query)); }
+      int dbQuery(AIS::Util::String const &query) { return(database->dbQuery(query)); }
 
-      AISutil::String dbGetValue(void) { return(database->dbGetValue()); }
-      AISutil::String dbGetValue(int field) { return(database->dbGetValue(field)); }
+      AIS::Util::String dbGetValue(void) { return(database->dbGetValue()); }
+      AIS::Util::String dbGetValue(int field) { return(database->dbGetValue(field)); }
 
       void dbGetRow(void) { database->dbGetRow(); }
 
@@ -156,7 +156,7 @@ namespace Exordium {
       void dbCommit(void) { database->dbCommit(); }
       void dbRollback(void) { database->dbRollback(); }
 
-      void dbSelectDB(AISutil::String const &dbName) { database->dbSelectDB(dbName); }
+      void dbSelectDB(AIS::Util::String const &dbName) { database->dbSelectDB(dbName); }
 
 
   }; // class CDatabase

@@ -94,22 +94,22 @@ namespace Exordium {
       unsigned int getEventsMask(void);
 
       
-      class ConfigData : public AISutil::ConfigData {
+      class ConfigData : public AIS::Util::ConfigData {
        private:
 	 // Configuration information (this is a default list for this base)
-	 static const AISutil::ConfigParser::defTable_type defaultDefinitions;
+	 static const AIS::Util::ConfigParser::defTable_type defaultDefinitions;
 	 
        protected:
-	 AISutil::String defDescription;		// Our description
-	 AISutil::String defDistribution;		// Our scope mask
-	 AISutil::String defHostname;			// Our hostname
+	 AIS::Util::String defDescription;		// Our description
+	 AIS::Util::String defDistribution;		// Our scope mask
+	 AIS::Util::String defHostname;			// Our hostname
 	 Kine::Name defName;				// Our name
-	 AISutil::String defIdent;			// Out ident
+	 AIS::Util::String defIdent;			// Out ident
 	 
        public:
 	 // Constructor
-	 ConfigData(const AISutil::String& d, const AISutil::String& h,
-		    const AISutil::String& n, const AISutil::String& u)
+	 ConfigData(const AIS::Util::String& d, const AIS::Util::String& h,
+		    const AIS::Util::String& n, const AIS::Util::String& u)
 	   : defDescription(d),
 	     defDistribution("*"), // <=- network-wide distribution scope
 	     defHostname(h),
@@ -122,20 +122,20 @@ namespace Exordium {
 	   {};
 
 	 // Grab the configuration definition table
-	 virtual const AISutil::ConfigParser::defTable_type& 
+	 virtual const AIS::Util::ConfigParser::defTable_type& 
 	   getDefinitions(void) const
 	   { return defaultDefinitions; };
 	 
 	 // Return variables..
-	 const AISutil::String& getDescription(void) const
+	 const AIS::Util::String& getDescription(void) const
 	   { return defDescription; };
-	 const AISutil::String& getDistribution(void) const
+	 const AIS::Util::String& getDistribution(void) const
 	   { return defDistribution; };
-	 const AISutil::String& getHostname(void) const
+	 const AIS::Util::String& getHostname(void) const
 	   { return defHostname; };
 	 const Kine::Name& getName(void) const
 	   { return defName; };
-	 const AISutil::String& getIdent(void) const
+	 const AIS::Util::String& getIdent(void) const
            { return defIdent; };
       };
       
@@ -165,22 +165,22 @@ namespace Exordium {
       virtual bool start(Exordium::Services& s) = 0;
       
       // Stop the module (called just before a module is unloaded)
-      virtual void stop(const AISutil::String& reason) {};
+      virtual void stop(const AIS::Util::String& reason) {};
 
       // Parsers
-      virtual void parseLine(AISutil::StringTokens& line, User& origin,
+      virtual void parseLine(AIS::Util::StringTokens& line, User& origin,
 			     const bool safe) = 0;
       
-      virtual void parseLine(AISutil::StringTokens& line, User& origin,
+      virtual void parseLine(AIS::Util::StringTokens& line, User& origin,
 			     const Kine::Name& channel) = 0;
       
-      virtual void handleAway(User& origin, const AISutil::String& reason) {} ;
+      virtual void handleAway(User& origin, const AIS::Util::String& reason) {} ;
       virtual void handleClientSignon(User& origin) {};
-      virtual void handleTopic(const AISutil::String& origin, dChan& channel, const AISutil::String& newTopic) {};
+      virtual void handleTopic(const AIS::Util::String& origin, dChan& channel, const AIS::Util::String& newTopic) {};
       virtual void handleChannelJoin(User& origin, dChan& channel, const int& status) {};
       virtual void handleChannelPart(User& origin, dChan& channel) {};
-      virtual void handleChannelMode(dChan& channel, const AISutil::String& modes,
-                                     const AISutil::String& target, const AISutil::String& source) {};
+      virtual void handleChannelMode(dChan& channel, const AIS::Util::String& modes,
+                                     const AIS::Util::String& target, const AIS::Util::String& source) {};
       
       
       // Grab the information structure of a module

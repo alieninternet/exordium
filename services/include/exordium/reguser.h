@@ -41,30 +41,30 @@ namespace Exordium {
    class RegisteredUser {
     private:
       int ID;
-      AISutil::String name;
-      AISutil::String pass;
-      AISutil::String email;
-      AISutil::String regdate;
-      AISutil::String lastid;
-      AISutil::String lasthost;
+      AIS::Util::String name;
+      AIS::Util::String pass;
+      AIS::Util::String email;
+      AIS::Util::String regdate;
+      AIS::Util::String lastid;
+      AIS::Util::String lasthost;
       unsigned short int privmsg;
-      AISutil::String lang;
-      AISutil::String icq;
-      AISutil::String msn;
-      AISutil::String url;
+      AIS::Util::String lang;
+      AIS::Util::String icq;
+      AIS::Util::String msn;
+      AIS::Util::String url;
       unsigned short int deopaway;
-      AISutil::String yahoo;
-      AISutil::String aim;
-      AISutil::String quitmsg;
+      AIS::Util::String yahoo;
+      AIS::Util::String aim;
+      AIS::Util::String quitmsg;
       unsigned short int modnick;
 
 
       // Lists owned chans
-      list<AISutil::String> ownedchans;
+      list<AIS::Util::String> ownedchans;
 
 
     public:
-      RegisteredUser(AISutil::String const &nickname)
+      RegisteredUser(AIS::Util::String const &nickname)
 	{ name=nickname; ID=-1; }
 
       ~RegisteredUser(void)
@@ -73,47 +73,47 @@ namespace Exordium {
 
       // Getters
       int                getID(void)       { return ID; }
-      AISutil::String    getName(void)     { return name; }
-      AISutil::String    getPass(void)     { return pass; }
-      AISutil::String    getEmail(void)    { return email; }
-      AISutil::String    getRegdate(void)  { return regdate; }
-      AISutil::String    getLastID(void)   { return lastid; }
-      AISutil::String    getLasthost(void) { return lasthost; }
+      AIS::Util::String    getName(void)     { return name; }
+      AIS::Util::String    getPass(void)     { return pass; }
+      AIS::Util::String    getEmail(void)    { return email; }
+      AIS::Util::String    getRegdate(void)  { return regdate; }
+      AIS::Util::String    getLastID(void)   { return lastid; }
+      AIS::Util::String    getLasthost(void) { return lasthost; }
       unsigned short int getPrivmsg(void)  { return privmsg; }
-      AISutil::String    getLang(void)     { return lang; }
-      AISutil::String    getIcq(void)      { return icq; }
-      AISutil::String    getMsn(void)      { return msn; }
-      AISutil::String    getUrl(void)      { return url; }
-      AISutil::String    getYahoo(void)    { return yahoo; }
-      AISutil::String    getAim(void)      { return aim; }
-      AISutil::String    getQuitmsg(void)  { return quitmsg; }
+      AIS::Util::String    getLang(void)     { return lang; }
+      AIS::Util::String    getIcq(void)      { return icq; }
+      AIS::Util::String    getMsn(void)      { return msn; }
+      AIS::Util::String    getUrl(void)      { return url; }
+      AIS::Util::String    getYahoo(void)    { return yahoo; }
+      AIS::Util::String    getAim(void)      { return aim; }
+      AIS::Util::String    getQuitmsg(void)  { return quitmsg; }
       unsigned short int getModnick(void)  { return modnick; }
       unsigned short int getDeopaway(void) { return deopaway; }
       
 
       // Setters
       void setID       (int id)                            { ID=id; }
-      void setName     (AISutil::String const &channame)   { name=channame; }
-      void setPass     (AISutil::String const &mypass);
-      void setEmail    (AISutil::String const &myemail);
-      void setRegdate  (AISutil::String myregdate);
-      void setLastID   (AISutil::String mylastid);
-      void setLasthost (AISutil::String const &mylasthost);
+      void setName     (AIS::Util::String const &channame)   { name=channame; }
+      void setPass     (AIS::Util::String const &mypass);
+      void setEmail    (AIS::Util::String const &myemail);
+      void setRegdate  (AIS::Util::String myregdate);
+      void setLastID   (AIS::Util::String mylastid);
+      void setLasthost (AIS::Util::String const &mylasthost);
       void setPrivmsg  (unsigned short int myprivmsg);
-      void setLang     (AISutil::String const &mylang);
-      void setIcq      (AISutil::String const &myicq);
-      void setMsn      (AISutil::String const &mymsn);
-      void setUrl      (AISutil::String const &myurl);
-      void setYahoo    (AISutil::String const &myyahoo);
-      void setAim      (AISutil::String const &myaim);
-      void setQuitmsg  (AISutil::String const &myquitmsg);
+      void setLang     (AIS::Util::String const &mylang);
+      void setIcq      (AIS::Util::String const &myicq);
+      void setMsn      (AIS::Util::String const &mymsn);
+      void setUrl      (AIS::Util::String const &myurl);
+      void setYahoo    (AIS::Util::String const &myyahoo);
+      void setAim      (AIS::Util::String const &myaim);
+      void setQuitmsg  (AIS::Util::String const &myquitmsg);
       void setModnick  (unsigned short int mymodnick);
       void setDeopaway (unsigned short int mydeopaway);
 
 
-      void addOwnedChannel(AISutil::String const &name);
-      void delOwnedChannel(AISutil::String const &name);
-      bool ownsChannel(AISutil::String const &name);
+      void addOwnedChannel(AIS::Util::String const &name);
+      void delOwnedChannel(AIS::Util::String const &name);
+      bool ownsChannel(AIS::Util::String const &name);
 
    };
 
@@ -127,17 +127,17 @@ namespace Exordium {
 
                void registerNick(RegisteredUser *newregnick);
 
-               void unregisterNick(AISutil::String const &name);
-               RegisteredUser* getRegisteredNick(AISutil::String const &name);
+               void unregisterNick(AIS::Util::String const &name);
+               RegisteredUser* getRegisteredNick(AIS::Util::String const &name);
 
-               bool isRegistered(AISutil::String const &name);
+               bool isRegistered(AIS::Util::String const &name);
                int  nbRegUsers(void);
 
                // Synchronize with DB (Load or reload data)
                void SyncDB(void);
 
       private:
-               map<AISutil::String, RegisteredUser*> regusers;
+               map<AIS::Util::String, RegisteredUser*> regusers;
 
                RegisteredUserList(void) {}
    };

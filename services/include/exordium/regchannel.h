@@ -44,34 +44,34 @@ namespace Exordium {
      public:
       int ID;
       int chanid;
-      AISutil::String mask;
-      AISutil::String setby;
+      AIS::Util::String mask;
+      AIS::Util::String setby;
       time_t seton;
       int expireon;
-      AISutil::String reason;
+      AIS::Util::String reason;
    };
 
 
    class RegisteredChannel {
     private:
       int ID;
-      AISutil::String name;
-      AISutil::String owner;
-      AISutil::String topic;
-      AISutil::String modes;
-      AISutil::String cdesc;
-      AISutil::String url;
+      AIS::Util::String name;
+      AIS::Util::String owner;
+      AIS::Util::String topic;
+      AIS::Util::String modes;
+      AIS::Util::String cdesc;
+      AIS::Util::String url;
       int clog;
 
       // Maps chanaccess (Username, access level)
-      map<AISutil::String, int> access;
+      map<AIS::Util::String, int> access;
   
       // Lists chanbans
       vector<chanbans> bans;
 
 
     public:
-      RegisteredChannel(AISutil::String const &channame)
+      RegisteredChannel(AIS::Util::String const &channame)
 	{ name=channame; ID=-1; }
 
       ~RegisteredChannel(void)
@@ -80,35 +80,35 @@ namespace Exordium {
 
       // Getters
       int              getID(void)      { return ID; }
-      AISutil::String  getName(void)    { return name; }
-      AISutil::String  getOwner(void)   { return owner; }
-      AISutil::String  getTopic(void)   { return topic; }
-      AISutil::String  getModes(void)   { return modes; }
-      AISutil::String  getCdesc(void)   { return cdesc; }
-      AISutil::String  getUrl(void)     { return url; }
+      AIS::Util::String  getName(void)    { return name; }
+      AIS::Util::String  getOwner(void)   { return owner; }
+      AIS::Util::String  getTopic(void)   { return topic; }
+      AIS::Util::String  getModes(void)   { return modes; }
+      AIS::Util::String  getCdesc(void)   { return cdesc; }
+      AIS::Util::String  getUrl(void)     { return url; }
       int              getClog(void)    { return clog; }
 
 
       // Setters
       void setID(int id) { ID=id; }
-      void setName(AISutil::String const &channame) { name=channame; }
-      void setOwner (AISutil::String const &myowner);
-      void setTopic (AISutil::String const &mytopic);
-      void setModes (AISutil::String const &mymodes);
-      void setCdesc (AISutil::String const &mycdesc);
-      void setUrl   (AISutil::String const &myurl);
+      void setName(AIS::Util::String const &channame) { name=channame; }
+      void setOwner (AIS::Util::String const &myowner);
+      void setTopic (AIS::Util::String const &mytopic);
+      void setModes (AIS::Util::String const &mymodes);
+      void setCdesc (AIS::Util::String const &mycdesc);
+      void setUrl   (AIS::Util::String const &myurl);
       void setClog  (int myclog);
 
 
       // Channel access map manipulation
-      int getChanAccess(AISutil::String const &nick);
-      void chanAddAccess(AISutil::String const &nick, int accesslvl);
-      void chanDelAccess(AISutil::String const &nick);
+      int getChanAccess(AIS::Util::String const &nick);
+      void chanAddAccess(AIS::Util::String const &nick, int accesslvl);
+      void chanDelAccess(AIS::Util::String const &nick);
 
       // Channel bans list manipulation
-      void addChanBan(AISutil::String const &,AISutil::String const &,int const &,AISutil::String const &);
-      void banChan(AISutil::String const &, AISutil::String const &, AISutil::String const &);
-      void RemoveBan(AISutil::String const &);
+      void addChanBan(AIS::Util::String const &,AIS::Util::String const &,int const &,AIS::Util::String const &);
+      void banChan(AIS::Util::String const &, AIS::Util::String const &, AIS::Util::String const &);
+      void RemoveBan(AIS::Util::String const &);
    };
 
 
@@ -120,16 +120,16 @@ namespace Exordium {
                ~RegisteredChannelList(void);
 
                void registerChannel(RegisteredChannel *newregchan);
-               void registerChannel(AISutil::String const &myname, AISutil::String const &myowner,
-                                    AISutil::String const &mytopic, AISutil::String const &mymodes,
-                                    AISutil::String const &mycdesc, AISutil::String const &myurl,
+               void registerChannel(AIS::Util::String const &myname, AIS::Util::String const &myowner,
+                                    AIS::Util::String const &mytopic, AIS::Util::String const &mymodes,
+                                    AIS::Util::String const &mycdesc, AIS::Util::String const &myurl,
                                     int myclog);
 
-               void unregisterChannel(AISutil::String const &name);
-               RegisteredChannel* getRegisteredChannel(AISutil::String const &name);
+               void unregisterChannel(AIS::Util::String const &name);
+               RegisteredChannel* getRegisteredChannel(AIS::Util::String const &name);
                RegisteredChannel* getRegisteredChannelByID(int id);
 
-               bool isRegistered(AISutil::String const &name);
+               bool isRegistered(AIS::Util::String const &name);
                int  nbRegChans(void);
 
                // Synchronize with DB (Load or reload data)
@@ -137,7 +137,7 @@ namespace Exordium {
 
 
       private:
-               map<AISutil::String, RegisteredChannel*> regchans;
+               map<AIS::Util::String, RegisteredChannel*> regchans;
 
                RegisteredChannelList(void) {}
    };
