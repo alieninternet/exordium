@@ -372,6 +372,8 @@ Services::doBurst (void)
 	loadModule("note","./modules/note.so");
 	loadModule("bot","./modules/bot.so");
 	loadModule("game","./modules/game.so");
+        registerService("IRCDome", "ircdome", "ircdome.org", "+dz",
+			"The service James forgot :(");
 	serviceJoin ("IRCDome", "#debug");
 	serviceJoin ("IRCDome", "#Exordium");
 	connected = true;
