@@ -1355,3 +1355,7 @@ int
      }
 }
 
+time_t ServicesInternal::getStartTime()
+{
+   return startTime;
+}

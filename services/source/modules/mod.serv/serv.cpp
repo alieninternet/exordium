@@ -38,6 +38,8 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <time.h>
 
 using AISutil::String;
 using AISutil::StringTokens;
@@ -106,6 +108,14 @@ SERV_FUNC (Module::parseSTATUS)
    long rx = services->getCountRx();
    String tofo = "Tx : \002" + String::convert(tx) + "\002 Rx : \002" + String::convert(rx) + "\002";
    origin.sendMessage(tofo,getName());
+   time_t start_day;
+   time_t now_day;
+   
+   now_day = time ( NULL );
+   String ntime = ctime( &now_day );
+   //start_day = time ( services->startTime);
+   //String stime = ctime ( &start_day);
+   origin.sendMessage("Current Time : \002"+ntime,getName());
 }
 
 SERV_FUNC (Module::parseCOMMANDS)

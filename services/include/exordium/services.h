@@ -60,6 +60,8 @@ namespace Exordium {
     public:
       static const int buildNumber = 1;
       time_t currentTime;
+      time_t startTime;
+      
       
       // Destructor
       virtual ~Services(void)
@@ -208,6 +210,7 @@ namespace Exordium {
 			AISutil::String const &) = 0;
       virtual unsigned long getCountTx(void) = 0;
       virtual unsigned long getCountRx(void) = 0;
+      virtual time_t getStartTime(void) = 0;
    }; // class Services
 }; // namespace Exordium
 

@@ -55,7 +55,7 @@ namespace Exordium {
       static const unsigned int inputBufferSize = 512;
       unsigned int inputBufferPosition;
       struct sockaddr_in addr;
-      time_t startTime;
+//      time_t startTime;
       time_t lastPing;
       time_t disconnectTime;
       time_t stopTime;
@@ -94,6 +94,9 @@ namespace Exordium {
       void checkpoint(void);
 	
     public:
+      time_t startTime;
+      
+      
       // Constructor
       ServicesInternal(ConfigInternal& c, CDatabase& db);
 	
@@ -113,6 +116,9 @@ namespace Exordium {
       Console& getConsole(void)
 	{ return console; };
 
+      time_t getStartTime(void);
+
+	   
    
       // These will disappear upon full integration with kine..
       void run(void);
