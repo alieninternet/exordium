@@ -42,7 +42,7 @@ public:
 	};
   void parseLine (String const &, String const &);
   void parseLine (String const &, String const &, String const &);
-  static String const me;
+  static String me;
 private:
    static void GAME_FUNC (parseHELP);
    static void GAME_FUNC (parseQUOTE);
