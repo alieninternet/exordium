@@ -97,6 +97,15 @@ namespace Exordium
 	  disconnectTime = 0;
 	  connected = false;
 	  srand(time(NULL));
+	  logger.logLine ("Cleaning out (any) stale entries from the DB");
+	  database.dbDelete("onlineclients");
+	  database.dbDelete("chanstatus");
+	  database.dbDelete("identified");
+	  database.dbDelete("kills");
+	  database.dbDelete("onlineservers");
+	  database.dbDelete("onlinechan");
+	  database.dbDelete("onlineopers");
+ 
 	  logger.logLine ("Entering main loop...");
 	  for (;;)
 	    {
