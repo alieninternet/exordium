@@ -428,7 +428,7 @@ bool ServicesInternal::handleInput (void)
  *
  */
 
-   String Services::getQuote(int const &number)
+   String ServicesInternal::getQuote(int const &number)
      {
         if( database.dbSelect("body", "fortunes", "id='"+String::convert(number)+"'") < 1 )
            return "";
@@ -558,7 +558,7 @@ bool ServicesInternal::handleInput (void)
     */
 
    void
-     Services::AddOnlineServer (String const &servername, String const &hops, String const &description)
+     ServicesInternal::AddOnlineServer (String const &servername, String const &hops, String const &description)
        {
           database.dbInsert("onlineservers", "'','"+servername+"','"+hops+"','"+description+"'");
        }
@@ -571,7 +571,7 @@ bool ServicesInternal::handleInput (void)
 
    // NOTE: gotta recheck this up when more than 1 server is up, should compare ID instead.. maybe make a server map?
    void
-     Services::DelOnlineServer (String const &name)
+     ServicesInternal::DelOnlineServer (String const &name)
        {
           database.dbDelete("onlineservers", "servername='" + name + "'");
        }
@@ -595,7 +595,7 @@ bool ServicesInternal::handleInput (void)
  */
 
    void
-     Services::mode (String const &who, String const &chan, String const &mode,
+     ServicesInternal::mode (String const &who, String const &chan, String const &mode,
 		     String const &target)
        {
 	  queueAdd (":"+who+" MODE "+chan+ " " + mode + " " + target);
@@ -668,7 +668,7 @@ bool ServicesInternal::handleInput (void)
  */
 
    void
-     Services::sendEmail (String const &to, String const &subject, String const &text)
+     ServicesInternal::sendEmail (String const &to, String const &subject, String const &text)
        {
           database.dbInsert("emails", "'','"+to+"','"+subject+"','"+text+"'");
        }
@@ -722,7 +722,7 @@ bool ServicesInternal::handleInput (void)
  */
 
    void
-     Services::log (User& origin, String const &service, String const &text, String const &cname)
+     ServicesInternal::log (User& origin, String const &service, String const &text, String const &cname)
        {
 	  //	  String thenick = origin.IRCtoLower();
 	  //	  User *ptr = findUser(thenick);
@@ -733,7 +733,7 @@ bool ServicesInternal::handleInput (void)
        }
 
    void
-     Services::log (User& origin, String const &service, String const &text)
+     ServicesInternal::log (User& origin, String const &service, String const &text)
        {
 	  //	  String thenick = nick.IRCtoLower();
 	  //	  User *ptr = findUser(thenick);
@@ -786,12 +786,12 @@ bool ServicesInternal::handleInput (void)
     */
 
    void
-     Services::servicePart(String const &service, String const &target)
+     ServicesInternal::servicePart(String const &service, String const &target)
        {
 	  queueAdd (String (":") + service + " PART " + target);
        }
 
-   void Services::serviceJoin(AISutil::String const &service,
+   void ServicesInternal::serviceJoin(AISutil::String const &service,
 			      AISutil::String const &target)
      {
 	queueAdd(":" + config.getServicesHostname() + " SJOIN " +
@@ -807,7 +807,7 @@ bool ServicesInternal::handleInput (void)
     */
 
    bool
-     Services::usePrivmsg (String const &nick)
+     ServicesInternal::usePrivmsg (String const &nick)
        {
 	  if(!isNickRegistered(nick))
 	    {
@@ -824,13 +824,13 @@ bool ServicesInternal::handleInput (void)
        }
 
    void
-     Services::serviceKick(String const &chan, String const &nick, String const &reason)
+     ServicesInternal::serviceKick(String const &chan, String const &nick, String const &reason)
        {
 	  queueAdd (String (":Chan KICK ")+chan+" "+nick+" :"+reason);
        }
 
    bool
-     Services::isOp(String const &nick, String const &chan)
+     ServicesInternal::isOp(String const &nick, String const &chan)
        {
 	  int chanid = channel.getOnlineChanID(chan);
 	  int nickid = locateID(nick);
@@ -844,7 +844,7 @@ bool ServicesInternal::handleInput (void)
        }
 
    bool
-     Services::isVoice(String const &nick, String const &chan)
+     ServicesInternal::isVoice(String const &nick, String const &chan)
        {
           int chanid = channel.getOnlineChanID(chan);
           int nickid = locateID(nick);
@@ -858,7 +858,7 @@ bool ServicesInternal::handleInput (void)
        }
 
    void
-     Services::sendNote(String const &from, String const &to, String const &text)
+     ServicesInternal::sendNote(String const &from, String const &to, String const &text)
        {
 	  String thenick = to.IRCtoLower();
           database.dbInsert("notes", "'','"+from+"','"+to+"',NOW(),'"+text+"'");
@@ -1568,7 +1568,7 @@ void ServicesInternal::validateOper(String &origin)
 }
 
 int
-  Services::getAccess(String &service, String &nickname)
+  ServicesInternal::getAccess(String &service, String &nickname)
 {
    if( database.dbSelect("access", "access", "nickname='"+nickname+"' AND service='"+service+"'") < 1 )
      return 0;
