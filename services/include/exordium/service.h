@@ -151,6 +151,7 @@ namespace Exordium {
     public:
       // Constructor
       Service(void)
+	: Kine::Service(signonTime)
 	{
 	   // Urgh :( Set the sign-on time to "now"
 	   (void)gettimeofday(&signonTime, NULL);
