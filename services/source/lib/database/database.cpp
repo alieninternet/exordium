@@ -49,153 +49,152 @@ CDatabase::CDatabase(Config &c) : config(c)
    db_supported_engines.pgsql = true;
 #endif
 
-  String dbengine = config.getSqlEngine();
+   String dbengine = config.getSqlEngine();
 
 #ifdef DEBUG
    std::clog << "dbengine:" << dbengine << std::endl;
 #endif
 
-  if (dbengine == "mysql")
-   {
+   if (dbengine == "mysql")
+     {
 
-     if(db_supported_engines.mysql == false)
-      {
+	if(db_supported_engines.mysql == false)
+	  {
 #ifdef DEBUG
-         std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
+	     std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
 #endif
-         exit(1); // YUK, gotta find a way to exit more nicely
-      }      
+	     exit(1); // YUK, gotta find a way to exit more nicely
+	  }
 
 #ifdef HAVE_MYSQL
-      database =(CBase*) new CMySQL(config);
+	database =(CBase*) new CMySQL(config);
 #endif
 
-     db_engines = db_mysql;
-   }
+	db_engines = db_mysql;
+     }
 
-  else if(dbengine == "postgresql")
+   else if(dbengine == "postgresql")
 
-   {
+     {
 
-     if(db_supported_engines.pgsql == false)
-      {
+	if(db_supported_engines.pgsql == false)
+	  {
 #ifdef DEBUG
-         std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
+	     std::cout << "FATAL: The datbase engine specified in the configuration file is not built-in. Please change the database engine or re-build to enable it." << std::endl;
 #endif
-         exit(1); // YUK, gotta find a way to exit more nicely
-      }
-      
+	     exit(1); // YUK, gotta find a way to exit more nicely
+	  }
+
 #ifdef HAVE_PGSQL
-      database =(CBase*) new CPgSQL(config);
+	database =(CBase*) new CPgSQL(config);
 #endif
 
-     db_engines = db_pgsql;
-   }
-  else 
-   
-   {
+	db_engines = db_pgsql;
+     }
+   else
+
+     {
 #ifdef DEBUG
-     std::cout << "No Database engine selected! Please add engine=<myengine> to ircd.conf!" << std::endl;
+	std::cout << "No Database engine selected! Please add engine=<myengine> to ircd.conf!" << std::endl;
 #endif
-     exit(1);
-   
-   }
+	exit(1);
+
+     }
 }
-
-
-
 
 int CDatabase::dbSelect(String const &table)
 {
-  return database->dbQuery("SELECT * FROM " + table);
+   return database->dbQuery("SELECT * FROM " + table);
 }
-
 
 // Select <fields> from <table>
 int CDatabase::dbSelect(String const &fields, String const &table)
 {
-  return database->dbQuery("SELECT " + fields + " FROM " + table);
+   return database->dbQuery("SELECT " + fields + " FROM " + table);
 }
 
 // Select <fields> from <table> where <whereargs>
 int CDatabase::dbSelect(String const &fields, String const &table, String const &whereargs)
 {
-  return database->dbQuery("SELECT " + fields + " FROM " + table + " WHERE " + whereargs);
+   return database->dbQuery("SELECT " + fields + " FROM " + table + " WHERE " + whereargs);
 }
-
 
 // Select count(*) from <table>
 int CDatabase::dbCount(String const &table)
 {
-  database->dbQuery("SELECT COUNT(*) FROM " + table);
-  return database->dbGetValue().toInt();
+   database->dbQuery("SELECT COUNT(*) FROM " + table);
+   return database->dbGetValue().toInt();
 }
-
 
 // Select count(*) from <table> where <whereargs>
 int CDatabase::dbCount(String const &table, String const &whereargs)
 {
-  database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs);
-  return database->dbGetValue().toInt();
+   database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs);
+   return database->dbGetValue().toInt();
 }
 
 int CDatabase::dbSelect(AISutil::String const &fields, AISutil::String const &table, AISutil::String const &whereargs,AISutil::String const &orderargs)
 {
-  database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
-  return database->dbGetValue().toInt();
+   database->dbQuery("SELECT COUNT(*) FROM " + table + " WHERE " + whereargs + " ORDER BY " + orderargs);
+   return database->dbGetValue().toInt();
 }
-
 
 // Insert into <table> values <values>
 void CDatabase::dbInsert(String const &table,  String const &values)
 {
-  database->dbLock(table);  
-  database->dbBeginTrans();
-  database->dbQuery("INSERT into " + table + " VALUES (" + values + ")");
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+   database->dbLock(table);
+   database->dbBeginTrans();
+   database->dbQuery("INSERT into " + table + " VALUES (" + values + ")");
+   database->dbCommit();
+   database->dbUnlock();
+   database->dbClearRes();
 }
-
 
 void CDatabase::dbUpdate(String const &table, String const &values, String const &whereargs)
 {
-  database->dbLock(table);
-  database->dbBeginTrans();
-  database->dbQuery("UPDATE " + table + " SET " + values + " WHERE " + whereargs);
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+   database->dbLock(table);
+   database->dbBeginTrans();
+   database->dbQuery("UPDATE " + table + " SET " + values + " WHERE " + whereargs);
+   database->dbCommit();
+   database->dbUnlock();
+   database->dbClearRes();
 }
 
-
+// Delete from <table> USING <args> WHERE <args>
+void CDatabase::dbDelete(String const &table, String const &usingargs, String const &whereargs)
+{
+   database->dbLock(table);
+   database->dbBeginTrans();
+   database->dbQuery("DELETE FROM " + table + " USING " + usingargs + " WHERE "+whereargs);
+   database->dbCommit();
+   database->dbUnlock();
+   database->dbClearRes();
+}
 
 // Delete * from <table> where <whereargs>
 void CDatabase::dbDelete(String const &table, String const &whereargs)
 {
-  database->dbLock(table);
-  database->dbBeginTrans();
-  database->dbQuery("DELETE  FROM " + table + " WHERE " + whereargs);
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+   database->dbLock(table);
+   database->dbBeginTrans();
+   database->dbQuery("DELETE  FROM " + table + " WHERE " + whereargs);
+   database->dbCommit();
+   database->dbUnlock();
+   database->dbClearRes();
 }
-
-
 
 // Delete * from <table>
 void CDatabase::dbDelete(String const &table)
 {
-  database->dbLock(table);
-  database->dbBeginTrans();
-  database->dbQuery("DELETE FROM " + table);
-  database->dbCommit();
-  database->dbUnlock();
-  database->dbClearRes();
+   database->dbLock(table);
+   database->dbBeginTrans();
+   database->dbQuery("DELETE FROM " + table);
+   database->dbCommit();
+   database->dbUnlock();
+   database->dbClearRes();
 }
 
 CResult* CDatabase::dbGetResultSet(void)
 {
-return database->dbGetResultSet();   
+   return database->dbGetResultSet();
 }
 

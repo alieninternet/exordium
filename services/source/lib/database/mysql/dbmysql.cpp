@@ -46,142 +46,148 @@ using AISutil::String;
 
 CMySQL::~CMySQL()
 {
-  delete mysql;
-  mysql_free_result(mysqlres);
+   delete mysql;
+   mysql_free_result(mysqlres);
 
-  delete this;
+   delete this;
 }
-
 
 void CMySQL::dbConnect()
 {
-  if(connected == false)
-   {
-      if (mysql_connect(mysql, config.getSqlHostname().c_str(), config.getSqlUsername().c_str(), config.getSqlPassword().c_str()))
-      {
-         connected = true;
-         dbSelectDB(config.getSqlDatabase().c_str());
-      }
-      else
-      {
+   if(connected == false)
+     {
+	mysql_init(mysql);
+	mysql_options(mysql,MYSQL_READ_DEFAULT_GROUP,"services");
+	if (mysql_real_connect(mysql, config.getSqlHostname().c_str(), config.getSqlUsername().c_str(), config.getSqlPassword().c_str(),config.getSqlDatabase().c_str(),0,NULL,0))
+	  {
+	     connected = true;
+	     //dbSelectDB(config.getSqlDatabase().c_str());
+	  }
+	else
+	  {
 #ifdef DEBUG
-         std::cout << "Error connecting to database: " << mysql_error(mysql) << std::endl;
+	     std::cout << "Error connecting to database: " << mysql_error(mysql) << std::endl;
 #endif
-         exit(1); // should find a better way
-      }
-   }
+	     exit(1); // should find a better way
+	  }
+     }
 #ifdef DEBUG
-  else
+   else
      std::cout << "WARNING: Tried to connect to DB while already connected!" << std::cout;
 #endif
 }
 
-
 void CMySQL::dbDisconnect()
 {
-  if(connected == true)
-  {
-    mysql_close(mysql);   
-    connected=false;
-  }
+   if(connected == true)
+     {
+	mysql_close(mysql);
+	connected=false;
+     }
 #ifdef DEBUG
-  else
-    std::cout << "WARNING: Tried to disconnect from DB while not connected!" << std::cout;
+   else
+     std::cout << "WARNING: Tried to disconnect from DB while not connected!" << std::cout;
 #endif
 }
 
-
 int CMySQL::dbQuery(String const &query)
 {
-  // Free previous result
-  if (mysqlres != NULL)
-  {
-    mysql_free_result(mysqlres);
-    mysqlres = NULL;
-  }
-
-
-#ifdef DEBUG
-  std::clog << "DEBUG: Query=" << query << std::endl;
-#endif
-
-  // If mysql_real_query returns 0 it means it succeeded
-  if(mysql_real_query(mysql, query.data(), query.length()) == 0)
-   {
-     mysqlres = mysql_store_result(mysql);
-     
-     if(mysqlres != NULL)
+   // Free previous result
+   if (mysqlres != NULL)
      {
-        mysqlrow = mysql_fetch_row(mysqlres);
-        return mysql_num_rows(mysqlres);
+	mysql_free_result(mysqlres);
+	mysqlres = NULL;
      }
-     else
-       return 0;
-   }
+
 #ifdef DEBUG
-  else
-   {
-     std::cout << "Warning: CMySQL::dbQuery returned an error!" << std::endl;
-     std::cout << mysql_error(mysql) << std::endl;
-   }
+   std::clog << "DEBUG: Query=" << query << std::endl;
 #endif
-   
+
+   // If mysql_real_query returns 0 it means it succeeded
+   if(mysql_real_query(mysql, query.data(), query.length()) == 0)
+     {
+	mysqlres = mysql_store_result(mysql);
+
+	if(mysqlres != NULL)
+	  {
+	     mysqlrow = mysql_fetch_row(mysqlres);
+	     return mysql_num_rows(mysqlres);
+	  }
+	else
+	  return 0;
+     }
+#ifdef DEBUG
+   else
+     {
+	std::cout << "Warning: CMySQL::dbQuery returned an error!" << std::endl;
+	std::cout << mysql_error(mysql) << std::endl;
+     }
+#endif
+
    // hmm!
    return 0;
 }
 
-
 String CMySQL::dbGetValue(void)
 {
-  if( mysqlres != NULL )
-    return mysqlrow[0];
-  else
-    return "";
+   if( mysqlres != NULL )
+     return mysqlrow[0];
+   else
+     return "";
 }
-
 
 String CMySQL::dbGetValue(int field)
 {
-  if( mysqlres != NULL )
-    return mysqlrow[field];
-  else
-    return "";
+   if( mysqlres != NULL )
+     return mysqlrow[field];
+   else
+     return "";
 }
-
 
 void CMySQL::dbGetRow(void)
 {
-  if( mysqlres != NULL )
-    mysqlrow = mysql_fetch_row(mysqlres);
+   if( mysqlres != NULL )
+     mysqlrow = mysql_fetch_row(mysqlres);
 }
-
-
 
 // we dont clear the result with MySQL. mysqlres is allocated by the constructor.
 void CMySQL::dbClearRes(void)
 {}
 
-
 void CMySQL::dbSelectDB(String const &dbName)
 {
-  if (mysql_select_db(mysql, dbName.c_str()) != 0) {
+   if (mysql_select_db(mysql, dbName.c_str()) != 0)
+     {
 #ifdef DEBUG
-    std::cout << "ERROR: Failed to select database: " << dbName << std::endl;
+	std::cout << "ERROR: Failed to select database: " << dbName << std::endl;
 #endif
-  }
+     }
 }
-
 
 void CMySQL::dbLock(AISutil::String const &table)
 {
-  dbQuery("LOCK TABLES " + table + " WRITE");
+   dbQuery("LOCK TABLES " + table + " WRITE");
 }
 
 void CMySQL::dbUnlock(void)
 {
-  dbQuery("UNLOCK TABLES");
+   dbQuery("UNLOCK TABLES");
 }
 
+void CMySQL::dbBeginTrans(void)
+{
+   dbQuery("BEGIN");
+}
+
+void CMySQL::dbCommit(void)
+{
+   dbQuery("COMMIT");
+}
+
+void CMySQL::dbRollback(void)
+{
+   dbQuery("ROLLBACK");
+}
 
 CResult* CMySQL::dbGetResultSet(void)
 {

@@ -97,7 +97,9 @@ namespace Exordium {
       void dbUpdate(AISutil::String const &table, AISutil::String const &values, AISutil::String const &whereargs);
 
 
-
+      // Delete * from <table> using <usingargs> WHERE <whereargs>
+     void dbDelete(AISutil::String const &table, AISutil::String const &usingargs, AISutil::String const &whereargs);
+     
       // Delete * from <table> where <whereargs>
       void dbDelete(AISutil::String const &table, AISutil::String const &whereargs);
 
