@@ -1,7 +1,7 @@
 /* $Id$
  *
  * Exordium Network Services
- * Copyright (C) 2002 IRCDome Development Team
+ * Copyright (C) 2002,2003 Exordium Development Team
  *
  * This file is a part of Exordium.
  *
@@ -19,7 +19,7 @@
  * along with Exordium; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * For contact details for the IRCDome Development Team please see the
+ * For contact details for the Exordium Development Team please see the
  * enclosed README file.
  *
  */
@@ -82,13 +82,14 @@ using AISutil::StringMask;
 using Kine::Signals;
 using namespace Exordium;
 
+/** Our rehash handler.  Contains things we do upon receiving a REHASH */
 KINE_SIGNAL_HANDLER_FUNC(Rehash)
 {
    ((Services*)foo)->logLine("\002[\002Rehash\002]\002 Services has received "
 			     "the REHASH signal");
-   // something here? :)
 }
 
+/** Our death handler.  Contains things we do upon receiving DEATH */
 KINE_SIGNAL_HANDLER_FUNC(Death)
 {
    String reason =
@@ -98,14 +99,9 @@ KINE_SIGNAL_HANDLER_FUNC(Death)
    ((Services *)foo)->shutdown(reason);
    exit(1); /* Until kine's signal thingies are fixed :C */
 }
-
-/* Services run
- *
- * This is called from the module (loaded into kine) to begin
- * the operation of services.
- *
- * original: James Wilkins
- *
+/** Run() Called from the module to begin operation.  
+ * This begins the main 'loop' for services, initiates our connection
+ * etc.
  */
 
 void
@@ -281,7 +277,7 @@ countRx(0)
    addr.sin_port = htons (config.getUplinkPort());
 }
 
-/* HandleInput()
+/** HandleInput().
  *
  * This handles the incoming data from our uplink, and hands it over
  * to our parser.
@@ -495,15 +491,13 @@ void ServicesInternal::SynchTime(void)
    //Undo any expired glines
 
    //Undo any expired channel bans
-   String ctime = String::convert(currentTime);
-   sendGOper("Oper","Performing net-wide time synch to "+ctime);
-   queueAdd(Kine::config().getOptionsServerName() + " SETTIME "+ctime+" *");
-   int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
-   for(int i=0; i<nbRes; i++)
-     {
-	channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
-	database.dbGetRow();
-     }
+   //time_t ctime = currentTime;
+   //int nbRes = database.dbSelect("id,chan,mask", "chanbans", "expireon<"+ctime);
+   //for(int i=0; i<nbRes; i++)
+   //  {
+//	channel.RemoveBan(database.dbGetValue(0), database.dbGetValue(1), database.dbGetValue(2));
+//	database.dbGetRow();
+  //   }
 
 }
 
@@ -867,6 +861,16 @@ void
 // TODO: check why the 2 lines are commented
 void ServicesInternal::checkpoint(void)
 {
+   /* Decrease network wide flood counters */
+   user_map::iterator it;
+   for (it = users.begin(); it != users.end(); it++)
+     {
+	String tmp = (*it).first;
+	std::cout << "Decreasing " << tmp << "'s floodcounter" << std::endl;
+	if(((*it).second)!=0)
+	  (*it).second->decFloodCount();
+     }
+   
    //Any nick mods to be done? :-)
 
    int nbRes = database.dbSelect("kills");

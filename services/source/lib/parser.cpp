@@ -351,6 +351,22 @@ void
 	return;
      }
 
+   /* This user has sent a privmsg, increment flood counter. */
+   std::cout << "Increasing " << origin->getNickname() << " floodcount" << std::endl;
+   origin->incFloodCount();
+   
+   /* Now check the flood counter, and ignore if too high */
+   if(origin->getFloodCount()>=70 && origin->getFloodCount()<80)
+     {
+	origin->sendMessage("You are being ignored by services for flooding, wait a while then try again","PeopleChat");
+	return;
+     }
+   
+   if(origin->getFloodCount()>80)
+     {
+	return;
+     }
+   
    String OLDoriginl = OLDorigin.IRCtoLower();
    String target = tokens.nextToken ();
    String message(tokens.nextColonToken());

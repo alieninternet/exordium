@@ -998,7 +998,27 @@ bool Module::start(Exordium::Services& s)
 			  Log::Fatality);
 	return false;
      }
-
+   // Register our language map.
+   // 
+   Kine::langs().registerMap(Language::tagMap);
+    int foofoo = 0;
+      for (;;) 
+     {
+	
+	std::cout << "TagMap " << foofoo << ": tag '" <<
+	  Language::tagMap[foofoo].tagName << "' affirmed as TID # " <<
+	  Language::tagMap[foofoo].tagID << std::endl;
+	
+	if (Language::tagMap[++foofoo].tagName == 0) 
+	  {
+	     
+	              break;
+	  }
+	
+     }
+   
+   
+   
    // Register ourself to the network
    services->registerService(getNickname(), getUsername(),
 			     getHostname(), getDescription());
