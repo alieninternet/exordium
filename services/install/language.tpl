@@ -39,7 +39,7 @@
 .Maintainer[+ ENDIF +]
 .Revision = [+langRevision+]
 
-[+ FOR langtag +][+name+] = [+
+[+ FOR langtag +][+tagPrefix+][+name+] = [+
    (get 
       (sprintf "data_%s"
          (get "langCode")))
