@@ -365,8 +365,17 @@ namespace Exordium {
 			String const &, String const &, String const &,
 			String const &, String const &, String const &);
 	int getRequiredAccess(String const &, String const &);
-	
-	
+	bool isNickRegistered(String const &);
+	Kine::String getPass(String const &);
+	Kine::String stripModes(String const &);
+	int getRegisteredNickID(String const &);
+	void modeIdentify(String const &);
+	void updateLastID(String const &);
+	bool isIdentified(String const &);
+	Kine::String getNick(int const &);
+	Kine::String getOnlineNick(int const &);
+	Kine::String getpendingCode(String const &);
+	void registerNick(String const &,String const &,String const &);
      };
 }; // namespace Exordium
 

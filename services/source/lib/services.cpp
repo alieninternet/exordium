@@ -1176,3 +1176,235 @@ int
                      return 0;
 	          }
 	      
+
+
+/* getRequiredAccess(String,String)
+ * 
+ * Find ( and return ) the required access to run a command on
+ * with the given service.
+ * 
+ */
+
+int
+  Services::getRequiredAccess(String const &service, String const &command)
+{
+   MysqlRes res = database.query("SELECT access from commands where service='"+service+"' AND command='"+command+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String access = row[0];
+	return access.toInt();
+     }
+   /* If no match return 999 - to ensure no-one can use the command
+    * since its obvious a command entry hasn't been set up for it */
+   return 999;
+};
+
+/* isNickRegistered(String)
+ * 
+ * Return TRUE if the given nickname is registered, otherwise false 
+ * 
+ */
+
+bool
+  Services::isNickRegistered(String const &nick)
+{
+   MysqlRes res = database.query("SELECT id from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	if((int)row[0]>0)
+	  {
+	     return true;
+	  }
+	else
+	  {
+	    return false;
+	  }
+     }
+   return false;
+}
+
+
+/*
+ * getPass(String)
+ * 
+ * Return the password for the given nickname
+ * 
+ */
+
+String
+  Services::getPass(String const &nick)
+{
+   MysqlRes res = database.query("SELECT password from nicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String password((char *)row[0],(String::size_type)20);
+	return password;
+     }
+   return "";
+}
+
+/*
+ * stripModes (String)
+ * 
+ * Strip any mode based characters from a nickname @,+ etc.
+ * 
+ */
+
+String
+  Services::stripModes(String const &nick)
+{
+   char *temp = new char[nick.length() + 1];
+             for (register unsigned int i = (nick.length() + 1); i--;)
+     {
+	
+	
+	               char ch = nick.c_str()[i];
+	               switch(ch)
+	  {
+	     
+	     
+	   case '@': /* Opped.. */
+	                         temp[i] = ' ';
+	                         continue;
+	   case '+': /* Voiced */
+	                         temp[i] = ' ';
+	                         continue;
+	   default:
+	                         temp[i] = ch;
+	  }
+	
+	
+     }
+             String result(temp);
+             delete(temp);
+             return result.trim();
+   
+}
+
+
+/* getRegisteredNickID(String)
+ * 
+ * Return the unique identifier for a nickname if it is registered
+ * 
+ */
+
+int
+  Services::getRegisteredNickID(String const &nick)
+{
+   MysqlRes res = database.query("SELECT id from nicks where nickname='" + nick + "'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String id = row[0];
+	return id.toInt();
+     }
+   return 0;
+}
+
+
+/* modeIdentify(String)
+ * 
+ * Causes services to set a user client +r 
+ * meaning they have identified to the nickname
+ * they are currently using.
+ * 
+ * as an after thought , maybe this should be an inline function? thoughts?
+ */
+
+void
+  Services::modeIdentify(String const &nick)
+{
+   queueAdd(":services.ircdome.org SVSMODE "+nick+" +r");
+   return;
+}
+
+/*
+ * updateLastID(String)
+ * 
+ * Updates the last identified time of a client 
+ * to now.
+ * 
+ */
+
+void
+  Services::updateLastID(String const &nick)
+{
+   database.query("UPDATE nicks set lastid=NOW() where nickname='"+nick+"'");
+   return;
+}
+
+/*
+ * getNick(int)
+ * 
+ * Return the nickname for the given registered nickname ID
+ * 
+ */
+String
+  Services::getNick(int const &id)
+{
+   MysqlRes res = database.query("SELECT nickname from nicks where id='"+String::convert(id)+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+     
+
+/*
+ * getOnlineNick(int)
+ * 
+ * Same as above except for Online ID's
+ * 
+ */
+String
+  Services::getOnlineNick(int const &id)
+{
+   MysqlRes res = database.query("SELECT nickname from onlineclients where id='"+String::convert(id)+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+
+/*
+ * getpendingCode(String)
+ * 
+ * return the pending authorisation code for a nickname.
+ * 
+ */
+
+String
+  Services::getpendingCode(String const &nick)
+{
+   MysqlRes res = database.query("SELECT auth from pendingnicks where nickname='"+nick+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+};
+
+
+/*
+ * registerNick(String,String,String)
+ * 
+ * register the given nickname :-)
+ * 
+ */
+
+void
+  Services::registerNick(String const &nick, String const &password, String const &email)
+{
+   String gpass = generatePassword(nick.IRCtoLower(),password);
+   database.query("INSERT into nicks values ('','"+nick.IRCtoLower()+"','"+gpass+"','" + email + "',NOW(),NOW(),'',0,'english','0','None','http://www.ircdome.org',0,'None Set','None Set','No Quit Message Recorded',1)");
+}

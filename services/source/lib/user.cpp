@@ -259,3 +259,109 @@ String
      }
    return String("");
 };
+
+/*
+ * getIdent(void)
+ * 
+ * Return our users ident (username)
+ * 
+ */
+
+String
+  User::getIdent(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT username from onlineclients where id='"+getOnlineIDString()+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	return row[0];
+     }
+   return "";
+}
+
+/*
+ * isIdentified(void)
+ * 
+ * Return bool if we are identified as ANY nickname
+ * 
+ */
+bool
+  User::isIdentified(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT idas from identified where nick='"+getOnlineIDString()+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String temp = row[0];
+	if(temp.toInt() > 0)
+	  return true;
+     }
+   return false;
+}
+
+/* isIdentified(String)
+ * 
+ * Return true if we are identified as the given nickname.
+ * 
+ */
+
+bool
+  User::isIdentified(String const &as)
+{
+   MysqlRes res = services.getDatabase().query("SELECT idas from identified where nick='"+getOnlineIDString()+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String temp = row[0];
+	String idnick = services.getNick(temp.toInt());
+	if(idnick.IRCtoLower()==as.IRCtoLower())
+	  {
+	     return true;
+	  }
+     }
+   return false;
+}
+
+					      
+/* getIDList(void)
+ * 
+ * Return a list of nicknames we are identified as.
+ * 
+ */
+
+String
+  User::getIDList(void)
+{
+   String thelist = "";
+   MysqlRes res = services.getDatabase().query("SELECT idas from identified where nick='"+getOnlineIDString()+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	String rval = row[0];
+	String idnick = services.getNick(rval.toInt());
+	thelist = String(thelist)+" "+String(idnick);
+     }
+   return thelist;
+}
+
+
+/* isPending(void)
+ * 
+ * Return TRUE if we are still in a pending state for our nick registration
+ * 
+ */
+
+bool
+  User::isPending(void)
+{
+   MysqlRes res = services.getDatabase().query("SELECT id from pendingnicks where nickname='"+nickname+"'");
+   MysqlRow row;
+   while ((row = res.fetch_row()))
+     {
+	if((int)row[0]>0)
+	  {
+	     return true;
+	  }
+     }
+   return false;
+}

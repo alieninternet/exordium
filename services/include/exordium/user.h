@@ -151,7 +151,41 @@ namespace Exordium
 	 * Return the users hostname.
 	 * 
 	 */
+      
 	Kine::String getHost(void);
+        /* getIdent()
+	 * 
+	 * Return the users ident (username)
+	 * 
+	 */
+        Kine::String getIdent(void);
+        /* isIdentified()
+	 * 
+	 * Return true if we are identified as *ANY* nickname.
+	 * 
+	 */
+        bool isIdentified(void);
+       
+        /* isIdentified(String)
+	 * 
+	 * Return true if we are identified as the given nickname.
+	 * 
+	 */
+        bool isIdentified(String const &);
+      
+        /* getIDList(String)
+	 * 
+	 * Return a list of nicknames we are identified as...
+	 * 
+	 */
+        Kine::String getIDList(void);
+      
+        /* isPending()
+	 * 
+	 * Return TRUE if we are pending verification :-)
+	 * 
+	 */
+        bool isPending(void);
 	/* Our constructor definition */
 	User(String const &nick, int const &oid, Services &s)
 	  : nickname(nick), //their current nickname.. duh
