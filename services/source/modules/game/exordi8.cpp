@@ -215,9 +215,16 @@ void Exordi8::nextPlayer(const Kine::String& why, bool withMatchNotify)
 
    if (withMatchNotify) {
       // Tell the player what they need to get..
-      sendMessage((*currentPlayer).first, 
-		  Kine::String("To discard, you need to match the ") +
-		  lastDiscardedCard.getName());
+      if ((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
+	  (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen)) {
+	 sendMessage((*currentPlayer).first, 
+		     "You can put down any card you like, since the last "
+		     "card discarded was the Queen of Spades");
+      } else {
+	 sendMessage((*currentPlayer).first, 
+		     Kine::String("To discard, you need to match the ") +
+		     lastDiscardedCard.getName());
+      }
    }
 }
 
@@ -373,35 +380,33 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
     * is the case.
     */
    if (lastDiscardedCard.isValid()) {
-      // If the queen of spades was the last discarded, skip the check
+      /* If the queen of spades was the last discarded, skip the check since
+       * anything is allowed to be put on the queen of spades
+       */
       if (!((lastDiscardedCard.getSuit() == Cards::Card::Suit::Spades) &&
 	    (lastDiscardedCard.getIndex() == Cards::Card::Rank::Queen))) {
 	 /* If the last card was an '8' and there is a suit selected, we must
 	  * use it..
 	  */
-	 if (lastDiscardedCard.getIndex() == 8) {
+	 if ((lastDiscardedCard.getIndex() == 8) && (nextSuit != 0)) {
 	    /* Check the suits match. Note, if the stock is empty, they can
 	     * drop any card they like.
 	     */
-	    if ((nextSuit != cardToDiscard.getSuit()) &&
-		!stock.empty()) {
+	    if ((nextSuit != cardToDiscard.getSuit()) && !stock.empty()) {
 	       sendMessage(origin, 
 			   Kine::String("You must discard a card that matches "
-					"the suit of the last discarded "
-					"card (") +
-			   lastDiscardedCard.getName() + ") or take a card.");
+					"the suit selected by the last player "
+					"(") +
+			   Cards::Card::nameSuit(nextSuit) + 
+			   ") or take a card.");
 	       return;
 	    }
 	 } else {
 	    // Check the suits OR the ranks match
-	    if (!((cardToDiscard.getSuit() == 
-		   lastDiscardedCard.getSuit()) ||
-		  (cardToDiscard.getIndex() == 
-		   lastDiscardedCard.getIndex())) ||
-		!((lastDiscardedCard.getIndex() == 
-		   Cards::Card::Rank::Jack) &&
-		  (cardToDiscard.getColour() == 
-		   lastDiscardedCard.getColour()))) {
+	    if (!((cardToDiscard.getSuit() == lastDiscardedCard.getSuit()) ||
+		  (cardToDiscard.getIndex() == lastDiscardedCard.getIndex())) ||
+		!((lastDiscardedCard.getIndex() == Cards::Card::Rank::Jack) &&
+		  (cardToDiscard.getColour() == lastDiscardedCard.getColour()))) {
 	       sendMessage(origin,
 			   Kine::String("You must match either the suit or "
 					"the rank of the last discarded "
@@ -497,7 +502,7 @@ EXORDI8_FUNC(Exordi8::parseDISCARD)
       if ((players.size() > 2) &&
 	  (cardToDiscard.getIndex() == Cards::Card::Rank::Ace)) {
 	 forwardDirection = !forwardDirection;
-	 nextPlayer(Kine::String(" has discarded the ") + 
+	 nextPlayer(Kine::String("has discarded the ") + 
 		    cardToDiscard.getName() +
 		    " - the direction of play has been reversed");
 	 return;
