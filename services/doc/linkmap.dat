@@ -21,7 +21,7 @@
 
 digraph intranet_map {
   graph [splines=true,overlap=false];
-  node [style=filled];
+  node [style=filled,fontname="Arial",fontsize=10.0,fontcolor=black];
   decorate=true;
   sep=0.1;
 
