@@ -228,7 +228,7 @@ EXORDIUM_SERVICE_INIT_FUNCTION {
    Services::registerService(name,name,"ircdome.org","+dz",
 			     "Note service thingy that James forgot :(");
    Services::serviceJoin(name,"#Debug");
-   return new Module(name, new Note());
+   return new Module("note", new Note());
 }
 
 }
