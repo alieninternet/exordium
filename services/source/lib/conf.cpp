@@ -110,13 +110,13 @@ const LibAIS::ConfigParser::defTable_type Config::defClassConsole =
 const LibAIS::ConfigParser::defTable_type Config::defClassSql =
 {
      {
-        "ENGINE",
-          (void *)&Config::defSqlEngine, &varHandleString,
+        "DATABASE",
+          (void *)&Config::defSqlDatabase, &varHandleStringOneWord,
           0, 0
      },
      {
-        "DATABASE",
-          (void *)&Config::defSqlDatabase, &varHandleStringOneWord,
+        "ENGINE",
+          (void *)&Config::defSqlEngine, &varHandleString,
           0, 0
      },
      {
